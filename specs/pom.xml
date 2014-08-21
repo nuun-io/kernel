@@ -1,0 +1,41 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.nuun</groupId>
+    <artifactId>kernel</artifactId>
+    <version>1.0.M1-SNAPSHOT</version>
+  </parent>
+  
+  <artifactId>kernel-specs</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Nuun IO Kernel Core</name>
+
+  <description>
+    This is the specs part of the Nuun IO Kernel. API and SPI.
+    Use this project for your specs oriented projects.
+
+    See kernel parent description.
+        
+  </description>
+
+  <inceptionYear>2012</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>LGPL 3.0</name>
+      <url>http://www.gnu.org/copyleft/lesser.html</url>
+    </license>
+  </licenses>
+
+  <url>http://nuun.io/kernel/specs</url>
+
+  <dependencies>
+
+
+
+    
+  </dependencies>
+
+</project>

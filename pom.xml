@@ -1,0 +1,154 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>9</version>
+  </parent>
+        
+  <groupId>io.nuun</groupId>
+  <artifactId>kernel</artifactId>
+  <version>1.0.M1-SNAPSHOT</version>
+  
+  <modules>
+    <module>core</module>
+    <module>specs</module>
+  </modules>
+  
+  <packaging>pom</packaging>
+  
+  <name>Nuun IO Kernel</name>
+  
+  <description>
+    Nuun Kernel is a software kernel for framework creation. It brings a powerful plugin design plus 
+    a JSR 330 compliant injection mechanism backed by Guice.
+    Plugin benefits from kernel capabilities by sendings request to it :
+    - kernel params request :
+    - Classpath scans request :on class by name, annotation, meta annotation or more generally Predicate
+    - Binding Request : 
+    Nuun Kernel provides an SPI in order to bring IOC from other vendors.
+    Nuun Kernel come with 2 plugins:
+    - Configuration Plugin : a plugin that inject the good property based on @Property annotation.
+    - Log plugin : a Log handler that inject the good Log implementation 
+    
+  </description>
+  
+  <inceptionYear>2012</inceptionYear>
+  
+  <licenses>
+    <license>
+      <name>LGPL 3.0</name>
+      <url>http://www.gnu.org/copyleft/lesser.html</url>
+    </license>
+  </licenses>
+  
+  <url>http://nuun.io/kernel</url>
+  
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.6</maven.compiler.source>
+    <maven.compiler.target>1.6</maven.compiler.target>
+  </properties>
+  
+  <dependencies>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.6.6</version>
+    </dependency>
+    
+    <!-- ========================================================== -->
+    <!-- ============== UNIT TEST DEPENDENCIES ==================== -->
+    <!-- ========================================================== -->
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.10</version>
+      <scope>test</scope>
+    </dependency>
+   
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>1.8.5</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.easytesting</groupId>
+      <artifactId>fest-assert</artifactId>
+      <version>1.4</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+      <version>1.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-core</artifactId>
+      <version>1.5</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-api-mockito</artifactId>
+      <version>1.5</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+	<directory>${basedir}/src/main/resources</directory>
+	<filtering>true</filtering>
+      </resource>
+      <resource>
+	<directory>${basedir}</directory>
+	<targetPath>META-INF</targetPath>
+	<includes>
+	  <include>LICENSE</include>
+	  <include>NOTICE</include>
+	</includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-release-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <scm>
+    <url>https://github.com/nuun-io/kernel</url>
+    <connection>scm:git:git://github.com/nuun-io/kernel.git</connection>
+    <developerConnection>scm:git:git@github.com:nuun-io/kernel.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>Epo Jemba</name>
+      <email>epo.jemba@kametic.com</email>
+      <organization>Kametic</organization>
+      <organizationUrl>www.kametic.com</organizationUrl>
+      <roles>
+	<role>Project Owner</role>
+	<role>Architect</role>
+	<role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+</project>
