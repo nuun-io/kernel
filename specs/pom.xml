@@ -1,18 +1,19 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>io.nuun</groupId>
-    <artifactId>kernel</artifactId>
-    <version>1.0.M1-SNAPSHOT</version>
-  </parent>
-  
-  <artifactId>kernel-specs</artifactId>
-  <packaging>jar</packaging>
+	<parent>
+		<groupId>io.nuun</groupId>
+		<artifactId>kernel</artifactId>
+		<version>1.0.M1-SNAPSHOT</version>
+	</parent>
 
-  <name>Nuun IO Kernel Core</name>
+	<artifactId>kernel-specs</artifactId>
+	<packaging>jar</packaging>
 
-  <description>
+	<name>Nuun IO Kernel Specs</name>
+
+	<description>
     This is the specs part of the Nuun IO Kernel. API and SPI.
     Use this project for your specs oriented projects.
 
@@ -20,22 +21,41 @@
         
   </description>
 
-  <inceptionYear>2012</inceptionYear>
+	<inceptionYear>2012</inceptionYear>
 
-  <licenses>
-    <license>
-      <name>LGPL 3.0</name>
-      <url>http://www.gnu.org/copyleft/lesser.html</url>
-    </license>
-  </licenses>
+	<licenses>
+		<license>
+			<name>LGPL 3.0</name>
+			<url>http://www.gnu.org/copyleft/lesser.html</url>
+		</license>
+	</licenses>
 
-  <url>http://nuun.io/kernel/specs</url>
+	<url>http://nuun.io/kernel/specs</url>
 
-  <dependencies>
+	<dependencies>
 
+		<dependency>
+			<groupId>org.kametic</groupId>
+			<artifactId>specifications</artifactId>
+			<version>1.0.M1-SNAPSHOT</version>
+		</dependency>
 
+		<dependency>
+			<groupId>org.sonatype.sisu</groupId>
+			<artifactId>sisu-guice</artifactId>
+			<version>3.1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
 
-    
-  </dependencies>
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+	</dependencies>
 
 </project>
