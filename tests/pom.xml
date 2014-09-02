@@ -1,0 +1,72 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>io.nuun</groupId>
+		<artifactId>kernel</artifactId>
+		<version>1.0.M1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>kernel-tests</artifactId>
+	<packaging>jar</packaging>
+
+	<name>Nuun IO Kernel Tests</name>
+
+	<description>
+    This is the tests part of the Nuun IO Kernel. 
+    Use this project when you want to make unit test and integration tests from your plugins.
+
+    See kernel parent description.
+        
+  </description>
+
+	<inceptionYear>2014</inceptionYear>
+
+	<licenses>
+		<license>
+			<name>LGPL 3.0</name>
+			<url>http://www.gnu.org/copyleft/lesser.html</url>
+		</license>
+	</licenses>
+
+	<url>http://nuun.io/kernel/tests</url>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>kernel-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>nuun-log-plugin</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<optional>true</optional>
+		</dependency>
+		
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.0</version>
+			<optional>true</optional>
+		</dependency>
+		
+       <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>1.3.0</version>
+            <optional>true</optional>
+        </dependency>		
+
+	</dependencies>
+
+</project>
