@@ -16,6 +16,7 @@
  */
 package io.nuun.kernel.core;
 
+import io.nuun.kernel.api.KernelMode;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.RoundEnvironementInternal;
@@ -44,6 +45,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ServiceLoader;
@@ -102,6 +104,7 @@ public final class Kernel
     private List<Plugin>                             fetchedPlugins;
     private Set<URL>                                 globalAdditionalClasspath;
     private RoundEnvironementInternal                roundEnv;
+	private KernelMode kernelMode;
 
     private Kernel(String... keyValues)
     {
@@ -381,7 +384,23 @@ public final class Kernel
             
             Module mainFinalModule = Modules.override(internalKernelGuiceModule).with(internalKernelGuiceModuleOverriding);
             
-            mainInjector = Guice.createInjector( Stage.PRODUCTION , mainFinalModule);
+            // Compute Guice Stage
+            Stage stage = Stage.PRODUCTION;
+            if (kernelMode == KernelMode.PRODUCTION)
+            {
+            	stage = Stage.PRODUCTION;
+            }
+            else if (kernelMode == KernelMode.DEVELOPMENT)
+            {
+            	stage = Stage.DEVELOPMENT;
+            }
+            else if (kernelMode == KernelMode.TOOL)
+            {
+            	stage = Stage.TOOL;
+            }
+             
+            
+            mainInjector = Guice.createInjector( stage , mainFinalModule );
 
             // Here we can pass the mainInjector to the non guice modules
 
@@ -411,16 +430,20 @@ public final class Kernel
         return mainInjector;
     }
 
+    /**
+     * This methods will stop all the plugin in the reverse order of the sorted plugins.
+     * 
+     */
     public void stop()
     {
-        // 1) stop plugins
-        //
-        for (Plugin plugin : plugins.values())
-        {
-            plugin.stop();
-        }
+    		
+    	ListIterator<Plugin> li = orderedPlugins.listIterator(orderedPlugins.size());
 
-
+    	// Iterate in reverse.
+    	while( li.hasPrevious() ) {
+    		Plugin plugin = li.previous();
+    		plugin.stop();
+    	}
     }
 
     /**
@@ -829,8 +852,13 @@ public final class Kernel
         Kernel build();
     }
 
-    public static interface KernelBuilderWithPluginAndContext extends KernelBuilderWithContainerContext, KernelBuilderWithPlugins
+    public static interface KernelBuilderWithPluginAndContext extends KernelBuilderWithContainerContext, KernelBuilderWithPlugins , KernelModeContext
     {
+    }
+    
+    public static interface KernelModeContext extends KernelBuilder {
+
+    	KernelBuilderWithPluginAndContext withMode (KernelMode kernelMode);
     }
 
     public static interface KernelBuilderWithContainerContext extends KernelBuilder
@@ -905,6 +933,17 @@ public final class Kernel
             kernel.spiPluginDisabled();
             return this;
         }
+        
+        
+        @Override
+        public KernelBuilderWithPluginAndContext withMode(KernelMode kernelMode) {
+        	kernel.mode(kernelMode);
+        	return null;
+        }
+
+	
+
+
 
     }
 
@@ -943,6 +982,11 @@ public final class Kernel
     void spiPluginDisabled()
     {
         spiPluginEnabled = false;
+    }
+    
+    void mode (KernelMode kernelMode) {
+		this.kernelMode = kernelMode;
+    	
     }
 
     /**
