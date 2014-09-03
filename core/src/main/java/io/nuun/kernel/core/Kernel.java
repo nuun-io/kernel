@@ -436,13 +436,16 @@ public final class Kernel
      */
     public void stop()
     {
+    	if (started) {
+    		ListIterator<Plugin> li = orderedPlugins.listIterator(orderedPlugins.size());
     		
-    	ListIterator<Plugin> li = orderedPlugins.listIterator(orderedPlugins.size());
-
-    	// Iterate in reverse.
-    	while( li.hasPrevious() ) {
-    		Plugin plugin = li.previous();
-    		plugin.stop();
+    		// Iterate in reverse.
+    		while( li.hasPrevious() ) {
+    			Plugin plugin = li.previous();
+    			plugin.stop();
+    		}
+    	} else {
+    		throw new KernelException("Kernel is not started.");
     	}
     }
 

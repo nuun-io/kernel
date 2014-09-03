@@ -55,7 +55,7 @@ public class KernelSuite6Test
         }
         catch (KernelException ke)
         {
-            underTest.stop();
+//            underTest.stop();
             assertThat(ke.getMessage())
                     .isEqualTo(
                             "plugin dummy-plugin-6-B misses the following plugin/s as dependee/s [class io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_D, class io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_C]");
@@ -107,14 +107,15 @@ public class KernelSuite6Test
         assertThat(plugins2).isNotNull();
         assertThat(plugins2).containsOnly(b, c, d);
         assertThat(plugins2).containsSequence(b, d, c );
-        
-        
     }
     
     @After
     public void stopKernel()
     {
-        underTest.stop();
+        if (underTest.isStarted())
+        {
+        	underTest.stop();
+        }
     }
 
 }
