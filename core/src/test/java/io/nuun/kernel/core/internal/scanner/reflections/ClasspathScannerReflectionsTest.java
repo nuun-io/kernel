@@ -14,12 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.core.internal.scanner;
+package io.nuun.kernel.core.internal.scanner.reflections;
 
 import static org.fest.assertions.Assertions.assertThat;
 import io.nuun.kernel.api.annotations.KernelModule;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner.Callback;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner.CallbackResources;
+import io.nuun.kernel.core.internal.scanner.reflections.ClasspathScannerReflections;
+import io.nuun.kernel.core.internal.scanner.reflections.ClasspathStrategy;
 import io.nuun.kernel.core.internal.scanner.sample.Bean1;
 import io.nuun.kernel.core.internal.scanner.sample.Bean2;
 import io.nuun.kernel.core.internal.scanner.sample.Bean3;
@@ -29,7 +31,6 @@ import io.nuun.kernel.core.internal.scanner.sample.MyModule2;
 import io.nuun.kernel.core.internal.scanner.sample.MyModule4;
 import io.nuun.kernel.core.internal.scanner.sample.ScanMarkerSample;
 import io.nuun.kernel.core.internal.scanner.sample.ScanMarkerSample2;
-
 import io.nuun.kernel.core.pluginsit.dummy7.Module7;
 
 import java.util.Collection;
@@ -40,10 +41,10 @@ import org.junit.Test;
 
 
 
-public class ClasspathScannerInternalTest
+public class ClasspathScannerReflectionsTest
 {
     
-    private static ClasspathScannerInternal underTest , underTest2;
+    private static ClasspathScannerReflections underTest , underTest2;
 
     static TestCallback cb;
     static TestCallbackResources cbr;
@@ -51,8 +52,8 @@ public class ClasspathScannerInternalTest
     @BeforeClass
     public static void init()
     {
-        underTest = new ClasspathScannerInternal(new ClasspathStrategy(), "","META-INF.properties,"+MyModule2.class.getPackage().getName());
-        underTest2 = new ClasspathScannerInternal(new ClasspathStrategy(), true ,"", "META-INF.properties,"+MyModule2.class.getPackage().getName());
+        underTest = new ClasspathScannerReflections(new ClasspathStrategy(), false  ,"","META-INF.properties,"+MyModule2.class.getPackage().getName());
+        underTest2 = new ClasspathScannerReflections(new ClasspathStrategy(), true ,"", "META-INF.properties,"+MyModule2.class.getPackage().getName());
         
         cb = new TestCallback();
         cbr = new TestCallbackResources();

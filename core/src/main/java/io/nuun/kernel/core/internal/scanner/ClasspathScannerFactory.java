@@ -16,6 +16,9 @@
  */
 package io.nuun.kernel.core.internal.scanner;
 
+import io.nuun.kernel.core.internal.scanner.reflections.ClasspathStrategy;
+import io.nuun.kernel.core.internal.scanner.reflections.ClasspathScannerReflections;
+
 import java.net.URL;
 import java.util.Set;
 
@@ -24,19 +27,21 @@ public class ClasspathScannerFactory
 {
     public ClasspathScanner create(ClasspathStrategy classpathStrategy, Set<URL> additionalClasspath , String... packageRoot)
     {
-        ClasspathScannerInternal classpathScannerInternal = new ClasspathScannerInternal(classpathStrategy, packageRoot);
-        classpathScannerInternal.setAdditionalClasspath(additionalClasspath);
-        return classpathScannerInternal;
+        ClasspathScannerReflections classpathScannerReflections = new ClasspathScannerReflections(classpathStrategy, packageRoot);
+        classpathScannerReflections.setAdditionalClasspath(additionalClasspath);
+        return classpathScannerReflections;
     }
 
+    @Deprecated
     public ClasspathScanner create(ClasspathStrategy classpathStrategy, String... packageRoot)
     {
-        return new ClasspathScannerInternal(classpathStrategy, packageRoot);
+        return new ClasspathScannerReflections(classpathStrategy, packageRoot);
     }
 
+    @Deprecated
     public ClasspathScanner create(ClasspathStrategy classpathStrategy, boolean reachAbstractClass ,  String packageRoot,String... packageRoots )
     {
-        return new ClasspathScannerInternal(classpathStrategy, reachAbstractClass , packageRoot ,packageRoots);
+        return new ClasspathScannerReflections(classpathStrategy, reachAbstractClass , packageRoot ,packageRoots);
     }
 
 }

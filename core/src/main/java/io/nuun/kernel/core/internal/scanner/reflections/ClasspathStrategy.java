@@ -1,4 +1,4 @@
-package io.nuun.kernel.core.internal.scanner;
+package io.nuun.kernel.core.internal.scanner.reflections;
 
 public class ClasspathStrategy {
     private final Strategy strategy;

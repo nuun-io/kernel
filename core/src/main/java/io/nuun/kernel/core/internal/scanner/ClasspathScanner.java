@@ -26,9 +26,9 @@ public interface ClasspathScanner
 
     void scanClasspathForAnnotation(Class<? extends Annotation> annotationType , Callback callback);
 
-    void scanClasspathForAnnotationRegex(String annotationTypeName, Callback callback);
+    void scanClasspathForAnnotationRegex(String annotationTypeRegex, Callback callback);
 
-    void scanClasspathForMetaAnnotationRegex(String annotationTypeName, Callback callback);
+    void scanClasspathForMetaAnnotationRegex(String metaAnnotationRegex, Callback callback);
 
     void scanClasspathForSubTypeClass(Class<?> subType, Callback callback);
 
@@ -45,7 +45,7 @@ public interface ClasspathScanner
     void doClasspathScan ();
     
     
-    public static interface Callback 
+    public static interface Callback
     {
         public void callback(Collection<Class<?>> scanResult);
     }

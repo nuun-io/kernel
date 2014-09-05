@@ -38,7 +38,6 @@ public class ConcernTest
     static Kernel underTest;
     private static List<String> list;
     
-    @SuppressWarnings("unchecked")
     @BeforeClass
     public static void init()
     {
@@ -96,7 +95,9 @@ public class ConcernTest
     @AfterClass
     public static void clear()
     {
-        underTest.stop();
+        if ( underTest.isStarted()) {
+			underTest.stop();
+		}
     }
 
 }

@@ -16,6 +16,7 @@
  */
 package io.nuun.kernel.core.internal.context;
 
+import static com.google.common.base.Predicates.and;
 import static com.google.common.base.Predicates.not;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.annotations.KernelModule;
@@ -27,9 +28,10 @@ import io.nuun.kernel.core.internal.scanner.ClasspathScanner;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner.Callback;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner.CallbackResources;
 import io.nuun.kernel.core.internal.scanner.ClasspathScannerFactory;
-import io.nuun.kernel.core.internal.scanner.ClasspathStrategy;
+import io.nuun.kernel.core.internal.scanner.reflections.ClasspathStrategy;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
@@ -192,6 +194,16 @@ public class InitContextInternal implements InitContext
         }
         
     }
+    class IsModuleAbstract implements Predicate<Class<? extends Module>>
+    {
+    	
+    	@Override
+    	public boolean apply(Class<? extends Module> input)
+    	{
+    		return Modifier.isAbstract(input.getModifiers());
+    	}
+    	
+    }
     
     class ModuleClass2Instance implements Function<Class<? extends Module>, Module>
     {
@@ -232,8 +244,8 @@ public class InitContextInternal implements InitContext
                 {
                     
                     Collection<Class<? extends Module>> scanResult2 = (Collection) scanResult ;
-                    FluentIterable<Module> nominals = FluentIterable.from(scanResult2).filter( not(new IsModuleOverriding())  ).transform(new ModuleClass2Instance());
-                    FluentIterable<Module> overriders = FluentIterable.from(scanResult2).filter( new IsModuleOverriding() ).transform(new ModuleClass2Instance());
+                    FluentIterable<Module> nominals = FluentIterable.from(scanResult2).filter( and( not(new IsModuleOverriding())  ,   not (new IsModuleAbstract())  )   ).transform(new ModuleClass2Instance());
+                    FluentIterable<Module> overriders = FluentIterable.from(scanResult2).filter( and ( new IsModuleOverriding() , not (new IsModuleAbstract())) ).transform(new ModuleClass2Instance());
                     
                     childModules.addAll(nominals.toImmutableSet());
                     childOverridingModules.addAll(overriders.toImmutableSet());

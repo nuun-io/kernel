@@ -14,15 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.core.internal.scanner;
+package io.nuun.kernel.core.internal.scanner.reflections;
 
 import static org.reflections.util.FilterBuilder.prefix;
-import io.nuun.kernel.api.annotations.Ignore;
 import io.nuun.kernel.api.assertions.AssertUtils;
-import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.core.internal.scanner.AbstractClasspathScanner;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,34 +47,32 @@ import org.reflections.util.FilterBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
-class ClasspathScannerInternal implements ClasspathScanner
+public class ClasspathScannerReflections extends AbstractClasspathScanner
 {
 
-    Logger                          logger = LoggerFactory.getLogger(ClasspathScannerInternal.class);
+    Logger                          logger = LoggerFactory.getLogger(ClasspathScannerReflections.class);
 
     private final List<String>      packageRoots;
-    private final boolean           reachAbstractClass;
     private final ClasspathStrategy classpathStrategy;
     private Set<URL>                additionalClasspath;
     private Set<URL>                urls;
 
-    private final List<ScannerCommand> commands;
+    protected final List<ScannerCommand> commands;
 
-    public ClasspathScannerInternal(ClasspathStrategy classpathStrategy, String... packageRoots_)
+    public ClasspathScannerReflections(ClasspathStrategy classpathStrategy, String... packageRoots_)
     {
-        this(classpathStrategy, false, null, packageRoots_);
+        this(classpathStrategy, true, null, packageRoots_);
 
     }
 
-    public ClasspathScannerInternal(ClasspathStrategy classpathStrategy, boolean reachAbstractClass, String packageRoot, String... packageRoots_)
+    public ClasspathScannerReflections(ClasspathStrategy classpathStrategy, boolean reachAbstractClass, String packageRoot, String... packageRoots_)
     {
-        packageRoots = new LinkedList<String>();
+        super(reachAbstractClass);
+    	packageRoots = new LinkedList<String>();
 
         if (packageRoot != null)
         {
@@ -87,20 +83,18 @@ class ClasspathScannerInternal implements ClasspathScanner
         {
             packageRoots.add(packageRoot_);
         }
-        this.reachAbstractClass = reachAbstractClass;
+        
         this.classpathStrategy = classpathStrategy;
-        commands = new ArrayList<ClasspathScannerInternal.ScannerCommand>();
+        commands = new ArrayList<ClasspathScannerReflections.ScannerCommand>();
     }
 
-    static interface ScannerCommand
+    protected static interface ScannerCommand
     {
         void execute (Reflections reflections);
         Scanner scanner ();
     }
     
-    @SuppressWarnings({
-            "unchecked", "rawtypes"
-    })
+
     @Override
     public void scanClasspathForAnnotation(final Class<? extends Annotation> annotationType , final Callback callback)
     {
@@ -225,69 +219,10 @@ class ClasspathScannerInternal implements ClasspathScanner
         }
         return null;
     }
-    static class IgnorePredicate implements Predicate<Class<?>>
-    {
+   
 
-        Logger                logger = LoggerFactory.getLogger(ClasspathScannerInternal.IgnorePredicate.class);
+  
 
-        private final boolean reachAbstractClass;
-
-        public IgnorePredicate(boolean reachAbstractClass)
-        {
-            this.reachAbstractClass = reachAbstractClass;
-        }
-
-        @Override
-        public boolean apply(Class<?> clazz)
-        {
-
-            logger.trace("Checking {} for Ignore", clazz.getName());
-
-            boolean toKeep = true;
-
-            if (Modifier.isAbstract(clazz.getModifiers()) && !reachAbstractClass && !clazz.isInterface())
-            {
-                toKeep = false;
-            }
-
-            for (Annotation annotation : clazz.getAnnotations())
-            {
-                logger.trace("Checking annotation {} for Ignore", annotation.annotationType().getName());
-                if (annotation.annotationType().equals(Ignore.class) || annotation.annotationType().getName().endsWith("Ignore"))
-                {
-                    toKeep = false;
-                }
-                logger.trace("Result tokeep = {}.", toKeep);
-                if (!toKeep)
-                {
-                    break;
-                }
-            }
-            return toKeep;
-        }
-    }
-
-    private Collection<Class<?>> postTreatment(Collection<Class<?>> set)
-    {
-
-        // Sanity Check : throw a KernelException if one of the returned classes is null
-        for (Class<?> class1 : set)
-        {
-            if (null == class1)
-            {
-                throw new KernelException("Scanned classes results can not be null. Please check Integrity of the classes.");
-            }
-        }
-
-        Collection<Class<?>> filtered = Collections2.filter(set, new IgnorePredicate(reachAbstractClass));
-
-        return filtered;
-
-    }
-
-    @SuppressWarnings({
-            "unchecked", "rawtypes"
-    })
     @Override
     public void scanClasspathForAnnotationRegex(final String annotationTypeRegex, final Callback callback)
     {
@@ -332,9 +267,6 @@ class ClasspathScannerInternal implements ClasspathScanner
 
 
     
-    @SuppressWarnings({
-            "unchecked", "rawtypes"
-    })
     @Override
     public void scanClasspathForTypeRegex(final String typeName, final Callback callback)
     {
@@ -380,11 +312,7 @@ class ClasspathScannerInternal implements ClasspathScanner
 
     }
 
-    
-    
-    @SuppressWarnings({
-            "unchecked", "rawtypes"
-    })
+
     @Override
     public void scanClasspathForSpecification(final Specification<Class<?>> specification , final Callback callback)
     {
@@ -614,7 +542,7 @@ class ClasspathScannerInternal implements ClasspathScanner
         }
     }
 
-    private Scanner[] getScanners()
+    protected Scanner[] getScanners()
     {
         Map<Class<?> , Scanner> scannersByClass = Maps.newHashMap();
         for(  ScannerCommand command : commands)
@@ -642,7 +570,7 @@ class ClasspathScannerInternal implements ClasspathScanner
         this.additionalClasspath = additionalClasspath;
     }
 
-    private ConfigurationBuilder configurationBuilder()
+    protected ConfigurationBuilder configurationBuilder()
     {
         ConfigurationBuilder cb = new ConfigurationBuilder();
         FilterBuilder fb = new FilterBuilder();
