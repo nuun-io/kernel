@@ -18,8 +18,10 @@ package io.nuun.kernel.core.internal.context;
 
 import static com.google.common.base.Predicates.and;
 import static com.google.common.base.Predicates.not;
+import io.nuun.kernel.api.ClasspathScanMode;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.annotations.KernelModule;
+import io.nuun.kernel.api.inmemory.InMemoryClasspath;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.RequestType;
 import io.nuun.kernel.core.Kernel;
@@ -115,12 +117,26 @@ public class InitContextInternal implements InitContext
 
     private int roundNumber = 0;
 
+	private ClasspathScanMode classpathScanMode;
+
+	private Object scanConfigurationObject = null;
+
+	/**
+	 * @param classpathScanMode
+	 * @param inPackageRoots
+	 */
+	public InitContextInternal(String initialPropertiesPrefix, Map<String, String> kernelParams)
+	{
+		this(initialPropertiesPrefix , kernelParams , ClasspathScanMode.NOMINAL);
+	}
     /**
+     * @param classpathScanMode
      * @param inPackageRoots
      */
-    public InitContextInternal(String initialPropertiesPrefix, Map<String, String> kernelParams)
+    public InitContextInternal(String initialPropertiesPrefix, Map<String, String> kernelParams, ClasspathScanMode classpathScanMode)
     {
-        String classpathStrategyNameParam = kernelParams.get(Kernel.NUUN_CP_STRATEGY_NAME);
+        this.classpathScanMode = classpathScanMode;
+		String classpathStrategyNameParam = kernelParams.get(Kernel.NUUN_CP_STRATEGY_NAME);
         String classpathStrategyAdditionalParam = kernelParams.get(Kernel.NUUN_CP_STRATEGY_ADD);
 
         classpathStrategy = new ClasspathStrategy(
@@ -135,6 +151,15 @@ public class InitContextInternal implements InitContext
         classesToBind = new HashSet<Class<?>>();
         classesWithScopes = new HashMap<Class<?>, Object>();
         reset();
+    }
+    
+    
+    public InitContextInternal(String initialPropertiesPrefix, Map<String, String> kernelParams, ClasspathScanMode classpathScanMode, Object scanConfigurationObject)
+    {
+    	this(initialPropertiesPrefix,  kernelParams, classpathScanMode );
+		this.scanConfigurationObject = scanConfigurationObject;
+    	
+    	
     }
     
     public void reset()
@@ -176,9 +201,18 @@ public class InitContextInternal implements InitContext
 
     private void initScanner()
     {
-        String[] rawArrays = new String[packageRoots.size()];
-        packageRoots.toArray(rawArrays);
-        classpathScanner = new ClasspathScannerFactory().create(classpathStrategy, additionalClasspathScan , rawArrays);
+        String[] packageRootArray = new String[packageRoots.size()];
+        packageRoots.toArray(packageRootArray);
+        
+        ClasspathScannerFactory classpathScannerFactory = new ClasspathScannerFactory();
+		if (classpathScanMode == ClasspathScanMode.NOMINAL)
+		{
+        	classpathScanner = classpathScannerFactory.create(classpathStrategy, additionalClasspathScan , packageRootArray);
+        }
+		else if (classpathScanMode == ClasspathScanMode.NOMINAL)
+        {
+        	classpathScanner = classpathScannerFactory.createInMemory((InMemoryClasspath) scanConfigurationObject,packageRootArray);
+        }
         
     }
     

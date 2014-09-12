@@ -20,8 +20,8 @@ import org.reflections.Reflections;
 import org.reflections.scanners.Scanner;
 import org.reflections.util.ConfigurationBuilder;
 
+import io.nuun.kernel.api.inmemory.InMemoryClasspath;
 import io.nuun.kernel.core.internal.scanner.reflections.ClasspathScannerReflections;
-import io.nuun.kernel.core.internal.scanner.reflections.ClasspathStrategy;
 
 
 /**
@@ -33,11 +33,11 @@ import io.nuun.kernel.core.internal.scanner.reflections.ClasspathStrategy;
 public class ClasspathScannerInMemory extends ClasspathScannerReflections {
 	
 	
-	private final Classpath classpath;
+	private final InMemoryClasspath inMemoryClasspath;
 
-	public ClasspathScannerInMemory(ClasspathStrategy classpathStrategy, String[] packageRoots_ , Classpath classpath ) {
-		super(classpathStrategy, packageRoots_);
-		this.classpath = classpath;
+	public ClasspathScannerInMemory( InMemoryClasspath inMemoryClasspath  , String... packageRoot) {
+		super(null, packageRoot);
+		this.inMemoryClasspath = inMemoryClasspath;
 	}
 	
 	@Override
@@ -48,18 +48,28 @@ public class ClasspathScannerInMemory extends ClasspathScannerReflections {
 	        
 	        Reflections reflections = new Reflections(configurationBuilder);
 	        
+	        executeScan(reflections, inMemoryClasspath);
+	        
 	        for(  ScannerCommand command : commands)
 	        {
 	            command.execute(reflections);
 	        }
 	}
 
+	private void executeScan(Reflections reflections, InMemoryClasspath classpath) {
+		
+		
+	}
+	
+	
+	
+
 
 /*
 	private final List<ScannerCommand> commands;
 
 	interface ScannerCommand {
-		void execute(Classpath classpath);
+		void execute(InMemoryClasspath inMemoryClasspath);
 	}
 
 	public ClasspathScannerInMemory() {
@@ -79,7 +89,7 @@ public class ClasspathScannerInMemory extends ClasspathScannerReflections {
 		new ScannerCommand() {
 
 			@Override
-			public void execute(Classpath classpath) {
+			public void execute(InMemoryClasspath inMemoryClasspath) {
 		
 
 			}
@@ -93,7 +103,7 @@ public class ClasspathScannerInMemory extends ClasspathScannerReflections {
 		queue(new ScannerCommand() {
 
 			@Override
-			public void execute(Classpath classpath) {
+			public void execute(InMemoryClasspath inMemoryClasspath) {
 
                   
 //                  Multimap<String, String> multimap = store.get(TypeAnnotationsScanner.class);
@@ -126,12 +136,12 @@ public class ClasspathScannerInMemory extends ClasspathScannerReflections {
 		queue(new ScannerCommand() {
 			
 			@Override
-			public void execute(Classpath classpath) {
+			public void execute(InMemoryClasspath inMemoryClasspath) {
 				Collection<Class<?>> typesAnnotatedWith = Sets.newHashSet();
 
-				for (ClasspathEntry entry : classpath.entries()) {
-					if (entry instanceof ClassEntry) {
-						Class<?> klass = ClassEntry.class.cast(entry).entryClass();
+				for (AbstractInMemoryClasspathEntry entry : inMemoryClasspath.entries()) {
+					if (entry instanceof InMemoryClasspathEntry) {
+						Class<?> klass = InMemoryClasspathEntry.class.cast(entry).entryClass();
 						if (annotationType != null && klass != null && AssertUtils.hasAnnotationDeep(klass, annotationType) && !klass.isAnnotation()) {
 							typesAnnotatedWith.add(klass);
 						}
@@ -149,14 +159,14 @@ public class ClasspathScannerInMemory extends ClasspathScannerReflections {
 		queue(new ScannerCommand() {
 
 			@Override
-			public void execute(Classpath classpath) {
+			public void execute(InMemoryClasspath inMemoryClasspath) {
 	                
 	                Collection<Class<?>> typesAnnotatedWith = Sets.newHashSet();
 	                
-	                for (ClasspathEntry entry : classpath.entries()) {
+	                for (AbstractInMemoryClasspathEntry entry : inMemoryClasspath.entries()) {
 	                {
-	                	if (entry instanceof ClassEntry) {
-	                		Class<?> klass = ClassEntry.class.cast(entry).entryClass();
+	                	if (entry instanceof InMemoryClasspathEntry) {
+	                		Class<?> klass = InMemoryClasspathEntry.class.cast(entry).entryClass();
 	                		if ( metaAnnotationRegex != null && klass != null&&  AssertUtils.hasAnnotationDeepRegex(klass, metaAnnotationRegex) && ! klass.isAnnotation() )
 	                		{
 	                			typesAnnotatedWith.add(klass);
@@ -174,7 +184,7 @@ public class ClasspathScannerInMemory extends ClasspathScannerReflections {
 		queue(new ScannerCommand() {
 			
 			@Override
-			public void execute(Classpath classpath) {
+			public void execute(InMemoryClasspath inMemoryClasspath) {
 				
 			}
 		});
@@ -186,7 +196,7 @@ public class ClasspathScannerInMemory extends ClasspathScannerReflections {
 		queue(new ScannerCommand() {
 			
 			@Override
-			public void execute(Classpath classpath) {
+			public void execute(InMemoryClasspath inMemoryClasspath) {
 				
 			}
 		});
@@ -198,7 +208,7 @@ public class ClasspathScannerInMemory extends ClasspathScannerReflections {
 		queue(new ScannerCommand() {
 			
 			@Override
-			public void execute(Classpath classpath) {
+			public void execute(InMemoryClasspath inMemoryClasspath) {
 				
 			}
 		});
@@ -210,7 +220,7 @@ public class ClasspathScannerInMemory extends ClasspathScannerReflections {
 		queue(new ScannerCommand() {
 			
 			@Override
-			public void execute(Classpath classpath) {
+			public void execute(InMemoryClasspath inMemoryClasspath) {
 				
 			}
 		});
@@ -222,7 +232,7 @@ public class ClasspathScannerInMemory extends ClasspathScannerReflections {
 		queue(new ScannerCommand() {
 			
 			@Override
-			public void execute(Classpath classpath) {
+			public void execute(InMemoryClasspath inMemoryClasspath) {
 				
 			}
 		});

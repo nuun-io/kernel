@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.core.internal.scanner.inmemory;
+package io.nuun.kernel.api.inmemory;
 
 /**
  *
@@ -22,19 +22,11 @@ package io.nuun.kernel.core.internal.scanner.inmemory;
  * @author epo.jemba@kametic.com
  *
  */
-public class ResourceEntry extends ClasspathEntry {
+public class InMemoryResourceEntry extends AbstractInMemoryClasspathEntry {
 
-	
-	private String resource;
+	public InMemoryResourceEntry(String resource) {
+		super(resource);
+	}
 
-	public ResourceEntry(String resource) {
-		this.resource = resource;
-		
-	}
-	
-	@Override
-	public String name() {
-		return resource;
-	}
 
 }

@@ -22,22 +22,21 @@ package io.nuun.kernel.core.internal.scanner.inmemory;
  * @author epo.jemba@kametic.com
  *
  */
-public class ClassEntry extends ClasspathEntry {
-	
-	private final Class<?> clazz;
+public class InMemoryResource extends InMemoryFile<String> {
 
-	public ClassEntry(Class<?> clazz ) {
-		this.clazz = clazz;
+	public InMemoryResource(String content) {
+		super(content);
+
 	}
-	
+
 	@Override
-	public String name() {
-		
-		return clazz.getName();
+	public String getName() {
+		return content;
 	}
-	
-	public Class<?> entryClass () {
-		return clazz;
+
+	@Override
+	public String getRelativePath() {
+		return content;
 	}
 
 }

@@ -16,13 +16,17 @@
  */
 package io.nuun.kernel.core.internal.scanner.inmemory;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.reflections.adapters.MetadataAdapter;
 import org.reflections.vfs.Vfs.File;
+
+import com.google.common.base.Joiner;
 
 /**
  *
@@ -98,69 +102,114 @@ public class MetadataAdapterInMemory implements MetadataAdapter<Class<?>, Field,
 	public List<String> getClassAnnotationNames(Class<?> aClass) {
 		List<String> fm = new ArrayList<String>();
 		
+		for (Annotation anno : aClass.getAnnotations()) {
+			fm.add(anno.annotationType().getName());
+		}
 		
-		
-		return null;
+		return fm;
 	}
 
 	@Override
 	public List<String> getFieldAnnotationNames(Field field) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<String> fm = new ArrayList<String>();
+		
+		for (Annotation anno : field.getAnnotations()) {
+			fm.add(anno.annotationType().getName());
+		}
+		
+		return fm;
 	}
 
 	@Override
 	public List<String> getMethodAnnotationNames(Method method) {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> fm = new ArrayList<String>();
+		
+		for (Annotation anno : method.getAnnotations()) {
+			fm.add(anno.annotationType().getName());
+		}
+		
+		return fm;
 	}
 
 	@Override
 	public List<String> getParameterAnnotationNames(Method method, int parameterIndex) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<String> fm = new ArrayList<String>();
+		
+		if (parameterIndex  < method.getParameterAnnotations().length ) {
+			for (Annotation anno : method.getAnnotations()) {
+				fm.add(anno.annotationType().getName());
+			}
+		}
+				
+		return fm;
 	}
 
 	@Override
 	public String getReturnTypeName(Method method) {
-		// TODO Auto-generated method stub
-		return null;
+		String name = null;
+		
+		Class<?> returnType = method.getReturnType();
+		
+		if ( returnType != null) {
+			name = returnType.getName();
+		}
+				
+		return name;
 	}
 
 	@Override
 	public String getFieldName(Field field) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		if (field != null) {
+			return field.getName();
+		}
+		else {
+			return null;
+		}
 	}
 
 	@Override
 	public Class<?> getOfCreateClassObject(File file) throws Exception {
-		// TODO Auto-generated method stub
+		
+		if (file instanceof InMemoryClass) {
+			InMemoryClass imf = (InMemoryClass) file;
+			return imf.getContent();
+		}
+		
 		return null;
 	}
 
 	@Override
 	public String getMethodModifier(Method method) {
-		// TODO Auto-generated method stub
-		return null;
+	     int accessFlags = method.getModifiers();
+	        return Modifier.isPrivate(accessFlags)  ? "private" :
+	        	   Modifier.isProtected(accessFlags)? "protected" :
+	        	   Modifier.isPublic(accessFlags)   ? "public" : "";
 	}
 
 	@Override
 	public String getMethodKey(Class<?> cls, Method method) {
-		// TODO Auto-generated method stub
-		return null;
+
+		return method.getName() + "(" + Joiner.on(", ").join(getParameterNames(method)) + ")";
+		
 	}
 
 	@Override
 	public String getMethodFullKey(Class<?> cls, Method method) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return getClassName(cls) + "." + getMethodKey(cls, method);
 	}
 
 	@Override
 	public boolean isPublic(Object o) {
-		// TODO Auto-generated method stub
-		return false;
+		Integer accessFlag =
+				  o instanceof Class ? ((Class) o).getModifiers() :
+		                o instanceof Field ? ((Field) o).getModifiers() :
+		                o instanceof Method ? ((Method) o).getModifiers() : null;
+		                		
+		return Modifier.isPublic(accessFlag);
 	}
 
 }

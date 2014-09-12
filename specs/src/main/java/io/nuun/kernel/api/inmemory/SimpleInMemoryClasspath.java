@@ -14,8 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.core.internal.scanner.inmemory;
+package io.nuun.kernel.api.inmemory;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,8 +26,34 @@ import java.util.List;
  * @author epo.jemba@kametic.com
  *
  */
-public interface Classpath {
+public class SimpleInMemoryClasspath implements InMemoryClasspath {
+
+	List<InMemoryClasspathEntry> entries;
 	
-	List<ClasspathEntry> entries();
+	
+	public SimpleInMemoryClasspath()
+	{
+		entries = new ArrayList<InMemoryClasspathEntry>();
+	}
+	
+	
+	public SimpleInMemoryClasspath add(InMemoryClasspathEntry entry)
+	{
+		entries.add(entry);
+		return this;
+	}
+	
+	public void reset()
+	{
+		entries.clear();
+	}
+	
+	
+	
+	@Override
+	public List<InMemoryClasspathEntry> entries()
+	{
+		return Collections.unmodifiableList(entries);
+	}
 
 }

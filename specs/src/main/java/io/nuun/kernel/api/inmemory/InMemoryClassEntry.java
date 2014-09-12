@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.core.internal.scanner.inmemory;
+package io.nuun.kernel.api.inmemory;
 
 /**
  *
@@ -22,8 +22,17 @@ package io.nuun.kernel.core.internal.scanner.inmemory;
  * @author epo.jemba@kametic.com
  *
  */
-public abstract class ClasspathEntry {
+public class InMemoryClassEntry extends AbstractInMemoryClasspathEntry {
 	
-	public abstract String name () ;
+	private final Class<?> clazz;
+
+	public InMemoryClassEntry(Class<?> clazz ) {
+		super(clazz.getName());
+		this.clazz = clazz;
+	}
+	
+	public Class<?> entryClass () {
+		return clazz;
+	}
 
 }

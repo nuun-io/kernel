@@ -16,7 +16,8 @@
  */
 package io.nuun.kernel.core;
 
-import io.nuun.kernel.api.KernelMode;
+import io.nuun.kernel.api.ClasspathScanMode;
+import io.nuun.kernel.api.DependencyInjectionMode;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.RoundEnvironementInternal;
@@ -104,7 +105,9 @@ public final class Kernel
     private List<Plugin>                             fetchedPlugins;
     private Set<URL>                                 globalAdditionalClasspath;
     private RoundEnvironementInternal                roundEnv;
-	private KernelMode kernelMode;
+	private DependencyInjectionMode                  dependencyInjectionMode;
+	private ClasspathScanMode                        classpathScanMode = ClasspathScanMode.NOMINAL;
+	private Object                                   scanConfigurationObject = null;
 
     private Kernel(String... keyValues)
     {
@@ -125,7 +128,7 @@ public final class Kernel
             kernelParamsAndAlias.put(key, value);
         }
 
-        initContext = new InitContextInternal(NUUN_PROPERTIES_PREFIX, kernelParamsAndAlias);
+        initContext = new InitContextInternal(NUUN_PROPERTIES_PREFIX, kernelParamsAndAlias , classpathScanMode ,  scanConfigurationObject );
     }
     
     public String name()
@@ -386,15 +389,15 @@ public final class Kernel
             
             // Compute Guice Stage
             Stage stage = Stage.PRODUCTION;
-            if (kernelMode == KernelMode.PRODUCTION)
+            if (dependencyInjectionMode == DependencyInjectionMode.PRODUCTION)
             {
             	stage = Stage.PRODUCTION;
             }
-            else if (kernelMode == KernelMode.DEVELOPMENT)
+            else if (dependencyInjectionMode == DependencyInjectionMode.DEVELOPMENT)
             {
             	stage = Stage.DEVELOPMENT;
             }
-            else if (kernelMode == KernelMode.TOOL)
+            else if (dependencyInjectionMode == DependencyInjectionMode.TOOL)
             {
             	stage = Stage.TOOL;
             }
@@ -861,7 +864,8 @@ public final class Kernel
     
     public static interface KernelModeContext extends KernelBuilder {
 
-    	KernelBuilderWithPluginAndContext withMode (KernelMode kernelMode);
+    	KernelBuilderWithPluginAndContext withDependencyInjectionMode (DependencyInjectionMode dependencyInjectionMode);
+    	KernelBuilderWithPluginAndContext withClasspathScanMode (ClasspathScanMode classpathScanMode , Object scanConfigurationObject);
     }
 
     public static interface KernelBuilderWithContainerContext extends KernelBuilder
@@ -939,14 +943,16 @@ public final class Kernel
         
         
         @Override
-        public KernelBuilderWithPluginAndContext withMode(KernelMode kernelMode) {
-        	kernel.mode(kernelMode);
-        	return null;
+        public KernelBuilderWithPluginAndContext withDependencyInjectionMode(DependencyInjectionMode dependencyInjectionMode) {
+        	kernel.dependencyInjectionMode(dependencyInjectionMode);
+        	return this;
         }
 
-	
-
-
+		@Override
+		public KernelBuilderWithPluginAndContext withClasspathScanMode(ClasspathScanMode classpathScanMode , Object scanConfigurationObject) {
+			kernel.classpathScanMode(classpathScanMode,scanConfigurationObject);
+			return this;
+		}
 
     }
 
@@ -987,9 +993,13 @@ public final class Kernel
         spiPluginEnabled = false;
     }
     
-    void mode (KernelMode kernelMode) {
-		this.kernelMode = kernelMode;
-    	
+    void dependencyInjectionMode (DependencyInjectionMode dependencyInjectionMode) {
+		this.dependencyInjectionMode = dependencyInjectionMode;
+    }
+
+    void classpathScanMode (ClasspathScanMode classpathScanMode, Object scanConfigurationObject) {
+		this.classpathScanMode = classpathScanMode;
+		this.scanConfigurationObject = scanConfigurationObject;
     }
 
     /**

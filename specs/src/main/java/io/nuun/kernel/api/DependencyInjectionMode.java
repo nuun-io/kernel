@@ -29,7 +29,7 @@ package io.nuun.kernel.api;
  * @author epo.jemba@kametic.com
  *
  */
-public enum KernelMode {
+public enum DependencyInjectionMode {
 	
 	
 	  /**
