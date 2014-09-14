@@ -26,12 +26,17 @@ import java.util.List;
  * @author epo.jemba@kametic.com
  *
  */
-public class SimpleInMemoryClasspath implements InMemoryClasspath {
+public enum SimpleInMemoryClasspath implements InMemoryClasspath {
 
-	List<InMemoryClasspathEntry> entries;
+	INSTANCE;
+    
+    
+    List<InMemoryClasspathEntry> entries;
 	
 	
-	public SimpleInMemoryClasspath()
+	
+	
+	private SimpleInMemoryClasspath()
 	{
 		entries = new ArrayList<InMemoryClasspathEntry>();
 	}

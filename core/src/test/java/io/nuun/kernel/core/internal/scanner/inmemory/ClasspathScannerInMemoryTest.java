@@ -79,7 +79,7 @@ public class ClasspathScannerInMemoryTest {
 		cb = new TestCallback();
 		cbr = new TestCallbackResources();
 		
-		classpath = new SimpleInMemoryClasspath();
+		classpath = SimpleInMemoryClasspath.INSTANCE;
 		underTest = new ClasspathScannerInMemory(classpath);
 	}
     @Test
