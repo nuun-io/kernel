@@ -17,22 +17,33 @@
 package io.nuun.kernel.api.inmemory;
 
 /**
- *
+ * 
+ * 
  * 
  * @author epo.jemba@kametic.com
  *
  */
-public class InMemoryClassEntry extends AbstractInMemoryClasspathEntry {
+public class Resource
+{
 	
-	private final Class<?> clazz;
-
-	public InMemoryClassEntry(Class<?> clazz ) {
-		super(clazz.getName());
-		this.clazz = clazz;
+	public static final String PATTERN = "[a-zA-Z0-9\\-_\\.]+(/[a-zA-Z0-9\\-_\\.]+)*";
+	
+	private String base;
+	private String name;
+	
+	public Resource (String base , String name)
+	{
+		this.base = base;
+		this.name = name;
 	}
 	
-	public Class<?> entryClass () {
-		return clazz;
+	public String base ()
+	{
+		return base;
 	}
-
+	
+	public String name ()
+	{
+		return name;
+	}
 }

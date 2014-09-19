@@ -16,12 +16,13 @@
  */
 package io.nuun.kernel.core.internal.scanner.inmemory;
 
+import static java.util.regex.Pattern.matches;
 import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.util.Arrays.array;
 
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,19 +42,21 @@ public class InMemoryUrlTypeTest {
 	
 	
 	@Before
-	public void init () {
+	public void init ()
+	{
 		List<? extends  InMemoryFile<?>> fs = Lists.newArrayList();
 		
 		Map<String,List<? extends  InMemoryFile<?>>> m =  Maps.newHashMap();
 		
 		m.put("zobd", fs  );
 		
-		underTest = new InMemoryUrlType(m);
+		underTest = new InMemoryUrlType();
 		factory = new InMemoryFactory();
 	}
 	
 	@Test
-	public void testMatches() throws Exception {
+	public void testMatches() throws Exception
+	{
 		
 		URL inMemo1 = factory.createInMemoryResource("toto.txt");
 		
@@ -62,8 +65,31 @@ public class InMemoryUrlTypeTest {
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
-	public void testCreateDir() {
+	public void testRegex()
+	{
+
+		String pattern = "(/[a-zA-Z0-9\\-_\\.]+)+" ;
+
+		
+		Object[][] data = array(
+				array ("/zerze/efrez/ferzr/zerrerre"  , true ),
+				array ("/zerze/efrez/ferzr/zerrerre.txt"  , true ),
+				array ("zerzerze/zerzer/rez4re/erzre5z.txd", false ) ,
+				array ("/zerzer-zrzerze/zerzere_zerzer55ze", true ) ,
+				array ("/zerzer-zrzerze/zerzere_zerze/", false ) ,
+				array ("/zeorzeiorize" , true )
+				
+				);
+		for (Object[] array : data )
+		{
+			String toTest = (String) array[0];
+			Boolean assertion = (Boolean) array[1];
+			System.out.println("Check that " + toTest + " is " + assertion);
+			assertThat(matches(pattern, toTest)).isEqualTo(assertion).as("Check that " + toTest + " is " + assertion);
+			
+		}
 		
 	}
 

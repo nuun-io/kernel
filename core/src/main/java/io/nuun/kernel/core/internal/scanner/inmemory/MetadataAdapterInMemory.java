@@ -173,7 +173,8 @@ public class MetadataAdapterInMemory implements MetadataAdapter<Class<?>, Field,
 	@Override
 	public Class<?> getOfCreateClassObject(File file) throws Exception {
 		
-		if (file instanceof InMemoryClass) {
+		if (file instanceof InMemoryClass)
+		{
 			InMemoryClass imf = (InMemoryClass) file;
 			return imf.getContent();
 		}

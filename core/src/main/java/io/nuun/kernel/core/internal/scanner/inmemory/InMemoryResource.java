@@ -16,27 +16,29 @@
  */
 package io.nuun.kernel.core.internal.scanner.inmemory;
 
+import io.nuun.kernel.api.inmemory.Resource;
+
 /**
  *
  * 
  * @author epo.jemba@kametic.com
  *
  */
-public class InMemoryResource extends InMemoryFile<String> {
+public class InMemoryResource extends InMemoryFile<Resource> {
 
-	public InMemoryResource(String content) {
+	public InMemoryResource(Resource content) {
 		super(content);
 
 	}
 
 	@Override
 	public String getName() {
-		return content;
+		return content.name();
 	}
 
 	@Override
 	public String getRelativePath() {
-		return content;
+		return content.base() + '/' + content.name();
 	}
 
 }

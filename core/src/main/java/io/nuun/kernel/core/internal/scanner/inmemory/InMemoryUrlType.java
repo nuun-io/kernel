@@ -16,10 +16,16 @@
  */
 package io.nuun.kernel.core.internal.scanner.inmemory;
 
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
+import io.nuun.kernel.api.inmemory.InMemoryClasspathAbstractElement;
+import io.nuun.kernel.api.inmemory.InMemoryClasspathClass;
+import io.nuun.kernel.api.inmemory.InMemoryClasspathResource;
+import io.nuun.kernel.api.inmemory.SimpleInMemoryClasspath;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.reflections.vfs.Vfs;
 import org.reflections.vfs.Vfs.Dir;
 import org.reflections.vfs.Vfs.File;
 import org.reflections.vfs.Vfs.UrlType;
@@ -33,10 +39,9 @@ import org.reflections.vfs.Vfs.UrlType;
 public class InMemoryUrlType implements UrlType
 {
 	
-	private Map<String, List<? extends  InMemoryFile<?>>> fs;
+	
 
-	public InMemoryUrlType(Map<String, List<? extends  InMemoryFile<?>>> fs ) {
-		this.fs = fs;
+	public InMemoryUrlType( ) {
 	}
 
 	@Override
@@ -47,34 +52,60 @@ public class InMemoryUrlType implements UrlType
 
 	@Override
 	public Dir createDir(URL url) throws Exception {
-		return new InMemoryVfsDir(url.getPath());
+		String path = url.getPath();
+		if (path.startsWith("/"))
+		{
+			path = path.substring(1);
+		}
+		return new InMemoryVfsDir(path);
 	}
 	
 	class InMemoryVfsDir implements Dir
 	{
+		SimpleInMemoryClasspath classpath = SimpleInMemoryClasspath.INSTANCE;
 		private String path;
 
-		public InMemoryVfsDir(String path) {
+		public InMemoryVfsDir(String path)
+		{
 			this.path = path;
-			
 		}
 		
 		@Override
-		public String getPath() {
+		public String getPath()
+		{
 			return path;
 		}
 		
-		@SuppressWarnings("unchecked")
+		
 		@Override
-		public Iterable<File> getFiles() {
+		public Iterable<File> getFiles()
+		{
+
+			// TODO ne renvoyer que l'entry de l'url donné en paramêtre
 			
-			return (Iterable<File>) fs.get(path);
+			List<File> files = new ArrayList<Vfs.File>();
+		    
+			for ( InMemoryClasspathAbstractElement<?> entry : classpath.entry(path).entries() )
+			{
+				if (entry instanceof InMemoryClasspathClass)
+				{
+					files.add(new InMemoryClass(((InMemoryClasspathClass) entry).getType()));
+				}
+				if (entry instanceof InMemoryClasspathResource)
+				{
+					files.add(new InMemoryResource(   ( (InMemoryClasspathResource) entry).internalRepresentation()      ));
+				}
+			}
+
+			
+			return files;
+			
 		}
 		
 		@Override
 		public void close() {
-			// TODO Auto-generated method stub
 			
 		}
 	}
+
 }

@@ -16,16 +16,18 @@
  */
 package io.nuun.kernel.api.inmemory;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
- * 
+ * A simple representation of an in memory classpath. Only usefull for unit testing on plugins.
  * 
  * @author epo.jemba@kametic.com
  *
  */
 public interface InMemoryClasspath {
 	
-	List<InMemoryClasspathEntry> entries();
+	InMemoryClasspathAbstractContainer<?> entry(String container);
+	
+	Collection<InMemoryClasspathAbstractContainer<?>> entries();
 
 }

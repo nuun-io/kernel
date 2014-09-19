@@ -16,9 +16,10 @@
  */
 package io.nuun.kernel.api.inmemory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  *
@@ -30,35 +31,40 @@ public enum SimpleInMemoryClasspath implements InMemoryClasspath {
 
 	INSTANCE;
     
-    
-    List<InMemoryClasspathEntry> entries;
-	
-	
-	
+	private final ThreadLocal<Map<String , InMemoryClasspathAbstractContainer<?>>> perThreadListEntries = new ThreadLocal<Map<String , InMemoryClasspathAbstractContainer<?>>>()
+	{
+		@Override
+		protected java.util.Map<String , InMemoryClasspathAbstractContainer<?>> initialValue() {
+			return new HashMap<String , InMemoryClasspathAbstractContainer<?>>();
+		}
+	};
+
 	
 	private SimpleInMemoryClasspath()
 	{
-		entries = new ArrayList<InMemoryClasspathEntry>();
 	}
 	
-	
-	public SimpleInMemoryClasspath add(InMemoryClasspathEntry entry)
+	public SimpleInMemoryClasspath add(InMemoryClasspathAbstractContainer<?> entry)
 	{
-		entries.add(entry);
+		perThreadListEntries.get().put(entry.name()  ,entry);
 		return this;
 	}
 	
 	public void reset()
 	{
-		entries.clear();
+		perThreadListEntries.get().clear();
 	}
 	
-	
+	@Override
+	public Collection<InMemoryClasspathAbstractContainer<?>> entries() {
+		
+		return perThreadListEntries.get().values();
+	}
 	
 	@Override
-	public List<InMemoryClasspathEntry> entries()
+	public InMemoryClasspathAbstractContainer<?> entry(String container)
 	{
-		return Collections.unmodifiableList(entries);
+		return perThreadListEntries.get().get(container);
 	}
 
 }

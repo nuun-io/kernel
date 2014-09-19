@@ -16,23 +16,20 @@
  */
 package io.nuun.kernel.core.internal.scanner.inmemory;
 
-import static org.fest.assertions.Assertions.assertThat;
-
-import java.util.Collection;
-
-import io.nuun.kernel.api.inmemory.InMemoryClassEntry;
+import static io.nuun.kernel.api.inmemory.InMemoryClasspathResource.res;
+import io.nuun.kernel.api.inmemory.InMemoryClasspathClass;
+import io.nuun.kernel.api.inmemory.InMemoryClasspathDirectory;
+import io.nuun.kernel.api.inmemory.InMemoryClasspathJar;
 import io.nuun.kernel.api.inmemory.SimpleInMemoryClasspath;
-import io.nuun.kernel.core.internal.scanner.ClasspathScanner.Callback;
-import io.nuun.kernel.core.internal.scanner.ClasspathScanner.CallbackResources;
-
-
-
+import io.nuun.kernel.core.internal.scanner.AbstractClasspathScanner;
+import io.nuun.kernel.core.internal.scanner.ClasspathScannerTestBase;
 import io.nuun.kernel.core.internal.scanner.sample.Bean1;
+import io.nuun.kernel.core.internal.scanner.sample.Bean2;
 import io.nuun.kernel.core.internal.scanner.sample.Bean3;
-import io.nuun.kernel.core.internal.scanner.sample.ScanMarkerSample;
-
-import org.junit.Before;
-import org.junit.Test;
+import io.nuun.kernel.core.internal.scanner.sample.Bean6;
+import io.nuun.kernel.core.internal.scanner.sample.MyModule1;
+import io.nuun.kernel.core.internal.scanner.sample.MyModule4;
+import io.nuun.kernel.core.pluginsit.dummy7.Module7;
 
 /**
  *
@@ -40,66 +37,47 @@ import org.junit.Test;
  * @author epo.jemba@kametic.com
  *
  */
-public class ClasspathScannerInMemoryTest {
+public class ClasspathScannerInMemoryTest  extends ClasspathScannerTestBase
+{
 
-	private ClasspathScannerInMemory underTest;
-	private SimpleInMemoryClasspath classpath;
-    
-	TestCallback cb;
-    TestCallbackResources cbr;
-    
+	private SimpleInMemoryClasspath classpath = SimpleInMemoryClasspath.INSTANCE;
 	
-    static class TestCallback implements Callback
-    {
-        public Collection<Class<?>> scanResult;
-
-        @Override
-        public void callback(Collection<Class<?>> scanResult)
-        {
-            this.scanResult = scanResult;
-            
-        }
-    }
-    static class TestCallbackResources implements CallbackResources
-    {
-        public Collection<String> scanResult;
-        
-        @Override
-        public void callback(Collection<String> scanResult)
-        {
-            this.scanResult = scanResult;
-            
-        }
-    }
-	
-	
-	@Before
-	public void init ()
-	{
-		cb = new TestCallback();
-		cbr = new TestCallbackResources();
+	@SuppressWarnings("unchecked")
+	@Override
+	protected AbstractClasspathScanner createUnderTest() {
 		
-		classpath = SimpleInMemoryClasspath.INSTANCE;
-		underTest = new ClasspathScannerInMemory(classpath);
-	}
-    @Test
-    public void classpathscanner_should_retrieve_type_with_annotation ()
-    {
+
+		
         classpath.reset();
         classpath
-         .add(new InMemoryClassEntry( Bean1.class ) )
-         .add(new InMemoryClassEntry( Bean3.class ) )
+         .add (
+        		 InMemoryClasspathDirectory.create ("default")
+        		 
+	                 .add(res("META-INF/properties" , "tst-one.properties" ) )
+	                 .add(res("META-INF/properties" , "tst-two.properties") )
+        		 )
+         .add (
+        		 InMemoryClasspathJar.create ("app.jar")
+        		 
+	        		 .add(new InMemoryClasspathClass(Bean1.class ))
+	        		 .add(new InMemoryClasspathClass(Bean2.class ))
+	        		 .add(new InMemoryClasspathClass(Bean3.class ))
+	        		 .add(new InMemoryClasspathClass(Bean6.class ))
+        		 
+        		 )
+         .add (
+        		 InMemoryClasspathJar.create ("modules.jar")
+        		 
+	        		 .add(new InMemoryClasspathClass(MyModule1.class ))
+	        		 .add(new InMemoryClasspathClass(MyModule4.class ))
+	        		 .add(new InMemoryClasspathClass(Module7.class ))
+        		 
+        		 )
          ;
-    	//
-    	underTest.scanClasspathForAnnotation(ScanMarkerSample.class , cb);
-        underTest.doClasspathScan();
-        Collection<Class<?>> scanClasspathForAnnotation = cb.scanResult;
-         
-         assertThat(scanClasspathForAnnotation).isNotNull();
-         assertThat(scanClasspathForAnnotation).hasSize(2);
-         assertThat(scanClasspathForAnnotation).containsOnly(Bean1.class , Bean3.class);
-    }
-	
-	
-
+		
+        
+		
+		return new ClasspathScannerInMemory(classpath);
+		
+	}
 }

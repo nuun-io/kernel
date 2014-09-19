@@ -16,6 +16,11 @@
  */
 package io.nuun.kernel.core.internal.scanner.inmemory;
 
+import io.nuun.kernel.api.inmemory.InMemoryClasspath;
+import io.nuun.kernel.api.inmemory.InMemoryClasspathAbstractContainer;
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.core.internal.scanner.reflections.ClasspathScannerReflections;
+
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
@@ -25,13 +30,6 @@ import org.reflections.Reflections;
 import org.reflections.scanners.Scanner;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.vfs.Vfs;
-
-import io.nuun.kernel.api.inmemory.InMemoryClassEntry;
-import io.nuun.kernel.api.inmemory.InMemoryClasspath;
-import io.nuun.kernel.api.inmemory.InMemoryClasspathEntry;
-import io.nuun.kernel.api.inmemory.InMemoryResourceEntry;
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.core.internal.scanner.reflections.ClasspathScannerReflections;
 
 /**
  * @author epo.jemba@kametic.com
@@ -44,7 +42,7 @@ public class ClasspathScannerInMemory extends ClasspathScannerReflections
 
     static
     {
-        Vfs.addDefaultURLTypes(new InMemoryUrlType(fs ));
+        Vfs.addDefaultURLTypes(new InMemoryUrlType());
     }
     
     public ClasspathScannerInMemory(InMemoryClasspath inMemoryClasspath, String... packageRoot)
@@ -59,33 +57,48 @@ public class ClasspathScannerInMemory extends ClasspathScannerReflections
         Scanner[] scanners = getScanners();
 
         ConfigurationBuilder configurationBuilder = configurationBuilder().setScanners(scanners);
+        
+        configurationBuilder.setMetadataAdapter( new MetadataAdapterInMemory());
 
         InMemoryFactory factory = new InMemoryFactory();
 
-        for (InMemoryClasspathEntry i : inMemoryClasspath.entries())
+        for (InMemoryClasspathAbstractContainer<?> i : inMemoryClasspath.entries())
         {
-            if (i instanceof InMemoryClassEntry)
-            {
-                try
-                {
-                    configurationBuilder.addUrls(factory.createInMemoryClass(((InMemoryClassEntry) i).entryClass()));
-                }
-                catch (MalformedURLException e)
-                {
-                    throw new KernelException("Malformed exception", e);
-                }
-            }
-            else if (i instanceof InMemoryResourceEntry)
-            {
-                try
-                {
-                    configurationBuilder.addUrls(factory.createInMemoryResource(i.name()));
-                }
-                catch (MalformedURLException e)
-                {
-                    throw new KernelException("Malformed exception", e);
-                }
-            }
+            
+        	String name = i.name();
+
+        		try
+        		{
+         			configurationBuilder.addUrls(factory.createInMemoryResource( name ));
+	            }
+	            catch (MalformedURLException e)
+	             {
+	                  throw new KernelException("Malformed URL Exception", e);
+	             }
+
+        	
+//        	if (i instanceof InMemoryClasspathJar)
+//            {
+//                try
+//                {
+//                    configurationBuilder.addUrls(factory.createInMemoryClass(((InMemoryClasspathJar) i).entryClass()));
+//                }
+//                catch (MalformedURLException e)
+//                {
+//                    throw new KernelException("Malformed exception", e);
+//                }
+//            }
+//            else if (i instanceof InMemoryClasspathDirectory)
+//            {
+//                try
+//                {
+//                    configurationBuilder.addUrls(factory.createInMemoryResource(i.name()));
+//                }
+//                catch (MalformedURLException e)
+//                {
+//                    throw new KernelException("Malformed exception", e);
+//                }
+//            }
         }
 
         Reflections reflections = new Reflections(configurationBuilder);
@@ -123,17 +136,17 @@ public class ClasspathScannerInMemory extends ClasspathScannerReflections
      * @Override public void scanClasspathForMetaAnnotation(final Class<? extends Annotation> annotationType,
      * final Callback callback) { queue(new ScannerCommand() {
      * @Override public void execute(InMemoryClasspath inMemoryClasspath) { Collection<Class<?>>
-     * typesAnnotatedWith = Sets.newHashSet(); for (AbstractInMemoryClasspathEntry entry :
-     * inMemoryClasspath.entries()) { if (entry instanceof InMemoryClasspathEntry) { Class<?> klass =
-     * InMemoryClasspathEntry.class.cast(entry).entryClass(); if (annotationType != null && klass != null &&
+     * typesAnnotatedWith = Sets.newHashSet(); for (InMemoryClasspathAbstractContainer entry :
+     * inMemoryClasspath.entries()) { if (entry instanceof InMemoryClasspathAbstractContainer) { Class<?> klass =
+     * InMemoryClasspathAbstractContainer.class.cast(entry).entryClass(); if (annotationType != null && klass != null &&
      * AssertUtils.hasAnnotationDeep(klass, annotationType) && !klass.isAnnotation()) {
      * typesAnnotatedWith.add(klass); } } } callback.callback(postTreatment(typesAnnotatedWith)); } }); }
      * @Override public void scanClasspathForMetaAnnotationRegex(final String metaAnnotationRegex, final
      * Callback callback) { queue(new ScannerCommand() {
      * @Override public void execute(InMemoryClasspath inMemoryClasspath) { Collection<Class<?>>
-     * typesAnnotatedWith = Sets.newHashSet(); for (AbstractInMemoryClasspathEntry entry :
-     * inMemoryClasspath.entries()) { { if (entry instanceof InMemoryClasspathEntry) { Class<?> klass =
-     * InMemoryClasspathEntry.class.cast(entry).entryClass(); if ( metaAnnotationRegex != null && klass !=
+     * typesAnnotatedWith = Sets.newHashSet(); for (InMemoryClasspathAbstractContainer entry :
+     * inMemoryClasspath.entries()) { { if (entry instanceof InMemoryClasspathAbstractContainer) { Class<?> klass =
+     * InMemoryClasspathAbstractContainer.class.cast(entry).entryClass(); if ( metaAnnotationRegex != null && klass !=
      * null&& AssertUtils.hasAnnotationDeepRegex(klass, metaAnnotationRegex) && ! klass.isAnnotation() ) {
      * typesAnnotatedWith.add(klass); } } } callback.callback(postTreatment(typesAnnotatedWith)); } }}); }
      * @Override public void scanClasspathForSubTypeClass(Class<?> subType, Callback callback) { queue(new

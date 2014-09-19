@@ -22,8 +22,17 @@ package io.nuun.kernel.api.inmemory;
  * @author epo.jemba@kametic.com
  *
  */
-public interface InMemoryClasspathEntry {
 
-	public abstract String name () ;
+public class InMemoryClasspathJar<S extends InMemoryClasspathJar<S>> extends InMemoryClasspathAbstractContainer<S> {
 	
+	public InMemoryClasspathJar(String name ) {
+		super(name);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public static InMemoryClasspathJar create (String name)
+	{
+		return new InMemoryClasspathJar(name);
+	}
+
 }

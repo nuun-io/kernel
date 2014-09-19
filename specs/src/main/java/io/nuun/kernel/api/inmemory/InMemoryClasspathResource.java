@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.core.internal.scanner.inmemory;
+package io.nuun.kernel.api.inmemory;
 
 /**
  *
@@ -22,22 +22,25 @@ package io.nuun.kernel.core.internal.scanner.inmemory;
  * @author epo.jemba@kametic.com
  *
  */
-public class InMemoryClass extends InMemoryFile<Class<?>> {
+public class InMemoryClasspathResource extends InMemoryClasspathAbstractElement<Resource> {
 
-	public InMemoryClass(Class<?> content) {
-		super(content);
-		
+	public InMemoryClasspathResource(Resource element) {
+		super(element);
 	}
 
 	@Override
-	public String getName() {
-		return content.getSimpleName() + ".class";
+	protected String computeName(Resource element) {
+		return element.name();
 	}
 
 	@Override
-	public String getRelativePath() {
-		
-		return content.getName().replace('.', '/') + ".class";
+	protected String computeRelativePath(Resource element) {
+		return element.base()  + '/' + element.name();
+	}
+	
+	public static InMemoryClasspathResource res(String relativePath , String name)
+	{
+		return new InMemoryClasspathResource( new Resource(relativePath, name));
 	}
 
 }

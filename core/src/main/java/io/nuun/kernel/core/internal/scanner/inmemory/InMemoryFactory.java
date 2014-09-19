@@ -16,8 +16,11 @@
  */
 package io.nuun.kernel.core.internal.scanner.inmemory;
 
+import io.nuun.kernel.api.inmemory.Resource;
+
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -38,16 +41,28 @@ public class InMemoryFactory {
 	
 	public URL createInMemoryClass (Class<?> claSs) throws MalformedURLException
 	{
-		return url(claSs.getName().replace('.', '/') + ".class");
+		return url('/' + claSs.getName().replace('.', '/') + ".class");
 	}
 	
 	public URL createInMemoryResource (String resource) throws MalformedURLException
 	{
-		return url(resource.replace('\\', '/'));
+		String content = resource.replace('\\', '/');
+		return url(content);
 	}
 	
 	private URL url (String content) throws MalformedURLException
 	{
+		assertElementName(content);
 		return new URL( (URL) null ,  INMEMORY	+ "://localhost/" + content , handler);
 	}
+
+    protected void assertElementName (String name)
+    {
+    	if ( ! Pattern.matches(Resource.PATTERN, name))
+    	{
+    		throw new IllegalArgumentException("\"" + name +"\" must be a valid ressource name : " + Resource.PATTERN );
+    	}
+    	
+    }
+	
 }

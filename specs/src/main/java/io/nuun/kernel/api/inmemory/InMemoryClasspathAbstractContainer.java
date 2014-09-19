@@ -16,25 +16,51 @@
  */
 package io.nuun.kernel.api.inmemory;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  *
  * 
  * @author epo.jemba@kametic.com
  *
  */
-public abstract class AbstractInMemoryClasspathEntry implements InMemoryClasspathEntry
+public abstract class InMemoryClasspathAbstractContainer< S extends InMemoryClasspathAbstractContainer<S>>
 {
-	protected String name;
 
-	public AbstractInMemoryClasspathEntry(String name)
+	protected S myself;
+	protected String name;
+	protected List<InMemoryClasspathAbstractElement<?>> entries = new ArrayList<InMemoryClasspathAbstractElement<?>>();
+
+	
+	public InMemoryClasspathAbstractContainer(String name)
 	{
 		this.name = name;
+		this.initSelf();
 	}
 	
-	@Override
+	@SuppressWarnings("unchecked")
+	private void initSelf()
+	{
+		this.myself = (S) this.getClass().cast(this);
+	}
+	
+	
 	public String name ()
 	{
 		return name;
+	}
+	
+	public S add(InMemoryClasspathAbstractElement<?> element)
+	{
+		entries.add(element);
+		return myself;
+	}
+	
+	public List<InMemoryClasspathAbstractElement<?>> entries ()
+	{
+		return Collections.unmodifiableList(entries);
 	}
 
 }
