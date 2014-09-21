@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.core.internal.scanner.reflections;
+package io.nuun.kernel.core.internal.scanner.disk;
 
 import static org.reflections.util.FilterBuilder.prefix;
 import io.nuun.kernel.api.assertions.AssertUtils;
@@ -51,10 +51,10 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
-public class ClasspathScannerReflections extends AbstractClasspathScanner
+public class ClasspathScannerDisk extends AbstractClasspathScanner
 {
 
-    Logger                          logger = LoggerFactory.getLogger(ClasspathScannerReflections.class);
+    Logger                          logger = LoggerFactory.getLogger(ClasspathScannerDisk.class);
 
     private final List<String>      packageRoots;
     private final ClasspathStrategy classpathStrategy;
@@ -63,13 +63,13 @@ public class ClasspathScannerReflections extends AbstractClasspathScanner
 
     protected final List<ScannerCommand> commands;
 
-    public ClasspathScannerReflections(ClasspathStrategy classpathStrategy, String... packageRoots_)
+    public ClasspathScannerDisk(ClasspathStrategy classpathStrategy, String... packageRoots_)
     {
         this(classpathStrategy, true, null, packageRoots_);
 
     }
 
-    public ClasspathScannerReflections(ClasspathStrategy classpathStrategy, boolean reachAbstractClass, String packageRoot, String... packageRoots_)
+    public ClasspathScannerDisk(ClasspathStrategy classpathStrategy, boolean reachAbstractClass, String packageRoot, String... packageRoots_)
     {
         super(reachAbstractClass);
     	packageRoots = new LinkedList<String>();
@@ -85,7 +85,7 @@ public class ClasspathScannerReflections extends AbstractClasspathScanner
         }
         
         this.classpathStrategy = classpathStrategy;
-        commands = new ArrayList<ClasspathScannerReflections.ScannerCommand>();
+        commands = new ArrayList<ClasspathScannerDisk.ScannerCommand>();
     }
 
     protected static interface ScannerCommand

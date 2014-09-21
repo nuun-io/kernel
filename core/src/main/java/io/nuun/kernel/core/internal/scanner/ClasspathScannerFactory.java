@@ -17,9 +17,9 @@
 package io.nuun.kernel.core.internal.scanner;
 
 import io.nuun.kernel.api.inmemory.InMemoryClasspath;
+import io.nuun.kernel.core.internal.scanner.disk.ClasspathScannerDisk;
+import io.nuun.kernel.core.internal.scanner.disk.ClasspathStrategy;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathScannerInMemory;
-import io.nuun.kernel.core.internal.scanner.reflections.ClasspathStrategy;
-import io.nuun.kernel.core.internal.scanner.reflections.ClasspathScannerReflections;
 
 import java.net.URL;
 import java.util.Set;
@@ -29,9 +29,9 @@ public class ClasspathScannerFactory
 {
     public ClasspathScanner create(ClasspathStrategy classpathStrategy, Set<URL> additionalClasspath , String... packageRoot)
     {
-        ClasspathScannerReflections classpathScannerReflections = new ClasspathScannerReflections(classpathStrategy, packageRoot);
-        classpathScannerReflections.setAdditionalClasspath(additionalClasspath);
-        return classpathScannerReflections;
+        ClasspathScannerDisk classpathScannerDisk = new ClasspathScannerDisk(classpathStrategy, packageRoot);
+        classpathScannerDisk.setAdditionalClasspath(additionalClasspath);
+        return classpathScannerDisk;
     }
     
     public ClasspathScanner createInMemory (InMemoryClasspath inMemoryClasspath  , String... packageRoot) {
@@ -43,13 +43,13 @@ public class ClasspathScannerFactory
     @Deprecated
     public ClasspathScanner create(ClasspathStrategy classpathStrategy, String... packageRoot)
     {
-        return new ClasspathScannerReflections(classpathStrategy, packageRoot);
+        return new ClasspathScannerDisk(classpathStrategy, packageRoot);
     }
 
     @Deprecated
     public ClasspathScanner create(ClasspathStrategy classpathStrategy, boolean reachAbstractClass ,  String packageRoot,String... packageRoots )
     {
-        return new ClasspathScannerReflections(classpathStrategy, reachAbstractClass , packageRoot ,packageRoots);
+        return new ClasspathScannerDisk(classpathStrategy, reachAbstractClass , packageRoot ,packageRoots);
     }
 
 }

@@ -18,6 +18,8 @@ package io.nuun.kernel.core.internal.scanner.reflections;
 
 import io.nuun.kernel.core.internal.scanner.AbstractClasspathScanner;
 import io.nuun.kernel.core.internal.scanner.ClasspathScannerTestBase;
+import io.nuun.kernel.core.internal.scanner.disk.ClasspathScannerDisk;
+import io.nuun.kernel.core.internal.scanner.disk.ClasspathStrategy;
 import io.nuun.kernel.core.internal.scanner.sample.MyModule2;
 
 
@@ -26,7 +28,7 @@ public class ClasspathScannerReflectionsTest extends ClasspathScannerTestBase
     
     @Override
     protected AbstractClasspathScanner createUnderTest() {
-    	return  new ClasspathScannerReflections(new ClasspathStrategy(), true, "", "META-INF.properties," + MyModule2.class.getPackage().getName());
+    	return  new ClasspathScannerDisk(new ClasspathStrategy(), true, "", "META-INF.properties," + MyModule2.class.getPackage().getName());
     }
  
 }

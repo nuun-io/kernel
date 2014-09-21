@@ -30,7 +30,7 @@ import io.nuun.kernel.core.internal.scanner.ClasspathScanner;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner.Callback;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner.CallbackResources;
 import io.nuun.kernel.core.internal.scanner.ClasspathScannerFactory;
-import io.nuun.kernel.core.internal.scanner.reflections.ClasspathStrategy;
+import io.nuun.kernel.core.internal.scanner.disk.ClasspathStrategy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
