@@ -41,7 +41,7 @@ public class InMemoryFactory {
 	
 	public URL createInMemoryClass (Class<?> claSs) throws MalformedURLException
 	{
-		return url('/' + claSs.getName().replace('.', '/') + ".class");
+		return url( claSs.getName().replace('.', '/') + ".class");
 	}
 	
 	public URL createInMemoryResource (String resource) throws MalformedURLException

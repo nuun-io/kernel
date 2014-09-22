@@ -19,7 +19,7 @@ package io.nuun.kernel.core.internal.scanner.inmemory;
 import io.nuun.kernel.api.inmemory.InMemoryClasspath;
 import io.nuun.kernel.api.inmemory.InMemoryClasspathAbstractContainer;
 import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.core.internal.scanner.reflections.ClasspathScannerReflections;
+import io.nuun.kernel.core.internal.scanner.disk.ClasspathScannerDisk;
 
 import java.net.MalformedURLException;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ import org.reflections.vfs.Vfs;
 /**
  * @author epo.jemba@kametic.com
  */
-public class ClasspathScannerInMemory extends ClasspathScannerReflections
+public class ClasspathScannerInMemory extends ClasspathScannerDisk
 {
 
     private final InMemoryClasspath inMemoryClasspath;
