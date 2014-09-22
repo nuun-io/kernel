@@ -22,6 +22,7 @@ import io.nuun.kernel.api.ClasspathScanMode;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.annotations.KernelModule;
 import io.nuun.kernel.api.inmemory.InMemoryClasspath;
+import io.nuun.kernel.api.inmemory.SimpleInMemoryClasspath;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.RequestType;
 import io.nuun.kernel.core.Kernel;
@@ -198,6 +199,16 @@ public class InitContextInternal implements InitContext
         propertiesPrefix.add(initialPropertiesPrefix);
         additionalClasspathScan = new HashSet<URL>();
     }
+    
+    public void classpathScanMode( ClasspathScanMode classpathScanMode)
+    {
+    	this.classpathScanMode = classpathScanMode;
+    }
+    
+    public void scanConfigurationObject( Object scanConfigurationObject)
+    {
+    	this.scanConfigurationObject = scanConfigurationObject;
+    }
 
     private void initScanner()
     {
@@ -209,9 +220,19 @@ public class InitContextInternal implements InitContext
 		{
         	classpathScanner = classpathScannerFactory.create(classpathStrategy, additionalClasspathScan , packageRootArray);
         }
-		else if (classpathScanMode == ClasspathScanMode.NOMINAL)
+		else if (classpathScanMode == ClasspathScanMode.IN_MEMORY)
         {
-        	classpathScanner = classpathScannerFactory.createInMemory((InMemoryClasspath) scanConfigurationObject,packageRootArray);
+        	if ( scanConfigurationObject != null )
+        	{
+        		InMemoryClasspath classpath = InMemoryClasspath.class.cast(scanConfigurationObject);
+        		classpathScanner = classpathScannerFactory.createInMemory(classpath,packageRootArray);
+        	}
+        	else
+        	{
+        		InMemoryClasspath classpath = SimpleInMemoryClasspath.INSTANCE;
+        		classpathScanner = classpathScannerFactory.createInMemory(classpath,packageRootArray);
+        	}
+        	
         }
         
     }

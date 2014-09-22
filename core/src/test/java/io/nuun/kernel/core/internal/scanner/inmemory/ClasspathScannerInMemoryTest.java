@@ -46,8 +46,6 @@ public class ClasspathScannerInMemoryTest  extends ClasspathScannerTestBase
 	@Override
 	protected AbstractClasspathScanner createUnderTest() {
 		
-
-		
         classpath.reset();
         classpath
          .add (

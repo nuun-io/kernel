@@ -1000,6 +1000,9 @@ public final class Kernel
     void classpathScanMode (ClasspathScanMode classpathScanMode, Object scanConfigurationObject) {
 		this.classpathScanMode = classpathScanMode;
 		this.scanConfigurationObject = scanConfigurationObject;
+		
+		initContext.classpathScanMode(classpathScanMode);
+		initContext.scanConfigurationObject(scanConfigurationObject);
     }
 
     /**
