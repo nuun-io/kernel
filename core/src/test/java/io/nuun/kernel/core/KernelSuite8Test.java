@@ -17,6 +17,7 @@
 package io.nuun.kernel.core;
 
 import io.nuun.kernel.api.ClasspathScanMode;
+import io.nuun.kernel.api.inmemory.InMemoryClasspathJar;
 import io.nuun.kernel.api.inmemory.SimpleInMemoryClasspath;
 import io.nuun.kernel.core.pluginsit.dummy5.DummyPlugin5;
 
@@ -40,7 +41,8 @@ public class KernelSuite8Test {
 	  {
 		  classpath.reset();
 		  classpath.add(
-				  
+				  InMemoryClasspathJar.create("test.jar")
+				     .add( InMe )
 				  
 				  
 				  );
