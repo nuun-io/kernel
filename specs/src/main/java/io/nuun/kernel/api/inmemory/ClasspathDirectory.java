@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.core.internal.scanner.inmemory.builder;
+package io.nuun.kernel.api.inmemory;
 
 /**
  *
@@ -22,8 +22,16 @@ package io.nuun.kernel.core.internal.scanner.inmemory.builder;
  * @author epo.jemba@kametic.com
  *
  */
-public interface ClassBuilder
-{
+public class ClasspathDirectory<S extends ClasspathDirectory<S>> extends ClasspathAbstractContainer<S> {
 
-    
+	public ClasspathDirectory(String resource) {
+		super(resource);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public static ClasspathDirectory create (String res)
+	{
+		return new ClasspathDirectory(res);
+	}
+	
 }

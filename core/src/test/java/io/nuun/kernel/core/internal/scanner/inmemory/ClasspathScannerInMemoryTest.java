@@ -16,11 +16,11 @@
  */
 package io.nuun.kernel.core.internal.scanner.inmemory;
 
-import static io.nuun.kernel.api.inmemory.InMemoryClasspathResource.res;
-import io.nuun.kernel.api.inmemory.InMemoryClasspathClass;
-import io.nuun.kernel.api.inmemory.InMemoryClasspathDirectory;
-import io.nuun.kernel.api.inmemory.InMemoryClasspathJar;
-import io.nuun.kernel.api.inmemory.SimpleInMemoryClasspath;
+import static io.nuun.kernel.api.inmemory.ClasspathResource.res;
+import io.nuun.kernel.api.inmemory.ClasspathClass;
+import io.nuun.kernel.api.inmemory.ClasspathDirectory;
+import io.nuun.kernel.api.inmemory.ClasspathJar;
+import io.nuun.kernel.api.inmemory.SimpleClasspath;
 import io.nuun.kernel.core.internal.scanner.AbstractClasspathScanner;
 import io.nuun.kernel.core.internal.scanner.ClasspathScannerTestBase;
 import io.nuun.kernel.core.internal.scanner.sample.Bean1;
@@ -40,7 +40,7 @@ import io.nuun.kernel.core.pluginsit.dummy7.Module7;
 public class ClasspathScannerInMemoryTest  extends ClasspathScannerTestBase
 {
 
-	private SimpleInMemoryClasspath classpath = SimpleInMemoryClasspath.INSTANCE;
+	private SimpleClasspath classpath = SimpleClasspath.INSTANCE;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -49,26 +49,26 @@ public class ClasspathScannerInMemoryTest  extends ClasspathScannerTestBase
         classpath.reset();
         classpath
          .add (
-        		 InMemoryClasspathDirectory.create ("default")
+        		 ClasspathDirectory.create ("default")
         		 
 	                 .add(res("META-INF/properties" , "tst-one.properties" ) )
 	                 .add(res("META-INF/properties" , "tst-two.properties") )
         		 )
          .add (
-        		 InMemoryClasspathJar.create ("app.jar")
+        		 ClasspathJar.create ("app.jar")
         		 
-	        		 .add(new InMemoryClasspathClass(Bean1.class ))
-	        		 .add(new InMemoryClasspathClass(Bean2.class ))
-	        		 .add(new InMemoryClasspathClass(Bean3.class ))
-	        		 .add(new InMemoryClasspathClass(Bean6.class ))
+	        		 .add(new ClasspathClass(Bean1.class ))
+	        		 .add(new ClasspathClass(Bean2.class ))
+	        		 .add(new ClasspathClass(Bean3.class ))
+	        		 .add(new ClasspathClass(Bean6.class ))
         		 
         		 )
          .add (
-        		 InMemoryClasspathJar.create ("modules.jar")
+        		 ClasspathJar.create ("modules.jar")
         		 
-	        		 .add(new InMemoryClasspathClass(MyModule1.class ))
-	        		 .add(new InMemoryClasspathClass(MyModule4.class ))
-	        		 .add(new InMemoryClasspathClass(Module7.class ))
+	        		 .add(new ClasspathClass(MyModule1.class ))
+	        		 .add(new ClasspathClass(MyModule4.class ))
+	        		 .add(new ClasspathClass(Module7.class ))
         		 
         		 )
          ;

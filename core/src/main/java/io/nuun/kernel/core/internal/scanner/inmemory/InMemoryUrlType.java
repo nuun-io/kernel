@@ -16,10 +16,10 @@
  */
 package io.nuun.kernel.core.internal.scanner.inmemory;
 
-import io.nuun.kernel.api.inmemory.InMemoryClasspathAbstractElement;
-import io.nuun.kernel.api.inmemory.InMemoryClasspathClass;
-import io.nuun.kernel.api.inmemory.InMemoryClasspathResource;
-import io.nuun.kernel.api.inmemory.SimpleInMemoryClasspath;
+import io.nuun.kernel.api.inmemory.ClasspathAbstractElement;
+import io.nuun.kernel.api.inmemory.ClasspathClass;
+import io.nuun.kernel.api.inmemory.ClasspathResource;
+import io.nuun.kernel.api.inmemory.SimpleClasspath;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class InMemoryUrlType implements UrlType
 	
 	class InMemoryVfsDir implements Dir
 	{
-		SimpleInMemoryClasspath classpath = SimpleInMemoryClasspath.INSTANCE;
+		SimpleClasspath classpath = SimpleClasspath.INSTANCE;
 		private String path;
 
 		public InMemoryVfsDir(String path)
@@ -85,15 +85,15 @@ public class InMemoryUrlType implements UrlType
 			
 			List<File> files = new ArrayList<Vfs.File>();
 		    
-			for ( InMemoryClasspathAbstractElement<?> entry : classpath.entry(path).entries() )
+			for ( ClasspathAbstractElement<?> entry : classpath.entry(path).entries() )
 			{
-				if (entry instanceof InMemoryClasspathClass)
+				if (entry instanceof ClasspathClass)
 				{
-					files.add(new InMemoryClass(((InMemoryClasspathClass) entry).getType()));
+					files.add(new InMemoryClass(((ClasspathClass) entry).getType()));
 				}
-				if (entry instanceof InMemoryClasspathResource)
+				if (entry instanceof ClasspathResource)
 				{
-					files.add(new InMemoryResource(   ( (InMemoryClasspathResource) entry).internalRepresentation()      ));
+					files.add(new InMemoryResource(   ( (ClasspathResource) entry).internalRepresentation()      ));
 				}
 			}
 

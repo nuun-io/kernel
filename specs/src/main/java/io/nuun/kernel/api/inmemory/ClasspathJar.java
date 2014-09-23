@@ -17,31 +17,22 @@
 package io.nuun.kernel.api.inmemory;
 
 /**
- * 
+ *
  * 
  * @author epo.jemba@kametic.com
  *
  */
-public class InMemoryClasspathClass extends InMemoryClasspathAbstractElement<Class<?>>
-{
 
-	public InMemoryClasspathClass(Class<?> element) {
-		super(element);
-	}
-
-	@Override
-	protected String computeName(Class<?> element) {
-		return element.getSimpleName() + ".class";
+public class ClasspathJar<S extends ClasspathJar<S>> extends ClasspathAbstractContainer<S> {
+	
+	public ClasspathJar(String name ) {
+		super(name);
 	}
 	
-	@Override
-	protected String computeRelativePath(Class<?> element) {
-		return element.getName().replace('.', '/') + ".class";
-	}
-	
-	public Class<?> getType ()
+	@SuppressWarnings("rawtypes")
+	public static ClasspathJar create (String name)
 	{
-		return element;
+		return new ClasspathJar(name);
 	}
 
 }

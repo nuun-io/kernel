@@ -26,15 +26,15 @@ import java.util.List;
  * @author epo.jemba@kametic.com
  *
  */
-public abstract class InMemoryClasspathAbstractContainer< S extends InMemoryClasspathAbstractContainer<S>>
+public abstract class ClasspathAbstractContainer< S extends ClasspathAbstractContainer<S>>
 {
 
 	protected S myself;
 	protected String name;
-	protected List<InMemoryClasspathAbstractElement<?>> entries = new ArrayList<InMemoryClasspathAbstractElement<?>>();
+	protected List<ClasspathAbstractElement<?>> entries = new ArrayList<ClasspathAbstractElement<?>>();
 
 	
-	public InMemoryClasspathAbstractContainer(String name)
+	public ClasspathAbstractContainer(String name)
 	{
 		this.name = name;
 		this.initSelf();
@@ -52,13 +52,13 @@ public abstract class InMemoryClasspathAbstractContainer< S extends InMemoryClas
 		return name;
 	}
 	
-	public S add(InMemoryClasspathAbstractElement<?> element)
+	public S add(ClasspathAbstractElement<?> element)
 	{
 		entries.add(element);
 		return myself;
 	}
 	
-	public List<InMemoryClasspathAbstractElement<?>> entries ()
+	public List<ClasspathAbstractElement<?>> entries ()
 	{
 		return Collections.unmodifiableList(entries);
 	}

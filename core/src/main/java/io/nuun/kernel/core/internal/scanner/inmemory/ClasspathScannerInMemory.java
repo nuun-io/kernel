@@ -16,8 +16,8 @@
  */
 package io.nuun.kernel.core.internal.scanner.inmemory;
 
-import io.nuun.kernel.api.inmemory.InMemoryClasspath;
-import io.nuun.kernel.api.inmemory.InMemoryClasspathAbstractContainer;
+import io.nuun.kernel.api.inmemory.Classpath;
+import io.nuun.kernel.api.inmemory.ClasspathAbstractContainer;
 import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.core.internal.scanner.disk.ClasspathScannerDisk;
 
@@ -37,7 +37,7 @@ import org.reflections.vfs.Vfs;
 public class ClasspathScannerInMemory extends ClasspathScannerDisk
 {
 
-    private final InMemoryClasspath inMemoryClasspath;
+    private final Classpath classpath;
     private final static Map<String, List<? extends InMemoryFile<?>>> fs = new HashMap<String, List<? extends InMemoryFile<?>>>();
 
     static
@@ -45,10 +45,10 @@ public class ClasspathScannerInMemory extends ClasspathScannerDisk
         Vfs.addDefaultURLTypes(new InMemoryUrlType());
     }
     
-    public ClasspathScannerInMemory(InMemoryClasspath inMemoryClasspath, String... packageRoot)
+    public ClasspathScannerInMemory(Classpath classpath, String... packageRoot)
     {
         super(null, packageRoot);
-        this.inMemoryClasspath = inMemoryClasspath;
+        this.classpath = classpath;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ClasspathScannerInMemory extends ClasspathScannerDisk
 
         InMemoryFactory factory = new InMemoryFactory();
 
-        for (InMemoryClasspathAbstractContainer<?> i : inMemoryClasspath.entries())
+        for (ClasspathAbstractContainer<?> i : classpath.entries())
         {
             
         	String name = i.name();
@@ -77,18 +77,18 @@ public class ClasspathScannerInMemory extends ClasspathScannerDisk
 	             }
 
         	
-//        	if (i instanceof InMemoryClasspathJar)
+//        	if (i instanceof ClasspathJar)
 //            {
 //                try
 //                {
-//                    configurationBuilder.addUrls(factory.createInMemoryClass(((InMemoryClasspathJar) i).entryClass()));
+//                    configurationBuilder.addUrls(factory.createInMemoryClass(((ClasspathJar) i).entryClass()));
 //                }
 //                catch (MalformedURLException e)
 //                {
 //                    throw new KernelException("Malformed exception", e);
 //                }
 //            }
-//            else if (i instanceof InMemoryClasspathDirectory)
+//            else if (i instanceof ClasspathDirectory)
 //            {
 //                try
 //                {
@@ -103,7 +103,7 @@ public class ClasspathScannerInMemory extends ClasspathScannerDisk
 
         Reflections reflections = new Reflections(configurationBuilder);
 
-        executeScan(reflections, inMemoryClasspath);
+        executeScan(reflections, classpath);
 
         for (ScannerCommand command : commands)
         {
@@ -111,22 +111,22 @@ public class ClasspathScannerInMemory extends ClasspathScannerDisk
         }
     }
 
-    private void executeScan(Reflections reflections, InMemoryClasspath classpath)
+    private void executeScan(Reflections reflections, Classpath classpath)
     {
 
     }
 
     /*
-     * private final List<ScannerCommand> commands; interface ScannerCommand { void execute(InMemoryClasspath
-     * inMemoryClasspath); } public ClasspathScannerInMemory() { super(true);// we reach abstract class as
+     * private final List<ScannerCommand> commands; interface ScannerCommand { void execute(Classpath
+     * classpath); } public ClasspathScannerInMemory() { super(true);// we reach abstract class as
      * well commands = new ArrayList<ClasspathScannerInMemory.ScannerCommand>(); } private void
      * queue(ScannerCommand command) { commands.add(command); }
      * @Override public void scanClasspathForAnnotation(final Class<? extends Annotation> annotationType,
      * final Callback callback) { queue( new ScannerCommand() {
-     * @Override public void execute(InMemoryClasspath inMemoryClasspath) { } } ); }
+     * @Override public void execute(Classpath classpath) { } } ); }
      * @Override public void scanClasspathForAnnotationRegex(final String annotationTypeRegex, Callback
      * callback) { queue(new ScannerCommand() {
-     * @Override public void execute(InMemoryClasspath inMemoryClasspath) { // Multimap<String, String>
+     * @Override public void execute(Classpath classpath) { // Multimap<String, String>
      * multimap = store.get(TypeAnnotationsScanner.class); // // List<String> key = new ArrayList<String>();
      * // for (String loopKey : multimap.keySet()) // { // if (loopKey.matches(annotationTypeRegex)) // { //
      * key.add(loopKey); // } // } // // Collection<Class<?>> typesAnnotatedWith = new HashSet<Class<?>>(); //
@@ -135,35 +135,35 @@ public class ClasspathScannerInMemory extends ClasspathScannerDisk
      * .callback(postTreatment(typesAnnotatedWith)); } }); }
      * @Override public void scanClasspathForMetaAnnotation(final Class<? extends Annotation> annotationType,
      * final Callback callback) { queue(new ScannerCommand() {
-     * @Override public void execute(InMemoryClasspath inMemoryClasspath) { Collection<Class<?>>
-     * typesAnnotatedWith = Sets.newHashSet(); for (InMemoryClasspathAbstractContainer entry :
-     * inMemoryClasspath.entries()) { if (entry instanceof InMemoryClasspathAbstractContainer) { Class<?> klass =
-     * InMemoryClasspathAbstractContainer.class.cast(entry).entryClass(); if (annotationType != null && klass != null &&
+     * @Override public void execute(Classpath classpath) { Collection<Class<?>>
+     * typesAnnotatedWith = Sets.newHashSet(); for (ClasspathAbstractContainer entry :
+     * classpath.entries()) { if (entry instanceof ClasspathAbstractContainer) { Class<?> klass =
+     * ClasspathAbstractContainer.class.cast(entry).entryClass(); if (annotationType != null && klass != null &&
      * AssertUtils.hasAnnotationDeep(klass, annotationType) && !klass.isAnnotation()) {
      * typesAnnotatedWith.add(klass); } } } callback.callback(postTreatment(typesAnnotatedWith)); } }); }
      * @Override public void scanClasspathForMetaAnnotationRegex(final String metaAnnotationRegex, final
      * Callback callback) { queue(new ScannerCommand() {
-     * @Override public void execute(InMemoryClasspath inMemoryClasspath) { Collection<Class<?>>
-     * typesAnnotatedWith = Sets.newHashSet(); for (InMemoryClasspathAbstractContainer entry :
-     * inMemoryClasspath.entries()) { { if (entry instanceof InMemoryClasspathAbstractContainer) { Class<?> klass =
-     * InMemoryClasspathAbstractContainer.class.cast(entry).entryClass(); if ( metaAnnotationRegex != null && klass !=
+     * @Override public void execute(Classpath classpath) { Collection<Class<?>>
+     * typesAnnotatedWith = Sets.newHashSet(); for (ClasspathAbstractContainer entry :
+     * classpath.entries()) { { if (entry instanceof ClasspathAbstractContainer) { Class<?> klass =
+     * ClasspathAbstractContainer.class.cast(entry).entryClass(); if ( metaAnnotationRegex != null && klass !=
      * null&& AssertUtils.hasAnnotationDeepRegex(klass, metaAnnotationRegex) && ! klass.isAnnotation() ) {
      * typesAnnotatedWith.add(klass); } } } callback.callback(postTreatment(typesAnnotatedWith)); } }}); }
      * @Override public void scanClasspathForSubTypeClass(Class<?> subType, Callback callback) { queue(new
      * ScannerCommand() {
-     * @Override public void execute(InMemoryClasspath inMemoryClasspath) { } }); }
+     * @Override public void execute(Classpath classpath) { } }); }
      * @Override public void scanClasspathForTypeRegex(String typeRegex, Callback callback) { queue(new
      * ScannerCommand() {
-     * @Override public void execute(InMemoryClasspath inMemoryClasspath) { } }); }
+     * @Override public void execute(Classpath classpath) { } }); }
      * @Override public void scanClasspathForSubTypeRegex(String typeRegex, Callback callback) { queue(new
      * ScannerCommand() {
-     * @Override public void execute(InMemoryClasspath inMemoryClasspath) { } }); }
+     * @Override public void execute(Classpath classpath) { } }); }
      * @Override public void scanClasspathForResource(String pattern, CallbackResources callback) { queue(new
      * ScannerCommand() {
-     * @Override public void execute(InMemoryClasspath inMemoryClasspath) { } }); }
+     * @Override public void execute(Classpath classpath) { } }); }
      * @Override public void scanClasspathForSpecification(Specification<Class<?>> specification, Callback
      * callback) { queue(new ScannerCommand() {
-     * @Override public void execute(InMemoryClasspath inMemoryClasspath) { } }); }
+     * @Override public void execute(Classpath classpath) { } }); }
      * @Override public void doClasspathScan() { }
      */
 }

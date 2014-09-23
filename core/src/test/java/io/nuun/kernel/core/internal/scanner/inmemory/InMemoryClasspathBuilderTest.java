@@ -32,7 +32,7 @@ public class InMemoryClasspathBuilderTest
     @Test
     public void testConfigure()
     {
-        InMemoryClasspathBuilder builder = new InMemoryClasspathBuilder()
+        ClasspathConfiguration builder = new ClasspathConfiguration()
         {
             
             @Override

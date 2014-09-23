@@ -14,8 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.core.internal.scanner.inmemory.builder;
-
+package io.nuun.kernel.api.inmemory;
 
 /**
  *
@@ -23,9 +22,25 @@ package io.nuun.kernel.core.internal.scanner.inmemory.builder;
  * @author epo.jemba@kametic.com
  *
  */
-public interface ClasspathBuilder
-{
-    
-    void configure ();
+public class ClasspathResource extends ClasspathAbstractElement<Resource> {
+
+	public ClasspathResource(Resource element) {
+		super(element);
+	}
+
+	@Override
+	protected String computeName(Resource element) {
+		return element.name();
+	}
+
+	@Override
+	protected String computeRelativePath(Resource element) {
+		return element.base()  + '/' + element.name();
+	}
+	
+	public static ClasspathResource res(String relativePath , String name)
+	{
+		return new ClasspathResource( new Resource(relativePath, name));
+	}
 
 }

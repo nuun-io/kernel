@@ -16,7 +16,7 @@
  */
 package io.nuun.kernel.core.internal.scanner;
 
-import io.nuun.kernel.api.inmemory.InMemoryClasspath;
+import io.nuun.kernel.api.inmemory.Classpath;
 import io.nuun.kernel.core.internal.scanner.disk.ClasspathScannerDisk;
 import io.nuun.kernel.core.internal.scanner.disk.ClasspathStrategy;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathScannerInMemory;
@@ -34,8 +34,8 @@ public class ClasspathScannerFactory
         return classpathScannerDisk;
     }
     
-    public ClasspathScanner createInMemory (InMemoryClasspath inMemoryClasspath  , String... packageRoot) {
-    	ClasspathScannerInMemory classpathScannerInMemory = new ClasspathScannerInMemory( inMemoryClasspath , packageRoot);
+    public ClasspathScanner createInMemory (Classpath classpath  , String... packageRoot) {
+    	ClasspathScannerInMemory classpathScannerInMemory = new ClasspathScannerInMemory( classpath , packageRoot);
     	
     	return classpathScannerInMemory;
     }

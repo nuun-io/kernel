@@ -16,46 +16,36 @@
  */
 package io.nuun.kernel.core.internal.scanner.inmemory;
 
-import io.nuun.kernel.api.inmemory.InMemoryClasspathAbstractContainer;
-import io.nuun.kernel.api.inmemory.InMemoryClasspathClass;
-import io.nuun.kernel.api.inmemory.InMemoryClasspathDirectory;
-import io.nuun.kernel.api.inmemory.InMemoryClasspathJar;
-import io.nuun.kernel.api.inmemory.InMemoryClasspathResource;
-import io.nuun.kernel.core.internal.scanner.inmemory.builder.ClasspathBuilder;
+import io.nuun.kernel.api.inmemory.Classpath;
+import io.nuun.kernel.api.inmemory.ClasspathAbstractContainer;
+import io.nuun.kernel.api.inmemory.ClasspathClass;
+import io.nuun.kernel.api.inmemory.ClasspathDirectory;
+import io.nuun.kernel.api.inmemory.ClasspathJar;
+import io.nuun.kernel.api.inmemory.ClasspathResource;
+
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author epo.jemba@kametic.com
  */
-public abstract class InMemoryClasspathBuilder implements ClasspathBuilder
+public abstract class ClasspathConfiguration implements Classpath
 {
 
-    private final Map<String, InMemoryClasspathAbstractContainer<?>> entries;
-    InMemoryClasspathAbstractContainer<?> currentContainer = null;
+    private final Map<String, ClasspathAbstractContainer<?>> entries;
+    protected ClasspathAbstractContainer<?>                  currentContainer = null;
 
-    public InMemoryClasspathBuilder()
+    public ClasspathConfiguration()
     {
-        entries = new HashMap<String, InMemoryClasspathAbstractContainer<?>>();
+        entries = new HashMap<String, ClasspathAbstractContainer<?>>();
     }
 
-//    @Override
-//    public InMemoryClasspathAbstractContainer<?> entry(String container)
-//    {
-//        return null;
-//    }
-//
-//    @Override
-//    public Collection<InMemoryClasspathAbstractContainer<?>> entries()
-//    {
-//        return null;
-//    }
-    
     protected void jar(String name)
     {
-        if (! entries.containsKey(name))
+        if (!entries.containsKey(name))
         {
-            currentContainer = InMemoryClasspathJar.create(name);
+            currentContainer = ClasspathJar.create(name);
             entries.put(name, currentContainer);
         }
         else
@@ -63,12 +53,12 @@ public abstract class InMemoryClasspathBuilder implements ClasspathBuilder
             currentContainer = entries.get(name);
         }
     }
-    
+
     protected void directory(String name)
     {
-        if (! entries.containsKey(name))
+        if (!entries.containsKey(name))
         {
-            currentContainer = InMemoryClasspathDirectory.create(name);
+            currentContainer = ClasspathDirectory.create(name);
             entries.put(name, currentContainer);
         }
         else
@@ -76,34 +66,43 @@ public abstract class InMemoryClasspathBuilder implements ClasspathBuilder
             currentContainer = entries.get(name);
         }
     }
-    
+
     protected void resource(String base, String name)
     {
         if (currentContainer == null)
         {
             throw new IllegalStateException("currentContainer can not be null. please use resource");
         }
-        
-        currentContainer.add(InMemoryClasspathResource.res(base, name));
+
+        currentContainer.add(ClasspathResource.res(base, name));
     }
-    
-    protected void class_ (Class<?> candidate)
+
+    protected void class_(Class<?> candidate)
     {
         if (currentContainer == null)
         {
             throw new IllegalStateException("currentContainer can not be null. please use resource");
         }
-        
-        currentContainer.add ( new InMemoryClasspathClass(candidate) );
+
+        currentContainer.add(new ClasspathClass(candidate));
     }
-    
-    
+
     /**
      * 
      * 
      */
-    @Override
     public abstract void configure();
-
+    
+    @Override
+    public Collection<ClasspathAbstractContainer<?>> entries() {
+        
+        return entries.values();
+    }
+    
+    @Override
+    public ClasspathAbstractContainer<?> entry(String container)
+    {
+        return entries.get(container);
+    }
 
 }

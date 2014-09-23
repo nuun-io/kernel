@@ -21,8 +21,8 @@ import static com.google.common.base.Predicates.not;
 import io.nuun.kernel.api.ClasspathScanMode;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.annotations.KernelModule;
-import io.nuun.kernel.api.inmemory.InMemoryClasspath;
-import io.nuun.kernel.api.inmemory.SimpleInMemoryClasspath;
+import io.nuun.kernel.api.inmemory.Classpath;
+import io.nuun.kernel.api.inmemory.SimpleClasspath;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.RequestType;
 import io.nuun.kernel.core.Kernel;
@@ -224,12 +224,12 @@ public class InitContextInternal implements InitContext
         {
         	if ( scanConfigurationObject != null )
         	{
-        		InMemoryClasspath classpath = InMemoryClasspath.class.cast(scanConfigurationObject);
+        		Classpath classpath = Classpath.class.cast(scanConfigurationObject);
         		classpathScanner = classpathScannerFactory.createInMemory(classpath,packageRootArray);
         	}
         	else
         	{
-        		InMemoryClasspath classpath = SimpleInMemoryClasspath.INSTANCE;
+        		Classpath classpath = SimpleClasspath.INSTANCE;
         		classpathScanner = classpathScannerFactory.createInMemory(classpath,packageRootArray);
         	}
         	

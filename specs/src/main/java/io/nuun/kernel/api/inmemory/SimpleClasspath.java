@@ -27,24 +27,24 @@ import java.util.Map;
  * @author epo.jemba@kametic.com
  *
  */
-public enum SimpleInMemoryClasspath implements InMemoryClasspath {
+public enum SimpleClasspath implements Classpath {
 
 	INSTANCE;
     
-	private final ThreadLocal<Map<String , InMemoryClasspathAbstractContainer<?>>> perThreadListEntries = new ThreadLocal<Map<String , InMemoryClasspathAbstractContainer<?>>>()
+	private final ThreadLocal<Map<String , ClasspathAbstractContainer<?>>> perThreadListEntries = new ThreadLocal<Map<String , ClasspathAbstractContainer<?>>>()
 	{
 		@Override
-		protected java.util.Map<String , InMemoryClasspathAbstractContainer<?>> initialValue() {
-			return new HashMap<String , InMemoryClasspathAbstractContainer<?>>();
+		protected java.util.Map<String , ClasspathAbstractContainer<?>> initialValue() {
+			return new HashMap<String , ClasspathAbstractContainer<?>>();
 		}
 	};
 
 	
-	private SimpleInMemoryClasspath()
+	private SimpleClasspath()
 	{
 	}
 	
-	public SimpleInMemoryClasspath add(InMemoryClasspathAbstractContainer<?> entry)
+	public SimpleClasspath add(ClasspathAbstractContainer<?> entry)
 	{
 		perThreadListEntries.get().put(entry.name()  ,entry);
 		return this;
@@ -56,13 +56,13 @@ public enum SimpleInMemoryClasspath implements InMemoryClasspath {
 	}
 	
 	@Override
-	public Collection<InMemoryClasspathAbstractContainer<?>> entries() {
+	public Collection<ClasspathAbstractContainer<?>> entries() {
 		
 		return perThreadListEntries.get().values();
 	}
 	
 	@Override
-	public InMemoryClasspathAbstractContainer<?> entry(String container)
+	public ClasspathAbstractContainer<?> entry(String container)
 	{
 		return perThreadListEntries.get().get(container);
 	}

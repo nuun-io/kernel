@@ -24,14 +24,14 @@ import java.util.regex.Pattern;
  * @author epo.jemba@kametic.com
  *
  */
-public abstract class InMemoryClasspathAbstractElement<E>
+public abstract class ClasspathAbstractElement<E>
 {
 	
 	protected final  E element;
 	private final String name;
 	private final String relativePath;
     
-	public InMemoryClasspathAbstractElement(E element)
+	public ClasspathAbstractElement(E element)
 	{
 		this.element = element;
 		this.name = computeName(this.element);

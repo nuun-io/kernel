@@ -17,8 +17,8 @@
 package io.nuun.kernel.core;
 
 import io.nuun.kernel.api.ClasspathScanMode;
-import io.nuun.kernel.api.inmemory.InMemoryClasspathJar;
-import io.nuun.kernel.api.inmemory.SimpleInMemoryClasspath;
+import io.nuun.kernel.api.inmemory.ClasspathJar;
+import io.nuun.kernel.api.inmemory.SimpleClasspath;
 import io.nuun.kernel.core.pluginsit.dummy5.DummyPlugin5;
 
 import org.junit.Before;
@@ -33,7 +33,7 @@ import org.junit.Test;
 public class KernelSuite8Test {
 	  private Kernel underTest;
 	    
-	  private SimpleInMemoryClasspath classpath = SimpleInMemoryClasspath.INSTANCE;
+	  private SimpleClasspath classpath = SimpleClasspath.INSTANCE;
 	  
 	  
 	  @Before
@@ -41,7 +41,7 @@ public class KernelSuite8Test {
 	  {
 		  classpath.reset();
 		  classpath.add(
-				  InMemoryClasspathJar.create("test.jar")
+				  ClasspathJar.create("test.jar")
 				     .add( InMe )
 				  
 				  

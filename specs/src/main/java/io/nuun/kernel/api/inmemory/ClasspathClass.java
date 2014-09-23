@@ -14,15 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.core.internal.scanner.inmemory.builder;
+package io.nuun.kernel.api.inmemory;
 
 /**
- *
+ * 
  * 
  * @author epo.jemba@kametic.com
  *
  */
-public interface ClassProvider
+public class ClasspathClass extends ClasspathAbstractElement<Class<?>>
 {
-    
+
+	public ClasspathClass(Class<?> element) {
+		super(element);
+	}
+
+	@Override
+	protected String computeName(Class<?> element) {
+		return element.getSimpleName() + ".class";
+	}
+	
+	@Override
+	protected String computeRelativePath(Class<?> element) {
+		return element.getName().replace('.', '/') + ".class";
+	}
+	
+	public Class<?> getType ()
+	{
+		return element;
+	}
+
 }
