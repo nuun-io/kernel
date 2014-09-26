@@ -25,48 +25,38 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- *
- * 
  * @author epo.jemba@kametic.com
- *
  */
-public class KernelSuite8Test {
-	  private Kernel underTest;
-	    
-	  private SimpleClasspath classpath = SimpleClasspath.INSTANCE;
-	  
-	  
-	  @Before
-	  public void init ()
-	  {
-		  classpath.reset();
-		  classpath.add(
-				  ClasspathJar.create("test.jar")
-				     .add( InMe )
-				  
-				  
-				  );
-	  }
-	  
-	  
-	  
-	    @Test
-	    public void dependee_plugins_that_misses_should_be_source_of_error()
-	    {
-	        underTest = Kernel.createKernel()
-	        		.withClasspathScanMode(ClasspathScanMode.IN_MEMORY, null)
-	                .withoutSpiPluginsLoader() //
-	                .withPlugins(
-	                        new DummyPlugin5() //
-	                ) //
-	                .build(); //
-	        underTest.init();
-	        underTest.start();
-	        
-//	        String resa = underTest.getMainInjector().getInstance( Key.get(String.class, Names.named("dep7a")) );
-//	        assertThat(resa).isNotNull();
-//	        assertThat(resa).isEqualTo("dep7aOVER");
-	        
-	    }
-	    
+public class KernelSuite8Test
+{
+    private Kernel          underTest;
+
+    private SimpleClasspath classpath = SimpleClasspath.INSTANCE;
+
+    @Before
+    public void init()
+    {
+        classpath.reset();
+        classpath.add(ClasspathJar.create("test.jar").add(InMe)
+
+        );
+    }
+
+    @Test
+    public void dependee_plugins_that_misses_should_be_source_of_error()
+    {
+        underTest = Kernel.createKernel().withClasspathScanMode(ClasspathScanMode.IN_MEMORY, null).withoutSpiPluginsLoader() //
+                .withPlugins(new DummyPlugin5() //
+                ) //
+                .build(); //
+        underTest.init();
+        underTest.start();
+
+        // String resa = underTest.getMainInjector().getInstance( Key.get(String.class, Names.named("dep7a"))
+        // );
+        // assertThat(resa).isNotNull();
+        // assertThat(resa).isEqualTo("dep7aOVER");
+
+    }
+
 }
