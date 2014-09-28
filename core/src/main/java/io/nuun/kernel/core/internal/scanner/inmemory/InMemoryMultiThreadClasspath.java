@@ -14,7 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.api.inmemory;
+package io.nuun.kernel.core.internal.scanner.inmemory;
+
+import io.nuun.kernel.api.inmemory.Classpath;
+import io.nuun.kernel.api.inmemory.ClasspathAbstractContainer;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,7 +30,7 @@ import java.util.Map;
  * @author epo.jemba@kametic.com
  *
  */
-public enum SimpleClasspath implements Classpath {
+public enum InMemoryMultiThreadClasspath implements Classpath {
 
 	INSTANCE;
     
@@ -40,11 +43,11 @@ public enum SimpleClasspath implements Classpath {
 	};
 
 	
-	private SimpleClasspath()
+	private InMemoryMultiThreadClasspath()
 	{
 	}
 	
-	public SimpleClasspath add(ClasspathAbstractContainer<?> entry)
+	public InMemoryMultiThreadClasspath add(ClasspathAbstractContainer<?> entry)
 	{
 		perThreadListEntries.get().put(entry.name()  ,entry);
 		return this;

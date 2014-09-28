@@ -20,7 +20,6 @@ import static io.nuun.kernel.api.inmemory.ClasspathResource.res;
 import io.nuun.kernel.api.inmemory.ClasspathClass;
 import io.nuun.kernel.api.inmemory.ClasspathDirectory;
 import io.nuun.kernel.api.inmemory.ClasspathJar;
-import io.nuun.kernel.api.inmemory.SimpleClasspath;
 import io.nuun.kernel.core.internal.scanner.AbstractClasspathScanner;
 import io.nuun.kernel.core.internal.scanner.ClasspathScannerTestBase;
 import io.nuun.kernel.core.internal.scanner.sample.Bean1;
@@ -40,7 +39,7 @@ import io.nuun.kernel.core.pluginsit.dummy7.Module7;
 public class ClasspathScannerInMemoryTest  extends ClasspathScannerTestBase
 {
 
-	private SimpleClasspath classpath = SimpleClasspath.INSTANCE;
+	private InMemoryMultiThreadClasspath classpath = InMemoryMultiThreadClasspath.INSTANCE;
 	
 	@SuppressWarnings("unchecked")
 	@Override

@@ -19,7 +19,6 @@ package io.nuun.kernel.core.internal.scanner.inmemory;
 import io.nuun.kernel.api.inmemory.ClasspathAbstractElement;
 import io.nuun.kernel.api.inmemory.ClasspathClass;
 import io.nuun.kernel.api.inmemory.ClasspathResource;
-import io.nuun.kernel.api.inmemory.SimpleClasspath;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -38,8 +37,6 @@ import org.reflections.vfs.Vfs.UrlType;
  */
 public class InMemoryUrlType implements UrlType
 {
-	
-	
 
 	public InMemoryUrlType( ) {
 	}
@@ -62,7 +59,7 @@ public class InMemoryUrlType implements UrlType
 	
 	class InMemoryVfsDir implements Dir
 	{
-		SimpleClasspath classpath = SimpleClasspath.INSTANCE;
+		InMemoryMultiThreadClasspath classpath = InMemoryMultiThreadClasspath.INSTANCE;
 		private String path;
 
 		public InMemoryVfsDir(String path)

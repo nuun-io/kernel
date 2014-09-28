@@ -22,7 +22,6 @@ import io.nuun.kernel.api.ClasspathScanMode;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.annotations.KernelModule;
 import io.nuun.kernel.api.inmemory.Classpath;
-import io.nuun.kernel.api.inmemory.SimpleClasspath;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.RequestType;
 import io.nuun.kernel.core.Kernel;
@@ -32,6 +31,7 @@ import io.nuun.kernel.core.internal.scanner.ClasspathScanner.Callback;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner.CallbackResources;
 import io.nuun.kernel.core.internal.scanner.ClasspathScannerFactory;
 import io.nuun.kernel.core.internal.scanner.disk.ClasspathStrategy;
+import io.nuun.kernel.core.internal.scanner.inmemory.InMemoryMultiThreadClasspath;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
@@ -229,7 +229,7 @@ public class InitContextInternal implements InitContext
         	}
         	else
         	{
-        		Classpath classpath = SimpleClasspath.INSTANCE;
+        		Classpath classpath = InMemoryMultiThreadClasspath.INSTANCE;
         		classpathScanner = classpathScannerFactory.createInMemory(classpath,packageRootArray);
         	}
         	
