@@ -16,9 +16,10 @@
  */
 package io.nuun.kernel.core;
 
-import io.nuun.kernel.api.ClasspathScanMode;
-import io.nuun.kernel.api.DependencyInjectionMode;
 import io.nuun.kernel.api.Plugin;
+import io.nuun.kernel.api.config.ClasspathScanMode;
+import io.nuun.kernel.api.config.DependencyInjectionMode;
+import io.nuun.kernel.api.config.KernelConfiguration;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.RoundEnvironementInternal;
 import io.nuun.kernel.api.plugin.context.Context;
@@ -370,12 +371,7 @@ public final class Kernel
         }
     }
 
-    
-    public synchronized void preStart()
-    {
-        
-    }
-    
+      
     public synchronized void start()
     {
         if (initialized)
@@ -841,12 +837,18 @@ public final class Kernel
         }
     }
 
+    
+    
+
+    
+    
     /**
      * You have only one chance to get the current kernel.
      * 
      * @param keyValues
      * @return
      */
+    @Deprecated
     public synchronized static KernelBuilderWithPluginAndContext createKernel(String... keyValues)
     {
         return new KernelBuilderImpl(keyValues);

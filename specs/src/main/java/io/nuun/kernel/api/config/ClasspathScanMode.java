@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.api;
+package io.nuun.kernel.api.config;
 
 /**
  * classpathScanMode let you configure the kernel regarding

@@ -18,9 +18,9 @@ package io.nuun.kernel.core.internal.context;
 
 import static com.google.common.base.Predicates.and;
 import static com.google.common.base.Predicates.not;
-import io.nuun.kernel.api.ClasspathScanMode;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.annotations.KernelModule;
+import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.api.inmemory.Classpath;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.RequestType;

@@ -8,7 +8,7 @@
  */
 package io.nuun.kernel.core;
 
-import io.nuun.kernel.api.ClasspathScanMode;
+import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
 import io.nuun.kernel.core.pluginsit.dummy5.DescendantFromClass;
 import io.nuun.kernel.core.pluginsit.dummy5.DummyPlugin5;
