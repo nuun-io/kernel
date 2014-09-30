@@ -11,8 +11,6 @@ public class Fixtures
     
     public static FixtureConfiguration newGivenWhenThenFixture()
     {
-        
+        return new GivenWhenThenInternal();
     }
-    
-
 }

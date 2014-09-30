@@ -17,6 +17,7 @@
 package io.nuun.kernel.tests.it.fixtures;
 
 import com.google.common.base.Predicate;
+import com.google.inject.Module;
 
 public interface ResultValidator
 {

@@ -22,5 +22,20 @@ public interface TestExecutor
 {
     
     ResultValidator whenUsing(ClasspathBuilder classpath);
+    
+    TestExecutor2 whenUsing(Class<?> class_);
+    TestExecutor2 whenUsing(String base, String resource);
 
+    
+    public static interface Flow1 extends TestExecutor2 , ResultValidator
+    {
+        
+    }
+    
+    public static interface TestExecutor2 
+    {
+        Flow1 with(Class<?> class_);
+        Flow1 with(String base, String resource);
+    }
+    
 }
