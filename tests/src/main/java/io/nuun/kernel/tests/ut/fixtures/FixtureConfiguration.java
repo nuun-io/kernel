@@ -14,13 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.tests.it.fixtures;
+package io.nuun.kernel.tests.ut.fixtures;
 
-import com.google.common.base.Predicate;
-import com.google.inject.Module;
+import io.nuun.kernel.api.Plugin;
 
-public interface ResultValidator
+public interface FixtureConfiguration
 {
-    ResultValidator expectModule(Predicate<? extends Module> predicate);
-    ResultValidator expectBinding(Predicate<? extends Module> predicate);
+    TestExecutor given(Class<? extends Plugin> pluginClass);
 }

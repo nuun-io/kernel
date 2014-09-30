@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013 Kametic <epo.jemba@kametic.com>
+ * Copyright (C) 2014 Kametic <epo.jemba@kametic.com>
  *
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * or any later version
@@ -14,18 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.tests.it.fixtures;
+package io.nuun.kernel.tests.ut.fixtures;
+
+import io.nuun.kernel.api.Plugin;
+import io.nuun.kernel.core.Kernel;
+import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
+import io.nuun.kernel.tests.ut.fixtures.TestExecutor.TestExecutorWith;
+import io.nuun.kernel.tests.ut.fixtures.TestExecutor.TestExecutotFlow;
 
 import com.google.common.base.Predicate;
 import com.google.inject.Module;
 
-import io.nuun.kernel.api.Plugin;
-import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
-import io.nuun.kernel.tests.it.fixtures.TestExecutor.TestExecutor2;
-
-class GivenWhenThenInternal implements FixtureConfiguration, TestExecutor, TestExecutor2, ResultValidator
+public class GivenWhenThenInternal implements FixtureConfiguration, TestExecutor, TestExecutorWith, TestExecutotFlow , ResultValidator
 {
 
+    Kernel kernel = null;
+    private Class<? extends Plugin> pluginClass;
+    private ClasspathBuilder classpath;
+    
     public GivenWhenThenInternal()
     {
     }
@@ -33,56 +39,52 @@ class GivenWhenThenInternal implements FixtureConfiguration, TestExecutor, TestE
     @Override
     public TestExecutor given(Class<? extends Plugin> pluginClass)
     {
-        return null;
+        this.pluginClass = pluginClass;
+        return this;
     }
     
     @Override
     public ResultValidator expectModule(Predicate<? extends Module> predicate)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public ResultValidator expectBinding(Predicate<? extends Module> predicate)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this;
     }
 
     @Override
-    public Flow1 with(Class<?> class_)
+    public TestExecutotFlow with(Class<?> class_)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this;
     }
 
     @Override
-    public Flow1 with(String base, String resource)
+    public TestExecutotFlow with(String base, String resource)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this;
     }
 
     @Override
     public ResultValidator whenUsing(ClasspathBuilder classpath)
     {
-        // TODO Auto-generated method stub
-        return null;
+        this.classpath = classpath;
+//        kernel = Kernel.createKernel(null)
+        return this;
     }
 
     @Override
-    public TestExecutor2 whenUsing(Class<?> class_)
+    public TestExecutorWith whenUsing(Class<?> class_)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this;
     }
 
     @Override
-    public TestExecutor2 whenUsing(String base, String resource)
+    public TestExecutorWith whenUsing(String base, String resource)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this;
     }
 
 

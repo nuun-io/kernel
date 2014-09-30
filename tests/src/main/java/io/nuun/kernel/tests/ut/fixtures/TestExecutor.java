@@ -14,28 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.tests.it.fixtures;
+package io.nuun.kernel.tests.ut.fixtures;
 
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
 
 public interface TestExecutor
 {
-    
-    ResultValidator whenUsing(ClasspathBuilder classpath);
-    
-    TestExecutor2 whenUsing(Class<?> class_);
-    TestExecutor2 whenUsing(String base, String resource);
 
-    
-    public static interface Flow1 extends TestExecutor2 , ResultValidator
+    ResultValidator whenUsing(ClasspathBuilder classpath);
+
+    TestExecutorWith whenUsing(Class<?> class_);
+
+    TestExecutorWith whenUsing(String base, String resource);
+
+    public static interface TestExecutotFlow extends TestExecutorWith, ResultValidator
     {
         
     }
     
-    public static interface TestExecutor2 
+    public static interface TestExecutorWith
     {
-        Flow1 with(Class<?> class_);
-        Flow1 with(String base, String resource);
+        TestExecutotFlow with(Class<?> class_);
+        
+        TestExecutotFlow with(String base, String resource);
     }
-    
+
+
 }

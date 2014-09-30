@@ -1,6 +1,7 @@
-package io.nuun.kernel.tests.it.fixtures;
+package io.nuun.kernel.tests;
 
-import io.nuun.kernel.api.Plugin;
+import io.nuun.kernel.tests.ut.fixtures.FixtureConfiguration;
+import io.nuun.kernel.tests.ut.fixtures.GivenWhenThenInternal;
 
 public class Fixtures
 {

@@ -8,12 +8,8 @@
  */
 package io.nuun.kernel.core;
 
-import static org.fest.assertions.Assertions.assertThat;
 import io.nuun.kernel.api.ClasspathScanMode;
-import io.nuun.kernel.api.inmemory.Classpath;
-import io.nuun.kernel.api.inmemory.ClasspathJar;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
-import io.nuun.kernel.core.internal.scanner.inmemory.InMemoryMultiThreadClasspath;
 import io.nuun.kernel.core.pluginsit.dummy5.DescendantFromClass;
 import io.nuun.kernel.core.pluginsit.dummy5.DummyPlugin5;
 import io.nuun.kernel.core.pluginsit.dummy5.GrandParentClass;
