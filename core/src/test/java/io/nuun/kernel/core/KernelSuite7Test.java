@@ -16,8 +16,12 @@
  */
 package io.nuun.kernel.core;
 
+import static io.nuun.kernel.core.NuunCore.createKernel;
+import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import static org.fest.assertions.Assertions.assertThat;
 import io.nuun.kernel.api.Kernel;
+import io.nuun.kernel.api.config.ClasspathScanMode;
+import io.nuun.kernel.core.pluginsit.dummy5.DummyPlugin5;
 import io.nuun.kernel.core.pluginsit.dummy7.DummyPlugin7_A;
 import io.nuun.kernel.core.pluginsit.dummy7.DummyPlugin7_B;
 
@@ -35,13 +39,18 @@ public class KernelSuite7Test
     @Test
     public void dependee_plugins_that_misses_should_be_source_of_error()
     {
-        underTest = Kernel.createKernel() //
-                .withoutSpiPluginsLoader() //
-                .withPlugins( //
-                        new DummyPlugin7_A(), //
-                        new DummyPlugin7_B() //
-                ) //
-                .build(); //
+
+        
+        underTest = createKernel(
+                //
+                newKernelConfiguration() //
+                  .withoutSpiPluginsLoader()     //
+                  .plugins( //
+                          new DummyPlugin7_A(), //
+                          new DummyPlugin7_B() //
+                  )   //
+                );
+        
         underTest.init();
         underTest.start();
 
@@ -53,13 +62,15 @@ public class KernelSuite7Test
     @Test
     public void dependee_plugins_that_misses_should_be_source_of_error_()
     {
-        underTest = Kernel.createKernel() //
-                .withoutSpiPluginsLoader() //
-                .withPlugins( //
-                        new DummyPlugin7_A(), //
-                        new DummyPlugin7_B() //
-                ) //
-                .build(); //
+        underTest = createKernel(
+                //
+                newKernelConfiguration() //
+                  .withoutSpiPluginsLoader()     //
+                  .plugins( //
+                          new DummyPlugin7_A(), //
+                          new DummyPlugin7_B() //
+                  )   //
+                );
         underTest.init();
         underTest.start();
 

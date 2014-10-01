@@ -16,8 +16,13 @@
  */
 package io.nuun.kernel.tests.it;
 
+import static io.nuun.kernel.core.NuunCore.createKernel;
+import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import io.nuun.kernel.api.Kernel;
+import io.nuun.kernel.api.config.ClasspathScanMode;
+import io.nuun.kernel.api.config.KernelConfiguration;
 import io.nuun.kernel.core.internal.KernelCore.KernelBuilderWithPluginAndContext;
+import io.nuun.kernel.core.pluginsit.dummy5.DummyPlugin5;
 import io.nuun.kernel.tests.it.annotations.Expect;
 import io.nuun.kernel.tests.it.annotations.WithPlugins;
 import io.nuun.kernel.tests.it.annotations.WithoutSpiPluginsLoader;
@@ -108,22 +113,28 @@ public class NuunITRunner extends BlockJUnit4ClassRunner
     }
     
     private Kernel initKernel() {
-        KernelBuilderWithPluginAndContext context = Kernel.createKernel();
-        withoutSpiPluginsLoader(context);
-        withPluings(context);
+
+        KernelConfiguration configuration = 
+                newKernelConfiguration() //
+                .classpathScanMode(ClasspathScanMode.IN_MEMORY) //
+                .withoutSpiPluginsLoader() // 
+                .plugins(new DummyPlugin5()) ;
         
-        Kernel underTest = context //
-                .build(); //
+        withoutSpiPluginsLoader(configuration);
+        withPlugins(configuration);
+        
+        Kernel underTest = createKernel ( configuration  );
+        
         underTest.init(); //
         underTest.start(); //
         return underTest;
     }
 
 
-    private void withPluings(KernelBuilderWithPluginAndContext context) {
+    private void withPlugins(KernelConfiguration configuration) {
         WithPlugins annotation = getTestClass().getJavaClass().getAnnotation(WithPlugins.class);
         if(annotation!=null){
-            context.withPlugins(annotation.value());
+            configuration.plugins(annotation.value());
         }
     }
     
@@ -138,9 +149,9 @@ public class NuunITRunner extends BlockJUnit4ClassRunner
     }
 
 
-    private void withoutSpiPluginsLoader(KernelBuilderWithPluginAndContext context) {
+    private void withoutSpiPluginsLoader(KernelConfiguration configuration) {
         if(getTestClass().getJavaClass().getAnnotation(WithoutSpiPluginsLoader.class)!=null){
-            context.withoutSpiPluginsLoader();
+            configuration.withoutSpiPluginsLoader();
         }
     }
     

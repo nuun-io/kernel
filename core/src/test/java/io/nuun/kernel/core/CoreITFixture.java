@@ -16,10 +16,17 @@
  */
 package io.nuun.kernel.core;
 
+import static io.nuun.kernel.core.NuunCore.createKernel;
+import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
+import io.nuun.kernel.api.config.ClasspathScanMode;
+import io.nuun.kernel.api.config.KernelConfiguration;
 import io.nuun.kernel.api.plugin.AbstractPlugin;
+import io.nuun.kernel.core.internal.KernelCoreTest;
 import io.nuun.kernel.core.internal.KernelCore.KernelBuilderWithPluginAndContext;
+import io.nuun.kernel.core.pluginsit.dummy1.DummyPlugin;
+import io.nuun.kernel.core.pluginsit.dummy5.DummyPlugin5;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
@@ -50,18 +57,22 @@ public class CoreITFixture extends AbstractFixture<Kernel> {
 	protected Kernel createUnitUnderTest() {
         
 		if (null == kernel) {
-			KernelBuilderWithPluginAndContext kernelBuilder = Kernel.createKernel(kernelParams);
 			
-			kernelBuilder.withPlugins(createInternalPluginFromModules());
-
-			kernelBuilder.withPlugins(plugins);
+			KernelConfiguration configuration= null;
 			
-			if(! spiActivated) {
-				kernelBuilder.withoutSpiPluginsLoader();
-			}
-
-					
-			kernel = kernelBuilder.build();
+	        kernel = createKernel(
+	                //
+	                configuration= newKernelConfiguration() //
+	                  .params(kernelParams)
+	                  .withoutSpiPluginsLoader()     //
+	                  .plugins(plugins)   //
+	                  .plugins(createInternalPluginFromModules())   //
+	                );
+	        
+	        if(! spiActivated) {
+                configuration.withoutSpiPluginsLoader();
+            }
+			///////////////
 			
 			kernel.init();
 			kernel.start();

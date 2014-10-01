@@ -14,16 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.core;
+package io.nuun.kernel.core.internal;
 
+import static io.nuun.kernel.core.NuunCore.createKernel;
+import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import static org.fest.assertions.Assertions.assertThat;
 import io.nuun.kernel.api.Kernel;
-import io.nuun.kernel.core.internal.KernelCoreTest;
 import io.nuun.kernel.core.pluginsit.dummy1.DummyPlugin;
 import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin2;
 import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin3;
 import io.nuun.kernel.core.pluginsit.dummy4.DummyPlugin4;
 import io.nuun.kernel.core.pluginsit.dummy5.DummyPlugin5;
+import io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_A;
+import io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_B;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -66,9 +69,17 @@ public class KernelMulticoreTest
             {
                 System.out.println("Before");
 //                startLatch.await();
-                Kernel underTest;
+                KernelCore underTest;
                 DummyPlugin4 plugin4 = new DummyPlugin4();
-                underTest = Kernel.createKernel(DummyPlugin.ALIAS_DUMMY_PLUGIN1 , "WAZAAAA", DummyPlugin.NUUNROOTALIAS , "internal,"+KernelCoreTest.class.getPackage().getName()).build();
+                
+                underTest = (KernelCore) createKernel(
+                        //
+                        newKernelConfiguration() //
+                        .params ( 
+                                DummyPlugin.ALIAS_DUMMY_PLUGIN1 , "WAZAAAA", 
+                                DummyPlugin.NUUNROOTALIAS       , "internal,"+KernelCoreTest.class.getPackage().getName()
+                                )   
+                        );
                 
                 assertThat(underTest.name()).startsWith(Kernel.KERNEL_PREFIX_NAME);
                 System.out.println(">" + underTest.name());

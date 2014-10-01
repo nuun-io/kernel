@@ -16,6 +16,8 @@
  */
 package io.nuun.kernel.core;
 
+import static io.nuun.kernel.core.NuunCore.createKernel;
+import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import static org.fest.assertions.Assertions.assertThat;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
@@ -24,6 +26,8 @@ import io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_B;
 import io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_C;
 import io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_D;
 import io.nuun.kernel.core.pluginsit.dummy6.T2;
+import io.nuun.kernel.core.pluginsit.dummy7.DummyPlugin7_A;
+import io.nuun.kernel.core.pluginsit.dummy7.DummyPlugin7_B;
 
 import java.util.ArrayList;
 
@@ -41,15 +45,19 @@ public class KernelSuite6Test
     {
         try
         {
-            underTest = Kernel.createKernel() //
-                    .withoutSpiPluginsLoader() //
-                    .withPlugins( //
-                            new DummyPlugin6_A(), //
-                            new DummyPlugin6_B() //
-                            /** ,* new* DummyPlugin6_C) */
-                            , //
-                            new DummyPlugin6_D()) //
-                    .build(); //
+ 
+            underTest = createKernel(
+                    //
+                    newKernelConfiguration() //
+                      .withoutSpiPluginsLoader()     //
+                      .plugins( //
+                              new DummyPlugin6_A(), //
+                              new DummyPlugin6_B() //
+                              /** ,* new* DummyPlugin6_C) */
+                              , //
+                              new DummyPlugin6_D() //
+                      )   //
+                    );
             underTest.init();
             assertThat(true).isFalse();
 
@@ -69,7 +77,21 @@ public class KernelSuite6Test
 
         DummyPlugin6_C dummyPlugin6_C = new DummyPlugin6_C();
         DummyPlugin6_D dummyPlugin6_D = new DummyPlugin6_D();
-        underTest = Kernel.createKernel().withoutSpiPluginsLoader().withPlugins(new DummyPlugin6_A(), new DummyPlugin6_B(), dummyPlugin6_C, dummyPlugin6_D).build();
+
+        
+        underTest = createKernel(
+                //
+                newKernelConfiguration() //
+                  .withoutSpiPluginsLoader()     //
+                  .plugins( //
+                          new DummyPlugin6_A(), 
+                          new DummyPlugin6_B(), 
+                          dummyPlugin6_C, 
+                          dummyPlugin6_D
+                  )   //
+                );
+        
+        
         assertThat(dummyPlugin6_C.isInternal()).isFalse();
         assertThat(dummyPlugin6_D.isInternal()).isFalse();
         underTest.init();
@@ -86,7 +108,14 @@ public class KernelSuite6Test
     @Test
     public void plugin_sort_algo() throws Exception
     {
-        underTest = Kernel.createKernel().withoutSpiPluginsLoader().build();
+        underTest = createKernel(
+                //
+                newKernelConfiguration() //
+                  .withoutSpiPluginsLoader()     //
+          
+                );
+        
+        
         underTest.init();
         underTest.start();
         
