@@ -17,7 +17,7 @@
 package io.nuun.kernel.tests.ut.fixtures;
 
 import io.nuun.kernel.api.Plugin;
-import io.nuun.kernel.core.Kernel;
+import io.nuun.kernel.core.internal.KernelCore;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
 import io.nuun.kernel.tests.ut.fixtures.TestExecutor.TestExecutorWith;
 import io.nuun.kernel.tests.ut.fixtures.TestExecutor.TestExecutotFlow;
@@ -28,7 +28,7 @@ import com.google.inject.Module;
 public class GivenWhenThenInternal implements FixtureConfiguration, TestExecutor, TestExecutorWith, TestExecutotFlow , ResultValidator
 {
 
-    Kernel kernel = null;
+    KernelCore kernel = null;
     private Class<? extends Plugin> pluginClass;
     private ClasspathBuilder classpath;
     

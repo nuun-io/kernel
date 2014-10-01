@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.core;
+package io.nuun.kernel.core.internal;
 
+import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.api.config.DependencyInjectionMode;
-import io.nuun.kernel.api.config.KernelConfiguration;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.RoundEnvironementInternal;
 import io.nuun.kernel.api.plugin.context.Context;
@@ -28,7 +28,7 @@ import io.nuun.kernel.api.plugin.request.BindingRequest;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.nuun.kernel.api.plugin.request.KernelParamsRequest;
 import io.nuun.kernel.api.plugin.request.KernelParamsRequestType;
-import io.nuun.kernel.core.internal.InternalKernelGuiceModule;
+import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.core.internal.context.InitContextInternal;
 import io.nuun.kernel.core.internal.graph.Graph;
 import io.nuun.kernel.spi.DependencyInjectionProvider;
@@ -54,7 +54,6 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.collections.iterators.ArrayIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,15 +68,9 @@ import com.google.inject.util.Modules;
 /**
  * @author Epo Jemba
  */
-public final class Kernel
+public final class KernelCore implements Kernel
 {
 
-    public static final String                       NUUN_ROOT_PACKAGE      = "nuun.root.package";
-    public static final String                       NUUN_NUM_CP_PATH       = "nuun.num.classpath.path";
-    public static final String                       NUUN_CP_PATH_PREFIX    = "nuun.classpath.path.prefix-";
-    public static final String                       NUUN_CP_STRATEGY_NAME  = "nuun.classpath.strategy.name";
-    public static final String                       NUUN_CP_STRATEGY_ADD   = "nuun.classpath.strategy.additional";
-    public static final String                       KERNEL_PREFIX_NAME     = "Kernel-";
     private final int                                MAXIMAL_ROUND_NUMBER   = 50;
     private final Logger                             logger;
     private static ConcurrentHashMap<String, Kernel> kernels                = new ConcurrentHashMap<String, Kernel>();
@@ -92,7 +85,7 @@ public final class Kernel
 
     private final InitContextInternal                initContext;
     private Injector                                 mainInjector;
-    private final AliasMap                           kernelParamsAndAlias;
+    private final AliasMap                           kernelParamsAndAlias   = new AliasMap();
 
     private boolean                                  started                = false;
     private boolean                                  initialized            = false;
@@ -108,49 +101,57 @@ public final class Kernel
     private RoundEnvironementInternal                roundEnv;
 	private DependencyInjectionMode                  dependencyInjectionMode;
 	private ClasspathScanMode                        classpathScanMode = ClasspathScanMode.NOMINAL;
-	private Object                                   scanConfigurationObject = null;
 
-    private Kernel(String... keyValues)
+	
+	KernelCore ( KernelConfigurationInternal kernelConfigurationInternal )
     {
-        name = KERNEL_PREFIX_NAME+kernels.size();
-        logger                 = LoggerFactory.getLogger( Kernel.class.getPackage().getName() +'.' + name());
-        kernelParamsAndAlias = new AliasMap();
-
-        @SuppressWarnings("unchecked")
-        Iterator<String> it = new ArrayIterator(keyValues);
-        while (it.hasNext())
+	    name = KERNEL_PREFIX_NAME+kernels.size();
+	    logger                 = LoggerFactory.getLogger( KernelCore.class.getPackage().getName() +'.' + name());
+	    initContext = new InitContextInternal(NUUN_PROPERTIES_PREFIX, kernelParamsAndAlias , classpathScanMode  );
+	    
+	    if (!kernels.contains(name()))
         {
-            String key = it.next();
-            String value = "";
-            if (it.hasNext()) {
-				value = it.next();
-			}
-            logger.info("Adding {} = {} as param to kernel", key, value);
-            kernelParamsAndAlias.put(key, value);
+            kernels.put(name(), this);
         }
-
-        initContext = new InitContextInternal(NUUN_PROPERTIES_PREFIX, kernelParamsAndAlias , classpathScanMode ,  scanConfigurationObject );
+        else
+        {
+            throw new KernelException(String.format("A kernel named %s already exists" , name() ));
+        }
+	    
+	    kernelConfigurationInternal.apply(this);
     }
-    
+	
+    /* (non-Javadoc)
+     * @see io.nuun.kernel.core.internal.Kernel#name()
+     */
+    @Override
     public String name()
     {
         return name;
     }
 
+    /* (non-Javadoc)
+     * @see io.nuun.kernel.core.internal.Kernel#isStarted()
+     */
+    @Override
     public boolean isStarted()
     {
         return started;
     }
 
+    /* (non-Javadoc)
+     * @see io.nuun.kernel.core.internal.Kernel#isInitialized()
+     */
+    @Override
     public boolean isInitialized()
     {
         return initialized;
     }
 
-    /**
-     * 
-     * 
+    /* (non-Javadoc)
+     * @see io.nuun.kernel.core.internal.Kernel#init()
      */
+    @Override
     public synchronized void init()
     {
         if (!initialized)
@@ -372,16 +373,20 @@ public final class Kernel
     }
 
       
+    /* (non-Javadoc)
+     * @see io.nuun.kernel.core.internal.Kernel#start()
+     */
+    @Override
     public synchronized void start()
     {
         if (initialized)
         {
             // All bindings will be computed
             
-            InternalKernelGuiceModule internalKernelGuiceModule = new InternalKernelGuiceModule(initContext);
-            InternalKernelGuiceModule internalKernelGuiceModuleOverriding = new InternalKernelGuiceModule(initContext).overriding();
+            KernelGuiceModuleInternal kernelGuiceModuleInternal = new KernelGuiceModuleInternal(initContext);
+            KernelGuiceModuleInternal internalKernelGuiceModuleOverriding = new KernelGuiceModuleInternal(initContext).overriding();
             
-            Module mainFinalModule = Modules.override(internalKernelGuiceModule).with(internalKernelGuiceModuleOverriding);
+            Module mainFinalModule = Modules.override(kernelGuiceModuleInternal).with(internalKernelGuiceModuleOverriding);
             
             // Compute Guice Stage
             Stage stage = Stage.PRODUCTION;
@@ -424,15 +429,19 @@ public final class Kernel
         }
     }
 
+    /* (non-Javadoc)
+     * @see io.nuun.kernel.core.internal.Kernel#getMainInjector()
+     */
+    @Override
     public Injector getMainInjector()
     {
         return mainInjector;
     }
 
-    /**
-     * This methods will stop all the plugin in the reverse order of the sorted plugins.
-     * 
+    /* (non-Javadoc)
+     * @see io.nuun.kernel.core.internal.Kernel#stop()
      */
+    @Override
     public void stop()
     {
     	if (started) {
@@ -889,28 +898,21 @@ public final class Kernel
     private static class KernelBuilderImpl implements KernelBuilderWithPluginAndContext
     {
 
-        private final Kernel kernel;
+        private KernelCore kernel;
 
         /**
          * 
          */
         public KernelBuilderImpl(String... keyValues)
         {
-            kernel = new Kernel(keyValues);
+            
         }
 
+        
         @Override
         public Kernel build()
         {
-            if (!kernels.contains(kernel.name))
-            {
-                kernels.put(kernel.name, kernel);
-                return kernel;
-            }
-            else
-            {
-                throw new KernelException(String.format("A kernel named %s already exists" , kernel.name ));
-            }
+         return null;
         }
 
         @Override
@@ -952,7 +954,7 @@ public final class Kernel
 
 		@Override
 		public KernelBuilderWithPluginAndContext withClasspathScanMode(ClasspathScanMode classpathScanMode , Object scanConfigurationObject) {
-			kernel.classpathScanMode(classpathScanMode,scanConfigurationObject);
+			kernel.classpathScanMode(classpathScanMode);
 			return this;
 		}
 
@@ -999,12 +1001,11 @@ public final class Kernel
 		this.dependencyInjectionMode = dependencyInjectionMode;
     }
 
-    void classpathScanMode (ClasspathScanMode classpathScanMode, Object scanConfigurationObject) {
+    void classpathScanMode (ClasspathScanMode classpathScanMode) {
 		this.classpathScanMode = classpathScanMode;
-		this.scanConfigurationObject = scanConfigurationObject;
+		
 		
 		initContext.classpathScanMode(classpathScanMode);
-		initContext.scanConfigurationObject(scanConfigurationObject);
     }
 
     /**
@@ -1046,67 +1047,12 @@ public final class Kernel
             throw new KernelException("Plugin %s can not be added. Kernel already is started", plugin.name());
         }
     }
-
-    static class AliasMap extends HashMap<String, String>
+    
+    AliasMap paramsAndAlias ()
     {
-        private static final long serialVersionUID = 1L;
-        Map<String, String> aliases = new HashMap<String, String>();
-
-        /**
-         * 
-         * 
-         * @param key      the key to alias.
-         * @param alias   the alias to give to the key.
-         * @return
-         */
-        public String putAlias(String key, String alias)
-        {
-            if (super.containsKey(alias)) {
-				throw new IllegalArgumentException("alias "+alias+" already exists in map.");
-			}
-            return aliases.put(alias, key);
-        }
-
-
-        @Override
-        public String get(Object key)
-        {
-            String keyAlias = aliases.get(key);
-            if (keyAlias == null)
-            {
-                return super.get(key);
-            }
-            else
-            {
-                return super.get(keyAlias);
-            }
-        }
-        
-        public boolean containsAllKeys(Collection<String> computedMandatoryParams)
-        {
-            HashSet<String> allKeys = new HashSet<String>();
-            allKeys.addAll( keySet() );
-            allKeys.addAll(aliases.values());
-            
-            Collection<String> trans = new HashSet<String>();
-            for (String s : computedMandatoryParams)
-            {
-                String string = aliases.get(s);
-                if (string != null)
-                {
-                    trans.add(string);
-                }
-            }
-            
-            return allKeys.containsAll(trans);
-        }
-        
-        @Override
-        public boolean containsKey(Object key)
-        {
-            return  aliases.containsKey(key) ? true :  super.containsKey(key);
-        }
-        
+        return kernelParamsAndAlias;
     }
+
+  
 
 }

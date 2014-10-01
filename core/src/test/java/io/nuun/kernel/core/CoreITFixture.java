@@ -16,9 +16,10 @@
  */
 package io.nuun.kernel.core;
 
+import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.plugin.AbstractPlugin;
-import io.nuun.kernel.core.Kernel.KernelBuilderWithPluginAndContext;
+import io.nuun.kernel.core.internal.KernelCore.KernelBuilderWithPluginAndContext;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;

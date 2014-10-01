@@ -40,13 +40,13 @@ public class InternalKernelModuleTest
 {
 
     Injector injector;
-	private InternalKernelGuiceModule underTest;
+	private KernelGuiceModuleInternal underTest;
 
     @Before
     public void init()
     {
 
-        underTest = new InternalKernelGuiceModule(new InitContextInternal("nuun-", new HashMap<String, String>()) );
+        underTest = new KernelGuiceModuleInternal(new InitContextInternal("nuun-", new HashMap<String, String>()) );
 //        Module aggregationModule = new AbstractModule()
 //        {
 //

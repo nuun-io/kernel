@@ -17,6 +17,7 @@
 package io.nuun.kernel.core;
 
 import static org.fest.assertions.Assertions.assertThat;
+import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_A;
 import io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_B;

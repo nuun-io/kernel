@@ -70,8 +70,6 @@ public class Graph {
 
 	public char[] topologicalSort() // Topological sort
 	{
-		int orig_nVerts = numVerts;
-
 		while (numVerts > 0) // while vertices remain,
 		{
 			// get a vertex with no successors, or -1

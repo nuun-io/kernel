@@ -17,13 +17,15 @@
 /**
  * 
  */
-package io.nuun.kernel.core;
+package io.nuun.kernel.core.internal;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import io.nuun.kernel.api.Plugin;
+import io.nuun.kernel.api.config.KernelConfiguration;
 import io.nuun.kernel.api.plugin.AbstractPlugin;
-import io.nuun.kernel.core.Kernel.AliasMap;
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.core.NuunCore;
 import io.nuun.kernel.core.internal.context.ContextInternal;
 import io.nuun.kernel.core.internal.scanner.sample.DummyMethod;
 import io.nuun.kernel.core.internal.scanner.sample.HolderForBeanWithParentType;
@@ -52,6 +54,7 @@ import io.nuun.kernel.core.pluginsit.dummy5.DummyPlugin5;
 import io.nuun.kernel.core.pluginsit.dummy5.ParentClass;
 import io.nuun.kernel.core.pluginsit.dummy5.ToFind;
 import io.nuun.kernel.core.pluginsit.dummy5.ToFind2;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -81,13 +84,13 @@ import com.google.inject.name.Names;
  * @author Epo Jemba
  * 
  */
-public class KernelTest
+public class KernelCoreTest
 {
-    static Logger logger = LoggerFactory.getLogger(KernelTest.class);
+    static Logger logger = LoggerFactory.getLogger(KernelCoreTest.class);
     
     Injector      injector;
 
-    static Kernel underTest;
+    static KernelCore underTest;
     static DummyPlugin4 plugin4 = new DummyPlugin4();
 
     static long start;
@@ -98,8 +101,16 @@ public class KernelTest
     public static void init()
     {
         start = System.currentTimeMillis();
-//        underTest = Kernel.createKernel(DummyPlugin.ALIAS_DUMMY_PLUGIN1 , "WAZAAAA", DummyPlugin.NUUNROOTALIAS , "").build();
-        underTest = Kernel.createKernel(DummyPlugin.ALIAS_DUMMY_PLUGIN1 , "WAZAAAA", DummyPlugin.NUUNROOTALIAS , "internal,"+KernelTest.class.getPackage().getName()).build();
+        
+        KernelConfiguration configuration = NuunCore.newKernelConfiguration();
+        
+        configuration //
+        
+            .param(DummyPlugin.ALIAS_DUMMY_PLUGIN1, "WAZAAAA")
+            .param(DummyPlugin.NUUNROOTALIAS , "internal," + KernelCoreTest.class.getPackage().getName());
+        
+
+        underTest = (KernelCore) NuunCore.createKernel(configuration);
         try
         {
             underTest.init();

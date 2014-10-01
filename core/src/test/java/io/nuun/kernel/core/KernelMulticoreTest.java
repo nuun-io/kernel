@@ -17,6 +17,8 @@
 package io.nuun.kernel.core;
 
 import static org.fest.assertions.Assertions.assertThat;
+import io.nuun.kernel.api.Kernel;
+import io.nuun.kernel.core.internal.KernelCoreTest;
 import io.nuun.kernel.core.pluginsit.dummy1.DummyPlugin;
 import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin2;
 import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin3;
@@ -66,7 +68,7 @@ public class KernelMulticoreTest
 //                startLatch.await();
                 Kernel underTest;
                 DummyPlugin4 plugin4 = new DummyPlugin4();
-                underTest = Kernel.createKernel(DummyPlugin.ALIAS_DUMMY_PLUGIN1 , "WAZAAAA", DummyPlugin.NUUNROOTALIAS , "internal,"+KernelTest.class.getPackage().getName()).build();
+                underTest = Kernel.createKernel(DummyPlugin.ALIAS_DUMMY_PLUGIN1 , "WAZAAAA", DummyPlugin.NUUNROOTALIAS , "internal,"+KernelCoreTest.class.getPackage().getName()).build();
                 
                 assertThat(underTest.name()).startsWith(Kernel.KERNEL_PREFIX_NAME);
                 System.out.println(">" + underTest.name());

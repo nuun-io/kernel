@@ -46,22 +46,22 @@ import com.google.inject.util.Providers;
  * 
  * @author ejemba
  */
-public class InternalKernelGuiceModule extends AbstractModule
+public class KernelGuiceModuleInternal extends AbstractModule
 {
 
-    private Logger                    logger = LoggerFactory.getLogger(InternalKernelGuiceModule.class);
+    private Logger                    logger = LoggerFactory.getLogger(KernelGuiceModuleInternal.class);
 
     private final InitContextInternal currentContext;
     
     private boolean overriding = false;
 
-    public InternalKernelGuiceModule(InitContextInternal kernelContext)
+    public KernelGuiceModuleInternal(InitContextInternal kernelContext)
     {
         currentContext = kernelContext;
 
     }
 
-    public InternalKernelGuiceModule overriding()
+    public KernelGuiceModuleInternal overriding()
     {
         overriding = true;
         return this;

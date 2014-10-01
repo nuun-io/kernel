@@ -16,8 +16,8 @@
  */
 package io.nuun.kernel.tests.it;
 
-import io.nuun.kernel.core.Kernel;
-import io.nuun.kernel.core.Kernel.KernelBuilderWithPluginAndContext;
+import io.nuun.kernel.api.Kernel;
+import io.nuun.kernel.core.internal.KernelCore.KernelBuilderWithPluginAndContext;
 import io.nuun.kernel.tests.it.annotations.Expect;
 import io.nuun.kernel.tests.it.annotations.WithPlugins;
 import io.nuun.kernel.tests.it.annotations.WithoutSpiPluginsLoader;

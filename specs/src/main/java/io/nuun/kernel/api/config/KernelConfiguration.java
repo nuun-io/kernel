@@ -21,13 +21,22 @@ import io.nuun.kernel.api.Plugin;
 public interface KernelConfiguration
 {
 
-    void param(String key, String value);
-    void params(String... paramEntries);
-    void containerContext(Object containerContext);
-    void plugins(Class<? extends Plugin>... pluginsClass);
-    void plugins(Plugin... plugins);
-    void withoutSpiPluginsLoader();
-    void dependencyInjectionMode(DependencyInjectionMode mode);
-    void classpathScanMode(ClasspathScanMode mode);
+    KernelConfiguration param(String key, String value);
+    
+    KernelConfiguration params(String... paramEntries);
+    
+    KernelConfiguration containerContext(Object containerContext);
+    
+    KernelConfiguration plugins(Class<? extends Plugin>... pluginsClass);
+    
+    KernelConfiguration plugins(Plugin... plugins);
+    
+    KernelConfiguration withoutSpiPluginsLoader();
+    
+    KernelConfiguration withSpiPluginsLoader();
+
+    KernelConfiguration dependencyInjectionMode(DependencyInjectionMode mode);
+    
+    KernelConfiguration classpathScanMode(ClasspathScanMode mode);
     
 }

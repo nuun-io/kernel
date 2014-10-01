@@ -20,6 +20,7 @@
 package io.nuun.kernel.core.pluginsit.dummy1;
 
 import static org.fest.assertions.Assertions.assertThat;
+import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.plugin.AbstractPlugin;
 import io.nuun.kernel.api.plugin.InitState;
@@ -28,8 +29,7 @@ import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.BindingRequest;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.nuun.kernel.api.plugin.request.KernelParamsRequest;
-import io.nuun.kernel.core.Kernel;
-import io.nuun.kernel.core.KernelTest;
+import io.nuun.kernel.core.internal.KernelCoreTest;
 import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin2;
 
 import java.lang.annotation.Annotation;
@@ -133,7 +133,7 @@ public class DummyPlugin extends AbstractPlugin
 
         String param2 = initContext.getKernelParam( Kernel.NUUN_ROOT_PACKAGE );
         assertThat(param2).isNotNull();
-        assertThat(param2).isEqualTo("internal,"+KernelTest.class.getPackage().getName());
+        assertThat(param2).isEqualTo("internal,"+KernelCoreTest.class.getPackage().getName());
         
         Map<Class<? extends Annotation>, Collection<Class<?>>> scannedClassesByAnnotationClass = initContext.scannedClassesByAnnotationClass();
         

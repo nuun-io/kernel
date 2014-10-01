@@ -24,8 +24,8 @@ import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.api.inmemory.Classpath;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.RequestType;
-import io.nuun.kernel.core.Kernel;
 import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.core.internal.KernelCore;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner.Callback;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner.CallbackResources;
@@ -57,13 +57,14 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
+
 @SuppressWarnings("rawtypes")
 public class InitContextInternal implements InitContext
 {
 
-    private Logger                                                       logger = LoggerFactory.getLogger(InitContextInternal.class);
+    private Logger                                                 logger      = LoggerFactory.getLogger(InitContextInternal.class);
 
-    ClasspathScanner                                                     classpathScanner;
+    ClasspathScanner                                               classpathScanner;
 
     private List<Class<?>>                                         parentTypesClassesToScan;
     private List<Class<?>>                                         ancestorTypesClassesToScan;
@@ -79,7 +80,7 @@ public class InitContextInternal implements InitContext
     private List<Class<?>>                                         ancestorTypesClassesToBind;
     private List<String>                                           parentTypesRegexToBind;
     private List<Specification<Class<?>>>                          specificationsToBind;
-    private Map<Key , Object>                                       mapOfScopes;
+    private Map<Key, Object>                                       mapOfScopes;
     private List<Class<? extends Annotation>>                      annotationTypesToBind;
     private List<Class<? extends Annotation>>                      metaAnnotationTypesToBind;
     private List<String>                                           annotationRegexToBind;
@@ -93,17 +94,13 @@ public class InitContextInternal implements InitContext
     private Set<URL>                                               additionalClasspathScan;
     private ClasspathStrategy                                      classpathStrategy;
 
-    private Set<Class<?>>                                               classesToBind;
-    private Map<Class<?> , Object>                                       classesWithScopes;
+    private Set<Class<?>>                                          classesToBind;
+    private Map<Class<?>, Object>                                  classesWithScopes;
 
-    private Collection<String>                                           propertiesFiles;
+    private Collection<String>                                     propertiesFiles;
 
     private Map<String, String>                                    kernelParams;
 
-    private Collection<Class<?>>                                         scanClasspathForSubType;
-    private Collection<Class<?>>                                         scanClasspathForAncestorType;
-    private Collection<Class<?>>                                         bindClasspathForSubType;
-    private Collection<Class<?>>                                         bindClasspathForAncestorType;
     private Map<Class<?>, Collection<Class<?>>>                    mapSubTypes;
     private Map<Class<?>, Collection<Class<?>>>                    mapAncestorTypes;
     private Map<String, Collection<Class<?>>>                      mapSubTypesByName;
@@ -114,22 +111,21 @@ public class InitContextInternal implements InitContext
     private Map<String, Collection<String>>                        mapPropertiesFiles;
     private Map<String, Collection<String>>                        mapResourcesByRegex;
 
-    private String initialPropertiesPrefix;
+    private String                                                 initialPropertiesPrefix;
 
-    private int roundNumber = 0;
+    private int                                                    roundNumber = 0;
 
-	private ClasspathScanMode classpathScanMode;
+    private ClasspathScanMode                                      classpathScanMode;
 
-	private Object scanConfigurationObject = null;
+    /**
+     * @param classpathScanMode
+     * @param inPackageRoots
+     */
+    public InitContextInternal(String initialPropertiesPrefix, Map<String, String> kernelParams)
+    {
+        this(initialPropertiesPrefix, kernelParams, ClasspathScanMode.NOMINAL);
+    }
 
-	/**
-	 * @param classpathScanMode
-	 * @param inPackageRoots
-	 */
-	public InitContextInternal(String initialPropertiesPrefix, Map<String, String> kernelParams)
-	{
-		this(initialPropertiesPrefix , kernelParams , ClasspathScanMode.NOMINAL);
-	}
     /**
      * @param classpathScanMode
      * @param inPackageRoots
@@ -137,12 +133,14 @@ public class InitContextInternal implements InitContext
     public InitContextInternal(String initialPropertiesPrefix, Map<String, String> kernelParams, ClasspathScanMode classpathScanMode)
     {
         this.classpathScanMode = classpathScanMode;
-		String classpathStrategyNameParam = kernelParams.get(Kernel.NUUN_CP_STRATEGY_NAME);
-        String classpathStrategyAdditionalParam = kernelParams.get(Kernel.NUUN_CP_STRATEGY_ADD);
+        String classpathStrategyNameParam = kernelParams.get(KernelCore.NUUN_CP_STRATEGY_NAME);
+        String classpathStrategyAdditionalParam = kernelParams.get(KernelCore.NUUN_CP_STRATEGY_ADD);
 
-        classpathStrategy = new ClasspathStrategy(
-                classpathStrategyNameParam == null ? ClasspathStrategy.Strategy.ALL : ClasspathStrategy.Strategy.valueOf(classpathStrategyNameParam.toUpperCase()),
-                classpathStrategyAdditionalParam == null ? true : Boolean.parseBoolean(classpathStrategyAdditionalParam));
+        classpathStrategy = new ClasspathStrategy(classpathStrategyNameParam == null
+                ? ClasspathStrategy.Strategy.ALL
+                : ClasspathStrategy.Strategy.valueOf(classpathStrategyNameParam.toUpperCase()), classpathStrategyAdditionalParam == null
+                ? true
+                : Boolean.parseBoolean(classpathStrategyAdditionalParam));
 
         packageRoots = new LinkedList<String>();
         this.initialPropertiesPrefix = initialPropertiesPrefix;
@@ -153,16 +151,7 @@ public class InitContextInternal implements InitContext
         classesWithScopes = new HashMap<Class<?>, Object>();
         reset();
     }
-    
-    
-    public InitContextInternal(String initialPropertiesPrefix, Map<String, String> kernelParams, ClasspathScanMode classpathScanMode, Object scanConfigurationObject)
-    {
-    	this(initialPropertiesPrefix,  kernelParams, classpathScanMode );
-		this.scanConfigurationObject = scanConfigurationObject;
-    	
-    	
-    }
-    
+
     public void reset()
     {
         mapSubTypes = new HashMap<Class<?>, Collection<Class<?>>>();
@@ -174,7 +163,7 @@ public class InitContextInternal implements InitContext
         mapAnnotationTypesByName = new HashMap<String, Collection<Class<?>>>();
         mapPropertiesFiles = new HashMap<String, Collection<String>>();
         mapResourcesByRegex = new HashMap<String, Collection<String>>();
-        
+
         annotationTypesToScan = new LinkedList<Class<? extends Annotation>>();
         parentTypesClassesToScan = new LinkedList<Class<?>>();
         ancestorTypesClassesToScan = new LinkedList<Class<?>>();
@@ -184,7 +173,7 @@ public class InitContextInternal implements InitContext
         resourcesRegexToScan = new LinkedList<String>();
         parentTypesRegexToScan = new LinkedList<String>();
         annotationRegexToScan = new LinkedList<String>();
-        
+
         annotationTypesToBind = new LinkedList<Class<? extends Annotation>>();
         metaAnnotationTypesToBind = new LinkedList<Class<? extends Annotation>>();
         parentTypesClassesToBind = new LinkedList<Class<?>>();
@@ -194,49 +183,37 @@ public class InitContextInternal implements InitContext
         mapOfScopes = new HashMap<Key, Object>();
         annotationRegexToBind = new LinkedList<String>();
         metaAnnotationRegexToBind = new LinkedList<String>();
-        
+
         propertiesPrefix = new LinkedList<String>();
         propertiesPrefix.add(initialPropertiesPrefix);
         additionalClasspathScan = new HashSet<URL>();
     }
-    
-    public void classpathScanMode( ClasspathScanMode classpathScanMode)
+
+    public void classpathScanMode(ClasspathScanMode classpathScanMode)
     {
-    	this.classpathScanMode = classpathScanMode;
-    }
-    
-    public void scanConfigurationObject( Object scanConfigurationObject)
-    {
-    	this.scanConfigurationObject = scanConfigurationObject;
+        this.classpathScanMode = classpathScanMode;
     }
 
     private void initScanner()
     {
         String[] packageRootArray = new String[packageRoots.size()];
         packageRoots.toArray(packageRootArray);
-        
+
         ClasspathScannerFactory classpathScannerFactory = new ClasspathScannerFactory();
-		if (classpathScanMode == ClasspathScanMode.NOMINAL)
-		{
-        	classpathScanner = classpathScannerFactory.create(classpathStrategy, additionalClasspathScan , packageRootArray);
-        }
-		else if (classpathScanMode == ClasspathScanMode.IN_MEMORY)
+        if (classpathScanMode == ClasspathScanMode.NOMINAL)
         {
-        	if ( scanConfigurationObject != null )
-        	{
-        		Classpath classpath = Classpath.class.cast(scanConfigurationObject);
-        		classpathScanner = classpathScannerFactory.createInMemory(classpath,packageRootArray);
-        	}
-        	else
-        	{
-        		Classpath classpath = InMemoryMultiThreadClasspath.INSTANCE;
-        		classpathScanner = classpathScannerFactory.createInMemory(classpath,packageRootArray);
-        	}
-        	
+            classpathScanner = classpathScannerFactory.create(classpathStrategy, additionalClasspathScan, packageRootArray);
         }
-        
+        else if (classpathScanMode == ClasspathScanMode.IN_MEMORY)
+        {
+
+            Classpath classpath = InMemoryMultiThreadClasspath.INSTANCE;
+            classpathScanner = classpathScannerFactory.createInMemory(classpath, packageRootArray);
+
+        }
+
     }
-    
+
     class IsModuleOverriding implements Predicate<Class<? extends Module>>
     {
 
@@ -244,22 +221,23 @@ public class InitContextInternal implements InitContext
         public boolean apply(Class<? extends Module> input)
         {
             KernelModule annotation = input.getAnnotation(KernelModule.class);
-            
+
             return annotation.overriding();
         }
-        
+
     }
+
     class IsModuleAbstract implements Predicate<Class<? extends Module>>
     {
-    	
-    	@Override
-    	public boolean apply(Class<? extends Module> input)
-    	{
-    		return Modifier.isAbstract(input.getModifiers());
-    	}
-    	
+
+        @Override
+        public boolean apply(Class<? extends Module> input)
+        {
+            return Modifier.isAbstract(input.getModifiers());
+        }
+
     }
-    
+
     class ModuleClass2Instance implements Function<Class<? extends Module>, Module>
     {
 
@@ -286,27 +264,29 @@ public class InitContextInternal implements InitContext
         }
     }
 
-    
     public void executeRequests()
     {
         initScanner();
-        
+
         { // bind modules
             Callback callback = new Callback()
             { // executed only after the classpath scan occurs
+                @SuppressWarnings("unchecked")
                 @Override
-                public void callback(Collection<Class<? >> scanResult)
+                public void callback(Collection<Class<?>> scanResult)
                 {
-                    
-                    Collection<Class<? extends Module>> scanResult2 = (Collection) scanResult ;
-                    FluentIterable<Module> nominals = FluentIterable.from(scanResult2).filter( and( not(new IsModuleOverriding())  ,   not (new IsModuleAbstract())  )   ).transform(new ModuleClass2Instance());
-                    FluentIterable<Module> overriders = FluentIterable.from(scanResult2).filter( and ( new IsModuleOverriding() , not (new IsModuleAbstract())) ).transform(new ModuleClass2Instance());
-                    
+
+                    Collection<Class<? extends Module>> scanResult2 = (Collection) scanResult;
+                    FluentIterable<Module> nominals = FluentIterable.from(scanResult2).filter(and(not(new IsModuleOverriding()), not(new IsModuleAbstract())))
+                            .transform(new ModuleClass2Instance());
+                    FluentIterable<Module> overriders = FluentIterable.from(scanResult2).filter(and(new IsModuleOverriding(), not(new IsModuleAbstract())))
+                            .transform(new ModuleClass2Instance());
+
                     childModules.addAll(nominals.toImmutableSet());
                     childOverridingModules.addAll(overriders.toImmutableSet());
                 }
             };
-            classpathScanner.scanClasspathForAnnotation(KernelModule.class , callback); // OK
+            classpathScanner.scanClasspathForAnnotation(KernelModule.class, callback); // OK
 
         }
 
@@ -321,7 +301,7 @@ public class InitContextInternal implements InitContext
                     mapSubTypes.put(parentType, scanResult);
                 }
             };
-            classpathScanner.scanClasspathForSubTypeClass(parentType , callback); // OK
+            classpathScanner.scanClasspathForSubTypeClass(parentType, callback); // OK
         }
 
         for (final Class<?> parentType : ancestorTypesClassesToScan)
@@ -334,7 +314,7 @@ public class InitContextInternal implements InitContext
                     mapAncestorTypes.put(parentType, scanResult);
                 }
             };
-            classpathScanner.scanClasspathForSpecification(new DescendantOfSpecification(parentType) , callback); // ok
+            classpathScanner.scanClasspathForSpecification(new DescendantOfSpecification(parentType), callback); // ok
         }
 
         // for (Class<?> type : this.typesClassesToScan)
@@ -356,7 +336,7 @@ public class InitContextInternal implements InitContext
             };
             classpathScanner.scanClasspathForSubTypeRegex(typeName, callback); // OK
         }
-        
+
         for (final String typeName : typesRegexToScan)
         {
             Callback callback = new Callback()
@@ -369,7 +349,7 @@ public class InitContextInternal implements InitContext
             };
             classpathScanner.scanClasspathForTypeRegex(typeName, callback); // OK
         }
-        
+
         for (final Specification<Class<?>> spec : specificationsToScan)
         {
             Callback callback = new Callback()
@@ -393,7 +373,7 @@ public class InitContextInternal implements InitContext
                     mapAnnotationTypes.put(annotationType, scanResult);
                 }
             };
-            classpathScanner.scanClasspathForAnnotation(annotationType , callback);// ok
+            classpathScanner.scanClasspathForAnnotation(annotationType, callback);// ok
         }
 
         for (final String annotationName : annotationRegexToScan)
@@ -406,8 +386,8 @@ public class InitContextInternal implements InitContext
                     mapAnnotationTypesByName.put(annotationName, scanResult);
                 }
             };
-            classpathScanner.scanClasspathForAnnotationRegex(annotationName,callback); // ok
-            
+            classpathScanner.scanClasspathForAnnotationRegex(annotationName, callback); // ok
+
         }
 
         // CLASSES TO BIND
@@ -420,13 +400,13 @@ public class InitContextInternal implements InitContext
                 public void callback(Collection<Class<?>> scanResult)
                 {
                     RequestType requestType = RequestType.SUBTYPE_OF_BY_CLASS;
-                    addScopeToClasses( scanResult , scope(requestType , parentType ) , classesWithScopes);
-                    
+                    addScopeToClasses(scanResult, scope(requestType, parentType), classesWithScopes);
+
                     classesToBind.addAll(scanResult);
                 }
             };
-            classpathScanner.scanClasspathForSubTypeClass(parentType , callback); // OK
-            
+            classpathScanner.scanClasspathForSubTypeClass(parentType, callback); // OK
+
         }
         for (final Class<?> ancestorType : ancestorTypesClassesToBind)
         {
@@ -436,11 +416,11 @@ public class InitContextInternal implements InitContext
                 public void callback(Collection<Class<?>> scanResult)
                 {
                     RequestType requestType = RequestType.SUBTYPE_OF_BY_TYPE_DEEP;
-                    addScopeToClasses( scanResult , scope(requestType , ancestorType ) , classesWithScopes);
+                    addScopeToClasses(scanResult, scope(requestType, ancestorType), classesWithScopes);
                     classesToBind.addAll(scanResult);
                 }
             };
-            classpathScanner.scanClasspathForSpecification(new DescendantOfSpecification(ancestorType) , callback); // OK
+            classpathScanner.scanClasspathForSpecification(new DescendantOfSpecification(ancestorType), callback); // OK
         }
 
         // TODO vérifier si ok parent types vs type. si ok changer de nom
@@ -452,14 +432,14 @@ public class InitContextInternal implements InitContext
                 public void callback(Collection<Class<?>> scanResult)
                 {
                     RequestType requestType = RequestType.SUBTYPE_OF_BY_REGEX_MATCH;
-                    addScopeToClasses( scanResult , scope(requestType , typeName ) , classesWithScopes);
+                    addScopeToClasses(scanResult, scope(requestType, typeName), classesWithScopes);
                     classesToBind.addAll(scanResult);
                 }
             };
-            classpathScanner.scanClasspathForTypeRegex(typeName,callback); // ok
+            classpathScanner.scanClasspathForTypeRegex(typeName, callback); // ok
         }
 
-        for (final Specification<Class<?>>  spec : specificationsToBind)
+        for (final Specification<Class<?>> spec : specificationsToBind)
         {
             Callback callback = new Callback()
             { // executed only after the classpath scan occurs
@@ -467,12 +447,12 @@ public class InitContextInternal implements InitContext
                 public void callback(Collection<Class<?>> scanResult)
                 {
                     RequestType requestType = RequestType.VIA_SPECIFICATION;
-                    addScopeToClasses(scanResult, scope(requestType , spec ) , classesWithScopes);
-                    
+                    addScopeToClasses(scanResult, scope(requestType, spec), classesWithScopes);
+
                     classesToBind.addAll(scanResult);
                 }
             };
-            classpathScanner.scanClasspathForSpecification(spec,callback); // ok
+            classpathScanner.scanClasspathForSpecification(spec, callback); // ok
         }
 
         for (final Class<? extends Annotation> annotationType : annotationTypesToBind)
@@ -483,11 +463,11 @@ public class InitContextInternal implements InitContext
                 public void callback(Collection<Class<?>> scanResult)
                 {
                     RequestType requestType = RequestType.ANNOTATION_TYPE;
-                    addScopeToClasses( scanResult , scope(requestType , annotationType ) , classesWithScopes);
+                    addScopeToClasses(scanResult, scope(requestType, annotationType), classesWithScopes);
                     classesToBind.addAll(scanResult);
                 }
             };
-            classpathScanner.scanClasspathForAnnotation(annotationType,callback); // OK
+            classpathScanner.scanClasspathForAnnotation(annotationType, callback); // OK
         }
 
         for (final Class<? extends Annotation> metaAnnotationType : metaAnnotationTypesToBind)
@@ -498,11 +478,11 @@ public class InitContextInternal implements InitContext
                 public void callback(Collection<Class<?>> scanResult)
                 {
                     RequestType requestType = RequestType.META_ANNOTATION_TYPE;
-                    addScopeToClasses( scanResult , scope(requestType , metaAnnotationType ) , classesWithScopes);
+                    addScopeToClasses(scanResult, scope(requestType, metaAnnotationType), classesWithScopes);
                     classesToBind.addAll(scanResult);
                 }
             };
-            classpathScanner.scanClasspathForMetaAnnotation(metaAnnotationType,callback); // ok
+            classpathScanner.scanClasspathForMetaAnnotation(metaAnnotationType, callback); // ok
         }
 
         for (final String annotationNameRegex : annotationRegexToBind)
@@ -513,11 +493,11 @@ public class InitContextInternal implements InitContext
                 public void callback(Collection<Class<?>> scanResult)
                 {
                     RequestType requestType = RequestType.ANNOTATION_REGEX_MATCH;
-                    addScopeToClasses( scanResult , scope(requestType , annotationNameRegex ) , classesWithScopes);
+                    addScopeToClasses(scanResult, scope(requestType, annotationNameRegex), classesWithScopes);
                     classesToBind.addAll(scanResult);
                 }
             };
-            classpathScanner.scanClasspathForAnnotationRegex(annotationNameRegex,callback); // ok
+            classpathScanner.scanClasspathForAnnotationRegex(annotationNameRegex, callback); // ok
         }
 
         for (final String metaAnnotationNameRegex : metaAnnotationRegexToBind)
@@ -528,15 +508,15 @@ public class InitContextInternal implements InitContext
                 public void callback(Collection<Class<?>> scanResult)
                 {
                     RequestType requestType = RequestType.META_ANNOTATION_REGEX_MATCH;
-                    addScopeToClasses( scanResult , scope(requestType , metaAnnotationNameRegex ) , classesWithScopes);
+                    addScopeToClasses(scanResult, scope(requestType, metaAnnotationNameRegex), classesWithScopes);
                     classesToBind.addAll(scanResult);
                 }
             };
-            classpathScanner.scanClasspathForMetaAnnotationRegex(metaAnnotationNameRegex,callback); // ok
+            classpathScanner.scanClasspathForMetaAnnotationRegex(metaAnnotationNameRegex, callback); // ok
         }
 
         // Resources to scan
-        
+
         for (final String regex : resourcesRegexToScan)
         {
             CallbackResources callback = new CallbackResources()
@@ -547,9 +527,9 @@ public class InitContextInternal implements InitContext
                     mapResourcesByRegex.put(regex, scanResult);
                 }
             };
-            classpathScanner.scanClasspathForResource(regex , callback); // OK
+            classpathScanner.scanClasspathForResource(regex, callback); // OK
         }
-        
+
         // PROPERTIES TO FETCH
         propertiesFiles = new HashSet<String>();
         for (final String prefix : propertiesPrefix)
@@ -563,55 +543,57 @@ public class InitContextInternal implements InitContext
                     mapPropertiesFiles.put(prefix, scanResult);
                 }
             };
-            classpathScanner.scanClasspathForResource(prefix + ".*\\.properties" , callback); // OK
+            classpathScanner.scanClasspathForResource(prefix + ".*\\.properties", callback); // OK
         }
-        
+
         // ACTUALLY LAUNCH THE SEARCH
         classpathScanner.doClasspathScan();
     }
 
-    private Object scope( RequestType requestType , Object spec)
+    private Object scope(RequestType requestType, Object spec)
     {
-        Object scope = mapOfScopes.get( key( requestType ,  spec));
-        if (null == scope) {
-			scope = Scopes.NO_SCOPE;
-		}
+        Object scope = mapOfScopes.get(key(requestType, spec));
+        if (null == scope)
+        {
+            scope = Scopes.NO_SCOPE;
+        }
         return scope;
     }
-    
-    private void addScopeToClasses(Collection<Class<?>> classes , Object scope, Map<Class<?>, Object> inClassesWithScopes)
+
+    private void addScopeToClasses(Collection<Class<?>> classes, Object scope, Map<Class<?>, Object> inClassesWithScopes)
     {
         for (Class<?> klass : classes)
         {
-            if (!inClassesWithScopes.containsKey(klass)  && scope != null )
+            if (!inClassesWithScopes.containsKey(klass) && scope != null)
             {
                 inClassesWithScopes.put(klass, scope);
             }
             else
             {
                 Object insideScope = inClassesWithScopes.get(klass);
-                if ( ! insideScope.equals(scope))
+                if (!insideScope.equals(scope))
                 {
-                    String format = String.format("Class %s is already associated with scope %s but  %s", klass.getName() , insideScope , scope );
+                    String format = String.format("Class %s is already associated with scope %s but  %s", klass.getName(), insideScope, scope);
                     logger.error(format);
                     throw new KernelException(format);
                 }
             }
         }
     }
-    
+
     public void addClasspathsToScan(Set<URL> paths)
     {
         if (paths != null && paths.size() > 0)
         {
-            additionalClasspathScan.addAll( paths );
+            additionalClasspathScan.addAll(paths);
         }
     }
+
     public void addClasspathToScan(URL path)
     {
-        if (path != null )
+        if (path != null)
         {
-            additionalClasspathScan.add( path );
+            additionalClasspathScan.add(path);
         }
     }
 
@@ -662,7 +644,7 @@ public class InitContextInternal implements InitContext
     {
         return Collections.unmodifiableMap(mapPropertiesFiles);
     }
-    
+
     @Override
     public Map<String, Collection<String>> mapResourcesByRegex()
     {
@@ -699,20 +681,20 @@ public class InitContextInternal implements InitContext
         typesClassesToScan.add(type);
     }
 
-    private Key key(RequestType type , Object key)
+    private Key key(RequestType type, Object key)
     {
         return new Key(type, key);
     }
-    
-    public void addParentTypeClassToBind(Class<?> type , Object scope)
+
+    public void addParentTypeClassToBind(Class<?> type, Object scope)
     {
-        updateScope(key ( RequestType.SUBTYPE_OF_BY_CLASS ,  type), scope);
+        updateScope(key(RequestType.SUBTYPE_OF_BY_CLASS, type), scope);
         parentTypesClassesToBind.add(type);
     }
 
-    public void addAncestorTypeClassToBind(Class<?> type , Object scope)
+    public void addAncestorTypeClassToBind(Class<?> type, Object scope)
     {
-        updateScope(key ( RequestType.SUBTYPE_OF_BY_TYPE_DEEP ,  type), scope);
+        updateScope(key(RequestType.SUBTYPE_OF_BY_TYPE_DEEP, type), scope);
         ancestorTypesClassesToBind.add(type);
     }
 
@@ -720,7 +702,7 @@ public class InitContextInternal implements InitContext
     {
         typesRegexToScan.add(type);
     }
-    
+
     public void addSpecificationToScan(Specification<Class<?>> specification)
     {
         specificationsToScan.add(specification);
@@ -731,22 +713,23 @@ public class InitContextInternal implements InitContext
         parentTypesRegexToScan.add(type);
     }
 
-    public void addTypeRegexesToBind(String type , Object scope)
+    public void addTypeRegexesToBind(String type, Object scope)
     {
-        updateScope(key ( RequestType.TYPE_OF_BY_REGEX_MATCH,  type), scope);
+        updateScope(key(RequestType.TYPE_OF_BY_REGEX_MATCH, type), scope);
         parentTypesRegexToBind.add(type);
     }
+
     /**
      * @category bind
      * @param specification
      */
-//    public void addSpecificationToBind(Specification<Class<?>> specification)
-//    {
-//        this.specificationsToBind.add(specification);
-//        this.mapSpecificationScope.put(specification, Scopes.NO_SCOPE);
-//    }
+    // public void addSpecificationToBind(Specification<Class<?>> specification)
+    // {
+    // this.specificationsToBind.add(specification);
+    // this.mapSpecificationScope.put(specification, Scopes.NO_SCOPE);
+    // }
 
-    private void updateScope ( Key key , Object scope)
+    private void updateScope(Key key, Object scope)
     {
         if (scope != null)
         {
@@ -756,14 +739,13 @@ public class InitContextInternal implements InitContext
         {
             mapOfScopes.put(key, Scopes.NO_SCOPE);
         }
-            
-        
+
     }
-    
-    public void addSpecificationToBind(Specification<Class<?>> specification , Object scope)
+
+    public void addSpecificationToBind(Specification<Class<?>> specification, Object scope)
     {
         specificationsToBind.add(specification);
-        updateScope(key ( RequestType.VIA_SPECIFICATION ,  specification), scope);
+        updateScope(key(RequestType.VIA_SPECIFICATION, specification), scope);
     }
 
     public void addAnnotationTypesToScan(Class<? extends Annotation> types)
@@ -771,16 +753,16 @@ public class InitContextInternal implements InitContext
         annotationTypesToScan.add(types);
     }
 
-    public void addAnnotationTypesToBind(Class<? extends Annotation> types , Object scope)
+    public void addAnnotationTypesToBind(Class<? extends Annotation> types, Object scope)
     {
         annotationTypesToBind.add(types);
-        updateScope(key ( RequestType.ANNOTATION_TYPE ,  types), scope);
+        updateScope(key(RequestType.ANNOTATION_TYPE, types), scope);
     }
 
-    public void addMetaAnnotationTypesToBind(Class<? extends Annotation> types , Object scope)
+    public void addMetaAnnotationTypesToBind(Class<? extends Annotation> types, Object scope)
     {
         metaAnnotationTypesToBind.add(types);
-        updateScope(key ( RequestType.META_ANNOTATION_TYPE ,  types), scope);
+        updateScope(key(RequestType.META_ANNOTATION_TYPE, types), scope);
     }
 
     public void addAnnotationRegexesToScan(String names)
@@ -791,12 +773,13 @@ public class InitContextInternal implements InitContext
     public void addAnnotationRegexesToBind(String names, Object scope)
     {
         annotationRegexToBind.add(names);
-        updateScope(key ( RequestType.ANNOTATION_REGEX_MATCH ,  names), scope);
+        updateScope(key(RequestType.ANNOTATION_REGEX_MATCH, names), scope);
     }
+
     public void addMetaAnnotationRegexesToBind(String names, Object scope)
     {
         metaAnnotationRegexToBind.add(names);
-        updateScope(key ( RequestType.META_ANNOTATION_REGEX_MATCH,  names), scope);
+        updateScope(key(RequestType.META_ANNOTATION_REGEX_MATCH, names), scope);
     }
 
     public void addChildModule(Module module)
@@ -809,17 +792,17 @@ public class InitContextInternal implements InitContext
         childOverridingModules.add(module);
     }
 
-//    public void setContainerContext(Object containerContext)
-//    {
-//        this.containerContext = containerContext;
-//    }
+    // public void setContainerContext(Object containerContext)
+    // {
+    // this.containerContext = containerContext;
+    // }
 
     // INTERFACE KERNEL PARAM USED BY PLUGIN IN INIT //
 
-//    public Object containerContext()
-//    {
-//        return this.containerContext;
-//    }
+    // public Object containerContext()
+    // {
+    // return this.containerContext;
+    // }
 
     @Override
     public String getKernelParam(String key)
@@ -828,94 +811,80 @@ public class InitContextInternal implements InitContext
     }
 
     @Override
-    @SuppressWarnings({
-            "unchecked"
-    })
     public Collection<Class<?>> classesToBind()
     {
         return Collections.unmodifiableSet(classesToBind);
     }
-    
-    @SuppressWarnings({"unchecked"})
-    public Map<Class<?> , Object> classesWithScopes ()
+
+    public Map<Class<?>, Object> classesWithScopes()
     {
-        return  Collections.unmodifiableMap(classesWithScopes );
+        return Collections.unmodifiableMap(classesWithScopes);
     }
 
     @Override
-    @SuppressWarnings({
-            "unchecked"
-    })
     public List<Module> moduleResults()
     {
         return Collections.unmodifiableList(childModules);
     }
 
     @Override
-    @SuppressWarnings({
-        "unchecked"
-    })
     public List<Module> moduleOverridingResults()
     {
         return Collections.unmodifiableList(childOverridingModules);
     }
 
-    @SuppressWarnings({
-            "unchecked"
-    })
     @Override
     public Collection<String> propertiesFiles()
     {
         return Collections.unmodifiableCollection(propertiesFiles);
     }
-    
+
     @Override
     public Collection<? extends Plugin> pluginsRequired()
     {
         return Collections.emptySet();
     }
-    
+
     @Override
-	public Collection<? extends Plugin> dependentPlugins ()
+    public Collection<? extends Plugin> dependentPlugins()
     {
         return Collections.emptySet();
     }
-    
+
     @Override
     public int roundNumber()
     {
         return roundNumber;
     }
-    
+
     public void roundNumber(int roundNumber)
     {
-        this.roundNumber  = roundNumber;
-        
+        this.roundNumber = roundNumber;
+
     }
-    
-    
+
     static class Key
     {
         private final RequestType type;
-        private final Object key;
-        
-        public Key(RequestType type , Object key)
+        private final Object      key;
+
+        public Key(RequestType type, Object key)
         {
             this.type = type;
             this.key = key;
         }
-        
+
         @Override
         public boolean equals(Object obj)
         {
-            Key key2 = (Key)obj;
-            return new EqualsBuilder().append(type, key2.type ).append( key, key2.key).isEquals() ;
+            Key key2 = (Key) obj;
+            return new EqualsBuilder().append(type, key2.type).append(key, key2.key).isEquals();
         }
-        
+
         @Override
         public int hashCode()
         {
-            return new HashCodeBuilder().append(type).append( key).toHashCode();
+            return new HashCodeBuilder().append(type).append(key).toHashCode();
         }
     }
 

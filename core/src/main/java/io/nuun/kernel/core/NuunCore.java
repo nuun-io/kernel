@@ -16,21 +16,29 @@
  */
 package io.nuun.kernel.core;
 
+import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.config.KernelConfiguration;
+import io.nuun.kernel.core.internal.KernelConfigurationInternal;
+import io.nuun.kernel.core.internal.KernelCoreFactory;
 
-public class Nuun
+/**
+ * 
+ * 
+ * 
+ * @author epo.jemba@kametic.com
+ *
+ */
+public class NuunCore
 {
     
     public static KernelConfiguration newKernelConfiguration()
     {
-        return null;
-        
+        return new KernelConfigurationInternal();
     }
-    
     
     public static Kernel createKernel(KernelConfiguration configuration)
     {
-        return null;
-        
+        KernelCoreFactory factory = new KernelCoreFactory();
+        return factory.create(configuration);
     }
 }

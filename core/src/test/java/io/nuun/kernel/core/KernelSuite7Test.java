@@ -17,6 +17,7 @@
 package io.nuun.kernel.core;
 
 import static org.fest.assertions.Assertions.assertThat;
+import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.core.pluginsit.dummy7.DummyPlugin7_A;
 import io.nuun.kernel.core.pluginsit.dummy7.DummyPlugin7_B;
 
@@ -30,7 +31,7 @@ public class KernelSuite7Test
 {
 
     private Kernel underTest;
-    
+
     @Test
     public void dependee_plugins_that_misses_should_be_source_of_error()
     {
@@ -43,12 +44,12 @@ public class KernelSuite7Test
                 .build(); //
         underTest.init();
         underTest.start();
-        
-        String resa = underTest.getMainInjector().getInstance( Key.get(String.class, Names.named("dep7a")) );
+
+        String resa = underTest.getMainInjector().getInstance(Key.get(String.class, Names.named("dep7a")));
         assertThat(resa).isNotNull();
         assertThat(resa).isEqualTo("dep7aOVER");
     }
-    
+
     @Test
     public void dependee_plugins_that_misses_should_be_source_of_error_()
     {
@@ -57,17 +58,16 @@ public class KernelSuite7Test
                 .withPlugins( //
                         new DummyPlugin7_A(), //
                         new DummyPlugin7_B() //
-                        ) //
-                        .build(); //
+                ) //
+                .build(); //
         underTest.init();
         underTest.start();
-        
-        String resa = underTest.getMainInjector().getInstance( Key.get(String.class, Names.named("dep7b")) );
+
+        String resa = underTest.getMainInjector().getInstance(Key.get(String.class, Names.named("dep7b")));
         assertThat(resa).isNotNull();
         assertThat(resa).isEqualTo("dep7bOVER");
-        
-    }
 
+    }
 
     @After
     public void stopKernel()

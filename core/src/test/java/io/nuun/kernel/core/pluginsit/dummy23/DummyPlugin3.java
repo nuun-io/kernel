@@ -65,7 +65,7 @@ public class DummyPlugin3 extends AbstractPlugin
         
         assertThat( mapResourcesByRegex.get(resourcesRegex1) ).isNotNull();
         assertThat( mapResourcesByRegex.get(resourcesRegex1) ).hasSize(1);
-        assertThat( mapResourcesByRegex.get(resourcesRegex1) ).contains("io/nuun/kernel/core/resource-to-reach.json");
+        assertThat( mapResourcesByRegex.get(resourcesRegex1) ).contains("io/nuun/kernel/core/internal/resource-to-reach.json");
         
         assertThat( mapResourcesByRegex.get(resourcesRegex2) ).isNotNull();
         assertThat( mapResourcesByRegex.get(resourcesRegex2) ).hasSize(2); // TODO FIX THE CASE OF THE properties

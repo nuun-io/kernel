@@ -8,6 +8,9 @@
  */
 package io.nuun.kernel.core;
 
+import static io.nuun.kernel.core.NuunCore.createKernel;
+import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
+import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
 import io.nuun.kernel.core.pluginsit.dummy5.DescendantFromClass;
@@ -54,17 +57,18 @@ public class KernelSuite8Test
     @Test
     public void dependee_plugins_that_misses_should_be_source_of_error()
     {
-        underTest = Kernel.createKernel().withClasspathScanMode(ClasspathScanMode.IN_MEMORY , null).withoutSpiPluginsLoader() //
-                .withPlugins(new DummyPlugin5() //
-                ) //
-                .build(); //
+
+        underTest = createKernel(
+                //
+                newKernelConfiguration() //
+                  .classpathScanMode(ClasspathScanMode.IN_MEMORY) //
+                  .withoutSpiPluginsLoader()     //
+                  .plugins(new DummyPlugin5())   //
+                );
+
         underTest.init();
         underTest.start();
 
-        // String resa = underTest.getMainInjector().getInstance( Key.get(String.class, Names.named("dep7a"))
-        // );
-        // assertThat(resa).isNotNull();
-        // assertThat(resa).isEqualTo("dep7aOVER");
 
     }
 
