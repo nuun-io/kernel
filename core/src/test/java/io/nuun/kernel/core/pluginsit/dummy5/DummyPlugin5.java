@@ -26,14 +26,11 @@ import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import java.util.Collection;
 import java.util.Map;
 
-import org.kametic.specifications.Specification;
-
 import com.google.inject.Scopes;
 
 public class DummyPlugin5 extends AbstractPlugin
 {
 
-    private Specification<Class<?>> specification;
     public Collection<Class<?>> collection;
 
 
@@ -48,7 +45,6 @@ public class DummyPlugin5 extends AbstractPlugin
     }
     
     @Override
-    @SuppressWarnings("unchecked")
     public Collection<BindingRequest> bindingRequests()
     {
         
@@ -56,18 +52,17 @@ public class DummyPlugin5 extends AbstractPlugin
                 .descendentTypeOf(GrandParentClass.class).withScope(Scopes.SINGLETON) //
                 .metaAnnotationType(MetaMarkerSample.class).withScope(Scopes.SINGLETON) //
                 .metaAnnotationRegex(".*YMetaMarker.*").withScope(Scopes.SINGLETON)
-//                .descendentTypeOf(GrandParentInterface.class) // 
+//                .descendentTypeOf(GrandParentInterface.class) //
                 .build();
     }
     
-    @SuppressWarnings("unchecked")
     @Override
     public Collection<ClasspathScanRequest> classpathScanRequests()
     {
         
         return classpathScanRequestBuilder()
-                .descendentTypeOf(GrandParentClass.class) // 
-                .descendentTypeOf(GrandParentInterface.class) // 
+                .descendentTypeOf(GrandParentClass.class) //
+                .descendentTypeOf(GrandParentInterface.class) //
                 .build();
     }
     

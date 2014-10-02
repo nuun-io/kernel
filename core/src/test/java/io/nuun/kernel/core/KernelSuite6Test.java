@@ -26,8 +26,6 @@ import io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_B;
 import io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_C;
 import io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_D;
 import io.nuun.kernel.core.pluginsit.dummy6.T2;
-import io.nuun.kernel.core.pluginsit.dummy7.DummyPlugin7_A;
-import io.nuun.kernel.core.pluginsit.dummy7.DummyPlugin7_B;
 
 import java.util.ArrayList;
 
@@ -84,9 +82,9 @@ public class KernelSuite6Test
                 newKernelConfiguration() //
                   .withoutSpiPluginsLoader()     //
                   .plugins( //
-                          new DummyPlugin6_A(), 
-                          new DummyPlugin6_B(), 
-                          dummyPlugin6_C, 
+                          new DummyPlugin6_A(),
+                          new DummyPlugin6_B(),
+                          dummyPlugin6_C,
                           dummyPlugin6_D
                   )   //
                 );

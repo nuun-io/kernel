@@ -67,7 +67,8 @@ public enum InMemoryMultiThreadClasspath implements Classpath {
 	@Override
 	public ClasspathAbstractContainer<?> entry(String container)
 	{
-		return perThreadListEntries.get().get(container);
+		System.out.println("" + Thread.currentThread().getId()  + " - " + Thread.currentThread().getName() + " : " + container);
+	    return perThreadListEntries.get().get(container);
 	}
 
 }

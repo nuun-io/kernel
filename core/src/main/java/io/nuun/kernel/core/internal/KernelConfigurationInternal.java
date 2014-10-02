@@ -89,7 +89,6 @@ public class KernelConfigurationInternal implements KernelConfiguration, KernelC
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public KernelConfiguration plugins(Class<? extends Plugin>... pluginsClass)
     {
@@ -175,6 +174,7 @@ public class KernelConfigurationInternal implements KernelConfiguration, KernelC
         int aLen = A.length;
         int bLen = B.length;
                 
+        @SuppressWarnings("unchecked")
         T[] C =  (T[]) Array.newInstance(A.getClass().getComponentType(), aLen + bLen) ;
         System.arraycopy(A, 0, C, 0, aLen);
         System.arraycopy(B, 0, C, aLen, bLen);

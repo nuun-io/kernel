@@ -22,10 +22,6 @@ import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.core.internal.scanner.disk.ClasspathScannerDisk;
 
 import java.net.MalformedURLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanner;
 import org.reflections.util.ConfigurationBuilder;
@@ -38,7 +34,6 @@ public class ClasspathScannerInMemory extends ClasspathScannerDisk
 {
 
     private final Classpath classpath;
-    private final static Map<String, List<? extends InMemoryFile<?>>> fs = new HashMap<String, List<? extends InMemoryFile<?>>>();
 
     static
     {

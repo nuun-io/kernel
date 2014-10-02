@@ -322,8 +322,7 @@ public abstract class AbstractPlugin implements Plugin
         return new HashMap<String, String>();
     }
 
-    @SuppressWarnings("rawtypes")
-	protected <T> Collection collectionOf(T... items)
+    protected Collection<Class<? extends Plugin>> collectionOf(Class<? extends Plugin>... items)
     {
         return Arrays.asList(items);
     }

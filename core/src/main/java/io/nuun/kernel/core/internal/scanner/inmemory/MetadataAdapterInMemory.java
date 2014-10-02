@@ -90,7 +90,7 @@ public class MetadataAdapterInMemory implements MetadataAdapter<Class<?>, Field,
 	public List<String> getParameterNames(Method method) {
 		List<String> parNames = new ArrayList<String>();
 		int i = 0;
-		for (Class<?> c : method.getParameterTypes()) {
+		for (@SuppressWarnings("unused") Class<?> c : method.getParameterTypes()) {
 			parNames.add("" + i);
 			i++;
 		}
@@ -206,7 +206,7 @@ public class MetadataAdapterInMemory implements MetadataAdapter<Class<?>, Field,
 	@Override
 	public boolean isPublic(Object o) {
 		Integer accessFlag =
-				  o instanceof Class ? ((Class) o).getModifiers() :
+				  o instanceof Class ? ((Class<?>) o).getModifiers() :
 		                o instanceof Field ? ((Field) o).getModifiers() :
 		                o instanceof Method ? ((Method) o).getModifiers() : null;
 		                		

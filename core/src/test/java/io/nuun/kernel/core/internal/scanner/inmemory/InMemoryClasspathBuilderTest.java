@@ -18,6 +18,8 @@ package io.nuun.kernel.core.internal.scanner.inmemory;
 
 
 
+import static org.fest.assertions.Assertions.assertThat;
+
 import org.junit.Test;
 
 /**
@@ -32,17 +34,25 @@ public class InMemoryClasspathBuilderTest
     @Test
     public void testConfigure()
     {
+        InMemoryMultiThreadClasspath.INSTANCE.reset();
         ClasspathBuilder builder = new ClasspathBuilder()
         {
             
             @Override
             public void configure()
             {
-                directory("zerzerze");
-                resource("zerezrez", null);
+                directory("zerzerze"); // 1
+                   resource("zerezrez", null);
                 jar("epo.jar");
+                   class_(String.class);
             }
         };
+        
+        builder.configure();
+        
+        System.out.println( InMemoryMultiThreadClasspath.INSTANCE.entries() );
+        
+        assertThat(InMemoryMultiThreadClasspath.INSTANCE.entries()).hasSize(2);
     }
 
 }

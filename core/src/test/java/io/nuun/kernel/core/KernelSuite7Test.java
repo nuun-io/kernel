@@ -20,8 +20,6 @@ import static io.nuun.kernel.core.NuunCore.createKernel;
 import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import static org.fest.assertions.Assertions.assertThat;
 import io.nuun.kernel.api.Kernel;
-import io.nuun.kernel.api.config.ClasspathScanMode;
-import io.nuun.kernel.core.pluginsit.dummy5.DummyPlugin5;
 import io.nuun.kernel.core.pluginsit.dummy7.DummyPlugin7_A;
 import io.nuun.kernel.core.pluginsit.dummy7.DummyPlugin7_B;
 

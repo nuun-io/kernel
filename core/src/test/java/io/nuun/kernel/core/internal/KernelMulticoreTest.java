@@ -25,8 +25,6 @@ import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin2;
 import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin3;
 import io.nuun.kernel.core.pluginsit.dummy4.DummyPlugin4;
 import io.nuun.kernel.core.pluginsit.dummy5.DummyPlugin5;
-import io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_A;
-import io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_B;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -36,7 +34,6 @@ public class KernelMulticoreTest
 {
 
 
-    @SuppressWarnings("unchecked")
     @Test
     public void dependee_plugins_that_misses_should_be_source_of_error() throws InterruptedException
     {
@@ -53,14 +50,12 @@ public class KernelMulticoreTest
     
     static class KernelHolder extends Thread
     {
-        private CountDownLatch startLatch;
-
         public KernelHolder(CountDownLatch startLatch)
         {
-            this.startLatch = startLatch;
         }
         
         
+        @SuppressWarnings("unchecked")
         @Override
         public void run()
         {
@@ -75,10 +70,10 @@ public class KernelMulticoreTest
                 underTest = (KernelCore) createKernel(
                         //
                         newKernelConfiguration() //
-                        .params ( 
-                                DummyPlugin.ALIAS_DUMMY_PLUGIN1 , "WAZAAAA", 
+                        .params (
+                                DummyPlugin.ALIAS_DUMMY_PLUGIN1 , "WAZAAAA",
                                 DummyPlugin.NUUNROOTALIAS       , "internal,"+KernelCoreTest.class.getPackage().getName()
-                                )   
+                                )
                         );
                 
                 assertThat(underTest.name()).startsWith(Kernel.KERNEL_PREFIX_NAME);

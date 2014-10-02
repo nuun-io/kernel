@@ -8,21 +8,19 @@
  */
 package io.nuun.kernel.core.internal.scanner.inmemory;
 
-import io.nuun.kernel.api.inmemory.Classpath;
 import io.nuun.kernel.api.inmemory.ClasspathAbstractContainer;
 import io.nuun.kernel.api.inmemory.ClasspathClass;
 import io.nuun.kernel.api.inmemory.ClasspathDirectory;
 import io.nuun.kernel.api.inmemory.ClasspathJar;
 import io.nuun.kernel.api.inmemory.ClasspathResource;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author epo.jemba@kametic.com
  */
-public abstract class ClasspathBuilder 
+public abstract class ClasspathBuilder
 {
 
     private InMemoryMultiThreadClasspath globalClasspath = InMemoryMultiThreadClasspath.INSTANCE;

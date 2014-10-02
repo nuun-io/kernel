@@ -232,12 +232,12 @@ public class DummyPlugin extends AbstractPlugin
      */
     @SuppressWarnings(
     {
-        "rawtypes", "unchecked"
+        "unchecked"
     })
     @Override
     public Collection<Class<? extends Plugin>> requiredPlugins()
     {
-        return collectionOf(DummyPlugin2.class);
+        return (Collection<Class<? extends Plugin>>) collectionOf(DummyPlugin2.class);
     }
 
     /*

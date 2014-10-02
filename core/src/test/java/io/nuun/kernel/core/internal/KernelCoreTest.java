@@ -504,7 +504,7 @@ public class KernelCoreTest
 				}
 				else
 				{
-					return Collections.EMPTY_SET;
+					return Collections.emptySet();
 				}
 				
 			}

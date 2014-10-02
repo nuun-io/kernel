@@ -17,7 +17,6 @@
 package io.nuun.kernel.tests.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import io.nuun.kernel.tests.it.NuunITRunner;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

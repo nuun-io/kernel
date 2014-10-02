@@ -619,25 +619,6 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
         return urls;
     }
 
-    private <T> Collection<Class<?>> toClasses2(Collection<String> names)
-    {
-        Collection<Class<?>> classes = new HashSet();
-
-        for (String name : names)
-        {
-            try
-            {
-                classes.add(Class.forName(name));
-            }
-            catch (Exception e)
-            {
-                logger.warn("Error when converting " + name + " to class.", e);
-            }
-        }
-
-        return classes;
-    }
-
     private <T> Collection<Class<? extends T>> toClasses(Collection<String> names)
     {
         return ReflectionUtils.<T> forNames(names, this.getClass().getClassLoader());

@@ -21,8 +21,6 @@ import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.api.config.KernelConfiguration;
-import io.nuun.kernel.core.internal.KernelCore.KernelBuilderWithPluginAndContext;
-import io.nuun.kernel.core.pluginsit.dummy5.DummyPlugin5;
 import io.nuun.kernel.tests.it.annotations.Expect;
 import io.nuun.kernel.tests.it.annotations.WithPlugins;
 import io.nuun.kernel.tests.it.annotations.WithoutSpiPluginsLoader;
@@ -114,11 +112,9 @@ public class NuunITRunner extends BlockJUnit4ClassRunner
     
     private Kernel initKernel() {
 
-        KernelConfiguration configuration = 
-                newKernelConfiguration() //
-                .classpathScanMode(ClasspathScanMode.IN_MEMORY) //
-                .withoutSpiPluginsLoader() // 
-                .plugins(new DummyPlugin5()) ;
+        KernelConfiguration configuration =
+                newKernelConfiguration()
+                 ;
         
         withoutSpiPluginsLoader(configuration);
         withPlugins(configuration);
