@@ -17,6 +17,7 @@
 package io.nuun.kernel.api.config;
 
 import io.nuun.kernel.api.Plugin;
+import io.nuun.kernel.spi.DependencyInjectionDefValidation;
 
 public interface KernelConfiguration
 {
@@ -38,5 +39,7 @@ public interface KernelConfiguration
     KernelConfiguration dependencyInjectionMode(DependencyInjectionMode mode);
     
     KernelConfiguration classpathScanMode(ClasspathScanMode mode);
+    
+    KernelConfiguration dependencyInjectionDefValidation(DependencyInjectionDefValidation validation);
     
 }

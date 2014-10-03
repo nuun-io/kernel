@@ -23,9 +23,9 @@ public interface TestExecutor
 
     ResultValidator whenUsing(ClasspathBuilder classpath);
 
-    TestExecutorWith whenUsing(Class<?> class_);
+    TestExecutorWith whenClasspathIs(Class<?> class_);
 
-    TestExecutorWith whenUsing(String base, String resource);
+    TestExecutorWith whenClasspathIs(String base, String resource);
 
     public static interface TestExecutotFlow extends TestExecutorWith, ResultValidator
     {
