@@ -18,11 +18,11 @@ package io.nuun.kernel.tests.ut.fixtures;
 
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.ClasspathScanMode;
+import io.nuun.kernel.api.di.BindingsDefinitionValidation;
 import io.nuun.kernel.core.NuunCore;
 import io.nuun.kernel.core.internal.KernelCore;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
 import io.nuun.kernel.core.internal.scanner.inmemory.InMemoryMultiThreadClasspath;
-import io.nuun.kernel.spi.DependencyInjectionDefValidation;
 import io.nuun.kernel.tests.ut.fixtures.TestExecutor.TestExecutorWith;
 import io.nuun.kernel.tests.ut.fixtures.TestExecutor.TestExecutotFlow;
 
@@ -40,11 +40,11 @@ public class GivenWhenThenInternal implements FixtureConfiguration, TestExecutor
     private Class<? extends Plugin>          pluginClass;
     private ClasspathBuilder                 classpath;
     private Injector                         injector;
-    private DependencyInjectionDefValidation validation;
+    private BindingsDefinitionValidation validation;
 
     public GivenWhenThenInternal()
     {
-        validation = new DependencyInjectionDefValidation()
+        validation = new BindingsDefinitionValidation()
         {
 
             @Override
@@ -139,7 +139,7 @@ public class GivenWhenThenInternal implements FixtureConfiguration, TestExecutor
                 NuunCore.newKernelConfiguration() //
                         .plugins(pluginClass) //
                         .classpathScanMode(ClasspathScanMode.IN_MEMORY) //
-                        .dependencyInjectionDefValidation(validation)
+                        .bindingsDefinitionValidation(validation)
                 //
                 );
 

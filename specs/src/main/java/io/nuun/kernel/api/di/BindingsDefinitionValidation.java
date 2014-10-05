@@ -14,15 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.spi;
+package io.nuun.kernel.api.di;
 
 /**
- * This SPI element will give the opportunity to the kernel to assert DependencyInjectionDef object given by
+ * This API element will give the opportunity to the kernel to assert DependencyInjectionDef aka Module object given by
  * plugins.
  * 
  * @author epo.jemba@kametic.com
  */
-public interface DependencyInjectionDefValidation
+public interface BindingsDefinitionValidation
 {
     
     /**

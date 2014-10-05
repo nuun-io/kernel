@@ -20,6 +20,7 @@ import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.api.config.DependencyInjectionMode;
+import io.nuun.kernel.api.di.BindingsDefinitionValidation;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.RoundEnvironementInternal;
 import io.nuun.kernel.api.plugin.context.Context;
@@ -31,7 +32,6 @@ import io.nuun.kernel.api.plugin.request.KernelParamsRequestType;
 import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.core.internal.context.InitContextInternal;
 import io.nuun.kernel.core.internal.graph.Graph;
-import io.nuun.kernel.spi.DependencyInjectionDefValidation;
 import io.nuun.kernel.spi.DependencyInjectionProvider;
 
 import java.lang.annotation.Annotation;
@@ -102,7 +102,7 @@ public final class KernelCore implements Kernel
     private RoundEnvironementInternal                    roundEnv;
     private DependencyInjectionMode                      dependencyInjectionMode;
     private ClasspathScanMode                            classpathScanMode      = ClasspathScanMode.NOMINAL;
-    private final List<DependencyInjectionDefValidation> globalDependencyInjectionDefValidation = Collections.synchronizedList(new ArrayList<DependencyInjectionDefValidation>());
+    private final List<BindingsDefinitionValidation> globalDependencyInjectionDefValidation = Collections.synchronizedList(new ArrayList<BindingsDefinitionValidation>());
 
     KernelCore(KernelConfigurationInternal kernelConfigurationInternal)
     {
@@ -692,7 +692,7 @@ public final class KernelCore implements Kernel
 
     private void validateDependencyInjectionDef(Object pluginDependencyInjectionDef)
     {
-        for (  DependencyInjectionDefValidation validation  : globalDependencyInjectionDefValidation )
+        for (  BindingsDefinitionValidation validation  : globalDependencyInjectionDefValidation )
         {
             if (validation.canHandle(pluginDependencyInjectionDef.getClass()))
             {
@@ -1090,7 +1090,7 @@ public final class KernelCore implements Kernel
         return kernelParamsAndAlias;
     }
 
-    void provideGlobalDiDefValidation(DependencyInjectionDefValidation validation)
+    void provideGlobalDiDefValidation(BindingsDefinitionValidation validation)
     {
         globalDependencyInjectionDefValidation.add(validation);
     }
