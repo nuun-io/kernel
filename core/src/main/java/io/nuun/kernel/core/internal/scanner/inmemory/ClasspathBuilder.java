@@ -32,7 +32,7 @@ public abstract class ClasspathBuilder
         entries = new HashMap<String, ClasspathAbstractContainer<?>>();
     }
 
-    protected void jar(String name)
+    protected void addJar(String name)
     {
         if (!entries.containsKey(name))
         {
@@ -46,7 +46,7 @@ public abstract class ClasspathBuilder
         }
     }
 
-    protected void directory(String name)
+    protected void addDirectory(String name)
     {
         if (!entries.containsKey(name))
         {
@@ -60,7 +60,7 @@ public abstract class ClasspathBuilder
         }
     }
 
-    protected void resource(String base, String name)
+    protected void addResource(String base, String name)
     {
         if (currentContainer == null)
         {
@@ -70,7 +70,7 @@ public abstract class ClasspathBuilder
         currentContainer.add(ClasspathResource.res(base, name));
     }
 
-    protected void class_(Class<?> candidate)
+    protected void addClass(Class<?> candidate)
     {
         if (currentContainer == null)
         {

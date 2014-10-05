@@ -41,10 +41,10 @@ public class InMemoryClasspathBuilderTest
             @Override
             public void configure()
             {
-                directory("zerzerze"); // 1
-                   resource("zerezrez", null);
-                jar("epo.jar");
-                   class_(String.class);
+                addDirectory("zerzerze"); // 1
+                   addResource("zerezrez", null);
+                addJar("epo.jar");
+                   addClass(String.class);
             }
         };
         

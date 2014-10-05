@@ -26,6 +26,6 @@ package io.nuun.kernel.api.di;
 public interface ObjectGraphProvider
 {
     
-    Object provides();
+    Object get();
 
 }

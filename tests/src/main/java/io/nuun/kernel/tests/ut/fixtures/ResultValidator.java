@@ -16,11 +16,11 @@
  */
 package io.nuun.kernel.tests.ut.fixtures;
 
-import com.google.common.base.Predicate;
-import com.google.inject.Module;
+import io.nuun.kernel.api.di.ModuleProvider;
+
+import org.kametic.specifications.Specification;
 
 public interface ResultValidator
 {
-    ResultValidator expectModule(Predicate<? extends Module> predicate);
-    ResultValidator expectBinding(Predicate<? extends Module> predicate);
+    ResultValidator then(Specification<? extends ModuleProvider> predicate);
 }

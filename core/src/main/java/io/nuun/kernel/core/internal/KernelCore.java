@@ -20,7 +20,8 @@ import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.api.config.DependencyInjectionMode;
-import io.nuun.kernel.api.di.BindingsDefinitionValidation;
+import io.nuun.kernel.api.di.ModuleProvider;
+import io.nuun.kernel.api.di.ModuleValidation;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.RoundEnvironementInternal;
 import io.nuun.kernel.api.plugin.context.Context;
@@ -102,7 +103,7 @@ public final class KernelCore implements Kernel
     private RoundEnvironementInternal                    roundEnv;
     private DependencyInjectionMode                      dependencyInjectionMode;
     private ClasspathScanMode                            classpathScanMode      = ClasspathScanMode.NOMINAL;
-    private final List<BindingsDefinitionValidation> globalDependencyInjectionDefValidation = Collections.synchronizedList(new ArrayList<BindingsDefinitionValidation>());
+    private final List<ModuleValidation> globalDependencyInjectionDefValidation = Collections.synchronizedList(new ArrayList<ModuleValidation>());
 
     KernelCore(KernelConfigurationInternal kernelConfigurationInternal)
     {
@@ -644,9 +645,9 @@ public final class KernelCore implements Kernel
                     if (pluginDependencyInjectionDef != null)
                     {
                         validateDependencyInjectionDef(pluginDependencyInjectionDef);
-                        if (pluginDependencyInjectionDef instanceof com.google.inject.Module)
+                        if (pluginDependencyInjectionDef instanceof Module)
                         {
-                            initContext.addChildModule(com.google.inject.Module.class.cast(pluginDependencyInjectionDef));
+                            initContext.addChildModule(Module.class.cast(pluginDependencyInjectionDef));
                         }
                         else
                         {
@@ -690,9 +691,9 @@ public final class KernelCore implements Kernel
 
     }
 
-    private void validateDependencyInjectionDef(Object pluginDependencyInjectionDef)
+    private void validateDependencyInjectionDef(BindingsDefinitionProviderEmbedded pluginDependencyInjectionDef)
     {
-        for (  BindingsDefinitionValidation validation  : globalDependencyInjectionDefValidation )
+        for (  ModuleValidation validation  : globalDependencyInjectionDefValidation )
         {
             if (validation.canHandle(pluginDependencyInjectionDef.getClass()))
             {
@@ -930,6 +931,25 @@ public final class KernelCore implements Kernel
         KernelBuilderWithPluginAndContext withoutSpiPluginsLoader();
 
     }
+    
+    private class BindingsDefinitionProviderEmbedded implements ModuleProvider
+    {
+        private Object module;
+
+        public BindingsDefinitionProviderEmbedded(Object module)
+        {
+            this.module = module;
+            
+        }
+
+        @Override
+        public Object get()
+        {
+            return this.module;
+        }
+        
+        
+    }
 
     private static class KernelBuilderImpl implements KernelBuilderWithPluginAndContext
     {
@@ -1090,7 +1110,7 @@ public final class KernelCore implements Kernel
         return kernelParamsAndAlias;
     }
 
-    void provideGlobalDiDefValidation(BindingsDefinitionValidation validation)
+    void provideGlobalDiDefValidation(ModuleValidation validation)
     {
         globalDependencyInjectionDefValidation.add(validation);
     }

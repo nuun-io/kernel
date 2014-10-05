@@ -22,21 +22,21 @@ package io.nuun.kernel.api.di;
  * 
  * @author epo.jemba@kametic.com
  */
-public interface BindingsDefinitionValidation
+public interface ModuleValidation
 {
     
     /**
      * 
-     * @param injectionDefinition
+     * @param moduleType
      * @return true if this validation object can handle this kind of class
      */
-    boolean canHandle (Class<?> injectionDefinition);
+    boolean canHandle (Class<?> moduleType);
     
     /**
      * validate the given <code> dependencyInjectionDef </code>
      * 
-     * @param dependencyInjectionDef
+     * @param moduleProvider
      */
-    void validate(Object dependencyInjectionDef);
+    void validate(ModuleProvider moduleProvider);
 
 }

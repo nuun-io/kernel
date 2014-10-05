@@ -16,6 +16,10 @@
  */
 package io.nuun.kernel.api;
 
+import io.nuun.kernel.api.di.ModuleProvider;
+
+import java.util.List;
+
 import com.google.inject.Injector;
 
 /**
@@ -40,24 +44,63 @@ public interface Kernel
      * @return the name of the Kernel.
      */
     public abstract String name();
-
+    
+    /**
+     * Indication on whether or not the kernel is started.
+     * 
+     * @return true if the kernel is started.
+     */
     public abstract boolean isStarted();
 
+    /**
+     * Indication on whether or not the kernel is initialized.
+     * 
+     * @return true if the kernel is initialized.
+     */
     public abstract boolean isInitialized();
 
     /**
      * 
-     * 
+     * Tell the kernel to initialize. The kernel will load all the plugins and initialize them.
      */
     public abstract void init();
+    
+    /**
+     * After the kernel is initialized, one can ask for the list of the plugins. 
+     * 
+     * @return the list of plugins initialized.
+     */
+    public List<Plugin> plugins();
+    
+    /**
+     * After the kernel is initialized, one can ask for the particular ModuleProvider created by one plugin.
+     * 
+     * @param plugin 
+     * @return 
+     */
+    public abstract ModuleProvider getModuleProvider(Class<? extends Plugin> plugin);
 
+    /**
+     * After the kernel is initialized, one can ask for the global ModuleProvider the result of all plugins. 
+     * 
+     * @return  the global binding definition provider for all the application.
+     */
+    public abstract ModuleProvider getGlobalModuleProvider();
+    
+    /**
+     * Tell the kernel to start.
+     */
     public abstract void start();
 
+    /**
+     * After the kernel is started, ones can ask the ObjectGraphProvider.  
+     * 
+     * @return the ObjectGraphProvider
+     */
     public abstract Injector getMainInjector();
 
     /**
-     * This methods will stop all the plugin in the reverse order of the sorted plugins.
-     * 
+     * This methods will stop all the plugin in the reverse order of the started plugins.
      */
     public abstract void stop();
 

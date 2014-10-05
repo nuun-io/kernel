@@ -36,10 +36,10 @@ public class KernelSuite8Test
             @Override
             public void configure()
             {
-                jar("test.jar");
-                class_(GrandParentClass.class);
-                class_(DescendantFromClass.class);
-                class_(ParentClass.class);
+                addJar("test.jar");
+                addClass(GrandParentClass.class);
+                addClass(DescendantFromClass.class);
+                addClass(ParentClass.class);
             }
         };
 

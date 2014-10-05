@@ -54,12 +54,12 @@ public class UnitTestTest
             @Override
             public void configure()
             {
-                jar("test.jar");
-                class_(Service1.class);
-                class_(Service1Impl.class);
-                class_(Service1Provider.class);
+                addJar("test.jar");
+                addClass(Service1.class);
+                addClass(Service1Impl.class);
+                addClass(Service1Provider.class);
             }
-        }) .expectModule( null );
+        }) .then( null );
     }
 
 }

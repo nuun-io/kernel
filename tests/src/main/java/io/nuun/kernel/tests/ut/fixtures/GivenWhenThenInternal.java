@@ -16,9 +16,12 @@
  */
 package io.nuun.kernel.tests.ut.fixtures;
 
+import org.kametic.specifications.Specification;
+
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.ClasspathScanMode;
-import io.nuun.kernel.api.di.BindingsDefinitionValidation;
+import io.nuun.kernel.api.di.ModuleProvider;
+import io.nuun.kernel.api.di.ModuleValidation;
 import io.nuun.kernel.core.NuunCore;
 import io.nuun.kernel.core.internal.KernelCore;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
@@ -40,31 +43,30 @@ public class GivenWhenThenInternal implements FixtureConfiguration, TestExecutor
     private Class<? extends Plugin>          pluginClass;
     private ClasspathBuilder                 classpath;
     private Injector                         injector;
-    private BindingsDefinitionValidation validation;
+    private ModuleValidation validation;
 
     public GivenWhenThenInternal()
     {
-        validation = new BindingsDefinitionValidation()
+        validation = new ModuleValidation()
         {
 
             @Override
-            public void validate(Object dependencyInjectionDef)
+            public boolean canHandle(Class<?> injectionDefinition)
             {
-                Module m = Module.class.cast(dependencyInjectionDef);
+                return true;
+            }
 
+            @Override
+            public void validate(ModuleProvider moduleProvider)
+            {
+                Module m = Module.class.cast(moduleProvider.get());
+                
                 Visitor v = new Visitor();
                 
                 for (Element e : Elements.getElements(m))
                 {
                     e.acceptVisitor(v);
                 }
-
-            }
-
-            @Override
-            public boolean canHandle(Class<?> injectionDefinition)
-            {
-                return true;
             }
         };
     }
@@ -119,16 +121,11 @@ public class GivenWhenThenInternal implements FixtureConfiguration, TestExecutor
     }
 
     @Override
-    public ResultValidator expectModule(Predicate<? extends Module> predicate)
+    public ResultValidator then(Specification<? extends ModuleProvider> predicate)
     {
         return this;
     }
 
-    @Override
-    public ResultValidator expectBinding(Predicate<? extends Module> predicate)
-    {
-        return this;
-    }
 
     //
 
@@ -139,7 +136,7 @@ public class GivenWhenThenInternal implements FixtureConfiguration, TestExecutor
                 NuunCore.newKernelConfiguration() //
                         .plugins(pluginClass) //
                         .classpathScanMode(ClasspathScanMode.IN_MEMORY) //
-                        .bindingsDefinitionValidation(validation)
+                        .moduleValidation(validation)
                 //
                 );
 

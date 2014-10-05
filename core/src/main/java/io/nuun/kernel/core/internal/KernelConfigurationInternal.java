@@ -20,7 +20,7 @@ import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.api.config.DependencyInjectionMode;
 import io.nuun.kernel.api.config.KernelConfiguration;
-import io.nuun.kernel.api.di.BindingsDefinitionValidation;
+import io.nuun.kernel.api.di.ModuleValidation;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class KernelConfigurationInternal implements KernelConfiguration, KernelC
     private boolean                   useSpi     = true;
     private DependencyInjectionMode   dependencyInjectionMode;
     private ClasspathScanMode         classpathScanMode = ClasspathScanMode.NOMINAL;
-    private List<BindingsDefinitionValidation> validations = new ArrayList<BindingsDefinitionValidation>();
+    private List<ModuleValidation> validations = new ArrayList<ModuleValidation>();
 
     public KernelConfigurationInternal()
     {
@@ -134,7 +134,7 @@ public class KernelConfigurationInternal implements KernelConfiguration, KernelC
     }
     
     @Override
-    public KernelConfiguration bindingsDefinitionValidation(BindingsDefinitionValidation validation)
+    public KernelConfiguration moduleValidation(ModuleValidation validation)
     {
         if (validation != null)
         {
@@ -179,7 +179,7 @@ public class KernelConfigurationInternal implements KernelConfiguration, KernelC
         
         kernelCore.classpathScanMode(classpathScanMode);
         
-        for ( BindingsDefinitionValidation validation : validations)
+        for ( ModuleValidation validation : validations)
         {
             kernelCore.provideGlobalDiDefValidation(validation);
         }

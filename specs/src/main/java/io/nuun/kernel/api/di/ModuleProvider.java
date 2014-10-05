@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013 Kametic <epo.jemba@kametic.com>
+ * Copyright (C) 2014 Kametic <epo.jemba@kametic.com>
  *
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * or any later version
@@ -15,10 +15,17 @@
  * limitations under the License.
  */
 package io.nuun.kernel.api.di;
-
-public interface BindingsDefinitionProvider
+/**
+ * An encapsulation of the bindings definition of the actual dependency engine. 
+ * <p>
+ * The encapsulated object, can be a <strong>Guice Module</strong>, and <strong>ApplicationContext<strong> etc  
+ * 
+ * @author epo.jemba@kametic.com
+ *
+ */
+public interface ModuleProvider
 {
     
-    Object provides();
+    Object get();
 
 }

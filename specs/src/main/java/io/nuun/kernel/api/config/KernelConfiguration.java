@@ -17,7 +17,7 @@
 package io.nuun.kernel.api.config;
 
 import io.nuun.kernel.api.Plugin;
-import io.nuun.kernel.api.di.BindingsDefinitionValidation;
+import io.nuun.kernel.api.di.ModuleValidation;
 
 public interface KernelConfiguration
 {
@@ -40,6 +40,6 @@ public interface KernelConfiguration
     
     KernelConfiguration classpathScanMode(ClasspathScanMode mode);
     
-    KernelConfiguration bindingsDefinitionValidation(BindingsDefinitionValidation validation);
+    KernelConfiguration moduleValidation(ModuleValidation validation);
     
 }
