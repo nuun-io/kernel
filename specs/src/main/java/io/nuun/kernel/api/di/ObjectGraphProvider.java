@@ -25,7 +25,20 @@ package io.nuun.kernel.api.di;
  */
 public interface ObjectGraphProvider
 {
-    
+    /**
+     * 
+     * 
+     * @return the raw object graph provider.
+     */
     Object get();
-
+    
+    /**
+     * Cast or Convert the current objet graph injector.
+     * <p>
+     * Will send an IllegaStateException if can not convert or cast.
+     * 
+     * @param targetType
+     * @return the ObjectGraphProvider object casted as T type or adapted as T.
+     */
+    <T>  T as(Class<T> targetType);
 }

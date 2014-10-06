@@ -92,7 +92,7 @@ public class ConcernTest
     public void test()
     {
         
-        MyObj obj = underTest.getMainInjector().getInstance(MyObj.class);
+        MyObj obj = underTest.getObjectGraphProvider().getInstance(MyObj.class);
         obj.triggerMethod(list);
         Assertions.assertThat(list).hasSize(7);
         Assertions.assertThat(list).containsExactly("pre security" , "pre cache" , "pre log", "fire" , "post log",  "post cache"  ,  "post security");

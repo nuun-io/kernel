@@ -98,7 +98,7 @@ public class KernelSuite6Test
         assertThat(dummyPlugin6_D.isInternal()).isTrue();
         underTest.start();
         
-        T2 instance = underTest.getMainInjector().getInstance(T2.class);
+        T2 instance = underTest.getObjectGraphProvider().getInstance(T2.class);
         assertThat(instance).isNotNull();
 
     }

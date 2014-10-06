@@ -70,10 +70,10 @@ public class KernelGuiceModuleInternal extends AbstractModule
     @Override
     protected final void configure()
     {
-        // All bindings will be needed explicitely.
+        // All bindings will be needed explicitly.
         // this simple line makes the framework bullet-proof !
         binder().requireExplicitBindings();
-        // We ContextInternal as implemetation of Context
+        // We ContextInternal as implementation of Context
         bind(Context.class).to(ContextInternal.class);
 
         // Bind Types, Subtypes from classpath

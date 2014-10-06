@@ -22,6 +22,7 @@ import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.api.config.DependencyInjectionMode;
 import io.nuun.kernel.api.di.ModuleProvider;
 import io.nuun.kernel.api.di.ModuleValidation;
+import io.nuun.kernel.api.di.ObjectGraphProvider;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.RoundEnvironementInternal;
 import io.nuun.kernel.api.plugin.context.Context;
@@ -60,6 +61,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -73,37 +75,40 @@ import com.google.inject.util.Modules;
 public final class KernelCore implements Kernel
 {
 
-    private final int                                    MAXIMAL_ROUND_NUMBER   = 50;
-    private final Logger                                 logger;
-    private static ConcurrentHashMap<String, Kernel>     kernels                = new ConcurrentHashMap<String, Kernel>();
-    private final String                                 name;
+    private final int                                          MAXIMAL_ROUND_NUMBER      = 50;
+    private final Logger                                       logger;
+    private static ConcurrentHashMap<String, Kernel>           kernels                   = new ConcurrentHashMap<String, Kernel>();
+    private final String                                       name;
 
-    private final String                                 NUUN_PROPERTIES_PREFIX = "nuun-";
+    private final String                                       NUUN_PROPERTIES_PREFIX    = "nuun-";
 
-    private ServiceLoader<Plugin>                        pluginLoader;
-    private boolean                                      spiPluginEnabled       = true;
-    private Map<String, Plugin>                          plugins                = Collections.synchronizedMap(new HashMap<String, Plugin>()); //
-    private Map<String, Plugin>                          pluginsToAdd           = Collections.synchronizedMap(new HashMap<String, Plugin>()); //
+    private ServiceLoader<Plugin>                              pluginLoader;
+    private boolean                                            spiPluginEnabled          = true;
+    private Map<String, Plugin>                                plugins                   = Collections.synchronizedMap(new HashMap<String, Plugin>());     //
+    private Map<String, Plugin>                                pluginsToAdd              = Collections.synchronizedMap(new HashMap<String, Plugin>());     //
 
-    private final InitContextInternal                    initContext;
-    private Injector                                     mainInjector;
-    private final AliasMap                               kernelParamsAndAlias   = new AliasMap();
+    private final InitContextInternal                          initContext;
+    private Injector                                           mainInjector;
+    private final AliasMap                                     kernelParamsAndAlias      = new AliasMap();
 
-    private boolean                                      started                = false;
-    private boolean                                      initialized            = false;
-    private Context                                      context;
-    private Collection<DependencyInjectionProvider>      dependencyInjectionProviders;
-    private Object                                       containerContext;
-    private ArrayList<Plugin>                            orderedPlugins;
+    private boolean                                            started                   = false;
+    private boolean                                            initialized               = false;
+    private Context                                            context;
+    private Collection<DependencyInjectionProvider>            dependencyInjectionProviders;
+    private Object                                             containerContext;
+    private ArrayList<Plugin>                                  orderedPlugins;
 
-    private Collection<DependencyInjectionProvider>      globalDependencyInjectionProviders;
-    private List<Iterator<Plugin>>                       pluginIterators;
-    private List<Plugin>                                 fetchedPlugins;
-    private Set<URL>                                     globalAdditionalClasspath;
-    private RoundEnvironementInternal                    roundEnv;
-    private DependencyInjectionMode                      dependencyInjectionMode;
-    private ClasspathScanMode                            classpathScanMode      = ClasspathScanMode.NOMINAL;
-    private final List<ModuleValidation> globalDependencyInjectionDefValidation = Collections.synchronizedList(new ArrayList<ModuleValidation>());
+    private Collection<DependencyInjectionProvider>            globalDependencyInjectionProviders;
+    private List<Iterator<Plugin>>                             pluginIterators;
+    private List<Plugin>                                       fetchedPlugins;
+    private Set<URL>                                           globalAdditionalClasspath;
+    private RoundEnvironementInternal                          roundEnv;
+    private DependencyInjectionMode                            dependencyInjectionMode;
+    private ClasspathScanMode                                  classpathScanMode         = ClasspathScanMode.NOMINAL;
+    private final List<ModuleValidation>                       globalModuleValidations   = Collections.synchronizedList(new ArrayList<ModuleValidation>());
+    private final Map<Class<? extends Plugin>, ModuleProvider> moduleProviders           = Maps.newConcurrentMap();
+    private final Map<Class<? extends Plugin>, ModuleProvider> overridingmoduleProviders = Maps.newConcurrentMap();
+    private Module                                             mainFinalModule;
 
     KernelCore(KernelConfigurationInternal kernelConfigurationInternal)
     {
@@ -168,6 +173,7 @@ public final class KernelCore implements Kernel
             checkPlugins();
             fetchGlobalParametersFromPlugins();
             initPlugins();
+            computeGlobalModuleProviders();
             initialized = true;
         }
         else
@@ -386,12 +392,6 @@ public final class KernelCore implements Kernel
     {
         if (initialized)
         {
-            // All bindings will be computed
-
-            KernelGuiceModuleInternal kernelGuiceModuleInternal = new KernelGuiceModuleInternal(initContext);
-            KernelGuiceModuleInternal internalKernelGuiceModuleOverriding = new KernelGuiceModuleInternal(initContext).overriding();
-
-            Module mainFinalModule = Modules.override(kernelGuiceModuleInternal).with(internalKernelGuiceModuleOverriding);
 
             // Compute Guice Stage
             Stage stage = Stage.PRODUCTION;
@@ -435,12 +435,44 @@ public final class KernelCore implements Kernel
 
     /*
      * (non-Javadoc)
-     * @see io.nuun.kernel.core.internal.Kernel#getMainInjector()
+     * @see io.nuun.kernel.core.internal.Kernel#getObjectGraphProvider()
      */
     @Override
-    public Injector getMainInjector()
+    public ObjectGraphProvider getObjectGraphProvider()
     {
-        return mainInjector;
+        return new ObjectGraphProviderEmbedded (mainInjector);
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see io.nuun.kernel.core.internal.Kernel#getModuleProvider()
+     */
+    @Override
+    public ModuleProvider getModuleProvider(Class<? extends Plugin> pluginClass)
+    {
+        return moduleProviders.get(pluginClass);
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see io.nuun.kernel.core.internal.Kernel#getOverridingModuleProvider()
+     */
+    @Override
+    public ModuleProvider getOverridingModuleProvider(Class<? extends Plugin> pluginClass)
+    {
+        return overridingmoduleProviders.get(pluginClass);
+    }
+    
+    @Override
+    public ModuleProvider getGlobalModuleProvider()
+    {
+        return new ModuleProviderEmbedded(mainFinalModule);
+    }
+    
+    @Override
+    public List<Plugin> plugins()
+    {
+        return null;
     }
 
     /*
@@ -548,7 +580,7 @@ public final class KernelCore implements Kernel
                             case TYPE_OF_BY_REGEX_MATCH:
                                 initContext.addTypeRegexesToScan((String) request.objectRequested);
                                 break;
-                            case VIA_SPECIFICATION: // pas encore pluggé
+                            case VIA_SPECIFICATION:
                                 initContext.addSpecificationToScan(request.specification);
                                 break;
                             default:
@@ -644,7 +676,13 @@ public final class KernelCore implements Kernel
                     Object pluginDependencyInjectionDef = plugin.dependencyInjectionDef();
                     if (pluginDependencyInjectionDef != null)
                     {
-                        validateDependencyInjectionDef(pluginDependencyInjectionDef);
+                        ModuleProviderEmbedded moduleProvider = new ModuleProviderEmbedded(pluginDependencyInjectionDef);
+                        //
+                        validateDependencyInjectionDef(moduleProvider);
+
+                        // we feed the moduleProviders list
+                        moduleProviders.put(plugin.getClass(), moduleProvider);
+
                         if (pluginDependencyInjectionDef instanceof Module)
                         {
                             initContext.addChildModule(Module.class.cast(pluginDependencyInjectionDef));
@@ -652,24 +690,31 @@ public final class KernelCore implements Kernel
                         else
                         {
                             boolean override = false;
-                            addModuleViaProvider(name, pluginDependencyInjectionDef,override);
+                            addModuleViaProvider(name, pluginDependencyInjectionDef, override);
                         }
                     } //
 
-                    // Overrinding definition
+                    // Overriding definition
 
                     Object dependencyInjectionOverridingDef = plugin.dependencyInjectionOverridingDef();
 
                     if (dependencyInjectionOverridingDef != null)
                     {
-                        if (dependencyInjectionOverridingDef instanceof com.google.inject.Module)
+                        ModuleProviderEmbedded moduleProvider = new ModuleProviderEmbedded(dependencyInjectionOverridingDef);
+
+                        validateDependencyInjectionDef(moduleProvider);
+
+                        // we feed the moduleProviders list
+                        overridingmoduleProviders.put(plugin.getClass(), moduleProvider);
+
+                        if (dependencyInjectionOverridingDef instanceof Module)
                         {
-                            initContext.addChildOverridingModule(com.google.inject.Module.class.cast(dependencyInjectionOverridingDef));
+                            initContext.addChildOverridingModule(Module.class.cast(dependencyInjectionOverridingDef));
                         }
                         else
                         {
                             boolean override = true;
-                            addModuleViaProvider(name, dependencyInjectionOverridingDef,override);
+                            addModuleViaProvider(name, dependencyInjectionOverridingDef, override);
                         }
                     }
 
@@ -685,24 +730,35 @@ public final class KernelCore implements Kernel
             roundEnv.incrementRoundNumber();
         }
         while (!roundOrderedPlugins.isEmpty() && roundEnv.roundNumber() < MAXIMAL_ROUND_NUMBER);
-        
+
         // When all round are done.
-        
 
     }
 
-    private void validateDependencyInjectionDef(BindingsDefinitionProviderEmbedded pluginDependencyInjectionDef)
+    /**
+     * This methods will create both Global ModuleProviders : nominal and overriding.
+     */
+    private void computeGlobalModuleProviders()
     {
-        for (  ModuleValidation validation  : globalDependencyInjectionDefValidation )
+        KernelGuiceModuleInternal kernelGuiceModuleInternal = new KernelGuiceModuleInternal(initContext);
+        KernelGuiceModuleInternal internalKernelGuiceModuleOverriding = new KernelGuiceModuleInternal(initContext).overriding();
+
+        mainFinalModule = Modules.override(kernelGuiceModuleInternal).with(internalKernelGuiceModuleOverriding);
+    }
+
+    private void validateDependencyInjectionDef(ModuleProviderEmbedded pluginDependencyInjectionDef)
+    {
+        for (ModuleValidation validation : globalModuleValidations)
         {
             if (validation.canHandle(pluginDependencyInjectionDef.getClass()))
             {
-                try {
+                try
+                {
                     validation.validate(pluginDependencyInjectionDef);
                 }
                 catch (Exception validationException)
                 {
-                    throw new KernelException("Error when validating di definition " + pluginDependencyInjectionDef , validationException);
+                    throw new KernelException("Error when validating di definition " + pluginDependencyInjectionDef, validationException);
                 }
             }
         }
@@ -724,7 +780,7 @@ public final class KernelCore implements Kernel
         }
     }
 
-    private void addModuleViaProvider(String name, Object pluginDependencyInjectionDef , boolean override)
+    private void addModuleViaProvider(String name, Object pluginDependencyInjectionDef, boolean override)
     {
         DependencyInjectionProvider provider = findDependencyInjectionProvider(pluginDependencyInjectionDef);
         if (provider != null)
@@ -931,24 +987,52 @@ public final class KernelCore implements Kernel
         KernelBuilderWithPluginAndContext withoutSpiPluginsLoader();
 
     }
+
+    private class ObjectGraphProviderEmbedded implements ObjectGraphProvider
+    {
+        
+        private Object injector;
+
+        public ObjectGraphProviderEmbedded(Object injector)
+        {
+            this.injector = injector;
+        }
+        
+        @Override
+        public Object get()
+        {
+            return injector;
+        }
+        
+        @SuppressWarnings("unchecked")
+        @Override
+        public <T> T as(Class<T> targetType)
+        {
+            if (targetType.equals(Injector.class))
+            {
+                return (T) Injector.class.cast(injector);
+            }
+            throw new IllegalStateException("Can not cast " + injector + " to " + targetType.getName());
+        }
+        
+    }
     
-    private class BindingsDefinitionProviderEmbedded implements ModuleProvider
+    private class ModuleProviderEmbedded implements ModuleProvider
     {
         private Object module;
 
-        public BindingsDefinitionProviderEmbedded(Object module)
+        public ModuleProviderEmbedded(Object module)
         {
             this.module = module;
-            
+
         }
 
         @Override
         public Object get()
         {
-            return this.module;
+            return module;
         }
-        
-        
+
     }
 
     private static class KernelBuilderImpl implements KernelBuilderWithPluginAndContext
@@ -1112,7 +1196,7 @@ public final class KernelCore implements Kernel
 
     void provideGlobalDiDefValidation(ModuleValidation validation)
     {
-        globalDependencyInjectionDefValidation.add(validation);
+        globalModuleValidations.add(validation);
     }
 
 }
