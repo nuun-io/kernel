@@ -165,7 +165,7 @@ public class KernelCoreTest
                 bindInterceptor(Matchers.any(), Matchers.annotatedWith(DummyMethod.class), new DummyInterceptor());
             }
         };
-        injector = underTest.getObjectGraphProvider().createChildInjector(aggregationModule);
+        injector = underTest.getObjectGraph().as(Injector.class).createChildInjector(aggregationModule);
 
     }
     

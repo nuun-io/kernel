@@ -45,7 +45,7 @@ public class CoreITFixture extends AbstractFixture<Kernel> {
 	
 	public Injector  getInjector ()
 	{
-		return kernel.getObjectGraphProvider();
+		return kernel.getObjectGraph().as(Injector.class);
 	}
 
 	@Override

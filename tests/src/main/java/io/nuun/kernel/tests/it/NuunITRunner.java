@@ -19,7 +19,6 @@ package io.nuun.kernel.tests.it;
 import static io.nuun.kernel.core.NuunCore.createKernel;
 import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import io.nuun.kernel.api.Kernel;
-import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.api.config.KernelConfiguration;
 import io.nuun.kernel.tests.it.annotations.Expect;
 import io.nuun.kernel.tests.it.annotations.WithPlugins;
@@ -29,6 +28,7 @@ import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 
+import com.google.inject.Injector;
 import com.google.inject.ProvisionException;
 
 /**
@@ -67,7 +67,7 @@ public class NuunITRunner extends BlockJUnit4ClassRunner
         Object test = null;
         
         try {
-            test = kernel.getObjectGraphProvider().getInstance(getTestClass().getJavaClass());
+            test = kernel.getObjectGraph().as(Injector.class).getInstance(getTestClass().getJavaClass());
         } catch (Throwable t)
         {
 //          t.printStackTrace();

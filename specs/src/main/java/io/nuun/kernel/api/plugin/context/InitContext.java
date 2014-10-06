@@ -17,6 +17,7 @@
 package io.nuun.kernel.api.plugin.context;
 
 import io.nuun.kernel.api.Plugin;
+import io.nuun.kernel.api.di.ModuleProvider;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
@@ -24,8 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.kametic.specifications.Specification;
-
-import com.google.inject.Module;
 
 /**
  * 
@@ -52,9 +51,9 @@ public interface InitContext
 
     public abstract Collection<Class<?>> classesToBind();
 
-    public abstract List<Module> moduleResults();
+    public abstract List<ModuleProvider> moduleResults();
     
-    public abstract List<Module> moduleOverridingResults();
+    public abstract List<ModuleProvider> moduleOverridingResults();
 
     public abstract Collection<String> propertiesFiles();
 

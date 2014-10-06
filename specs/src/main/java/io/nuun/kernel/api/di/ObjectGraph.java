@@ -18,12 +18,12 @@ package io.nuun.kernel.api.di;
 
 /**
  * 
- * 
+ * Object Graph is the Nuun Kernel API element abstraction for injector part of the D.I. engine. 
  * 
  * @author epo.jemba@kametic.com
  *
  */
-public interface ObjectGraphProvider
+public interface ObjectGraph
 {
     /**
      * 
@@ -38,7 +38,7 @@ public interface ObjectGraphProvider
      * Will send an IllegaStateException if can not convert or cast.
      * 
      * @param targetType
-     * @return the ObjectGraphProvider object casted as T type or adapted as T.
+     * @return the ObjectGraph object casted as T type or adapted as T.
      */
     <T>  T as(Class<T> targetType);
 }

@@ -27,5 +27,15 @@ public interface ModuleProvider
 {
     
     Object get();
+    
+    /**
+     * Cast the current object module.
+     * <p>
+     * Will send an IllegaStateException if can not convert or cast.
+     * 
+     * @param targetType
+     * @return the ObjectGraph object casted as T type or adapted as T.
+     */
+    <T>  T as(Class<T> targetType); 
 
 }

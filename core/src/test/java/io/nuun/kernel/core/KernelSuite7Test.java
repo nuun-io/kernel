@@ -26,6 +26,7 @@ import io.nuun.kernel.core.pluginsit.dummy7.DummyPlugin7_B;
 import org.junit.After;
 import org.junit.Test;
 
+import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
 
@@ -52,7 +53,7 @@ public class KernelSuite7Test
         underTest.init();
         underTest.start();
 
-        String resa = underTest.getObjectGraphProvider().getInstance(Key.get(String.class, Names.named("dep7a")));
+        String resa = underTest.getObjectGraph().as(Injector.class).getInstance(Key.get(String.class, Names.named("dep7a")));
         assertThat(resa).isNotNull();
         assertThat(resa).isEqualTo("dep7aOVER");
     }
@@ -72,7 +73,7 @@ public class KernelSuite7Test
         underTest.init();
         underTest.start();
 
-        String resa = underTest.getObjectGraphProvider().getInstance(Key.get(String.class, Names.named("dep7b")));
+        String resa = underTest.getObjectGraph().as(Injector.class).getInstance(Key.get(String.class, Names.named("dep7b")));
         assertThat(resa).isNotNull();
         assertThat(resa).isEqualTo("dep7bOVER");
 

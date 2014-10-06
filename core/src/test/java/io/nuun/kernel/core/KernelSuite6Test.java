@@ -33,6 +33,8 @@ import org.junit.After;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
+import com.google.inject.Injector;
+
 public class KernelSuite6Test
 {
 
@@ -98,7 +100,7 @@ public class KernelSuite6Test
         assertThat(dummyPlugin6_D.isInternal()).isTrue();
         underTest.start();
         
-        T2 instance = underTest.getObjectGraphProvider().getInstance(T2.class);
+        T2 instance = underTest.getObjectGraph().as(Injector.class).getInstance(T2.class);
         assertThat(instance).isNotNull();
 
     }

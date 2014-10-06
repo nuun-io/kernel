@@ -22,7 +22,7 @@ import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.api.config.DependencyInjectionMode;
 import io.nuun.kernel.api.di.ModuleProvider;
 import io.nuun.kernel.api.di.ModuleValidation;
-import io.nuun.kernel.api.di.ObjectGraphProvider;
+import io.nuun.kernel.api.di.ObjectGraph;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.RoundEnvironementInternal;
 import io.nuun.kernel.api.plugin.context.Context;
@@ -438,9 +438,9 @@ public final class KernelCore implements Kernel
      * @see io.nuun.kernel.core.internal.Kernel#getObjectGraphProvider()
      */
     @Override
-    public ObjectGraphProvider getObjectGraphProvider()
+    public ObjectGraph getObjectGraph()
     {
-        return new ObjectGraphProviderEmbedded (mainInjector);
+        return new ObjectGraphEmbedded (mainInjector);
     }
 
     /*
@@ -787,11 +787,11 @@ public final class KernelCore implements Kernel
         {
             if (!override)
             {
-                initContext.addChildModule(provider.convert(pluginDependencyInjectionDef));
+                initContext.addChildModule(provider.convert(pluginDependencyInjectionDef).as(Module.class));
             }
             else
             {
-                initContext.addChildOverridingModule(provider.convert(pluginDependencyInjectionDef));
+                initContext.addChildOverridingModule(provider.convert(pluginDependencyInjectionDef).as(Module.class));
             }
         }
         else
@@ -988,12 +988,12 @@ public final class KernelCore implements Kernel
 
     }
 
-    private class ObjectGraphProviderEmbedded implements ObjectGraphProvider
+    private class ObjectGraphEmbedded implements ObjectGraph
     {
         
         private Object injector;
 
-        public ObjectGraphProviderEmbedded(Object injector)
+        public ObjectGraphEmbedded(Object injector)
         {
             this.injector = injector;
         }
@@ -1017,7 +1017,7 @@ public final class KernelCore implements Kernel
         
     }
     
-    private class ModuleProviderEmbedded implements ModuleProvider
+    public static class ModuleProviderEmbedded implements ModuleProvider
     {
         private Object module;
 
@@ -1031,6 +1031,17 @@ public final class KernelCore implements Kernel
         public Object get()
         {
             return module;
+        }
+        
+        @SuppressWarnings("unchecked")
+        @Override
+        public <T> T as(Class<T> targetType)
+        {
+            if (ModuleProvider.class.isAssignableFrom(targetType))
+            {
+                return (T) Module.class.cast(module);
+            }
+            throw new IllegalStateException("Can not cast " + module + " to " + targetType.getName());
         }
 
     }
