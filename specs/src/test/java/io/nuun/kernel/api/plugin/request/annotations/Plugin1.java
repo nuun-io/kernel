@@ -16,7 +16,6 @@
  */
 package io.nuun.kernel.api.plugin.request.annotations;
 
-import io.nuun.kernel.api.plugin.AbstractPlugin;
 
 public class Plugin1 extends AbstractPlugin
 {

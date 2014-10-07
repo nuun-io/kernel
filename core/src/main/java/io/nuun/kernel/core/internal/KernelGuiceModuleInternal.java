@@ -17,7 +17,9 @@
 package io.nuun.kernel.core.internal;
 
 import static org.reflections.ReflectionUtils.withAnnotation;
+import io.nuun.kernel.api.di.ModuleProvider;
 import io.nuun.kernel.api.plugin.context.Context;
+import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.core.internal.context.ContextInternal;
 import io.nuun.kernel.core.internal.context.InitContextInternal;
 import io.nuun.kernel.spi.Concern;
@@ -121,38 +123,48 @@ public class KernelGuiceModuleInternal extends AbstractModule
 		// We install modules and bind class in the right orders
         for (Installable installable : installableList)
         {
-        	if (Module.class.isAssignableFrom(installable.inner.getClass()))
+        	Object installableInner = installable.inner;
+            // Checking for Module
+        	if (ModuleProvider.class.isAssignableFrom(installableInner.getClass())  )
         	{ // install module
-        		logger.info("installing module {}", installable.inner);
-        		install(Module.class.cast(installable.inner));
-        		
+        	    Object moduleObject = ModuleProvider.class.cast(installableInner).get();
+                if (Module.class.isAssignableFrom( moduleObject.getClass()) )
+        	    {
+        	        logger.info("installing module {}", moduleObject);
+        	        install(Module.class.cast(moduleObject));
+        	    }
+        	    else
+        	    {
+        	        throw new KernelException("Can not install " + moduleObject +". It is not a Guice Module");
+        	    }
         	}
-        	if (installable.inner instanceof Class)
-        	{ // bind object
-        		
-        		Class<?> classpathClass = Class.class.cast(installable.inner);
-        		
-        		Object scope = classesWithScopes.get(classpathClass);
-        		
-        		if (!(classpathClass.isInterface() && withAnnotation(Nullable.class).apply(classpathClass)))
-        		{
-        			if (scope == null)
-        			{
-        				logger.info("binding {} with no scope.", classpathClass.getName());
-        				bind(classpathClass);
-        			}
-        			else
-        			{
-        				logger.info("binding {} in scope {}.", classpathClass.getName() , scope.toString());
-        				bind(classpathClass).in((Scope) scope);
-        			}
-        		}
-        		else
-        		{
-        			bind(classpathClass).toProvider(nullProvider);
-        		}
-        		
-        	}
+            // Checking for class
+            if (installableInner instanceof Class)
+            { // bind object
+                
+                Class<?> classpathClass = Class.class.cast(installableInner);
+                
+                Object scope = classesWithScopes.get(classpathClass);
+                
+                if (!(classpathClass.isInterface() && withAnnotation(Nullable.class).apply(classpathClass)))
+                {
+                    if (scope == null)
+                    {
+                        logger.info("binding {} with no scope.", classpathClass.getName());
+                        bind(classpathClass);
+                    }
+                    else
+                    {
+                        logger.info("binding {} in scope {}.", classpathClass.getName() , scope.toString());
+                        bind(classpathClass).in((Scope) scope);
+                    }
+                }
+                else
+                {
+                    bind(classpathClass).toProvider(nullProvider);
+                }
+                
+            }
         }
     }
     
@@ -184,6 +196,11 @@ public class KernelGuiceModuleInternal extends AbstractModule
             {
                 toCompare = anInstallable.inner.getClass();
             }
+            else if (ModuleProvider.class.isAssignableFrom(anInstallable.inner.getClass()))
+                // inner is a ModuleProvider, we get the class of the wrapper
+            {
+                toCompare = ModuleProvider.class.cast(anInstallable.inner).get().getClass();
+            }
             else
             {
             	throw new IllegalStateException("Object to compare is not a class nor a Module " + anInstallable);
@@ -198,6 +215,11 @@ public class KernelGuiceModuleInternal extends AbstractModule
             	// inner is a module annotated
             {
             	innerClass = inner.getClass();
+            }
+            else if (ModuleProvider.class.isAssignableFrom(inner.getClass()))
+                // inner is a ModuleProvider, we get the class of the wrapper
+            {
+                innerClass = ModuleProvider.class.cast(inner).get().getClass();
             }
             else
             {

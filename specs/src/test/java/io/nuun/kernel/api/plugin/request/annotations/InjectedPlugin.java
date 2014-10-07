@@ -16,7 +16,6 @@
  */
 package io.nuun.kernel.api.plugin.request.annotations;
 
-import io.nuun.kernel.api.plugin.AbstractPlugin;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
 

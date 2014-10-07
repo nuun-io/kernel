@@ -27,7 +27,7 @@ import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.RequestType;
 import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.core.internal.KernelCore;
-import io.nuun.kernel.core.internal.KernelCoreFactory;
+import io.nuun.kernel.core.internal.ModuleProviderEmbedded;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner.Callback;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner.CallbackResources;
@@ -252,8 +252,7 @@ public class InitContextInternal implements InitContext
         {
             try
             {
-                
-                return new KernelCore.ModuleProviderEmbedded( classpathClass.newInstance());
+                return new ModuleProviderEmbedded( classpathClass.newInstance());
             }
             catch (InstantiationException e)
             {
@@ -787,12 +786,12 @@ public class InitContextInternal implements InitContext
 
     public void addChildModule(Module module)
     {
-        childModules.add(new KernelCore.ModuleProviderEmbedded(module));
+        childModules.add(new ModuleProviderEmbedded(module));
     }
 
     public void addChildOverridingModule(Module module)
     {
-        childOverridingModules.add(new KernelCore.ModuleProviderEmbedded(module));
+        childOverridingModules.add(new ModuleProviderEmbedded(module));
     }
 
     // public void setContainerContext(Object containerContext)

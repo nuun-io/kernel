@@ -16,7 +16,7 @@
  */
 package io.nuun.kernel.core.internal.concerns.sample;
 
-import io.nuun.kernel.api.plugin.AbstractPlugin;
+import io.nuun.kernel.core.AbstractPlugin;
 
 import java.util.List;
 

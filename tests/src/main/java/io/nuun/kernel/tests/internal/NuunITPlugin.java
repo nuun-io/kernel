@@ -16,10 +16,10 @@
  */
 package io.nuun.kernel.tests.internal;
 
-import io.nuun.kernel.api.plugin.AbstractPlugin;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
+import io.nuun.kernel.core.AbstractPlugin;
 import io.nuun.kernel.tests.it.NuunITRunner;
 import io.nuun.kernel.tests.it.annotations.ITBind;
 

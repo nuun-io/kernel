@@ -21,7 +21,6 @@ import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.KernelConfiguration;
-import io.nuun.kernel.api.plugin.AbstractPlugin;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;

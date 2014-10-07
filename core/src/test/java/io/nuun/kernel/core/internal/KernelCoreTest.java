@@ -23,7 +23,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.KernelConfiguration;
-import io.nuun.kernel.api.plugin.AbstractPlugin;
+import io.nuun.kernel.core.AbstractPlugin;
 import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.core.NuunCore;
 import io.nuun.kernel.core.internal.context.ContextInternal;

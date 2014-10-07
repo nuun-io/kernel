@@ -22,13 +22,13 @@ package io.nuun.kernel.core.pluginsit.dummy1;
 import static org.fest.assertions.Assertions.assertThat;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
-import io.nuun.kernel.api.plugin.AbstractPlugin;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.Context;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.BindingRequest;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.nuun.kernel.api.plugin.request.KernelParamsRequest;
+import io.nuun.kernel.core.AbstractPlugin;
 import io.nuun.kernel.core.internal.KernelCoreTest;
 import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin2;
 

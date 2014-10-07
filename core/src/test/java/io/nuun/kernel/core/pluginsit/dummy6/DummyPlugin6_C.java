@@ -16,7 +16,7 @@
  */
 package io.nuun.kernel.core.pluginsit.dummy6;
 
-import io.nuun.kernel.api.plugin.AbstractPlugin;
+import io.nuun.kernel.core.AbstractPlugin;
 
 public class DummyPlugin6_C extends AbstractPlugin
 {

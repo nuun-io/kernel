@@ -16,8 +16,6 @@
  */
 package io.nuun.kernel.tests.ut.fixtures;
 
-import org.kametic.specifications.Specification;
-
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.api.di.ModuleProvider;
@@ -29,7 +27,8 @@ import io.nuun.kernel.core.internal.scanner.inmemory.InMemoryMultiThreadClasspat
 import io.nuun.kernel.tests.ut.fixtures.TestExecutor.TestExecutorWith;
 import io.nuun.kernel.tests.ut.fixtures.TestExecutor.TestExecutotFlow;
 
-import com.google.common.base.Predicate;
+import org.kametic.specifications.Specification;
+
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.spi.DefaultElementVisitor;
