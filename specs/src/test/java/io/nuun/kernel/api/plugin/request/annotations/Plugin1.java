@@ -16,6 +16,8 @@
  */
 package io.nuun.kernel.api.plugin.request.annotations;
 
+import io.nuun.kernel.api.di.UnitModule;
+
 
 public class Plugin1 extends TestPlugin
 {
@@ -24,6 +26,12 @@ public class Plugin1 extends TestPlugin
     public String name()
     {
         return "plugin1";
+    }
+
+    @Override
+    public UnitModule unitModule()
+    {
+        return null;
     }
     
     

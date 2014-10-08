@@ -20,6 +20,7 @@
 package io.nuun.kernel.core.pluginsit.dummy23;
 
 import static org.fest.assertions.Assertions.assertThat;
+import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
@@ -27,6 +28,7 @@ import io.nuun.kernel.core.AbstractPlugin;
 
 import java.util.Collection;
 import java.util.Map;
+
 
 //import org.nuunframework.configuration.common.NuunConfigurationPlugin;
 import com.google.inject.name.Names;
@@ -81,7 +83,7 @@ public class DummyPlugin3 extends AbstractPlugin
     }
     
     @Override
-    public Object dependencyInjectionDef()
+    public Object nativeUnitModule()
     {
         return new AbstractModule()
         {

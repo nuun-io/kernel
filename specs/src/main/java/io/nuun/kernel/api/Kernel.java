@@ -78,7 +78,7 @@ public interface Kernel
      * @param plugin this is the plugin from which we want the UnitModule.
      * @return
      */
-    public abstract UnitModule getModuleProvider(Class<? extends Plugin> plugin);
+    public abstract UnitModule unitModule(Class<? extends Plugin> plugin);
     
     /**
      * After the kernel is initialized, one can ask for the particular Overriding UnitModule created by one plugin.
@@ -88,7 +88,7 @@ public interface Kernel
      * @param plugin this is the plugin from which we want the UnitModule.
      * @return
      */
-    public abstract UnitModule getOverridingModuleProvider(Class<? extends Plugin> plugin);
+    public abstract UnitModule overridingUnitModule(Class<? extends Plugin> plugin);
 
     /**
      * After the kernel is initialized, if necessary, one can ask for the global UnitModule the result of all plugins.
@@ -97,7 +97,7 @@ public interface Kernel
      * 
      * @return  the global binding definition provider for all the application.
      */
-    public abstract GlobalModule getGlobalModuleProvider();
+    public abstract GlobalModule globalModule();
 
     /**
      * Tell the kernel to start. Then the kernel will create the ObjectGraph of the application. The ObjectGraph will wrap the actual Guice injector.
@@ -118,7 +118,7 @@ public interface Kernel
      * 
      * @return the ObjectGraph
      */
-    public abstract ObjectGraph getObjectGraph();
+    public abstract ObjectGraph objectGraph();
 
     /**
      * This methods will stop all the plugins in the reverse order of the started plugins.

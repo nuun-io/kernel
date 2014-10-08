@@ -67,7 +67,7 @@ public class NuunITRunner extends BlockJUnit4ClassRunner
         Object test = null;
         
         try {
-            test = kernel.getObjectGraph().as(Injector.class).getInstance(getTestClass().getJavaClass());
+            test = kernel.objectGraph().as(Injector.class).getInstance(getTestClass().getJavaClass());
         } catch (Throwable t)
         {
 //          t.printStackTrace();

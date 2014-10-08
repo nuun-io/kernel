@@ -16,6 +16,7 @@
  */
 package io.nuun.kernel.tests.ut.sample;
 
+import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.core.AbstractPlugin;
 
 import com.google.inject.AbstractModule;
@@ -39,7 +40,7 @@ public class SamplePlugin extends AbstractPlugin
     }
     
     @Override
-    public Object dependencyInjectionDef()
+    public Object nativeUnitModule()
     {
         return new AbstractModule()
         {

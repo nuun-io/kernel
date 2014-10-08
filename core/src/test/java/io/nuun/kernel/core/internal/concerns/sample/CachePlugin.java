@@ -16,6 +16,7 @@
  */
 package io.nuun.kernel.core.internal.concerns.sample;
 
+import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.core.AbstractPlugin;
 
 import java.util.List;
@@ -61,7 +62,7 @@ public class CachePlugin extends AbstractPlugin
     }
     
     @Override
-    public Object dependencyInjectionDef()
+    public Object nativeUnitModule()
     {
         return new Module ( name() , list );
     }

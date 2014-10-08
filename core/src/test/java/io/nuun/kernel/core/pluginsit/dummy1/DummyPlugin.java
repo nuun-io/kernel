@@ -22,6 +22,7 @@ package io.nuun.kernel.core.pluginsit.dummy1;
 import static org.fest.assertions.Assertions.assertThat;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
+import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.Context;
 import io.nuun.kernel.api.plugin.context.InitContext;
@@ -114,7 +115,7 @@ public class DummyPlugin extends AbstractPlugin
      * @see org.nuunframework.kernel.plugin.Plugin#module()
      */
     @Override
-    public com.google.inject.Module dependencyInjectionDef()
+    public Object nativeUnitModule()
     {
         return module;
     }

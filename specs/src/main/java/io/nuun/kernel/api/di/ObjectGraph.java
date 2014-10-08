@@ -18,7 +18,7 @@ package io.nuun.kernel.api.di;
 
 /**
  * 
- * Object Graph is the Nuun Kernel API element abstraction for injector part of the D.I. engine. 
+ * Object Graph is the Nuun Kernel API element abstraction for injector part of the Dependency Injection engine. 
  * 
  * @author epo.jemba@kametic.com
  *

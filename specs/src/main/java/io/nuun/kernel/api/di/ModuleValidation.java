@@ -30,7 +30,7 @@ public interface ModuleValidation
      * @param moduleType
      * @return true if this validation object can handle this kind of class
      */
-    boolean canHandle (Class<?> moduleType);
+    boolean canHandle (Class<?> nativeModuleType);
     
     /**
      * validate the given <code> dependencyInjectionDef </code>

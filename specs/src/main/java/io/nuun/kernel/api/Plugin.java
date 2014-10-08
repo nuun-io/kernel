@@ -16,6 +16,7 @@
  */
 package io.nuun.kernel.api;
 
+import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.RoundEnvironment;
 import io.nuun.kernel.api.plugin.context.Context;
@@ -131,12 +132,12 @@ public interface Plugin
 
     /**
      * Return an object that will contains the dependency injection definitions. Mostly a {@link Module} but
-     * it can be other dependency injection object from other ioc frameworks : Spring, Tapestry, Jodd, Dagger.
+     * it can be other dependency injection object from other ioc frameworks : Spring, Tapestry, Jodd, etc.
      * The kernel must have a {@link DependencyInjectionProvider} that handle it.
      * 
      * @return
      */
-    Object dependencyInjectionDef();
+    UnitModule unitModule();
 
     /**
      * This object will contains bindings definition that will override the main dependency ones.
@@ -145,7 +146,7 @@ public interface Plugin
      * 
      * @return
      */
-    Object dependencyInjectionOverridingDef();
+    Object overridingUnitModule();
 
     /**
      * Practical method to retrieve the container context as it is passed as argument.

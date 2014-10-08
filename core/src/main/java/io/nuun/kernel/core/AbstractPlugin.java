@@ -284,13 +284,18 @@ public abstract class AbstractPlugin implements Plugin
     }
 
     @Override
-    public Object dependencyInjectionDef()
+    public UnitModule unitModule()
+    {
+        return new ModuleEmbedded(nativeUnitModule());
+    }
+    
+    public Object nativeUnitModule()
     {
         return null;
     }
     
     @Override
-    public Object dependencyInjectionOverridingDef()
+    public Object overridingUnitModule()
     {
         return null;
     }

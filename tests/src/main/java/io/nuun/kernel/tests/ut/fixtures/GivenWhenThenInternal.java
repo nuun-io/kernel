@@ -143,7 +143,7 @@ public class GivenWhenThenInternal implements FixtureConfiguration, TestExecutor
         classpath.configure();
         kernel.init();
         kernel.start();
-        injector = kernel.getObjectGraph().as(Injector.class);
+        injector = kernel.objectGraph().as(Injector.class);
 
     }
 

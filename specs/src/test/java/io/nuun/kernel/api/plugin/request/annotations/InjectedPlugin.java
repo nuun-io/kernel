@@ -16,6 +16,7 @@
  */
 package io.nuun.kernel.api.plugin.request.annotations;
 
+import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
 
@@ -49,6 +50,12 @@ public class InjectedPlugin extends TestPlugin
     public InitState init(InitContext initContext)
     {
         return super.init(initContext);
+    }
+
+    @Override
+    public UnitModule unitModule()
+    {
+        return null;
     }
     
 

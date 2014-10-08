@@ -21,6 +21,7 @@ import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.KernelConfiguration;
+import io.nuun.kernel.api.di.UnitModule;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
@@ -44,7 +45,7 @@ public class CoreITFixture extends AbstractFixture<Kernel> {
 	
 	public Injector  getInjector ()
 	{
-		return kernel.getObjectGraph().as(Injector.class);
+		return kernel.objectGraph().as(Injector.class);
 	}
 
 	@Override
@@ -105,7 +106,7 @@ public class CoreITFixture extends AbstractFixture<Kernel> {
 		}
 
 		@Override
-		public Object dependencyInjectionDef() {
+		public Object nativeUnitModule() {
 			return module;
 		}
 	}

@@ -162,13 +162,13 @@ public abstract class TestPlugin implements Plugin
     }
 
     @Override
-    public Object dependencyInjectionDef()
+    public UnitModule unitModule()
     {
         return null;
     }
     
     @Override
-    public Object dependencyInjectionOverridingDef()
+    public Object overridingUnitModule()
     {
         return null;
     }

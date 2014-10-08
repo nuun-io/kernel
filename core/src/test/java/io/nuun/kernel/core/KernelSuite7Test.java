@@ -53,7 +53,7 @@ public class KernelSuite7Test
         underTest.init();
         underTest.start();
 
-        String resa = underTest.getObjectGraph().as(Injector.class).getInstance(Key.get(String.class, Names.named("dep7a")));
+        String resa = underTest.objectGraph().as(Injector.class).getInstance(Key.get(String.class, Names.named("dep7a")));
         assertThat(resa).isNotNull();
         assertThat(resa).isEqualTo("dep7aOVER");
     }
@@ -73,7 +73,7 @@ public class KernelSuite7Test
         underTest.init();
         underTest.start();
 
-        String resa = underTest.getObjectGraph().as(Injector.class).getInstance(Key.get(String.class, Names.named("dep7b")));
+        String resa = underTest.objectGraph().as(Injector.class).getInstance(Key.get(String.class, Names.named("dep7b")));
         assertThat(resa).isNotNull();
         assertThat(resa).isEqualTo("dep7bOVER");
 

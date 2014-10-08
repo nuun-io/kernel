@@ -439,17 +439,17 @@ public final class KernelCore implements Kernel
      * @see io.nuun.kernel.core.internal.Kernel#getObjectGraphProvider()
      */
     @Override
-    public ObjectGraph getObjectGraph()
+    public ObjectGraph objectGraph()
     {
         return new ObjectGraphEmbedded (mainInjector);
     }
 
     /*
      * (non-Javadoc)
-     * @see io.nuun.kernel.core.internal.Kernel#getModuleProvider()
+     * @see io.nuun.kernel.core.internal.Kernel#unitModule()
      */
     @Override
-    public UnitModule getModuleProvider(Class<? extends Plugin> pluginClass)
+    public UnitModule unitModule(Class<? extends Plugin> pluginClass)
     {
         return unitModules.get(pluginClass);
     }
@@ -459,13 +459,13 @@ public final class KernelCore implements Kernel
      * @see io.nuun.kernel.core.internal.Kernel#getOverridingModuleProvider()
      */
     @Override
-    public UnitModule getOverridingModuleProvider(Class<? extends Plugin> pluginClass)
+    public UnitModule overridingUnitModule(Class<? extends Plugin> pluginClass)
     {
         return overridingmoduleProviders.get(pluginClass);
     }
     
     @Override
-    public GlobalModule getGlobalModuleProvider()
+    public GlobalModule globalModule()
     {
         return GlobalModule.class.cast(new ModuleEmbedded(mainFinalModule));
     }
@@ -674,36 +674,36 @@ public final class KernelCore implements Kernel
                 if (state == InitState.INITIALIZED)
                 {
                     // Main // =====================================================================
-                    Object pluginDependencyInjectionDef = plugin.dependencyInjectionDef();
-                    if (pluginDependencyInjectionDef != null)
+                    UnitModule unitModule = plugin.unitModule();
+                    if (unitModule != null && unitModule.get() != null)
                     {
-                        ModuleEmbedded moduleProvider = new ModuleEmbedded(pluginDependencyInjectionDef);
+//                        ModuleEmbedded moduleProvider = new ModuleEmbedded(unitModule);
                         //
-                        validateDependencyInjectionDef(moduleProvider);
+                        validateUnitModule(unitModule);
 
                         // we feed the unitModules list
-                        unitModules.put(plugin.getClass(), moduleProvider);
+                        unitModules.put(plugin.getClass(), unitModule);
 
-                        if (pluginDependencyInjectionDef instanceof Module)
+                        if (unitModule.get() instanceof Module)
                         {
-                            initContext.addChildModule(Module.class.cast(pluginDependencyInjectionDef));
+                            initContext.addChildModule(Module.class.cast(unitModule.get()));
                         }
                         else
                         {
                             boolean override = false;
-                            addModuleViaProvider(name, pluginDependencyInjectionDef, override);
+                            addModuleViaProvider(name, unitModule.get(), override);
                         }
                     } //
 
                     // Overriding definition
 
-                    Object dependencyInjectionOverridingDef = plugin.dependencyInjectionOverridingDef();
+                    Object dependencyInjectionOverridingDef = plugin.overridingUnitModule();
 
                     if (dependencyInjectionOverridingDef != null)
                     {
                         ModuleEmbedded moduleProvider = new ModuleEmbedded(dependencyInjectionOverridingDef);
 
-                        validateDependencyInjectionDef(moduleProvider);
+                        validateUnitModule(moduleProvider);
 
                         // we feed the unitModules list
                         overridingmoduleProviders.put(plugin.getClass(), moduleProvider);
@@ -747,19 +747,19 @@ public final class KernelCore implements Kernel
         mainFinalModule = Modules.override(kernelGuiceModuleInternal).with(internalKernelGuiceModuleOverriding);
     }
 
-    private void validateDependencyInjectionDef(ModuleEmbedded pluginDependencyInjectionDef)
+    private void validateUnitModule(UnitModule unitModule)
     {
         for (ModuleValidation validation : globalModuleValidations)
         {
-            if (validation.canHandle(pluginDependencyInjectionDef.getClass()))
+            if (validation.canHandle(unitModule.get().getClass()))
             {
                 try
                 {
-                    validation.validate(pluginDependencyInjectionDef);
+                    validation.validate(unitModule);
                 }
                 catch (Exception validationException)
                 {
-                    throw new KernelException("Error when validating di definition " + pluginDependencyInjectionDef, validationException);
+                    throw new KernelException("Error when validating di definition " + unitModule, validationException);
                 }
             }
         }

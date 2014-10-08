@@ -18,6 +18,7 @@ package io.nuun.kernel.core.internal.concerns;
 
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.config.KernelConfiguration;
+import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.core.AbstractPlugin;
 import io.nuun.kernel.core.NuunCore;
 import io.nuun.kernel.core.internal.concerns.sample.CachePlugin;
@@ -73,7 +74,7 @@ public class ConcernTest
     	}
 
     	@Override
-        public Object dependencyInjectionDef()
+        public Object nativeUnitModule()
         {
             return new Module();
         }
@@ -93,7 +94,7 @@ public class ConcernTest
     public void test()
     {
         
-        MyObj obj = underTest.getObjectGraph().as(Injector.class).getInstance(MyObj.class);
+        MyObj obj = underTest.objectGraph().as(Injector.class).getInstance(MyObj.class);
         obj.triggerMethod(list);
         Assertions.assertThat(list).hasSize(7);
         Assertions.assertThat(list).containsExactly("pre security" , "pre cache" , "pre log", "fire" , "post log",  "post cache"  ,  "post security");

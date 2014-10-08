@@ -49,7 +49,7 @@ public class DummyPlugin7_B extends AbstractPlugin
     
     
     @Override
-    public Object dependencyInjectionOverridingDef()
+    public Object overridingUnitModule()
     {
         return new AbstractModule()
         {

@@ -24,11 +24,16 @@ public class ModuleEmbedded implements UnitModule, GlobalModule
     @Override
     public <T> T as(Class<T> targetType)
     {
-        if (UnitModule.class.isAssignableFrom(targetType))
+        if (targetType.isAssignableFrom(module.getClass()))
         {
             return (T) Module.class.cast(module);
         }
         throw new IllegalStateException("Can not cast " + module + " to " + targetType.getName());
+    }
+    
+    public static ModuleEmbedded wrap(Object module)
+    {
+        return new ModuleEmbedded(module);
     }
 
 }
