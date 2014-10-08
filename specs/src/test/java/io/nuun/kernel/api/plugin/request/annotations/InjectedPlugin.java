@@ -21,7 +21,7 @@ import io.nuun.kernel.api.plugin.context.InitContext;
 
 import java.util.Collection;
 
-public class InjectedPlugin extends AbstractPlugin
+public class InjectedPlugin extends TestPlugin
 {
 
     @Override
@@ -30,20 +30,19 @@ public class InjectedPlugin extends AbstractPlugin
         return "injected-plugin";
     }
     
-    
     @Dependent
     Plugin1 plugin1;
     
     @Required
     Plugin2 plugin2;
     
-    @Request(Specs.kernel_param1)
+    @Request ( Specs.kernel_param1 )
     String param1;
     
-    @Request(Specs.interface_services)
+    @Request ( Specs.interface_services )
     Collection<Class<?>> interfaces;
 
-    @Request(Specs.implem_services)
+    @Request ( Specs.implem_services )
     Collection<Class<?>> implementation;
     
     @Override

@@ -17,26 +17,28 @@
 package io.nuun.kernel.api.di;
 
 /**
- * This API element will give the opportunity to the kernel to assert DependencyInjectionDef aka Module object given by
- * plugins.
+ * An encapsulation of the bindings definition of the actual dependency engine.
+ * <p>
+ * The encapsulated object, can be a <strong>Guice Module</strong>, and <strong>ApplicationContext<strong>, <strong> PicoContainer </strong>, etc
  * 
  * @author epo.jemba@kametic.com
+ *
  */
-public interface ModuleValidation
+public interface ModuleWrapper
 {
-    
     /**
      * 
-     * @param moduleType
-     * @return true if this validation object can handle this kind of class
+     * @return the actual native module.
      */
-    boolean canHandle (Class<?> moduleType);
+    Object get();
     
     /**
-     * validate the given <code> dependencyInjectionDef </code>
+     * Cast the current object module.
+     * <p>
+     * Will send an IllegaStateException if can not convert or cast.
      * 
-     * @param unitModule
+     * @param targetType
+     * @return the ObjectGraph object casted as T type or adapted as T.
      */
-    void validate(UnitModule unitModule);
-
+    <T>  T as(Class<T> targetType);
 }

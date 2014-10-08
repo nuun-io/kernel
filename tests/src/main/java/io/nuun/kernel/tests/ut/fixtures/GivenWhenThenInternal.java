@@ -18,7 +18,7 @@ package io.nuun.kernel.tests.ut.fixtures;
 
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.ClasspathScanMode;
-import io.nuun.kernel.api.di.ModuleProvider;
+import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.di.ModuleValidation;
 import io.nuun.kernel.core.NuunCore;
 import io.nuun.kernel.core.internal.KernelCore;
@@ -56,9 +56,9 @@ public class GivenWhenThenInternal implements FixtureConfiguration, TestExecutor
             }
 
             @Override
-            public void validate(ModuleProvider moduleProvider)
+            public void validate(UnitModule unitModule)
             {
-                Module m = Module.class.cast(moduleProvider.get());
+                Module m = Module.class.cast(unitModule.get());
                 
                 Visitor v = new Visitor();
                 
@@ -120,7 +120,7 @@ public class GivenWhenThenInternal implements FixtureConfiguration, TestExecutor
     }
 
     @Override
-    public ResultValidator then(Specification<? extends ModuleProvider> predicate)
+    public ResultValidator then(Specification<? extends UnitModule> predicate)
     {
         return this;
     }

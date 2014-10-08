@@ -16,26 +16,13 @@
  */
 package io.nuun.kernel.api.di;
 /**
- * An encapsulation of the bindings definition of the actual dependency engine. 
- * <p>
- * The encapsulated object, can be a <strong>Guice Module</strong>, and <strong>ApplicationContext<strong> etc  
  * 
  * @author epo.jemba@kametic.com
  *
  */
-public interface ModuleProvider
+public interface UnitModule extends ModuleWrapper
 {
     
-    Object get();
-    
-    /**
-     * Cast the current object module.
-     * <p>
-     * Will send an IllegaStateException if can not convert or cast.
-     * 
-     * @param targetType
-     * @return the ObjectGraph object casted as T type or adapted as T.
-     */
-    <T>  T as(Class<T> targetType); 
+
 
 }

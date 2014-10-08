@@ -1,17 +1,17 @@
 package io.nuun.kernel.core.internal;
 
-import io.nuun.kernel.api.di.ModuleProvider;
+import io.nuun.kernel.api.di.GlobalModule;
+import io.nuun.kernel.api.di.UnitModule;
 
 import com.google.inject.Module;
 
-public class ModuleProviderEmbedded implements ModuleProvider
+public class ModuleEmbedded implements UnitModule, GlobalModule
 {
     private Object module;
 
-    public ModuleProviderEmbedded(Object module)
+    public ModuleEmbedded(Object module)
     {
         this.module = module;
-
     }
 
     @Override
@@ -24,7 +24,7 @@ public class ModuleProviderEmbedded implements ModuleProvider
     @Override
     public <T> T as(Class<T> targetType)
     {
-        if (ModuleProvider.class.isAssignableFrom(targetType))
+        if (UnitModule.class.isAssignableFrom(targetType))
         {
             return (T) Module.class.cast(module);
         }

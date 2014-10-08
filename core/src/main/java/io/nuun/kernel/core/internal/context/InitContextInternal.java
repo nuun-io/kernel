@@ -21,13 +21,13 @@ import static com.google.common.base.Predicates.not;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.annotations.KernelModule;
 import io.nuun.kernel.api.config.ClasspathScanMode;
-import io.nuun.kernel.api.di.ModuleProvider;
+import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.inmemory.Classpath;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.RequestType;
 import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.core.internal.KernelCore;
-import io.nuun.kernel.core.internal.ModuleProviderEmbedded;
+import io.nuun.kernel.core.internal.ModuleEmbedded;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner.Callback;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner.CallbackResources;
@@ -90,8 +90,8 @@ public class InitContextInternal implements InitContext
 
     private List<String>                                           propertiesPrefix;
 
-    private List<ModuleProvider>                                   childModules;
-    private List<ModuleProvider>                                   childOverridingModules;
+    private List<UnitModule>                                   childModules;
+    private List<UnitModule>                                   childOverridingModules;
     private List<String>                                           packageRoots;
     private Set<URL>                                               additionalClasspathScan;
     private ClasspathStrategy                                      classpathStrategy;
@@ -147,8 +147,8 @@ public class InitContextInternal implements InitContext
         packageRoots = new LinkedList<String>();
         this.initialPropertiesPrefix = initialPropertiesPrefix;
         this.kernelParams = kernelParams;
-        childModules = new LinkedList<ModuleProvider>();
-        childOverridingModules = new LinkedList<ModuleProvider>();
+        childModules = new LinkedList<UnitModule>();
+        childOverridingModules = new LinkedList<UnitModule>();
         classesToBind = new HashSet<Class<?>>();
         classesWithScopes = new HashMap<Class<?>, Object>();
         reset();
@@ -240,7 +240,7 @@ public class InitContextInternal implements InitContext
 
     }
 
-    class ModuleClass2Instance implements Function<Class<? extends Module>, ModuleProvider>
+    class ModuleClass2Instance implements Function<Class<? extends Module>, UnitModule>
     {
 
         /*
@@ -248,11 +248,11 @@ public class InitContextInternal implements InitContext
          * @see com.google.common.base.Function#apply(java.lang.Object)
          */
         @Override
-        public ModuleProvider apply(Class<? extends Module> classpathClass)
+        public UnitModule apply(Class<? extends Module> classpathClass)
         {
             try
             {
-                return new ModuleProviderEmbedded( classpathClass.newInstance());
+                return new ModuleEmbedded( classpathClass.newInstance());
             }
             catch (InstantiationException e)
             {
@@ -279,9 +279,9 @@ public class InitContextInternal implements InitContext
                 {
 
                     Collection<Class<? extends Module>> scanResult2 = (Collection) scanResult;
-                    FluentIterable<ModuleProvider> nominals = FluentIterable.from(scanResult2).filter(and(not(new IsModuleOverriding()), not(new IsModuleAbstract())))
+                    FluentIterable<UnitModule> nominals = FluentIterable.from(scanResult2).filter(and(not(new IsModuleOverriding()), not(new IsModuleAbstract())))
                             .transform(new ModuleClass2Instance());
-                    FluentIterable<ModuleProvider> overriders = FluentIterable.from(scanResult2).filter(and(new IsModuleOverriding(), not(new IsModuleAbstract())))
+                    FluentIterable<UnitModule> overriders = FluentIterable.from(scanResult2).filter(and(new IsModuleOverriding(), not(new IsModuleAbstract())))
                             .transform(new ModuleClass2Instance());
 
                     childModules.addAll(nominals.toImmutableSet());
@@ -786,12 +786,12 @@ public class InitContextInternal implements InitContext
 
     public void addChildModule(Module module)
     {
-        childModules.add(new ModuleProviderEmbedded(module));
+        childModules.add(new ModuleEmbedded(module));
     }
 
     public void addChildOverridingModule(Module module)
     {
-        childOverridingModules.add(new ModuleProviderEmbedded(module));
+        childOverridingModules.add(new ModuleEmbedded(module));
     }
 
     // public void setContainerContext(Object containerContext)
@@ -824,13 +824,13 @@ public class InitContextInternal implements InitContext
     }
 
     @Override
-    public List<ModuleProvider> moduleResults()
+    public List<UnitModule> moduleResults()
     {
         return Collections.unmodifiableList(childModules);
     }
 
     @Override
-    public List<ModuleProvider> moduleOverridingResults()
+    public List<UnitModule> moduleOverridingResults()
     {
         return Collections.unmodifiableList(childOverridingModules);
     }

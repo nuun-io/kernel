@@ -16,8 +16,9 @@
  */
 package io.nuun.kernel.api;
 
-import io.nuun.kernel.api.di.ModuleProvider;
+import io.nuun.kernel.api.di.GlobalModule;
 import io.nuun.kernel.api.di.ObjectGraph;
+import io.nuun.kernel.api.di.UnitModule;
 
 import java.util.List;
 
@@ -49,7 +50,7 @@ public interface Kernel
      * 
      * Tell the kernel to initialize. The kernel will load all the plugins and initialize them.
      * <p>
-     * Plugins will the create an intermediate ModuleProvider.
+     * Plugins will the create an intermediate UnitModule.
      */
     public abstract void init();
     
@@ -70,33 +71,33 @@ public interface Kernel
     public List<Plugin> plugins();
     
     /**
-     * After the kernel is initialized, one can ask for the particular ModuleProvider created by one plugin.
+     * After the kernel is initialized, one can ask for the particular UnitModule created by one plugin.
      * <p>
      * This will rarely be the case. We advise developers to be careful with plugins.
      * 
-     * @param plugin this is the plugin from which we want the ModuleProvider.
+     * @param plugin this is the plugin from which we want the UnitModule.
      * @return
      */
-    public abstract ModuleProvider getModuleProvider(Class<? extends Plugin> plugin);
+    public abstract UnitModule getModuleProvider(Class<? extends Plugin> plugin);
     
     /**
-     * After the kernel is initialized, one can ask for the particular Overriding ModuleProvider created by one plugin.
+     * After the kernel is initialized, one can ask for the particular Overriding UnitModule created by one plugin.
      * <p>
      * This will rarely be the case. We advise developers to be careful with plugins.
      * 
-     * @param plugin this is the plugin from which we want the ModuleProvider.
+     * @param plugin this is the plugin from which we want the UnitModule.
      * @return
      */
-    public abstract ModuleProvider getOverridingModuleProvider(Class<? extends Plugin> plugin);
+    public abstract UnitModule getOverridingModuleProvider(Class<? extends Plugin> plugin);
 
     /**
-     * After the kernel is initialized, if necessary, one can ask for the global ModuleProvider the result of all plugins.
+     * After the kernel is initialized, if necessary, one can ask for the global UnitModule the result of all plugins.
      * <p>
      * This will rarely be the case. We advise developers to be careful with plugins.
      * 
      * @return  the global binding definition provider for all the application.
      */
-    public abstract ModuleProvider getGlobalModuleProvider();
+    public abstract GlobalModule getGlobalModuleProvider();
 
     /**
      * Tell the kernel to start. Then the kernel will create the ObjectGraph of the application. The ObjectGraph will wrap the actual Guice injector.

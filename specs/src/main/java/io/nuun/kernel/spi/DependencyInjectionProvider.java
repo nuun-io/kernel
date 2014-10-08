@@ -16,7 +16,7 @@
  */
 package io.nuun.kernel.spi;
 
-import io.nuun.kernel.api.di.ModuleProvider;
+import io.nuun.kernel.api.di.UnitModule;
 
 
 public interface DependencyInjectionProvider
@@ -30,7 +30,7 @@ public interface DependencyInjectionProvider
      * @param injectionDefinition
      * @return Guice Plugin
      */
-    ModuleProvider convert(Object injectionDefinition);
+    UnitModule convert(Object injectionDefinition);
 
     /**
      * This method will return a bridge from kernel to module with this DI.

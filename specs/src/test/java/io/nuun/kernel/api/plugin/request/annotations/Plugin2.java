@@ -17,7 +17,7 @@
 package io.nuun.kernel.api.plugin.request.annotations;
 
 
-public class Plugin2 extends AbstractPlugin
+public class Plugin2 extends TestPlugin
 {
 
     @Override

@@ -20,7 +20,7 @@
 package io.nuun.kernel.core;
 
 import io.nuun.kernel.api.Plugin;
-import io.nuun.kernel.api.di.ModuleProvider;
+import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.RoundEnvironment;
 import io.nuun.kernel.api.plugin.context.Context;
@@ -32,7 +32,7 @@ import io.nuun.kernel.api.plugin.request.ClasspathScanRequestBuilder;
 import io.nuun.kernel.api.plugin.request.KernelParamsRequest;
 import io.nuun.kernel.api.plugin.request.KernelParamsRequestBuilder;
 import io.nuun.kernel.api.plugin.request.builders.BindingRequestBuilderMain;
-import io.nuun.kernel.core.internal.ModuleProviderEmbedded;
+import io.nuun.kernel.core.internal.ModuleEmbedded;
 import io.nuun.kernel.spi.DependencyInjectionProvider;
 
 import java.lang.annotation.Annotation;
@@ -331,9 +331,9 @@ public abstract class AbstractPlugin implements Plugin
         return Arrays.asList(items);
     }
     
-    protected ModuleProvider moduleProvider(Object module)
+    protected UnitModule unitModule(Object module)
     {
-        return new ModuleProviderEmbedded(module);
+        return new ModuleEmbedded(module);
     }
 
 }

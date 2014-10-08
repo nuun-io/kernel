@@ -20,9 +20,10 @@ import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.api.config.DependencyInjectionMode;
-import io.nuun.kernel.api.di.ModuleProvider;
+import io.nuun.kernel.api.di.GlobalModule;
 import io.nuun.kernel.api.di.ModuleValidation;
 import io.nuun.kernel.api.di.ObjectGraph;
+import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.RoundEnvironementInternal;
 import io.nuun.kernel.api.plugin.context.Context;
@@ -106,8 +107,8 @@ public final class KernelCore implements Kernel
     private DependencyInjectionMode                            dependencyInjectionMode;
     private ClasspathScanMode                                  classpathScanMode         = ClasspathScanMode.NOMINAL;
     private final List<ModuleValidation>                       globalModuleValidations   = Collections.synchronizedList(new ArrayList<ModuleValidation>());
-    private final Map<Class<? extends Plugin>, ModuleProvider> moduleProviders           = Maps.newConcurrentMap();
-    private final Map<Class<? extends Plugin>, ModuleProvider> overridingmoduleProviders = Maps.newConcurrentMap();
+    private final Map<Class<? extends Plugin>, UnitModule> unitModules           = Maps.newConcurrentMap();
+    private final Map<Class<? extends Plugin>, UnitModule> overridingmoduleProviders = Maps.newConcurrentMap();
     private Module                                             mainFinalModule;
 
     KernelCore(KernelConfigurationInternal kernelConfigurationInternal)
@@ -448,9 +449,9 @@ public final class KernelCore implements Kernel
      * @see io.nuun.kernel.core.internal.Kernel#getModuleProvider()
      */
     @Override
-    public ModuleProvider getModuleProvider(Class<? extends Plugin> pluginClass)
+    public UnitModule getModuleProvider(Class<? extends Plugin> pluginClass)
     {
-        return moduleProviders.get(pluginClass);
+        return unitModules.get(pluginClass);
     }
 
     /*
@@ -458,15 +459,15 @@ public final class KernelCore implements Kernel
      * @see io.nuun.kernel.core.internal.Kernel#getOverridingModuleProvider()
      */
     @Override
-    public ModuleProvider getOverridingModuleProvider(Class<? extends Plugin> pluginClass)
+    public UnitModule getOverridingModuleProvider(Class<? extends Plugin> pluginClass)
     {
         return overridingmoduleProviders.get(pluginClass);
     }
     
     @Override
-    public ModuleProvider getGlobalModuleProvider()
+    public GlobalModule getGlobalModuleProvider()
     {
-        return new ModuleProviderEmbedded(mainFinalModule);
+        return GlobalModule.class.cast(new ModuleEmbedded(mainFinalModule));
     }
     
     @Override
@@ -676,12 +677,12 @@ public final class KernelCore implements Kernel
                     Object pluginDependencyInjectionDef = plugin.dependencyInjectionDef();
                     if (pluginDependencyInjectionDef != null)
                     {
-                        ModuleProviderEmbedded moduleProvider = new ModuleProviderEmbedded(pluginDependencyInjectionDef);
+                        ModuleEmbedded moduleProvider = new ModuleEmbedded(pluginDependencyInjectionDef);
                         //
                         validateDependencyInjectionDef(moduleProvider);
 
-                        // we feed the moduleProviders list
-                        moduleProviders.put(plugin.getClass(), moduleProvider);
+                        // we feed the unitModules list
+                        unitModules.put(plugin.getClass(), moduleProvider);
 
                         if (pluginDependencyInjectionDef instanceof Module)
                         {
@@ -700,11 +701,11 @@ public final class KernelCore implements Kernel
 
                     if (dependencyInjectionOverridingDef != null)
                     {
-                        ModuleProviderEmbedded moduleProvider = new ModuleProviderEmbedded(dependencyInjectionOverridingDef);
+                        ModuleEmbedded moduleProvider = new ModuleEmbedded(dependencyInjectionOverridingDef);
 
                         validateDependencyInjectionDef(moduleProvider);
 
-                        // we feed the moduleProviders list
+                        // we feed the unitModules list
                         overridingmoduleProviders.put(plugin.getClass(), moduleProvider);
 
                         if (dependencyInjectionOverridingDef instanceof Module)
@@ -746,7 +747,7 @@ public final class KernelCore implements Kernel
         mainFinalModule = Modules.override(kernelGuiceModuleInternal).with(internalKernelGuiceModuleOverriding);
     }
 
-    private void validateDependencyInjectionDef(ModuleProviderEmbedded pluginDependencyInjectionDef)
+    private void validateDependencyInjectionDef(ModuleEmbedded pluginDependencyInjectionDef)
     {
         for (ModuleValidation validation : globalModuleValidations)
         {

@@ -16,11 +16,11 @@
  */
 package io.nuun.kernel.tests.ut.fixtures;
 
-import io.nuun.kernel.api.di.ModuleProvider;
+import io.nuun.kernel.api.di.UnitModule;
 
 import org.kametic.specifications.Specification;
 
 public interface ResultValidator
 {
-    ResultValidator then(Specification<? extends ModuleProvider> predicate);
+    ResultValidator then(Specification<? extends UnitModule> predicate);
 }

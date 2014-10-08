@@ -14,20 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.api.plugin.request.annotations;
-
-
-public class Plugin1 extends TestPlugin
+package io.nuun.kernel.api.di;
+/**
+ * 
+ * Global Module is the module created by the kernel for the whole application. It is the aggregation of all the UnitModule provided by plugins.
+ * 
+ * @author epo.jemba@kametic.com
+ *
+ */
+public interface GlobalModule extends ModuleWrapper
 {
 
-    @Override
-    public String name()
-    {
-        return "plugin1";
-    }
-    
-    
-    
-    
 
 }

@@ -17,7 +17,7 @@
 package io.nuun.kernel.core.internal;
 
 import static org.reflections.ReflectionUtils.withAnnotation;
-import io.nuun.kernel.api.di.ModuleProvider;
+import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.plugin.context.Context;
 import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.core.internal.context.ContextInternal;
@@ -125,9 +125,9 @@ public class KernelGuiceModuleInternal extends AbstractModule
         {
         	Object installableInner = installable.inner;
             // Checking for Module
-        	if (ModuleProvider.class.isAssignableFrom(installableInner.getClass())  )
+        	if (UnitModule.class.isAssignableFrom(installableInner.getClass())  )
         	{ // install module
-        	    Object moduleObject = ModuleProvider.class.cast(installableInner).get();
+        	    Object moduleObject = UnitModule.class.cast(installableInner).get();
                 if (Module.class.isAssignableFrom( moduleObject.getClass()) )
         	    {
         	        logger.info("installing module {}", moduleObject);
@@ -196,10 +196,10 @@ public class KernelGuiceModuleInternal extends AbstractModule
             {
                 toCompare = anInstallable.inner.getClass();
             }
-            else if (ModuleProvider.class.isAssignableFrom(anInstallable.inner.getClass()))
-                // inner is a ModuleProvider, we get the class of the wrapper
+            else if (UnitModule.class.isAssignableFrom(anInstallable.inner.getClass()))
+                // inner is a UnitModule, we get the class of the wrapper
             {
-                toCompare = ModuleProvider.class.cast(anInstallable.inner).get().getClass();
+                toCompare = UnitModule.class.cast(anInstallable.inner).get().getClass();
             }
             else
             {
@@ -216,10 +216,10 @@ public class KernelGuiceModuleInternal extends AbstractModule
             {
             	innerClass = inner.getClass();
             }
-            else if (ModuleProvider.class.isAssignableFrom(inner.getClass()))
-                // inner is a ModuleProvider, we get the class of the wrapper
+            else if (UnitModule.class.isAssignableFrom(inner.getClass()))
+                // inner is a UnitModule, we get the class of the wrapper
             {
-                innerClass = ModuleProvider.class.cast(inner).get().getClass();
+                innerClass = UnitModule.class.cast(inner).get().getClass();
             }
             else
             {

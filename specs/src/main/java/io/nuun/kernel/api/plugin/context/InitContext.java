@@ -17,7 +17,7 @@
 package io.nuun.kernel.api.plugin.context;
 
 import io.nuun.kernel.api.Plugin;
-import io.nuun.kernel.api.di.ModuleProvider;
+import io.nuun.kernel.api.di.UnitModule;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
@@ -51,9 +51,9 @@ public interface InitContext
 
     public abstract Collection<Class<?>> classesToBind();
 
-    public abstract List<ModuleProvider> moduleResults();
+    public abstract List<UnitModule> moduleResults();
     
-    public abstract List<ModuleProvider> moduleOverridingResults();
+    public abstract List<UnitModule> moduleOverridingResults();
 
     public abstract Collection<String> propertiesFiles();
 
