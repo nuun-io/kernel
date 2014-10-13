@@ -16,6 +16,8 @@
  */
 package io.nuun.kernel.api.plugin.request.annotations;
 
+import io.nuun.kernel.api.plugin.request.RequestType;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -35,5 +37,7 @@ import org.kametic.specifications.Specification;
 @Qualifier
 public @interface Scan
 {
-    Class<? extends Specification<Class<?>>> value ();
+    RequestType type() default RequestType.VIA_SPECIFICATION;
+    Class<? > value () default Void.class;
+    String valueString () default ""; 
 }

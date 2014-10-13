@@ -19,6 +19,7 @@ package io.nuun.kernel.api.plugin.request.annotations;
 import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
+import io.nuun.kernel.api.plugin.request.RequestType;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -68,6 +69,9 @@ public class InjectedPlugin extends TestPlugin
 
     @Scan(MySpecification.class) @Round(1)
     Collection<Class<?>> implementation;
+    
+    @Scan(type=RequestType.SUBTYPE_OF_BY_CLASS,valueString= "properties.txt")
+    Collection<String> resources;
     
     @Override
     public InitState init(InitContext initContext)
