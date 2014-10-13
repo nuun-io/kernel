@@ -22,5 +22,5 @@ import org.kametic.specifications.Specification;
 
 public interface ResultValidator
 {
-    ResultValidator then(Specification<? extends UnitModule> predicate);
+    ResultValidator then(Specification<UnitModule> predicate);
 }

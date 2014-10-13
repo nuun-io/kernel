@@ -26,7 +26,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
-import javassist.expr.NewArray;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.kametic.specifications.AbstractSpecification;
 
@@ -44,8 +45,11 @@ public class InjectedPlugin extends TestPlugin
         return "injected-plugin";
     }
     
-    class MySpecification extends AbstractSpecification<Class<?>> 
+    public class MySpecification extends AbstractSpecification<Class<?>>
     {
+        @Inject @Named("itf")
+        Collection<Class<?>> implementation;
+
         @Override
         public boolean isSatisfiedBy(Class<?> candidate)
         {
@@ -58,6 +62,7 @@ public class InjectedPlugin extends TestPlugin
     @KernelParams("param")
     String param;
     
+    
     @Dependent
     Plugin1 plugin1;
     
@@ -67,14 +72,21 @@ public class InjectedPlugin extends TestPlugin
     @KernelParams("param")
     String param1;
     
-    @Scan(MySpecification.class) 
+    /*
+     * name = "implementation" implies that this Key Collection<Class<?>+"implementation"
+     * Will be available to the outer specification.
+     */
+    @Scan(value = MySpecification.class , name = "itf")
     Collection<Class<?>> interfaces;
 
-    @Scan(MySpecification.class) @Round(1)
+    @Scan(MySpecification.class) @Round(2)
     Collection<Class<?>> implementation;
     
-    @Scan(type=RequestType.SUBTYPE_OF_BY_CLASS,valueString= "properties.txt")
+    @Scan(type=RequestType.RESOURCES_REGEX_MATCH , valueString = "properties.txt")
     Collection<String> resources;
+    
+    @Scan(type=RequestType.SUBTYPE_OF_BY_CLASS , valueClass = Plugin1.class)
+    Collection<Class<?>> childPlugin;
     
     @Override
     public InitState init(InitContext initContext)
@@ -88,7 +100,7 @@ public class InjectedPlugin extends TestPlugin
         return null;
     }
     
-    public void test() 
+    public void test()
     {
         System.out.println("Constructors");
         System.out.println("Enclosing class " + MySpecification.class.getEnclosingClass());
@@ -96,15 +108,17 @@ public class InjectedPlugin extends TestPlugin
         Constructor<?>[] constructors = MySpecification.class.getDeclaredConstructors();
         if (constructors != null)
         {
-            for( Constructor<?>  constructor :  constructors) 
+            for( Constructor<?>  constructor :  constructors)
             {
-               System.out.println( " => " + constructor.getParameterTypes().length ); 
-               System.out.println( " => " + constructor.getParameterTypes()[0].getName() ); 
+               System.out.println( " => " + constructor.getParameterTypes().length );
+               System.out.println( " => " + constructor.getParameterTypes()[0].getName() );
                
                MySpecification specification = null;
             try
             {
                 specification = (MySpecification) constructor.newInstance(this);
+                this.new MySpecification();
+                this.new MySpecification();
             }
             catch (InstantiationException e)
             {
@@ -123,7 +137,7 @@ public class InjectedPlugin extends TestPlugin
                 e.printStackTrace();
             }
                
-               System.out.println( "s " + specification.isSatisfiedBy(getClass())); 
+               System.out.println( "s " + specification.isSatisfiedBy(getClass()));
             }
         }
     }

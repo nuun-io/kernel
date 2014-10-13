@@ -314,8 +314,8 @@ public final class KernelCore implements Kernel
                 Object ok = plugins.put(pluginName, plugin);
                 if (ok == null)
                 {
-                    // Check for required param
-                    // ========================
+                    // Check for required parameter
+                    // ============================
                     Collection<KernelParamsRequest> kernelParamsRequests = plugin.kernelParamsRequests();
                     Collection<String> computedMandatoryParams = new HashSet<String>();
                     for (KernelParamsRequest kernelParamsRequest : kernelParamsRequests)

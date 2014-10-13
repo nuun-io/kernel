@@ -18,8 +18,8 @@ package io.nuun.kernel.tests.ut.fixtures;
 
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.ClasspathScanMode;
-import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.di.ModuleValidation;
+import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.core.NuunCore;
 import io.nuun.kernel.core.internal.KernelCore;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
@@ -120,8 +120,10 @@ public class GivenWhenThenInternal implements FixtureConfiguration, TestExecutor
     }
 
     @Override
-    public ResultValidator then(Specification<? extends UnitModule> predicate)
+    public ResultValidator then(Specification<UnitModule> predicate)
     {
+        UnitModule unitModule = kernel.unitModule(pluginClass);
+        predicate.isSatisfiedBy(unitModule);
         return this;
     }
 

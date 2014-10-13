@@ -25,6 +25,8 @@ import javax.inject.Qualifier;
 
 /**
  * 
+ * Round annotation. Round number starts with 0.
+ * 
  * @author epo.jemba@kametic.com
  *
  */
@@ -33,5 +35,8 @@ import javax.inject.Qualifier;
 @Qualifier
 public @interface Round
 {
+    /**
+     * @return the number of the round.
+     */
     int value() default 1;
 }

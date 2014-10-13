@@ -26,6 +26,7 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 import org.kametic.specifications.Specification;
+import org.kametic.specifications.TrueSpecification;
 
 /**
  * 
@@ -38,6 +39,8 @@ import org.kametic.specifications.Specification;
 public @interface Scan
 {
     RequestType type() default RequestType.VIA_SPECIFICATION;
-    Class<? > value () default Void.class;
-    String valueString () default ""; 
+    Class<? extends Specification<?>> value () default TrueSpecification.class;
+    String valueString () default "";
+    Class<?> valueClass () default Void.class;
+    String name() default "";
 }

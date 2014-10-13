@@ -16,13 +16,22 @@
  */
 package io.nuun.kernel.api.plugin;
 /**
+ * InitState will be returned back by plugins when when kernel will initialize them.
  * 
- * 
- * @author ejemba
+ * @author epo.jemba@kametic.com
  *
  */
 public enum InitState
 {
+    /**
+     * returned by the plugin to indicate that its initialization is complete.
+     */
     INITIALIZED ,
-    NON_INITIALIZED 
+    
+    /**
+     * returned by the plugin to indicate that its initialization is not yet complete.
+     * <p>
+     * In short, the kernel will program a new initialization round.
+     */
+    NON_INITIALIZED
 }
