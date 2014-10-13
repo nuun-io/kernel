@@ -47,7 +47,7 @@ public interface InitContext
 
     public abstract Map<String, Collection<String>> mapPropertiesFilesByPrefix();
 
-    public abstract String getKernelParam(String key);
+    public abstract String kernelParam(String key);
 
     public abstract Collection<Class<?>> classesToBind();
 

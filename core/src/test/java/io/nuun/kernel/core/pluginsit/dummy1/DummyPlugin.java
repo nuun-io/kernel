@@ -128,11 +128,11 @@ public class DummyPlugin extends AbstractPlugin
     @Override
     public InitState init(InitContext initContext)
     {
-        String param = initContext.getKernelParam("dummy.plugin1");
+        String param = initContext.kernelParam("dummy.plugin1");
         assertThat(param).isNotEmpty();
         assertThat(param).isEqualTo("WAZAAAA");
 
-        String param2 = initContext.getKernelParam( Kernel.NUUN_ROOT_PACKAGE );
+        String param2 = initContext.kernelParam( Kernel.NUUN_ROOT_PACKAGE );
         assertThat(param2).isNotNull();
         assertThat(param2).isEqualTo("internal,"+KernelCoreTest.class.getPackage().getName());
         

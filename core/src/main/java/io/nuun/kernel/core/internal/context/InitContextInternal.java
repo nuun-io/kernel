@@ -807,7 +807,7 @@ public class InitContextInternal implements InitContext
     // }
 
     @Override
-    public String getKernelParam(String key)
+    public String kernelParam(String key)
     {
         return kernelParams.get(key);
     }

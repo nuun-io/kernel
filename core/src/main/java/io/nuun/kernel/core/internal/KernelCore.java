@@ -293,10 +293,6 @@ public final class KernelCore implements Kernel
         }
     }
 
-    // String getKernelParam(String key)
-    // {
-    //
-    // }
 
     /**
      * 
