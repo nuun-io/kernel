@@ -14,15 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.api.plugin.request.annotations;
+package io.nuun.kernel.api.plugin;
 
 /**
  * 
- * Interface to set on developer enum so the kernel can get the payload accordingly.
  * 
  * @author epo.jemba@kametic.com
+ *
  */
-public interface Payload
+public interface KernelService
 {
-    Object payload();
+
 }

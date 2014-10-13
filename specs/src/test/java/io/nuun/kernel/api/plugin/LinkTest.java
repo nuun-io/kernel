@@ -16,6 +16,8 @@
  */
 package io.nuun.kernel.api.plugin;
 
+import io.nuun.kernel.api.plugin.request.annotations.InjectedPlugin;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
@@ -84,14 +86,18 @@ public class LinkTest
     @Test
     public void testLink() throws NoSuchFieldException, SecurityException
     {
-        MyPlugin h = new MyPlugin();
-        Field declaredField = h.getClass().getDeclaredField("blahStuff");
-        Request annotation = declaredField.getAnnotation(Request.class);
-        MyEnum value = annotation.value();
-        Object o = value.payload();
+        InjectedPlugin ip = new InjectedPlugin();
         
+        ip.test();
         
-        Assertions.assertThat(o).isEqualTo("I'm the secret message 1");
+//        MyPlugin h = new MyPlugin();
+//        Field declaredField = h.getClass().getDeclaredField("blahStuff");
+//        Request annotation = declaredField.getAnnotation(Request.class);
+//        MyEnum value = annotation.value();
+//        Object o = value.payload();
+//        
+//        
+//        Assertions.assertThat(o).isEqualTo("I'm the secret message 1");
 
     }
 

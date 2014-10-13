@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013 Kametic <epo.jemba@kametic.com>
+ * Copyright (C) 2013-2014 Kametic <epo.jemba@kametic.com>
  *
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * or any later version
@@ -16,11 +16,26 @@
  */
 package io.nuun.kernel.api.plugin;
 
+/**
+ * 
+ * The kernel initializes all the plugins inside rounds.
+ * <p>
+ *  
+ * 
+ * @author epo.jemba@kametic.com
+ *
+ */
 public interface RoundEnvironment
 {
     
+    /**
+     * @return the current round number.
+     */
     public int roundNumber();
     
+    /**
+     * @return true if we are in the first round.
+     */
     public boolean firstRound();
     
     

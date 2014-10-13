@@ -21,6 +21,10 @@ import static org.junit.Assert.*;
 import org.junit.Ignore;
 import org.junit.Test;
 
+/**
+ * @author epo.jemba@kametic.com
+ *
+ */
 public class RequestDefinitionTest
 {
 

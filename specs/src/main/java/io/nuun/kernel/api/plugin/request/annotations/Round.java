@@ -31,6 +31,7 @@ import javax.inject.Qualifier;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD,ElementType.METHOD})
 @Qualifier
-public @interface ClasspathScan
+public @interface Round
 {
+    int value() default 1;
 }

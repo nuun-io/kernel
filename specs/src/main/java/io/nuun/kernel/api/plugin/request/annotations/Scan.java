@@ -16,35 +16,28 @@
  */
 package io.nuun.kernel.api.plugin.request.annotations;
 
+import io.nuun.kernel.api.plugin.request.RequestType;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.inject.Qualifier;
+
+import org.kametic.specifications.Specification;
+
 /**
- * This annotation will annotate the plugin developer annotation
- * to indicate it is a Request for injection to the kernel
- * <p>
- * The annotation must have a method value() that return a developer defined enum that implements {@link Payload}.
- * 
- * <pre>
- *  @RequestDefinition
- *  public @interface Request {
- *      MyEnum value(); // MyEnum implements Payload.
- *  }
- * </pre>
- * 
- * Then inside the plugin
- * 
- * <pre>
- * @Request(MyEnum.SERVICES)
- * Collection<Class<?>> fromClasspath;
  * 
  * @author epo.jemba@kametic.com
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.ANNOTATION_TYPE})
-public @interface RequestDefinition
+@Target({ElementType.FIELD,ElementType.METHOD})
+@Qualifier
+public @interface Scan
 {
+    RequestType type() default RequestType.VIA_SPECIFICATION;
+    Class<? > value () default Void.class;
+    String valueString () default ""; 
 }
