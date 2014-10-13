@@ -33,4 +33,5 @@ import javax.inject.Qualifier;
 @Qualifier
 public @interface KernelParams
 {
+    String value();
 }

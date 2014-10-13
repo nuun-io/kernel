@@ -23,6 +23,8 @@ import java.lang.annotation.Target;
 
 import javax.inject.Qualifier;
 
+import org.kametic.specifications.Specification;
+
 /**
  * 
  * @author epo.jemba@kametic.com
@@ -31,6 +33,7 @@ import javax.inject.Qualifier;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD,ElementType.METHOD})
 @Qualifier
-public @interface ClasspathScan
+public @interface Scan
 {
+    Class<? extends Specification<Class<?>>> value ();
 }

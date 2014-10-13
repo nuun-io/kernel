@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013 Kametic <epo.jemba@kametic.com>
+ * Copyright (C) 2013-2014 Kametic <epo.jemba@kametic.com>
  *
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * or any later version
@@ -76,40 +76,40 @@ import com.google.inject.util.Modules;
 public final class KernelCore implements Kernel
 {
 
-    private final int                                          MAXIMAL_ROUND_NUMBER      = 50;
-    private final Logger                                       logger;
-    private static ConcurrentHashMap<String, Kernel>           kernels                   = new ConcurrentHashMap<String, Kernel>();
-    private final String                                       name;
+    private final int                                      MAXIMAL_ROUND_NUMBER      = 50;
+    private final Logger                                   logger;
+    private static ConcurrentHashMap<String, Kernel>       kernels                   = new ConcurrentHashMap<String, Kernel>();
+    private final String                                   name;
 
-    private final String                                       NUUN_PROPERTIES_PREFIX    = "nuun-";
+    private final String                                   NUUN_PROPERTIES_PREFIX    = "nuun-";
 
-    private ServiceLoader<Plugin>                              pluginLoader;
-    private boolean                                            spiPluginEnabled          = true;
-    private Map<String, Plugin>                                plugins                   = Collections.synchronizedMap(new HashMap<String, Plugin>());     //
-    private Map<String, Plugin>                                pluginsToAdd              = Collections.synchronizedMap(new HashMap<String, Plugin>());     //
+    private ServiceLoader<Plugin>                          pluginLoader;
+    private boolean                                        spiPluginEnabled          = true;
+    private Map<String, Plugin>                            plugins                   = Collections.synchronizedMap(new HashMap<String, Plugin>());     //
+    private Map<String, Plugin>                            pluginsToAdd              = Collections.synchronizedMap(new HashMap<String, Plugin>());     //
 
-    private final InitContextInternal                          initContext;
-    private Injector                                           mainInjector;
-    private final AliasMap                                     kernelParamsAndAlias      = new AliasMap();
+    private final InitContextInternal                      initContext;
+    private Injector                                       mainInjector;
+    private final AliasMap                                 kernelParamsAndAlias      = new AliasMap();
 
-    private boolean                                            started                   = false;
-    private boolean                                            initialized               = false;
-    private Context                                            context;
-    private Collection<DependencyInjectionProvider>            dependencyInjectionProviders;
-    private Object                                             containerContext;
-    private ArrayList<Plugin>                                  orderedPlugins;
+    private boolean                                        started                   = false;
+    private boolean                                        initialized               = false;
+    private Context                                        context;
+    private Collection<DependencyInjectionProvider>        dependencyInjectionProviders;
+    private Object                                         containerContext;
+    private ArrayList<Plugin>                              orderedPlugins;
 
-    private Collection<DependencyInjectionProvider>            globalDependencyInjectionProviders;
-    private List<Iterator<Plugin>>                             pluginIterators;
-    private List<Plugin>                                       fetchedPlugins;
-    private Set<URL>                                           globalAdditionalClasspath;
-    private RoundEnvironementInternal                          roundEnv;
-    private DependencyInjectionMode                            dependencyInjectionMode;
-    private ClasspathScanMode                                  classpathScanMode         = ClasspathScanMode.NOMINAL;
-    private final List<ModuleValidation>                       globalModuleValidations   = Collections.synchronizedList(new ArrayList<ModuleValidation>());
-    private final Map<Class<? extends Plugin>, UnitModule> unitModules           = Maps.newConcurrentMap();
+    private Collection<DependencyInjectionProvider>        globalDependencyInjectionProviders;
+    private List<Iterator<Plugin>>                         pluginIterators;
+    private List<Plugin>                                   fetchedPlugins;
+    private Set<URL>                                       globalAdditionalClasspath;
+    private RoundEnvironementInternal                      roundEnv;
+    private DependencyInjectionMode                        dependencyInjectionMode;
+    private ClasspathScanMode                              classpathScanMode         = ClasspathScanMode.NOMINAL;
+    private final List<ModuleValidation>                   globalModuleValidations   = Collections.synchronizedList(new ArrayList<ModuleValidation>());
+    private final Map<Class<? extends Plugin>, UnitModule> unitModules               = Maps.newConcurrentMap();
     private final Map<Class<? extends Plugin>, UnitModule> overridingmoduleProviders = Maps.newConcurrentMap();
-    private Module                                             mainFinalModule;
+    private Module                                         mainFinalModule;
 
     KernelCore(KernelConfigurationInternal kernelConfigurationInternal)
     {
@@ -441,7 +441,7 @@ public final class KernelCore implements Kernel
     @Override
     public ObjectGraph objectGraph()
     {
-        return new ObjectGraphEmbedded (mainInjector);
+        return new ObjectGraphEmbedded(mainInjector);
     }
 
     /*
@@ -463,13 +463,13 @@ public final class KernelCore implements Kernel
     {
         return overridingmoduleProviders.get(pluginClass);
     }
-    
+
     @Override
     public GlobalModule globalModule()
     {
         return GlobalModule.class.cast(new ModuleEmbedded(mainFinalModule));
     }
-    
+
     @Override
     public List<Plugin> plugins()
     {
@@ -677,7 +677,7 @@ public final class KernelCore implements Kernel
                     UnitModule unitModule = plugin.unitModule();
                     if (unitModule != null && unitModule.get() != null)
                     {
-//                        ModuleEmbedded moduleProvider = new ModuleEmbedded(unitModule);
+                        // ModuleEmbedded moduleProvider = new ModuleEmbedded(unitModule);
                         //
                         validateUnitModule(unitModule);
 
@@ -991,20 +991,20 @@ public final class KernelCore implements Kernel
 
     private class ObjectGraphEmbedded implements ObjectGraph
     {
-        
+
         private Object injector;
 
         public ObjectGraphEmbedded(Object injector)
         {
             this.injector = injector;
         }
-        
+
         @Override
         public Object get()
         {
             return injector;
         }
-        
+
         @SuppressWarnings("unchecked")
         @Override
         public <T> T as(Class<T> targetType)
@@ -1015,10 +1015,8 @@ public final class KernelCore implements Kernel
             }
             throw new IllegalStateException("Can not cast " + injector + " to " + targetType.getName());
         }
-        
-    }
-    
 
+    }
 
     private static class KernelBuilderImpl implements KernelBuilderWithPluginAndContext
     {

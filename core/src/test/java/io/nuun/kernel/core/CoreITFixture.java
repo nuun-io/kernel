@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013 Kametic <epo.jemba@kametic.com>
+ * Copyright (C) 2013-2014 Kametic <epo.jemba@kametic.com>
  *
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * or any later version
@@ -21,12 +21,14 @@ import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.KernelConfiguration;
-import io.nuun.kernel.api.di.UnitModule;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 
+/**
+ * @author epo.jemba@kametic.com
+ *
+ */
 public class CoreITFixture extends AbstractFixture<Kernel> {
 
 	private Kernel kernel = null;

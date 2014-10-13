@@ -20,10 +20,21 @@ import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
+import javassist.expr.NewArray;
+
+import org.kametic.specifications.AbstractSpecification;
+
+/**
+ * @author epo.jemba@kametic.com
+ *
+ */
 public class InjectedPlugin extends TestPlugin
 {
+    final Object object = "Epo Jemba";
 
     @Override
     public String name()
@@ -31,19 +42,31 @@ public class InjectedPlugin extends TestPlugin
         return "injected-plugin";
     }
     
+    class MySpecification extends AbstractSpecification<Class<?>> 
+    {
+        @Override
+        public boolean isSatisfiedBy(Class<?> candidate)
+        {
+            return object != null;
+        }
+    }
+    
+    @KernelParams("param")
+    String param;
+    
     @Dependent
     Plugin1 plugin1;
     
     @Required
     Plugin2 plugin2;
     
-    @Request ( Specs.kernel_param1 )
+    @KernelParams("param")
     String param1;
     
-    @Request ( Specs.interface_services )
+    @Scan(MySpecification.class) 
     Collection<Class<?>> interfaces;
 
-    @Request ( Specs.implem_services )
+    @Scan(MySpecification.class) @Round(1)
     Collection<Class<?>> implementation;
     
     @Override
@@ -58,5 +81,44 @@ public class InjectedPlugin extends TestPlugin
         return null;
     }
     
+    public void test() 
+    {
+        System.out.println("Constructors");
+        System.out.println("Enclosing class " + MySpecification.class.getEnclosingClass());
+        
+        Constructor<?>[] constructors = MySpecification.class.getDeclaredConstructors();
+        if (constructors != null)
+        {
+            for( Constructor<?>  constructor :  constructors) 
+            {
+               System.out.println( " => " + constructor.getParameterTypes().length ); 
+               System.out.println( " => " + constructor.getParameterTypes()[0].getName() ); 
+               
+               MySpecification specification = null;
+            try
+            {
+                specification = (MySpecification) constructor.newInstance(this);
+            }
+            catch (InstantiationException e)
+            {
+                e.printStackTrace();
+            }
+            catch (IllegalAccessException e)
+            {
+                e.printStackTrace();
+            }
+            catch (IllegalArgumentException e)
+            {
+                e.printStackTrace();
+            }
+            catch (InvocationTargetException e)
+            {
+                e.printStackTrace();
+            }
+               
+               System.out.println( "s " + specification.isSatisfiedBy(getClass())); 
+            }
+        }
+    }
 
 }
