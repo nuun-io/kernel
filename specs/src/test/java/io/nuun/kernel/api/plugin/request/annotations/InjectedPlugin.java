@@ -18,6 +18,7 @@ package io.nuun.kernel.api.plugin.request.annotations;
 
 import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.plugin.InitState;
+import io.nuun.kernel.api.plugin.KernelService;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.RequestType;
 
@@ -51,6 +52,8 @@ public class InjectedPlugin extends TestPlugin
             return object != null;
         }
     }
+    
+    KernelService kernelService;
     
     @KernelParams("param")
     String param;
