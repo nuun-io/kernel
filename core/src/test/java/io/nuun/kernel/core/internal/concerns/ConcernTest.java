@@ -18,7 +18,6 @@ package io.nuun.kernel.core.internal.concerns;
 
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.config.KernelConfiguration;
-import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.core.AbstractPlugin;
 import io.nuun.kernel.core.NuunCore;
 import io.nuun.kernel.core.internal.concerns.sample.CachePlugin;

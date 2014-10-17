@@ -16,7 +16,6 @@
  */
 package io.nuun.kernel.tests.ut.sample;
 
-import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.core.AbstractPlugin;
 
 import com.google.inject.AbstractModule;
@@ -49,14 +48,22 @@ public class SamplePlugin extends AbstractPlugin
             @Override
             protected void configure()
             {
-
-                bind(Service1.class).to(Service1Impl.class);
+                
+                bind(String.class).toInstance("Yoloh");
+                
+                bind(Service1.class).to(Service1Impl.class).asEagerSingleton();
                 String name = "un";
                 bind(Key.get(Service1.class, Names.named(name))).toProvider(Providers.guicify(new Service1Provider(name)));
                 name = "deux";
                 bind(Key.get(Service1.class, Names.named(name))).toProvider(Providers.guicify(new Service1Provider(name)));
                 name = "trois";
                 bind(Key.get(Service1.class, Names.named(name))).toProvider(Providers.guicify(new Service1Provider(name)));
+                
+//                binder().requireAtInjectOnConstructors();
+                
+                binder().requireExplicitBindings();
+                
+                
 
             }
         };

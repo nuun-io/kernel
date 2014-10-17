@@ -20,10 +20,8 @@ import io.nuun.kernel.api.plugin.request.annotations.InjectedPlugin;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.reflect.Field;
 import java.util.Collection;
 
-import org.fest.assertions.Assertions;
 import org.junit.Test;
 
 public class LinkTest
@@ -57,7 +55,7 @@ public class LinkTest
                 "I'm the secret message 1"),
 
         two( //
-                specProvider() 
+                specProvider()
 //                one.payload() + "2"
 
         );
@@ -95,8 +93,8 @@ public class LinkTest
 //        Request annotation = declaredField.getAnnotation(Request.class);
 //        MyEnum value = annotation.value();
 //        Object o = value.payload();
-//        
-//        
+//
+//
 //        Assertions.assertThat(o).isEqualTo("I'm the secret message 1");
 
     }

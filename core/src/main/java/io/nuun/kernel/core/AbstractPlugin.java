@@ -286,18 +286,39 @@ public abstract class AbstractPlugin implements Plugin
     @Override
     public UnitModule unitModule()
     {
-        return new ModuleEmbedded(nativeUnitModule());
+        return nativeUnitModule() != null ?  new ModuleEmbedded(nativeUnitModule()) : null;
     }
     
+    /**
+     * 
+     * convenient method for plugin to return directly a native module rather than a UnitModule.
+     * <p>
+     * then {@link AbstractPlugin#unitModule()} will use {@link AbstractPlugin#nativeUnitModule()} to create the UnitModule.
+     * 
+     * @return the nativeModule.
+     */
     public Object nativeUnitModule()
     {
         return null;
     }
     
-    @Override
-    public Object overridingUnitModule()
+    /**
+     * 
+     * convenient method for plugin to return directly a native module rather than a UnitModule.
+     * <p>
+     * then {@link AbstractPlugin#unitModule()} will use {@link AbstractPlugin#nativeUnitModule()} to create the UnitModule.
+     * 
+     * @return the nativeModule for overring purpose.
+     */
+    public Object nativeOverridingUnitModule ()
     {
         return null;
+    }
+    
+    @Override
+    public UnitModule overridingUnitModule()
+    {
+        return nativeOverridingUnitModule() != null ?  new ModuleEmbedded(nativeOverridingUnitModule()) : null;
     }
 
     @Override
@@ -321,7 +342,6 @@ public abstract class AbstractPlugin implements Plugin
     public void provideRoundEnvironment(RoundEnvironment roundEnvironment)
     {
         this.roundEnvironment = roundEnvironment;
-        
     }
     
     

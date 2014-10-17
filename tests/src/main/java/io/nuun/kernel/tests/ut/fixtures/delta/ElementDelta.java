@@ -14,31 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.api.di;
+package io.nuun.kernel.tests.ut.fixtures.delta;
 
 /**
- * An encapsulation of the bindings definition of the actual dependency engine.
- * <p>
- * The encapsulated object, can be a <strong>Guice Module</strong>, and <strong>ApplicationContext<strong>, <strong> PicoContainer </strong>, etc
+ *
  * 
  * @author epo.jemba@kametic.com
  *
  */
-public interface ModuleWrapper
+public interface ElementDelta
 {
-    /**
-     * 
-     * @return the actual native module.
-     */
-    Object nativeModule();
     
-    /**
-     * Cast the current object module.
-     * <p>
-     * Will send an IllegaStateException if can not convert or cast.
-     * 
-     * @param targetType
-     * @return the ObjectGraph object casted as T type or adapted as T.
-     */
-    <T>  T as(Class<T> targetType);
 }

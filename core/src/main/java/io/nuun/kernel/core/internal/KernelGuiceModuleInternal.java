@@ -127,7 +127,7 @@ public class KernelGuiceModuleInternal extends AbstractModule
             // Checking for Module
         	if (UnitModule.class.isAssignableFrom(installableInner.getClass())  )
         	{ // install module
-        	    Object moduleObject = UnitModule.class.cast(installableInner).get();
+        	    Object moduleObject = UnitModule.class.cast(installableInner).nativeModule();
                 if (Module.class.isAssignableFrom( moduleObject.getClass()) )
         	    {
         	        logger.info("installing module {}", moduleObject);
@@ -199,7 +199,7 @@ public class KernelGuiceModuleInternal extends AbstractModule
             else if (UnitModule.class.isAssignableFrom(anInstallable.inner.getClass()))
                 // inner is a UnitModule, we get the class of the wrapper
             {
-                toCompare = UnitModule.class.cast(anInstallable.inner).get().getClass();
+                toCompare = UnitModule.class.cast(anInstallable.inner).nativeModule().getClass();
             }
             else
             {
@@ -219,7 +219,7 @@ public class KernelGuiceModuleInternal extends AbstractModule
             else if (UnitModule.class.isAssignableFrom(inner.getClass()))
                 // inner is a UnitModule, we get the class of the wrapper
             {
-                innerClass = UnitModule.class.cast(inner).get().getClass();
+                innerClass = UnitModule.class.cast(inner).nativeModule().getClass();
             }
             else
             {

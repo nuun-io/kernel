@@ -42,24 +42,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- * 
  * @author epo.jemba@kametic.com
- *
  */
 public abstract class TestPlugin implements Plugin
 {
- Logger logger = LoggerFactory.getLogger(TestPlugin.class);
-    
-    
-    Context                         context = null;
-    Object                          containerContext = null;
-    RoundEnvironment roundEnvironment = null;
-    @SuppressWarnings("unused") Map<String, String>               kernelParams= null;
-    @SuppressWarnings("unused") InitContext                       initContext= null;
-    KernelParamsRequestBuilder  paramsBuilder= null;
-    ClasspathScanRequestBuilder scanBuilder= null;
-    BindingRequestBuilder       bindingBuilder= null;
+    Logger                      logger           = LoggerFactory.getLogger(TestPlugin.class);
+
+    Context                     context          = null;
+    Object                      containerContext = null;
+    RoundEnvironment            roundEnvironment = null;
+    Map<String, String>         kernelParams     = null;
+    InitContext                 initContext      = null;
+    KernelParamsRequestBuilder  paramsBuilder    = null;
+    ClasspathScanRequestBuilder scanBuilder      = null;
+    BindingRequestBuilder       bindingBuilder   = null;
 
     /**
      * 
@@ -73,6 +69,7 @@ public abstract class TestPlugin implements Plugin
 
     /**
      * ============================= PLUGIN LIFE CYCLE USED BY KERNEL =============================
+     * 
      * @return
      **/
 
@@ -80,7 +77,7 @@ public abstract class TestPlugin implements Plugin
     public InitState init(InitContext initContext)
     {
         this.initContext = initContext;
-        
+
         return InitState.INITIALIZED;
     }
 
@@ -105,8 +102,6 @@ public abstract class TestPlugin implements Plugin
     // *
     // *
     // **/
-
-    
 
     // * ============================= PLUGIN info and requests * ============================= //
 
@@ -142,7 +137,7 @@ public abstract class TestPlugin implements Plugin
     {
         return Collections.emptySet();
     }
-    
+
     @Override
     public Collection<Class<? extends Plugin>> dependentPlugins()
     {
@@ -166,18 +161,19 @@ public abstract class TestPlugin implements Plugin
     {
         return null;
     }
-    
+
     @Override
-    public Object overridingUnitModule()
+    public UnitModule overridingUnitModule()
     {
         return null;
     }
 
     @Override
-    public void provideContainerContext(Object containerContext){
+    public void provideContainerContext(Object containerContext)
+    {
         this.containerContext = containerContext;
     }
-    
+
     @Override
     public Set<URL> computeAdditionalClasspathScan()
     {
@@ -189,15 +185,14 @@ public abstract class TestPlugin implements Plugin
     {
         return null;
     }
-    
+
     @Override
     public void provideRoundEnvironment(RoundEnvironment roundEnvironment)
     {
         this.roundEnvironment = roundEnvironment;
-        
+
     }
-    
-    
+
     @Override
     public Map<String, String> kernelParametersAliases()
     {
@@ -208,18 +203,18 @@ public abstract class TestPlugin implements Plugin
     {
         return Arrays.asList(items);
     }
-    
+
     protected UnitModule unitModule(final Object module)
     {
         return new UnitModule()
         {
-            
+
             @Override
-            public Object get()
+            public Object nativeModule()
             {
                 return module;
             }
-            
+
             @Override
             public <T> T as(Class<T> targetType)
             {

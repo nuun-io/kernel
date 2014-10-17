@@ -16,7 +16,6 @@
  */
 package io.nuun.kernel.core.pluginsit.dummy7;
 
-import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.core.AbstractPlugin;
 
 import com.google.inject.AbstractModule;

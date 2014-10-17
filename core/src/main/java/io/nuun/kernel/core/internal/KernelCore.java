@@ -76,24 +76,24 @@ import com.google.inject.util.Modules;
 public final class KernelCore implements Kernel
 {
 
-    private final int                                      MAXIMAL_ROUND_NUMBER      = 50;
+    private final int                                      MAXIMAL_ROUND_NUMBER           = 50;
     private final Logger                                   logger;
-    private static ConcurrentHashMap<String, Kernel>       kernels                   = new ConcurrentHashMap<String, Kernel>();
+    private static ConcurrentHashMap<String, Kernel>       kernels                        = new ConcurrentHashMap<String, Kernel>();
     private final String                                   name;
 
-    private final String                                   NUUN_PROPERTIES_PREFIX    = "nuun-";
+    private final String                                   NUUN_PROPERTIES_PREFIX         = "nuun-";
 
     private ServiceLoader<Plugin>                          pluginLoader;
-    private boolean                                        spiPluginEnabled          = true;
-    private Map<String, Plugin>                            plugins                   = Collections.synchronizedMap(new HashMap<String, Plugin>());     //
-    private Map<String, Plugin>                            pluginsToAdd              = Collections.synchronizedMap(new HashMap<String, Plugin>());     //
+    private boolean                                        spiPluginEnabled               = true;
+    private Map<String, Plugin>                            plugins                        = Collections.synchronizedMap(new HashMap<String, Plugin>());     //
+    private Map<String, Plugin>                            pluginsToAdd                   = Collections.synchronizedMap(new HashMap<String, Plugin>());     //
 
     private final InitContextInternal                      initContext;
     private Injector                                       mainInjector;
-    private final AliasMap                                 kernelParamsAndAlias      = new AliasMap();
+    private final AliasMap                                 kernelParamsAndAlias           = new AliasMap();
 
-    private boolean                                        started                   = false;
-    private boolean                                        initialized               = false;
+    private boolean                                        started                        = false;
+    private boolean                                        initialized                    = false;
     private Context                                        context;
     private Collection<DependencyInjectionProvider>        dependencyInjectionProviders;
     private Object                                         containerContext;
@@ -105,10 +105,12 @@ public final class KernelCore implements Kernel
     private Set<URL>                                       globalAdditionalClasspath;
     private RoundEnvironementInternal                      roundEnv;
     private DependencyInjectionMode                        dependencyInjectionMode;
-    private ClasspathScanMode                              classpathScanMode         = ClasspathScanMode.NOMINAL;
-    private final List<ModuleValidation>                   globalModuleValidations   = Collections.synchronizedList(new ArrayList<ModuleValidation>());
-    private final Map<Class<? extends Plugin>, UnitModule> unitModules               = Maps.newConcurrentMap();
-    private final Map<Class<? extends Plugin>, UnitModule> overridingmoduleProviders = Maps.newConcurrentMap();
+    private ClasspathScanMode                              classpathScanMode              = ClasspathScanMode.NOMINAL;
+    private final List<ModuleValidation>                   globalModuleValidations        = Collections.synchronizedList(new ArrayList<ModuleValidation>());
+    private final Map<Class<? extends Plugin>, UnitModule> unitModules                    = Maps.newConcurrentMap();
+    private final Map<Class<? extends Plugin>, UnitModule> overridingUnitModules          = Maps.newConcurrentMap();
+    private final Map<Class<? extends Plugin>, UnitModule> nonGuiceUnitModules           = Maps.newConcurrentMap();
+    private final Map<Class<? extends Plugin>, UnitModule> nonGuiceOverridingUnitModules = Maps.newConcurrentMap();
     private Module                                         mainFinalModule;
 
     KernelCore(KernelConfigurationInternal kernelConfigurationInternal)
@@ -457,9 +459,33 @@ public final class KernelCore implements Kernel
     @Override
     public UnitModule overridingUnitModule(Class<? extends Plugin> pluginClass)
     {
-        return overridingmoduleProviders.get(pluginClass);
+        return overridingUnitModules.get(pluginClass);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see io.nuun.kernel.core.internal.Kernel#getOverridingModuleProvider()
+     */
+    @Override
+    public UnitModule nonGuiceUnitModule(Class<? extends Plugin> plugin)
+    {
+        return nonGuiceUnitModules.get(plugin);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see io.nuun.kernel.core.internal.Kernel#getOverridingModuleProvider()
+     */
+    @Override
+    public UnitModule nonGuiceOverridingUnitModule(Class<? extends Plugin> plugin)
+    {
+        return nonGuiceOverridingUnitModules.get(plugin);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see io.nuun.kernel.core.internal.Kernel#getOverridingModuleProvider()
+     */
     @Override
     public GlobalModule globalModule()
     {
@@ -664,61 +690,37 @@ public final class KernelCore implements Kernel
 
             for (Plugin plugin : roundOrderedPlugins)
             {
-                String name = plugin.name();
-                InitState state = states.get(name);
+                String pluginName = plugin.name();
+                InitState state = states.get(pluginName);
 
                 if (state == InitState.INITIALIZED)
                 {
                     // Main // =====================================================================
                     UnitModule unitModule = plugin.unitModule();
-                    if (unitModule != null && unitModule.get() != null)
                     {
-                        // ModuleEmbedded moduleProvider = new ModuleEmbedded(unitModule);
-                        //
-                        validateUnitModule(unitModule);
+                        boolean override = false;
 
-                        // we feed the unitModules list
-                        unitModules.put(plugin.getClass(), unitModule);
-
-                        if (unitModule.get() instanceof Module)
-                        {
-                            initContext.addChildModule(Module.class.cast(unitModule.get()));
-                        }
-                        else
-                        {
-                            boolean override = false;
-                            addModuleViaProvider(name, unitModule.get(), override);
-                        }
-                    } //
+                        handleUnitModule(plugin, pluginName, unitModule, override);
+                    }
 
                     // Overriding definition
-
-                    Object dependencyInjectionOverridingDef = plugin.overridingUnitModule();
-
-                    if (dependencyInjectionOverridingDef != null)
+                    UnitModule overridingUnitModule = plugin.overridingUnitModule();
                     {
-                        ModuleEmbedded moduleProvider = new ModuleEmbedded(dependencyInjectionOverridingDef);
-
-                        validateUnitModule(moduleProvider);
-
-                        // we feed the unitModules list
-                        overridingmoduleProviders.put(plugin.getClass(), moduleProvider);
-
-                        if (dependencyInjectionOverridingDef instanceof Module)
-                        {
-                            initContext.addChildOverridingModule(Module.class.cast(dependencyInjectionOverridingDef));
-                        }
-                        else
-                        {
-                            boolean override = true;
-                            addModuleViaProvider(name, dependencyInjectionOverridingDef, override);
-                        }
+                        boolean override = true;
+                        
+                        handleUnitModule(plugin, pluginName, overridingUnitModule, override);
+                        
+                    }
+                    
+                    if (unitModule == null && overridingUnitModule == null)
+                    {
+                        logger.warn("For information Plugin {} does not provide any UnitModule via unitModule() nor overrindingUnitModule().",  pluginName);
                     }
 
                 }
                 else
                 { // the plugin is not initialized we add it for a new round
-                    logger.info("Plugin " + name + " is not initialized. We set it for a new round");
+                    logger.info("Plugin " + pluginName + " is not initialized. We set it for a new round");
                     nextRoundOrderedPlugins.add(plugin);
                 }
             }
@@ -730,6 +732,42 @@ public final class KernelCore implements Kernel
 
         // When all round are done.
 
+    }
+
+    private void handleUnitModule(Plugin plugin, String pluginName, UnitModule unitModule, boolean override)
+    {
+        if (unitModule != null && unitModule.nativeModule() != null)
+        {
+            // Conversion of native module if needed
+            if ( ! Module.class.isAssignableFrom ( unitModule.nativeModule().getClass()) )
+            {
+                // we also keep a trace on non guice unit module in case.
+                if (! override)
+                {
+                    nonGuiceUnitModules.put(plugin.getClass(), unitModule);
+                }
+                else
+                {
+                    nonGuiceOverridingUnitModules.put(plugin.getClass(), unitModule);
+                }
+                // we then convert the non guice native module into a guice module as this is the internal DI engine.
+                unitModule = convertNativeModule(pluginName, unitModule.nativeModule(), override);
+            }
+            
+            validateUnitModule(unitModule);
+            
+            if (! override)
+            // we feed the matching unitModules map
+            {
+                initContext.addChildModule(Module.class.cast(unitModule.nativeModule()));
+                unitModules.put(plugin.getClass(), unitModule);
+            }
+            else
+            {
+                initContext.addChildOverridingModule(Module.class.cast(unitModule.nativeModule()));
+                overridingUnitModules.put(plugin.getClass(), unitModule);
+            }
+        } //
     }
 
     /**
@@ -747,7 +785,7 @@ public final class KernelCore implements Kernel
     {
         for (ModuleValidation validation : globalModuleValidations)
         {
-            if (validation.canHandle(unitModule.get().getClass()))
+            if (validation.canHandle(unitModule.nativeModule().getClass()))
             {
                 try
                 {
@@ -777,26 +815,21 @@ public final class KernelCore implements Kernel
         }
     }
 
-    private void addModuleViaProvider(String name, Object pluginDependencyInjectionDef, boolean override)
+    private UnitModule convertNativeModule(String pluginName, Object nativeUnitModule, boolean override)
     {
-        DependencyInjectionProvider provider = findDependencyInjectionProvider(pluginDependencyInjectionDef);
+        DependencyInjectionProvider provider = findDependencyInjectionProvider(nativeUnitModule);
         if (provider != null)
         {
-            if (!override)
-            {
-                initContext.addChildModule(provider.convert(pluginDependencyInjectionDef).as(Module.class));
-            }
-            else
-            {
-                initContext.addChildOverridingModule(provider.convert(pluginDependencyInjectionDef).as(Module.class));
-            }
+            UnitModule unitModule = provider.convert(nativeUnitModule);
+
+            return unitModule;
         }
         else
         {
-            logger.error("Kernel did not recognize module {} of plugin {}", pluginDependencyInjectionDef, name);
+            logger.error("Kernel did not recognize module {} of plugin {}", nativeUnitModule, pluginName);
             throw new KernelException(
-                    "Kernel did not recognize module %s of plugin %s. Please provide a DependencyInjectionProvider.", pluginDependencyInjectionDef.toString(),
-                    name);
+                    "Kernel did not recognize module %s of plugin %s. Please provide a DependencyInjectionProvider.", nativeUnitModule.toString(),
+                    pluginName);
         }
     }
 

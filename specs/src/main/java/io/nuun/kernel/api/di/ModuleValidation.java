@@ -17,8 +17,9 @@
 package io.nuun.kernel.api.di;
 
 /**
- * This API element will give the opportunity to the kernel to assert DependencyInjectionDef aka Module object given by
- * plugins.
+ * This API element will give the opportunity to the kernel to assert UnitModule given by plugins.
+ * <p>
+ * The Module type to validate is Guice module.
  * 
  * @author epo.jemba@kametic.com
  */

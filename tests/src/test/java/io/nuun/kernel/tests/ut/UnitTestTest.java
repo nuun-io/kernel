@@ -16,9 +16,11 @@
  */
 package io.nuun.kernel.tests.ut;
 
+import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
 import io.nuun.kernel.tests.Fixtures;
 import io.nuun.kernel.tests.ut.fixtures.FixtureConfiguration;
+import io.nuun.kernel.tests.ut.fixtures.MapElementVisitor;
 import io.nuun.kernel.tests.ut.sample.SamplePlugin;
 import io.nuun.kernel.tests.ut.sample.Service1;
 import io.nuun.kernel.tests.ut.sample.Service1Impl;
@@ -26,16 +28,19 @@ import io.nuun.kernel.tests.ut.sample.Service1Provider;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kametic.specifications.AbstractSpecification;
+import org.kametic.specifications.Specification;
+import com.google.inject.Module;
+import com.google.inject.Stage;
+import com.google.inject.spi.Element;
+import com.google.inject.spi.Elements;
 
 /**
- *
- * 
  * @author epo.jemba@kametic.com
- *
  */
 public class UnitTestTest
 {
-    
+
     private FixtureConfiguration newGivenWhenThenFixture;
 
     @Before
@@ -43,23 +48,73 @@ public class UnitTestTest
     {
         newGivenWhenThenFixture = Fixtures.newGivenWhenThenFixture();
     }
-    
+
     @Test
-    public void checkFixture ()
+    public void checkFixture()
     {
         newGivenWhenThenFixture //
-        .given(SamplePlugin.class) //
-        .whenUsing(new ClasspathBuilder()
+                .given(SamplePlugin.class) // dependence ; required
+                .whenUsing(new ClasspathBuilder()
+                {
+                    @Override
+                    public void configure()
+                    {
+                        addJar("test.jar");
+                        addClass(Service1.class);
+                        addClass(Service1Impl.class);
+                        addClass(Service1Provider.class);
+                    }
+                }).then(bindingAreOk());
+                
+                ; /*.then().unitModule()
+                  .contains(Module)
+                  .containsExactly(Module2)
+                  .contains(Element);
+                  
+                
+                
+                
+                Binder binder = null;
+                {
+                  binder.bind(Service1.class).to(Service1Impl.class);
+                } // une fois
+                {
+                    binder.bind(Service1.class);
+                } // 1 fois
+                
+                binding(Service1.class).to(Service1Impl.class).isPresent()
+//                }).then(bindingAreOk())
+                     .and(zerezrzer()) ; */
+    }
+
+    protected Specification<UnitModule> bindingAreOk()
+    {
+        return new AbstractSpecification<UnitModule>()
         {
             @Override
-            public void configure()
+            public boolean isSatisfiedBy(UnitModule candidate)
             {
-                addJar("test.jar");
-                addClass(Service1.class);
-                addClass(Service1Impl.class);
-                addClass(Service1Provider.class);
+                if (candidate == null)
+                {
+                    return false;
+                }
+                if (!Module.class.isAssignableFrom(candidate.nativeModule().getClass()))
+                {
+                    return false;
+                }
+
+                Module module = candidate.as(Module.class);
+                MapElementVisitor visitor = new MapElementVisitor();
+                for (Element element : Elements.getElements(Stage.DEVELOPMENT, module))
+                {
+                    element.acceptVisitor(visitor);
+                }
+                
+                System.out.println("" + visitor.getStore().keySet());
+
+                return false;
             }
-        }) .then( null );
+        };
     }
 
 }

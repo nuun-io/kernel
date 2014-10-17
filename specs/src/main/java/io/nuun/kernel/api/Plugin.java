@@ -146,7 +146,7 @@ public interface Plugin
      * 
      * @return
      */
-    Object overridingUnitModule();
+    UnitModule overridingUnitModule();
 
     /**
      * Practical method to retrieve the container context as it is passed as argument.

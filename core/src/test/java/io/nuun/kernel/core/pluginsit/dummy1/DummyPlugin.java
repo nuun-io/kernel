@@ -22,7 +22,6 @@ package io.nuun.kernel.core.pluginsit.dummy1;
 import static org.fest.assertions.Assertions.assertThat;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
-import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.Context;
 import io.nuun.kernel.api.plugin.context.InitContext;
@@ -238,7 +237,7 @@ public class DummyPlugin extends AbstractPlugin
     @Override
     public Collection<Class<? extends Plugin>> requiredPlugins()
     {
-        return (Collection<Class<? extends Plugin>>) collectionOf(DummyPlugin2.class);
+        return collectionOf(DummyPlugin2.class);
     }
 
     /*

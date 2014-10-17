@@ -58,7 +58,7 @@ public class GivenWhenThenInternal implements FixtureConfiguration, TestExecutor
             @Override
             public void validate(UnitModule unitModule)
             {
-                Module m = Module.class.cast(unitModule.get());
+                Module m = Module.class.cast(unitModule.nativeModule());
                 
                 Visitor v = new Visitor();
                 
@@ -146,6 +146,7 @@ public class GivenWhenThenInternal implements FixtureConfiguration, TestExecutor
         kernel.init();
         kernel.start();
         injector = kernel.objectGraph().as(Injector.class);
+        injector.equals("");
 
     }
 

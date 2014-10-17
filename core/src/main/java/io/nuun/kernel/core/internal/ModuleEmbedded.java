@@ -15,7 +15,7 @@ public class ModuleEmbedded implements UnitModule, GlobalModule
     }
 
     @Override
-    public Object get()
+    public Object nativeModule()
     {
         return module;
     }

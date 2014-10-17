@@ -89,9 +89,37 @@ public interface Kernel
      * @return
      */
     public abstract UnitModule overridingUnitModule(Class<? extends Plugin> plugin);
+    
+    /**
+     * After the kernel is initialized, one can ask for the particular UnitModule created by one plugin.
+     * <p>
+     * Some times the plugin can return a native module that is not a Guice Module (the internal used D.I. engine).
+     * <p>
+     * Non Guice Module are handled via {@link io.nuun.kernel.spi.DependencyInjectionProvider}.
+     * <p>
+     * This will rarely be the case. We advise developers to be careful with plugins.
+     * 
+     * @param plugin this is the plugin from which we want the UnitModule.
+     * @return
+     */
+    public abstract UnitModule nonGuiceUnitModule(Class<? extends Plugin> plugin);
+    
+    /**
+     * After the kernel is initialized, one can ask for the particular Overriding UnitModule created by one plugin.
+     * <p>
+     * Some time the plugin can return a native module that is not a Guice Module (the internal used D.I. engine).
+     * <p>
+     * Non Guice Module are handled via {@link io.nuun.kernel.spi.DependencyInjectionProvider}.
+     * <p>
+     * This will rarely be the case. We advise developers to be careful with plugins.
+     * 
+     * @param plugin this is the plugin from which we want the UnitModule.
+     * @return
+     */
+    public abstract UnitModule nonGuiceOverridingUnitModule(Class<? extends Plugin> plugin);
 
     /**
-     * After the kernel is initialized, if necessary, one can ask for the global UnitModule the result of all plugins.
+     * After the kernel is initialized, if necessary, one can ask for the global Module the result of all plugins {@link UnitModule} aggregation.
      * <p>
      * This will rarely be the case. We advise developers to be careful with plugins.
      * 
