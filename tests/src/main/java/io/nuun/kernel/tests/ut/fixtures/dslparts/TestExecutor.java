@@ -14,11 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.tests.ut.fixtures;
+package io.nuun.kernel.tests.ut.fixtures.dslparts;
 
-import io.nuun.kernel.api.Plugin;
+import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
 
-public interface FixtureConfiguration
+public interface TestExecutor
 {
-    TestExecutor given(Class<? extends Plugin> pluginClass);
+
+    ResultValidator whenUsing(ClasspathBuilder classpath);
+
+    TestExecutorWith whenClasspathIs(Class<?> class_);
+
+    TestExecutorWith whenClasspathIs(String base, String resource);
+
+    public static interface TestExecutorWith
+    {
+        TestExecutotFlow with(Class<?> class_);
+        
+        TestExecutotFlow with(String base, String resource);
+    }
+
+    public static interface TestExecutotFlow extends TestExecutorWith, ResultValidator
+    {
+        
+    }
+    
+
+
 }

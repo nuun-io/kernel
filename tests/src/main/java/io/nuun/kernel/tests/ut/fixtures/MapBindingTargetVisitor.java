@@ -16,7 +16,6 @@
  */
 package io.nuun.kernel.tests.ut.fixtures;
 
-import com.google.common.collect.Multimap;
 import com.google.inject.spi.BindingTargetVisitor;
 import com.google.inject.spi.ConstructorBinding;
 import com.google.inject.spi.ConvertedConstantBinding;
@@ -38,17 +37,17 @@ import com.google.inject.spi.UntargettedBinding;
 public class MapBindingTargetVisitor implements BindingTargetVisitor<Object, Void>
 {
 
-    private Multimap<Class<? extends Element>, Object> store;
+    private ElementMap<Element> elementMap;
 
-    public MapBindingTargetVisitor(Multimap<Class<? extends Element>, Object> store)
+    public MapBindingTargetVisitor(ElementMap<Element> elementMap)
     {
-        this.store = store;
+        this.elementMap = elementMap;
     }
 
     @Override
     public Void visit(InstanceBinding<? extends Object> binding)
     {
-        store.put(InstanceBinding.class, binding);
+        elementMap.put(InstanceBinding.class, binding);
         log(binding);
         return null;
     }
@@ -56,7 +55,7 @@ public class MapBindingTargetVisitor implements BindingTargetVisitor<Object, Voi
     @Override
     public Void visit(ProviderInstanceBinding<? extends Object> binding)
     {
-        store.put(ProviderInstanceBinding.class, binding);
+        elementMap.put(ProviderInstanceBinding.class, binding);
         log(binding);
         return null;
     }
@@ -64,7 +63,7 @@ public class MapBindingTargetVisitor implements BindingTargetVisitor<Object, Voi
     @Override
     public Void visit(ProviderKeyBinding<? extends Object> binding)
     {
-        store.put(ProviderKeyBinding.class, binding);
+        elementMap.put(ProviderKeyBinding.class, binding);
         log(binding);
         return null;
     }
@@ -72,7 +71,7 @@ public class MapBindingTargetVisitor implements BindingTargetVisitor<Object, Voi
     @Override
     public Void visit(LinkedKeyBinding<? extends Object> binding)
     {
-        store.put(LinkedKeyBinding.class, binding);
+        elementMap.put(LinkedKeyBinding.class, binding);
         log(binding);
         return null;
     }
@@ -80,7 +79,7 @@ public class MapBindingTargetVisitor implements BindingTargetVisitor<Object, Voi
     @Override
     public Void visit(ExposedBinding<? extends Object> binding)
     {
-        store.put(ExposedBinding.class, binding);
+        elementMap.put(ExposedBinding.class, binding);
         log(binding);
         return null;
     }
@@ -88,7 +87,7 @@ public class MapBindingTargetVisitor implements BindingTargetVisitor<Object, Voi
     @Override
     public Void visit(UntargettedBinding<? extends Object> binding)
     {
-        store.put(UntargettedBinding.class, binding);
+        elementMap.put(UntargettedBinding.class, binding);
         log(binding);
         return null;
     }
@@ -96,7 +95,7 @@ public class MapBindingTargetVisitor implements BindingTargetVisitor<Object, Voi
     @Override
     public Void visit(ConstructorBinding<? extends Object> binding)
     {
-        store.put(ConstructorBinding.class, binding);
+        elementMap.put(ConstructorBinding.class, binding);
         log(binding);
         return null;
     }
@@ -104,7 +103,7 @@ public class MapBindingTargetVisitor implements BindingTargetVisitor<Object, Voi
     @Override
     public Void visit(ConvertedConstantBinding<? extends Object> binding)
     {
-        store.put(ConvertedConstantBinding.class, binding);
+        elementMap.put(ConvertedConstantBinding.class, binding);
         log(binding);
         return null;
     }
@@ -112,7 +111,7 @@ public class MapBindingTargetVisitor implements BindingTargetVisitor<Object, Voi
     @Override
     public Void visit(ProviderBinding<? extends Object> binding)
     {
-        store.put(ProviderBinding.class, binding);
+        elementMap.put(ProviderBinding.class, binding);
         log(binding);
         return null;
     }

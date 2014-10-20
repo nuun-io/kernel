@@ -14,9 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.tests.ut.fixtures.delta;
+package io.nuun.kernel.tests.ut.fixtures;
 
-import io.nuun.kernel.tests.ut.fixtures.ElementAssertor;
+import com.google.common.collect.ForwardingMultimap;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.inject.spi.Element;
+
 
 /**
  *
@@ -24,24 +28,20 @@ import io.nuun.kernel.tests.ut.fixtures.ElementAssertor;
  * @author epo.jemba@kametic.com
  *
  */
-public class ElementDelta
+public class ElementMap<T> extends ForwardingMultimap<Class<? extends Element>, T>
 {
     
-    public final ElementAssertor assertor;
-    public final int actualTimes;
-
-    public ElementDelta(ElementAssertor assertor , int actualTimes )
+    private final Multimap<Class<? extends Element>, T> store;
+    
+    public ElementMap()
     {
-        this.assertor = assertor;
-        this.actualTimes = actualTimes;
+        store = HashMultimap.create();
     }
 
     @Override
-    public String toString()
+    protected Multimap<Class<? extends Element>, T> delegate()
     {
-        return "ElementDelta [assertor=" + assertor + ", actualTimes=" + actualTimes + "]";
+        return this.store;
     }
-    
-    
-    
+
 }

@@ -19,8 +19,8 @@ package io.nuun.kernel.tests.ut;
 import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
 import io.nuun.kernel.tests.Fixtures;
-import io.nuun.kernel.tests.ut.fixtures.FixtureConfiguration;
 import io.nuun.kernel.tests.ut.fixtures.MapElementVisitor;
+import io.nuun.kernel.tests.ut.fixtures.dslparts.FixtureConfiguration;
 import io.nuun.kernel.tests.ut.sample.SamplePlugin;
 import io.nuun.kernel.tests.ut.sample.Service1;
 import io.nuun.kernel.tests.ut.sample.Service1Impl;
@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kametic.specifications.AbstractSpecification;
 import org.kametic.specifications.Specification;
+
 import com.google.inject.Module;
 import com.google.inject.Stage;
 import com.google.inject.spi.Element;

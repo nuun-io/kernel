@@ -18,6 +18,7 @@ package io.nuun.kernel.tests.ut.fixtures;
 
 import com.google.inject.Binding;
 import com.google.inject.spi.DisableCircularProxiesOption;
+import com.google.inject.spi.Element;
 import com.google.inject.spi.ElementVisitor;
 import com.google.inject.spi.InjectionRequest;
 import com.google.inject.spi.InterceptorBinding;
@@ -43,16 +44,14 @@ import com.google.inject.spi.TypeListenerBinding;
 public class MapElementVisitor implements ElementVisitor<Void>
 {
 
-    private final Store store;
+    private final ElementMap<Element> elementMap;
     
     private final MapBindingTargetVisitor mapBindingTargetVisitor;
-//    private final MapBindingScopingVisitor mapBindingScopingVisitor;
     
     public MapElementVisitor ()
     {
-        store = new Store();
-        mapBindingTargetVisitor = new MapBindingTargetVisitor(store);
-//        mapBindingScopingVisitor = new MapBindingScopingVisitor(store);
+        elementMap = new ElementMap<Element>();
+        mapBindingTargetVisitor = new MapBindingTargetVisitor(elementMap);
     }
     
     
@@ -61,7 +60,6 @@ public class MapElementVisitor implements ElementVisitor<Void>
     {
         log("Bindings found " + binding.getKey().getTypeLiteral().getRawType());
         binding.acceptTargetVisitor(mapBindingTargetVisitor);
-//        binding.acceptScopingVisitor(mapBindingScopingVisitor);
         
         return null;
     }
@@ -69,7 +67,7 @@ public class MapElementVisitor implements ElementVisitor<Void>
     @Override
     public Void visit(InterceptorBinding binding)
     {
-        store.put(InterceptorBinding.class, binding);
+        elementMap.put(InterceptorBinding.class, binding);
         log(binding);
         return null;
     }
@@ -77,7 +75,7 @@ public class MapElementVisitor implements ElementVisitor<Void>
     @Override
     public Void visit(ScopeBinding binding)
     {
-        store.put(ScopeBinding.class, binding);
+        elementMap.put(ScopeBinding.class, binding);
         log(binding);
         return null;
     }
@@ -85,7 +83,7 @@ public class MapElementVisitor implements ElementVisitor<Void>
     @Override
     public Void visit(TypeConverterBinding binding)
     {
-        store.put(TypeConverterBinding.class, binding);
+        elementMap.put(TypeConverterBinding.class, binding);
         log(binding);
         return null;
     }
@@ -93,7 +91,7 @@ public class MapElementVisitor implements ElementVisitor<Void>
     @Override
     public Void visit(InjectionRequest<?> request)
     {
-        store.put(InjectionRequest.class, request);
+        elementMap.put(InjectionRequest.class, request);
         log(request);
         return null;
     }
@@ -101,7 +99,7 @@ public class MapElementVisitor implements ElementVisitor<Void>
     @Override
     public Void visit(StaticInjectionRequest request)
     {
-        store.put(StaticInjectionRequest.class, request);
+        elementMap.put(StaticInjectionRequest.class, request);
         log(request);
         return null;
     }
@@ -109,7 +107,7 @@ public class MapElementVisitor implements ElementVisitor<Void>
     @Override
     public <T> Void visit(ProviderLookup<T> lookup)
     {
-        store.put(ProviderLookup.class, lookup);
+        elementMap.put(ProviderLookup.class, lookup);
         log(lookup);
         return null;
     }
@@ -117,7 +115,7 @@ public class MapElementVisitor implements ElementVisitor<Void>
     @Override
     public <T> Void visit(MembersInjectorLookup<T> lookup)
     {
-        store.put(ProviderLookup.class, lookup);
+        elementMap.put(ProviderLookup.class, lookup);
         log(lookup);
         return null;
     }
@@ -125,7 +123,7 @@ public class MapElementVisitor implements ElementVisitor<Void>
     @Override
     public Void visit(Message message)
     {
-        store.put(Message.class, message);
+        elementMap.put(Message.class, message);
         log(message);
         return null;
     }
@@ -133,7 +131,7 @@ public class MapElementVisitor implements ElementVisitor<Void>
     @Override
     public Void visit(PrivateElements elements)
     {
-        store.put(PrivateElements.class, elements);
+        elementMap.put(PrivateElements.class, elements);
         log(elements);
         return null;
     }
@@ -141,7 +139,7 @@ public class MapElementVisitor implements ElementVisitor<Void>
     @Override
     public Void visit(TypeListenerBinding binding)
     {
-        store.put(TypeListenerBinding.class, binding);
+        elementMap.put(TypeListenerBinding.class, binding);
         log(binding);
         return null;
     }
@@ -149,7 +147,7 @@ public class MapElementVisitor implements ElementVisitor<Void>
     @Override
     public Void visit(ProvisionListenerBinding binding)
     {
-        store.put(ProvisionListenerBinding.class, binding);
+        elementMap.put(ProvisionListenerBinding.class, binding);
         log(binding);
         return null;
     }
@@ -157,7 +155,7 @@ public class MapElementVisitor implements ElementVisitor<Void>
     @Override
     public Void visit(RequireExplicitBindingsOption option)
     {
-        store.put(RequireExplicitBindingsOption.class, option);
+        elementMap.put(RequireExplicitBindingsOption.class, option);
         log(option);
         return null;
     }
@@ -165,7 +163,7 @@ public class MapElementVisitor implements ElementVisitor<Void>
     @Override
     public Void visit(DisableCircularProxiesOption option)
     {
-        store.put(DisableCircularProxiesOption.class, option);
+        elementMap.put(DisableCircularProxiesOption.class, option);
         log(option);
         return null;
     }
@@ -173,14 +171,14 @@ public class MapElementVisitor implements ElementVisitor<Void>
     @Override
     public Void visit(RequireAtInjectOnConstructorsOption option)
     {
-        store.put(RequireAtInjectOnConstructorsOption.class, option);
+        elementMap.put(RequireAtInjectOnConstructorsOption.class, option);
         log(option);
         return null;
     }
     
-    public Store getStore()
+    public ElementMap<Element> getStore()
     {
-        return store;
+        return elementMap;
     }
 
 

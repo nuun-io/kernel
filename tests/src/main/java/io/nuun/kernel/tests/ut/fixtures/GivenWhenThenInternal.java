@@ -24,8 +24,11 @@ import io.nuun.kernel.core.NuunCore;
 import io.nuun.kernel.core.internal.KernelCore;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
 import io.nuun.kernel.core.internal.scanner.inmemory.InMemoryMultiThreadClasspath;
-import io.nuun.kernel.tests.ut.fixtures.TestExecutor.TestExecutorWith;
-import io.nuun.kernel.tests.ut.fixtures.TestExecutor.TestExecutotFlow;
+import io.nuun.kernel.tests.ut.fixtures.dslparts.FixtureConfiguration;
+import io.nuun.kernel.tests.ut.fixtures.dslparts.ResultValidator;
+import io.nuun.kernel.tests.ut.fixtures.dslparts.TestExecutor;
+import io.nuun.kernel.tests.ut.fixtures.dslparts.TestExecutor.TestExecutorWith;
+import io.nuun.kernel.tests.ut.fixtures.dslparts.TestExecutor.TestExecutotFlow;
 
 import org.kametic.specifications.Specification;
 
