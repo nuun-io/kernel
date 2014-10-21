@@ -65,6 +65,7 @@ public abstract class ModuleAssertor
         return new LinkedBindingBuilderImpl<T>(globalHolder);
     }
     
+
     protected <T > TimedLinkedBindingBuilder<T,ScopedBindingBuilder> assertBind(Wildcard wildcard)
     {
         GlobalHolder globalHolder = new GlobalHolder();
@@ -73,7 +74,9 @@ public abstract class ModuleAssertor
         InjecteeHolder injecteeHolder = globalHolder;
         injecteeHolder.setInjecteeWildcard(wildcard);
         
+
         return new TimedLinkedBindingBuilderImpl<T>(globalHolder);
+
     }
     
     protected abstract void configure();
