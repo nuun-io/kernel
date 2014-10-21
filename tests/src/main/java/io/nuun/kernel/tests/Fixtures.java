@@ -1,7 +1,7 @@
 package io.nuun.kernel.tests;
 
-import io.nuun.kernel.tests.ut.fixtures.GivenWhenThenInternal;
-import io.nuun.kernel.tests.ut.fixtures.dslparts.FixtureConfiguration;
+import io.nuun.kernel.tests.internal.dsl.GivenWhenThenInternal;
+import io.nuun.kernel.tests.ut.dsl.fixture.FixtureConfiguration;
 
 /**
  * 

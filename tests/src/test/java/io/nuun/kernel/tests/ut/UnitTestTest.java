@@ -16,11 +16,12 @@
  */
 package io.nuun.kernel.tests.ut;
 
+import static io.nuun.kernel.tests.ut.Wildcard.ANY;
 import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
 import io.nuun.kernel.tests.Fixtures;
-import io.nuun.kernel.tests.ut.fixtures.MapElementVisitor;
-import io.nuun.kernel.tests.ut.fixtures.dslparts.FixtureConfiguration;
+import io.nuun.kernel.tests.internal.visitor.MapElementVisitor;
+import io.nuun.kernel.tests.ut.dsl.fixture.FixtureConfiguration;
 import io.nuun.kernel.tests.ut.sample.SamplePlugin;
 import io.nuun.kernel.tests.ut.sample.Service1;
 import io.nuun.kernel.tests.ut.sample.Service1Impl;
@@ -31,6 +32,7 @@ import org.junit.Test;
 import org.kametic.specifications.AbstractSpecification;
 import org.kametic.specifications.Specification;
 
+import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Stage;
 import com.google.inject.spi.Element;
@@ -50,9 +52,22 @@ public class UnitTestTest
         newGivenWhenThenFixture = Fixtures.newGivenWhenThenFixture();
     }
 
+    class Any {}
+    
     @Test
     public void checkFixture()
     {
+        new ModuleAssertor()
+        {
+            @Override
+            protected void configure()
+            {
+                assertBind(Key.get(String.class)).toInstance("Toto");
+                assertBind(Key.get(Integer.class)).toInstance(123);
+                assertBind(Key.get(String.class)).to(ANY).asEagerSingleton();
+            }
+        };
+        
         newGivenWhenThenFixture //
                 .given(SamplePlugin.class) // dependence ; required
                 .whenUsing(new ClasspathBuilder()

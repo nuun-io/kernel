@@ -49,7 +49,14 @@ public class SamplePlugin extends AbstractPlugin
             protected void configure()
             {
                 
+                
                 bind(String.class).toInstance("Yoloh");
+                
+
+                /*
+                 * 
+                 * 
+                 */
                 
                 bind(Service1.class).to(Service1Impl.class).asEagerSingleton();
                 String name = "un";
