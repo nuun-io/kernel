@@ -14,11 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.tests.internal.dsl.holder;
+package io.nuun.kernel.tests.ut.sample;
 
-import java.lang.annotation.Annotation;
-
-import com.google.inject.Scope;
+import javax.inject.Provider;
 
 /**
  *
@@ -27,13 +25,36 @@ import com.google.inject.Scope;
  * @author pierre.thirouin@gmail.com
  *
  */
-public interface ScopedHolder
+public class Service3Provider implements Provider<Service3>
 {
-      void setScopeAnnotation(Class<? extends Annotation> scopeAnnotation);
-      
-      void setScope(Scope scope);
-      
-      void setEagerSingleton();
-      
-      void setScopeTimes(Integer scopeTimes);
+    
+    private String name;
+
+   
+    
+    public Service3Provider()
+    {
+        
+    }
+    public Service3Provider(String name)
+    {
+        this.name = name;
+        
+    }
+    
+
+    @Override
+    public Service3 get()
+    {
+        return new Service3()
+        {
+            
+            @Override
+            public String action()
+            {
+                return name;
+            }
+        };
+    }
+
 }

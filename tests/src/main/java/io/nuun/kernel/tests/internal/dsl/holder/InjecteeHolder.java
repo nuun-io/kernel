@@ -16,7 +16,7 @@
  */
 package io.nuun.kernel.tests.internal.dsl.holder;
 
-import io.nuun.kernel.tests.ut.Wildcard;
+import io.nuun.kernel.tests.ut.assertor.dsl.Wildcard;
 
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
@@ -25,6 +25,7 @@ import com.google.inject.TypeLiteral;
  *
  * 
  * @author epo.jemba@kametic.com
+ * @author pierre.thirouin@gmail.com
  *
  */
 public interface InjecteeHolder

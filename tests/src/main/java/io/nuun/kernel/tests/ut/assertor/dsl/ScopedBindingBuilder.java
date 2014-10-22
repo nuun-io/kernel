@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.tests.internal.dsl.holder;
+package io.nuun.kernel.tests.ut.assertor.dsl;
 
 import java.lang.annotation.Annotation;
 
@@ -27,13 +27,13 @@ import com.google.inject.Scope;
  * @author pierre.thirouin@gmail.com
  *
  */
-public interface ScopedHolder
+public interface ScopedBindingBuilder<B>
 {
-      void setScopeAnnotation(Class<? extends Annotation> scopeAnnotation);
-      
-      void setScope(Scope scope);
-      
-      void setEagerSingleton();
-      
-      void setScopeTimes(Integer scopeTimes);
+    
+    B in(Class<? extends Annotation> scopeAnnotation);
+
+    B in(Scope scope);
+ 
+    B asEagerSingleton();
+
 }

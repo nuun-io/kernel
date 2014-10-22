@@ -22,6 +22,7 @@ import javax.inject.Provider;
  *
  * 
  * @author epo.jemba@kametic.com
+ * @author pierre.thirouin@gmail.com
  *
  */
 public class Service1Provider implements Provider<Service1>
@@ -29,7 +30,12 @@ public class Service1Provider implements Provider<Service1>
     
     private String name;
 
-
+   
+    
+    public Service1Provider()
+    {
+        
+    }
     public Service1Provider(String name)
     {
         this.name = name;

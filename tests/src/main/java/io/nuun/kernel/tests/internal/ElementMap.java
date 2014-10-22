@@ -26,6 +26,7 @@ import com.google.inject.spi.Element;
  *
  * 
  * @author epo.jemba@kametic.com
+ * @author pierre.thirouin@gmail.com
  *
  */
 public class ElementMap<T> extends ForwardingMultimap<Class<? extends Element>, T>

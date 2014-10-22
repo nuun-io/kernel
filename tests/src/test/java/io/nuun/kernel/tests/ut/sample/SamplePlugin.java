@@ -20,6 +20,8 @@ import io.nuun.kernel.core.AbstractPlugin;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
+import com.google.inject.Provides;
+import com.google.inject.Scopes;
 import com.google.inject.name.Names;
 import com.google.inject.util.Providers;
 
@@ -27,6 +29,7 @@ import com.google.inject.util.Providers;
  *
  * 
  * @author epo.jemba@kametic.com
+ * @author pierre.thirouin@gmail.com
  *
  */
 public class SamplePlugin extends AbstractPlugin
@@ -48,23 +51,22 @@ public class SamplePlugin extends AbstractPlugin
             @Override
             protected void configure()
             {
+                getProvider(Service1Impl.class);
                 
+                bind(Service1Impl.class);
+                
+                bind(Service2Impl.class).in(Scopes.SINGLETON);
                 
                 bind(String.class).toInstance("Yoloh");
                 
-
-                /*
-                 * 
-                 * 
-                 */
-                
-                bind(Service1.class).to(Service1Impl.class).asEagerSingleton();
+//                bind(Service1.class).to(Service1Impl.class).asEagerSingleton(); // LinkedKey
+                bind(Service1.class).toInstance(new Service1Impl());              // InstanceBinding
                 String name = "un";
-                bind(Key.get(Service1.class, Names.named(name))).toProvider(Providers.guicify(new Service1Provider(name)));
+                bind(Key.get(Service1.class, Names.named(name))).toProvider(Service1Provider.class); // ProviderKey
                 name = "deux";
-                bind(Key.get(Service1.class, Names.named(name))).toProvider(Providers.guicify(new Service1Provider(name)));
+                bind(Key.get(Service1.class, Names.named(name))).toProvider(Providers.guicify(new Service1Provider(name))); // ProviderInstance
                 name = "trois";
-                bind(Key.get(Service1.class, Names.named(name))).toProvider(Providers.guicify(new Service1Provider(name)));
+                bind(Service4.class).toProvider(new Service4Provider());// ProviderKey
                 
 //                binder().requireAtInjectOnConstructors();
                 
@@ -72,6 +74,12 @@ public class SamplePlugin extends AbstractPlugin
                 
                 
 
+            }
+            
+            @Provides
+            public Service2 provideService2()
+            {
+                return null;
             }
         };
     }

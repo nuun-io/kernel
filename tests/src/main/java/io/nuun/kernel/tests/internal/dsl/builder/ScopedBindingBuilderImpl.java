@@ -16,45 +16,28 @@
  */
 package io.nuun.kernel.tests.internal.dsl.builder;
 
-import java.lang.annotation.Annotation;
-
-import com.google.inject.Scope;
-
 import io.nuun.kernel.tests.internal.dsl.holder.ScopedHolder;
-import io.nuun.kernel.tests.ut.dsl.assertor.ScopedBindingBuilder;
 
 /**
  *
  * 
  * @author epo.jemba@kametic.com
+ * @author pierre.thirouin@gmail.com
  *
  */
-public class ScopedBindingBuilderImpl implements ScopedBindingBuilder
+public class ScopedBindingBuilderImpl extends AbstractScopedBindingBuilder<Void>
 {
-    
-    protected ScopedHolder scopedHolder;
 
     public ScopedBindingBuilderImpl(ScopedHolder scopedHolder)
     {
-        this.scopedHolder = scopedHolder;
-    }
-    
-    @Override
-    public void in(Class<? extends Annotation> scopeAnnotation)
-    {
-        scopedHolder.setScopeAnnotation(scopeAnnotation);
+        super(scopedHolder);
+        
     }
 
     @Override
-    public void in(Scope scope)
+    protected Void doReturn()
     {
-        scopedHolder.setScope(scope);
+        return null;
     }
-
-    @Override
-    public void asEagerSingleton()
-    {
-        scopedHolder.setEagerSingleton();
-    }
-
+     
 }

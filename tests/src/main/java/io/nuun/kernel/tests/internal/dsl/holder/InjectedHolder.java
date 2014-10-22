@@ -16,7 +16,7 @@
  */
 package io.nuun.kernel.tests.internal.dsl.holder;
 
-import io.nuun.kernel.tests.ut.Wildcard;
+import io.nuun.kernel.tests.ut.assertor.dsl.Wildcard;
 
 import org.kametic.specifications.Specification;
 
@@ -24,6 +24,7 @@ import org.kametic.specifications.Specification;
  *
  * 
  * @author epo.jemba@kametic.com
+ * @author pierre.thirouin@gmail.com
  *
  */
 public interface InjectedHolder

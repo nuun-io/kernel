@@ -14,26 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.tests.internal.dsl.holder;
+package io.nuun.kernel.tests.ut.assertor;
 
-import java.lang.annotation.Annotation;
-
-import com.google.inject.Scope;
+import com.google.inject.spi.Element;
 
 /**
- *
  * 
  * @author epo.jemba@kametic.com
  * @author pierre.thirouin@gmail.com
  *
  */
-public interface ScopedHolder
+public interface ElementAssertor<E extends Element>
 {
-      void setScopeAnnotation(Class<? extends Annotation> scopeAnnotation);
-      
-      void setScope(Scope scope);
-      
-      void setEagerSingleton();
-      
-      void setScopeTimes(Integer scopeTimes);
+
+    /**
+     * 
+     * @param input
+     * @return true if the candidate element complies the assertion.
+     */
+    boolean asserts(E candidate);
+
+    /**
+     * 
+     * 
+     * @return the number of time an element should comply with this assertions.
+     */
+    int expectedTimes();
 }

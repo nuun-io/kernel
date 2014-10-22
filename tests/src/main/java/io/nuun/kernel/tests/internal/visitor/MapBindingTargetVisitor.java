@@ -34,6 +34,7 @@ import com.google.inject.spi.UntargettedBinding;
  *
  * 
  * @author epo.jemba@kametic.com
+ * @author pierre.thirouin@gmail.com
  *
  */
 public class MapBindingTargetVisitor implements BindingTargetVisitor<Object, Void>

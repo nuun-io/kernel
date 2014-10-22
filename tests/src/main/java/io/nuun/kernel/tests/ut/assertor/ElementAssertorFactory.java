@@ -14,11 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.tests.internal.dsl.holder;
+package io.nuun.kernel.tests.ut.assertor;
 
-import java.lang.annotation.Annotation;
-
-import com.google.inject.Scope;
+import io.nuun.kernel.tests.internal.dsl.holder.GlobalHolder;
 
 /**
  *
@@ -27,13 +25,15 @@ import com.google.inject.Scope;
  * @author pierre.thirouin@gmail.com
  *
  */
-public interface ScopedHolder
+public class ElementAssertorFactory
 {
-      void setScopeAnnotation(Class<? extends Annotation> scopeAnnotation);
-      
-      void setScope(Scope scope);
-      
-      void setEagerSingleton();
-      
-      void setScopeTimes(Integer scopeTimes);
+    ElementAssertor create (GlobalHolder globalHolder)
+    {
+        ElementAssertor elementAssertor = null;
+        
+        
+        
+        return elementAssertor;
+    }
+
 }

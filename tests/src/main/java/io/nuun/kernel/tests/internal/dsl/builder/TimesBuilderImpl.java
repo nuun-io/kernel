@@ -14,26 +14,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.tests.internal.dsl.holder;
+package io.nuun.kernel.tests.internal.dsl.builder;
 
-import java.lang.annotation.Annotation;
-
-import com.google.inject.Scope;
+import io.nuun.kernel.tests.internal.dsl.holder.TimesHolder;
+import io.nuun.kernel.tests.ut.assertor.dsl.TimesBuilder;
 
 /**
  *
  * 
  * @author epo.jemba@kametic.com
- * @author pierre.thirouin@gmail.com
  *
  */
-public interface ScopedHolder
+public class TimesBuilderImpl implements TimesBuilder
 {
-      void setScopeAnnotation(Class<? extends Annotation> scopeAnnotation);
-      
-      void setScope(Scope scope);
-      
-      void setEagerSingleton();
-      
-      void setScopeTimes(Integer scopeTimes);
+
+    private TimesHolder timesHolder;
+
+    public TimesBuilderImpl(TimesHolder timesHolder)
+    {
+        this.timesHolder = timesHolder;
+    }
+    
+    @Override
+    public void times(Integer times)
+    {
+        timesHolder.setTimes(times);
+    }
+    
+    @Override
+    public void once()
+    {
+        times(1);
+    }
+
+    @Override
+    public void twice()
+    {
+        times(2);
+    }
+
 }

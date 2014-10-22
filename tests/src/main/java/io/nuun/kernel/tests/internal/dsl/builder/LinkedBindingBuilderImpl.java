@@ -18,24 +18,26 @@ package io.nuun.kernel.tests.internal.dsl.builder;
 
 import io.nuun.kernel.tests.internal.dsl.holder.InjectedHolder;
 import io.nuun.kernel.tests.internal.dsl.holder.ScopedHolder;
-import io.nuun.kernel.tests.ut.Wildcard;
-import io.nuun.kernel.tests.ut.dsl.assertor.LinkedBindingBuilder;
-import io.nuun.kernel.tests.ut.dsl.assertor.ScopedBindingBuilder;
-import io.nuun.kernel.tests.ut.dsl.assertor.TimedScopedBindingBuilder;
+import io.nuun.kernel.tests.ut.assertor.dsl.LinkedBindingBuilder;
+import io.nuun.kernel.tests.ut.assertor.dsl.ScopedBindingBuilder;
+import io.nuun.kernel.tests.ut.assertor.dsl.TimedScopedBindingBuilder;
+import io.nuun.kernel.tests.ut.assertor.dsl.Wildcard;
 
 /**
  *
  * 
  * @author epo.jemba@kametic.com
+ * @author pierre.thirouin@gmail.com
  *
  */
-public class LinkedBindingBuilderImpl<T> implements LinkedBindingBuilder<T>
+public class LinkedBindingBuilderImpl<T>  extends ScopedBindingBuilderImpl implements LinkedBindingBuilder<T>
 {
     
     protected InjectedHolder injectedHolder;
 
     public LinkedBindingBuilderImpl(InjectedHolder injectedHolder)
     {
+        super((ScopedHolder) injectedHolder);
         this.injectedHolder = injectedHolder;
     }
     
@@ -46,7 +48,7 @@ public class LinkedBindingBuilderImpl<T> implements LinkedBindingBuilder<T>
     }
 
     @Override
-    public ScopedBindingBuilder to(Class<? extends T> implementation)
+    public ScopedBindingBuilder<Void> to(Class<? extends T> implementation)
     {
         injectedHolder.setClass(implementation);
         return new ScopedBindingBuilderImpl((ScopedHolder) this.injectedHolder  );

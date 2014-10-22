@@ -25,14 +25,14 @@ import io.nuun.kernel.core.internal.KernelCore;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
 import io.nuun.kernel.core.internal.scanner.inmemory.InMemoryMultiThreadClasspath;
 import io.nuun.kernel.tests.internal.ElementMap;
-import io.nuun.kernel.tests.ut.ModuleAssertor;
-import io.nuun.kernel.tests.ut.ModuleDiff;
-import io.nuun.kernel.tests.ut.delta.ElementDelta;
-import io.nuun.kernel.tests.ut.dsl.assertor.AssertBuilder;
-import io.nuun.kernel.tests.ut.dsl.fixture.FixtureConfiguration;
-import io.nuun.kernel.tests.ut.dsl.fixture.ThenBuilder;
-import io.nuun.kernel.tests.ut.dsl.fixture.WhenBuilder;
-import io.nuun.kernel.tests.ut.dsl.fixture.WhenBuilder.WhenBuilderMore;
+import io.nuun.kernel.tests.ut.assertor.ElementDelta;
+import io.nuun.kernel.tests.ut.assertor.ModuleAssertor;
+import io.nuun.kernel.tests.ut.assertor.ModuleDiff;
+import io.nuun.kernel.tests.ut.assertor.dsl.AssertBuilder;
+import io.nuun.kernel.tests.ut.fixture.FixtureConfiguration;
+import io.nuun.kernel.tests.ut.fixture.ThenBuilder;
+import io.nuun.kernel.tests.ut.fixture.WhenBuilder;
+import io.nuun.kernel.tests.ut.fixture.WhenBuilder.WhenBuilderMore;
 
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -40,6 +40,12 @@ import com.google.inject.spi.DefaultElementVisitor;
 import com.google.inject.spi.Element;
 import com.google.inject.spi.Elements;
 
+/**
+ * 
+ * @author epo.jemba@kametic.com
+ * @author pierre.thirouin@gmail.com
+ *
+ */
 public class GivenWhenThenInternal implements FixtureConfiguration, WhenBuilder, ThenBuilder , WhenBuilderMore , AssertBuilder
 {
 
@@ -124,9 +130,11 @@ public class GivenWhenThenInternal implements FixtureConfiguration, WhenBuilder,
     public AssertBuilder assertModule(ModuleAssertor assertor)
     {
         UnitModule unitModule = kernel.unitModule(pluginClass);
-        
+        assertor.configure();
         ModuleDiff moduleDiff = new ModuleDiff(unitModule.as(Module.class), assertor);
         ElementMap<ElementDelta> diff = moduleDiff.diff();
+        
+        System.out.println(assertor.globalHolders().toString());
         
         if ( ! diff.isEmpty()) {
             throw new AssertionError("Oups , ça marche pas !");
@@ -145,7 +153,7 @@ public class GivenWhenThenInternal implements FixtureConfiguration, WhenBuilder,
                 NuunCore.newKernelConfiguration() //
                         .plugins(pluginClass) //
                         .classpathScanMode(ClasspathScanMode.IN_MEMORY) //
-                        .moduleValidation(validation)
+//                        .moduleValidation(validation)
                 //
                 );
 
@@ -154,7 +162,6 @@ public class GivenWhenThenInternal implements FixtureConfiguration, WhenBuilder,
         kernel.init();
         kernel.start();
         injector = kernel.objectGraph().as(Injector.class);
-        injector.equals("");
 
     }
 

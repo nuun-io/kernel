@@ -41,6 +41,7 @@ import com.google.inject.spi.TypeListenerBinding;
  *
  * 
  * @author epo.jemba@kametic.com
+ * @author pierre.thirouin@gmail.com
  *
  */
 public class MapElementVisitor implements ElementVisitor<Void>

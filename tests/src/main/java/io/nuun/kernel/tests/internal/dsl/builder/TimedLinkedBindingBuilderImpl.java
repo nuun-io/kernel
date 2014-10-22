@@ -17,17 +17,17 @@
 package io.nuun.kernel.tests.internal.dsl.builder;
 
 import io.nuun.kernel.tests.internal.dsl.holder.InjectedHolder;
-import io.nuun.kernel.tests.internal.dsl.holder.ScopedHolder;
-import io.nuun.kernel.tests.ut.dsl.assertor.ScopedBindingBuilder;
-import io.nuun.kernel.tests.ut.dsl.assertor.TimedLinkedBindingBuilder;
+import io.nuun.kernel.tests.ut.assertor.dsl.TimedLinkedBindingBuilder;
+import io.nuun.kernel.tests.ut.assertor.dsl.TimedScopedBindingBuilder;
 
 /**
  *
  * 
  * @author epo.jemba@kametic.com
+ * @author pierre.thirouin@gmail.com
  *
  */
-public class TimedLinkedBindingBuilderImpl<T>  extends LinkedBindingBuilderImpl<T> implements TimedLinkedBindingBuilder<T , ScopedBindingBuilder>
+public class TimedLinkedBindingBuilderImpl  extends LinkedBindingBuilderImpl<TimedScopedBindingBuilder> implements TimedLinkedBindingBuilder
 {
 
     public TimedLinkedBindingBuilderImpl(InjectedHolder injectedHolder)
@@ -36,10 +36,22 @@ public class TimedLinkedBindingBuilderImpl<T>  extends LinkedBindingBuilderImpl<
     }
 
     @Override
-    public ScopedBindingBuilder times(Integer times)
+    public void times(Integer times)
     {
         injectedHolder.setInjectedTimes(times);
-        return new ScopedBindingBuilderImpl((ScopedHolder) injectedHolder  );
     }
+    
+    @Override
+    public void once()
+    {
+        times(1);
+    }
+
+    @Override
+    public void twice()
+    {
+        times(2);
+    }
+    
     
 }

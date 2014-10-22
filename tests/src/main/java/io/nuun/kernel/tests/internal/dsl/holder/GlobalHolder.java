@@ -18,7 +18,7 @@ package io.nuun.kernel.tests.internal.dsl.holder;
 
 import java.lang.annotation.Annotation;
 
-import io.nuun.kernel.tests.ut.Wildcard;
+import io.nuun.kernel.tests.ut.assertor.dsl.Wildcard;
 
 import org.kametic.specifications.Specification;
 
@@ -30,9 +30,10 @@ import com.google.inject.TypeLiteral;
  *
  * 
  * @author epo.jemba@kametic.com
+ * @author pierre.thirouin@gmail.com
  *
  */
-public class GlobalHolder implements InjecteeHolder, InjectedHolder , ScopedHolder
+public class GlobalHolder implements InjecteeHolder, InjectedHolder , ScopedHolder , TimesHolder
 {
     // 1 - injectees
     protected Class<?> injecteeClass;
@@ -53,6 +54,9 @@ public class GlobalHolder implements InjecteeHolder, InjectedHolder , ScopedHold
     protected Scope scope;
     protected Boolean isEagerSingleton;
     protected Integer scopeTimes;
+    
+    // 4 - Times
+    protected Integer times;
 
     ////////////////////////////////////////////////////
 
@@ -143,6 +147,89 @@ public class GlobalHolder implements InjecteeHolder, InjectedHolder , ScopedHold
     {
         this.scopeTimes = scopeTimes;
     }
+    
+    ////////////////////////////////////////
+
+    @Override
+    public void setTimes(Integer times)
+    {
+        this.times = times;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.append("GlobalHolder [");
+        builder.append("Injectee\n");
+        if (injecteeClass != null)
+        {
+            builder.append("injecteeClass=").append(injecteeClass).append(", ");
+        }
+        if (injecteeKey != null)
+        {
+            builder.append("injecteeKey=").append(injecteeKey).append(", ");
+        }
+        if (injecteeTypeLiteral != null)
+        {
+            builder.append("injecteeTypeLiteral=").append(injecteeTypeLiteral).append(", ");
+        }
+        if (injecteeWildcard != null)
+        {
+            builder.append("injecteeWildcard=").append(injecteeWildcard).append(", ");
+        }
+        if (injecteeTimes != null)
+        {
+            builder.append("injecteeTimes=").append(injecteeTimes).append(", ");
+        }
+        builder.append("Injected\n");
+        if (injectedInstance != null)
+        {
+            builder.append("injectedInstance=").append(injectedInstance).append(", ");
+        }
+        if (injectedSpecification != null)
+        {
+            builder.append("injectedSpecification=").append(injectedSpecification).append(", ");
+        }
+        if (injectedClass != null)
+        {
+            builder.append("injectedClass=").append(injectedClass).append(", ");
+        }
+        if (injectedWildcard != null)
+        {
+            builder.append("injectedWildcard=").append(injectedWildcard).append(", ");
+        }
+        if (injectedTimes != null)
+        {
+            builder.append("injectedTimes=").append(injectedTimes).append(", ");
+        }
+        builder.append("Scoped\n");
+        if (scopeAnnotation != null)
+        {
+            builder.append("scopeAnnotation=").append(scopeAnnotation).append(", ");
+        }
+        if (scope != null)
+        {
+            builder.append("scope=").append(scope).append(", ");
+        }
+        if (isEagerSingleton != null)
+        {
+            builder.append("isEagerSingleton=").append(isEagerSingleton).append(", ");
+        }
+        if (scopeTimes != null)
+        {
+            builder.append("scopeTimes=").append(scopeTimes).append(", ");
+        }
+        builder.append("Global Times\n");
+        if (times != null)
+        {
+            builder.append("times=").append(times);
+        }
+        builder.append("\n]");
+        return builder.toString();
+    }
+    
+    //
     
 
 

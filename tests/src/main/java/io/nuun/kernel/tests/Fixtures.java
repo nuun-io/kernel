@@ -1,12 +1,13 @@
 package io.nuun.kernel.tests;
 
 import io.nuun.kernel.tests.internal.dsl.GivenWhenThenInternal;
-import io.nuun.kernel.tests.ut.dsl.fixture.FixtureConfiguration;
+import io.nuun.kernel.tests.ut.fixture.FixtureConfiguration;
 
 /**
  * 
  * 
  * @author epo.jemba@kametic.com
+ * @author pierre.thirouin@gmail.com
  *
  */
 public class Fixtures

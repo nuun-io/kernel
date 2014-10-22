@@ -17,7 +17,7 @@
 package io.nuun.kernel.tests.internal.dsl.builder;
 
 import io.nuun.kernel.tests.internal.dsl.holder.InjectedHolder;
-import io.nuun.kernel.tests.ut.dsl.assertor.InstanceBuilder;
+import io.nuun.kernel.tests.ut.assertor.dsl.InstanceBuilder;
 
 import org.kametic.specifications.Specification;
 
@@ -25,6 +25,7 @@ import org.kametic.specifications.Specification;
  *
  * 
  * @author epo.jemba@kametic.com
+ * @author pierre.thirouin@gmail.com
  *
  */
 public class InstanceBuilderImpl implements InstanceBuilder

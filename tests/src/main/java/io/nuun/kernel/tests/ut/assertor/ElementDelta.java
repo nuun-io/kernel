@@ -14,11 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.tests.internal.dsl.holder;
+package io.nuun.kernel.tests.ut.assertor;
 
-import java.lang.annotation.Annotation;
-
-import com.google.inject.Scope;
 
 /**
  *
@@ -27,13 +24,24 @@ import com.google.inject.Scope;
  * @author pierre.thirouin@gmail.com
  *
  */
-public interface ScopedHolder
+public class ElementDelta
 {
-      void setScopeAnnotation(Class<? extends Annotation> scopeAnnotation);
-      
-      void setScope(Scope scope);
-      
-      void setEagerSingleton();
-      
-      void setScopeTimes(Integer scopeTimes);
+    
+    public final ElementAssertor assertor;
+    public final int actualTimes;
+
+    public ElementDelta(ElementAssertor assertor , int actualTimes )
+    {
+        this.assertor = assertor;
+        this.actualTimes = actualTimes;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "ElementDelta [assertor=" + assertor + ", actualTimes=" + actualTimes + "]";
+    }
+    
+    
+    
 }

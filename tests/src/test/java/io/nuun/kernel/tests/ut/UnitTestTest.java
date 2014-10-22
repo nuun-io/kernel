@@ -16,12 +16,14 @@
  */
 package io.nuun.kernel.tests.ut;
 
-import static io.nuun.kernel.tests.ut.Wildcard.ANY;
+import static io.nuun.kernel.tests.ut.assertor.dsl.Wildcard.ANY;
 import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
 import io.nuun.kernel.tests.Fixtures;
 import io.nuun.kernel.tests.internal.visitor.MapElementVisitor;
-import io.nuun.kernel.tests.ut.dsl.fixture.FixtureConfiguration;
+import io.nuun.kernel.tests.ut.assertor.ModuleAssertor;
+import io.nuun.kernel.tests.ut.assertor.dsl.Wildcard;
+import io.nuun.kernel.tests.ut.fixture.FixtureConfiguration;
 import io.nuun.kernel.tests.ut.sample.SamplePlugin;
 import io.nuun.kernel.tests.ut.sample.Service1;
 import io.nuun.kernel.tests.ut.sample.Service1Impl;
@@ -34,12 +36,14 @@ import org.kametic.specifications.Specification;
 
 import com.google.inject.Key;
 import com.google.inject.Module;
+import com.google.inject.Scopes;
 import com.google.inject.Stage;
 import com.google.inject.spi.Element;
 import com.google.inject.spi.Elements;
 
 /**
  * @author epo.jemba@kametic.com
+ * @author pierre.thirouin@gmail.com
  */
 public class UnitTestTest
 {
@@ -52,25 +56,12 @@ public class UnitTestTest
         newGivenWhenThenFixture = Fixtures.newGivenWhenThenFixture();
     }
 
-    class Any {}
-    
     @Test
     public void checkFixture()
     {
-        new ModuleAssertor()
-        {
-            @Override
-            protected void configure()
-            {
-                assertBind(Key.get(String.class)).toInstance("Toto");
-                assertBind(Key.get(Integer.class)).toInstance(123);
-                assertBind(Key.get(String.class)).to(ANY).asEagerSingleton();
-            }
-        };
         
         newGivenWhenThenFixture //
-                .given(SamplePlugin.class) // dependence ; required
-                .whenUsing(new ClasspathBuilder()
+                .given(SamplePlugin.class).whenUsing(new ClasspathBuilder()
                 {
                     @Override
                     public void configure()
@@ -80,27 +71,31 @@ public class UnitTestTest
                         addClass(Service1Impl.class);
                         addClass(Service1Provider.class);
                     }
-                }).then(bindingAreOk());
+                }) //
+                .withLoaded(SamplePlugin.class)
                 
-                ; /*.then().unitModule()
-                  .contains(Module)
-                  .containsExactly(Module2)
-                  .contains(Element);
-                  
-                
-                
-                
-                Binder binder = null;
+                .then()
+                .assertModule(new ModuleAssertor()
                 {
-                  binder.bind(Service1.class).to(Service1Impl.class);
-                } // une fois
-                {
-                    binder.bind(Service1.class);
-                } // 1 fois
-                
-                binding(Service1.class).to(Service1Impl.class).isPresent()
-//                }).then(bindingAreOk())
-                     .and(zerezrzer()) ; */
+                    @Override
+                    public void configure()
+                    {
+                        assertBind(Key.get(Service1Impl.class));
+                        assertBind(Key.get(Service1Impl.class)).asEagerSingleton();
+                        assertBind(ANY).twice();
+                        assertBind(Wildcard.ANY) .asEagerSingleton().once();
+                        //
+                        assertBind(Key.get(String.class)).toInstance("toto");
+                        assertBind(Key.get(String.class)).to(Wildcard.ANY).once();
+                        assertBind(Key.get(String.class)).to(ANY).asEagerSingleton().once();
+                        //
+                        assertBind(Key.get(String.class)).to(String.class).in(Scopes.SINGLETON);
+                        assertBind(Key.get(String.class)).to(Wildcard.ANY).in(Scopes.SINGLETON).times(10);
+
+                    }
+                })
+                ;
+          
     }
 
     protected Specification<UnitModule> bindingAreOk()

@@ -16,10 +16,12 @@
  */
 package io.nuun.kernel.tests.internal.dsl.builder;
 
+import java.lang.annotation.Annotation;
+
+import com.google.inject.Scope;
+
 import io.nuun.kernel.tests.internal.dsl.holder.ScopedHolder;
-import io.nuun.kernel.tests.internal.dsl.holder.TimesHolder;
-import io.nuun.kernel.tests.ut.assertor.dsl.TimedScopedBindingBuilder;
-import io.nuun.kernel.tests.ut.assertor.dsl.TimesBuilder;
+import io.nuun.kernel.tests.ut.assertor.dsl.ScopedBindingBuilder;
 
 /**
  *
@@ -28,36 +30,37 @@ import io.nuun.kernel.tests.ut.assertor.dsl.TimesBuilder;
  * @author pierre.thirouin@gmail.com
  *
  */
-public class TimedScopedBindingBuilderImpl extends AbstractScopedBindingBuilder<TimesBuilder> implements TimedScopedBindingBuilder
+public abstract class AbstractScopedBindingBuilder<B> implements ScopedBindingBuilder<B>
 {
     
-    public TimedScopedBindingBuilderImpl(ScopedHolder scopedHolder)
-    {
-        super(scopedHolder);
-    }
+    protected ScopedHolder scopedHolder;
 
-    @Override
-    public void times(Integer times)
+    public AbstractScopedBindingBuilder(ScopedHolder scopedHolder)
     {
-        scopedHolder.setScopeTimes(times);
-    }
-
-    @Override
-    public void once()
-    {
-        times(1);
-    }
-
-    @Override
-    public void twice()
-    {
-        times(2);
+        this.scopedHolder = scopedHolder;
     }
     
     @Override
-    protected TimesBuilder doReturn()
+    public B in(Class<? extends Annotation> scopeAnnotation)
     {
-        return new TimesBuilderImpl((TimesHolder) scopedHolder) ;
+        scopedHolder.setScopeAnnotation(scopeAnnotation);
+        return doReturn();
     }
+
+    @Override
+    public B in(Scope scope)
+    {
+        scopedHolder.setScope(scope);
+        return doReturn();
+    }
+
+    @Override
+    public B asEagerSingleton()
+    {
+        scopedHolder.setEagerSingleton();
+        return doReturn();
+    }
+    
+    abstract protected B doReturn();
 
 }

@@ -16,10 +16,6 @@
  */
 package io.nuun.kernel.tests.internal.dsl.holder;
 
-import java.lang.annotation.Annotation;
-
-import com.google.inject.Scope;
-
 /**
  *
  * 
@@ -27,13 +23,8 @@ import com.google.inject.Scope;
  * @author pierre.thirouin@gmail.com
  *
  */
-public interface ScopedHolder
+public interface TimesHolder
 {
-      void setScopeAnnotation(Class<? extends Annotation> scopeAnnotation);
-      
-      void setScope(Scope scope);
-      
-      void setEagerSingleton();
-      
-      void setScopeTimes(Integer scopeTimes);
+    void setTimes(Integer times);
+
 }

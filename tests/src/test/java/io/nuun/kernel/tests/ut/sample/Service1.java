@@ -20,6 +20,7 @@ package io.nuun.kernel.tests.ut.sample;
  *
  * 
  * @author epo.jemba@kametic.com
+ * @author pierre.thirouin@gmail.com
  *
  */
 public interface Service1
