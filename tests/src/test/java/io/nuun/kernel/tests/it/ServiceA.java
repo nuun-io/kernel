@@ -17,9 +17,9 @@
 package io.nuun.kernel.tests.it;
 
 import io.nuun.kernel.tests.it.annotations.ITBind;
-import io.nuun.plugin.log.NuunLog;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ejemba
@@ -29,8 +29,8 @@ import org.slf4j.Logger;
 public class ServiceA
 {
 
-    @NuunLog
-    Logger logger ;
+    
+    Logger logger = LoggerFactory.getLogger(ServiceA.class);
     
     
     public void doSomethingUsefull ()
