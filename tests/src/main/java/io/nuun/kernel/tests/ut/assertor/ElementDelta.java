@@ -27,10 +27,10 @@ package io.nuun.kernel.tests.ut.assertor;
 public class ElementDelta
 {
     
-    public final ElementAssertor assertor;
+    public final ElementAssertor<?> assertor;
     public final int actualTimes;
 
-    public ElementDelta(ElementAssertor assertor , int actualTimes )
+    public ElementDelta(ElementAssertor<?> assertor , int actualTimes )
     {
         this.assertor = assertor;
         this.actualTimes = actualTimes;

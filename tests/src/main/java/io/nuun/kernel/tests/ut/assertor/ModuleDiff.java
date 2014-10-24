@@ -19,14 +19,18 @@ package io.nuun.kernel.tests.ut.assertor;
 import io.nuun.kernel.tests.internal.ElementMap;
 import io.nuun.kernel.tests.internal.visitor.MapElementVisitor;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.inject.Module;
 import com.google.inject.Stage;
+import com.google.inject.TypeLiteral;
 import com.google.inject.spi.Element;
 import com.google.inject.spi.Elements;
+import com.google.inject.util.Types;
 
 /**
  *
@@ -38,7 +42,7 @@ import com.google.inject.spi.Elements;
 public class ModuleDiff
 {
     private final Module actual;
-    private final ElementMap<ElementAssertor> assertions;
+    private final ElementMap<? extends ElementAssertor<? extends Element>> assertions;
   
 
     public ModuleDiff ( Module actual , ModuleAssertor moduleAssertor)
@@ -47,6 +51,47 @@ public class ModuleDiff
         assertions = moduleAssertor.assertions();
     }
     
+    static class ElementPredicate<EP extends ElementAssertor<C>  , C extends Element > implements Predicate<C>
+    {
+
+        private EP elementAssertor;
+ 
+        public ElementPredicate(EP elementAssertor)
+        {
+            this.elementAssertor = elementAssertor;
+        }
+        
+        @Override
+        public boolean apply(C input)
+        {
+            return elementAssertor.asserts(input);
+        }
+        
+        @SuppressWarnings("unchecked")
+        public static  <A extends ElementAssertor<B>,B extends Element> ElementPredicate<A,B> create (ElementAssertor<?>  elementAssertor )
+        {
+            // elementClass is the resolved type variable class from  ElementAssertor<X> an element.
+            // candidateClass is ElementAssertor children class only reachable at runtime. We use Types from google guice to dynamically resolve the full type.
+            Class<?> elementClass = (Class<?>)((ParameterizedType)elementAssertor.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+            Class<?> candidateClass =   (Class<?>) TypeLiteral.get(  Types.newParameterizedType(ElementPredicate.class, elementAssertor.getClass() , elementClass )).getType();
+            // we can then instantiate it.
+            try
+            {
+                Constructor<?> constructor = candidateClass.getConstructor(elementAssertor.getClass());
+                return (ElementPredicate<A, B>) constructor.newInstance(elementAssertor);
+            }
+            catch (Exception e)
+            {
+                throw new Error(e);
+            }
+        }
+    }
+    
+    /**
+     * 
+     * 
+     * @return
+     */
     public ElementMap<ElementDelta> diff ()
     {
         ElementMap<ElementDelta> delta = new ElementMap<ElementDelta>();
@@ -54,22 +99,15 @@ public class ModuleDiff
         
         for ( Class<? extends Element> keyClass: assertions.keys())
         {
-            Collection<Element> actualInstances = actualStore.get(keyClass);
+            Collection<? extends Element> actualInstances = actualStore.get(keyClass);
             
-            Collection<ElementAssertor> elementAssertors = assertions.get(keyClass);
+            Collection<? extends ElementAssertor<? extends Element>> elementAssertors = assertions.get(keyClass);
             
             if (actualInstances != null  && elementAssertors != null)
             {
-                for (final ElementAssertor elementAssertor : elementAssertors)
+                for (final ElementAssertor<? extends Element> elementAssertor : elementAssertors)
                 {
-                    int count = Collections2.filter(actualInstances,  new  Predicate<Element>()
-                    {
-                        @Override
-                        public boolean apply(Element input)
-                        {
-                            return elementAssertor.asserts(input);
-                        }
-                    }).size();
+                    int count =  Collections2.filter((Collection<? extends Element>)actualInstances, ElementPredicate.create(elementAssertor) ).size();
                     
                     if (count != elementAssertor.expectedTimes() )
                     {

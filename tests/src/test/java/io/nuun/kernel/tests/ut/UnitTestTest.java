@@ -42,8 +42,9 @@ import com.google.inject.spi.Element;
 import com.google.inject.spi.Elements;
 
 /**
- * @author epo.jemba@kametic.com
- * @author pierre.thirouin@gmail.com
+ * 
+ * @author epo.jemba{@literal @}kametic.com
+ * @author pierre.thirouin{@literal @}gmail.com
  */
 public class UnitTestTest
 {
@@ -61,7 +62,8 @@ public class UnitTestTest
     {
         
         newGivenWhenThenFixture //
-                .given(SamplePlugin.class).whenUsing(new ClasspathBuilder()
+                .given(SamplePlugin.class)
+                .whenUsing(new ClasspathBuilder()
                 {
                     @Override
                     public void configure()

@@ -27,10 +27,9 @@ import io.nuun.kernel.tests.internal.dsl.holder.GlobalHolder;
  */
 public class ElementAssertorFactory
 {
-    ElementAssertor create (GlobalHolder globalHolder)
+    ElementAssertor<?> create (GlobalHolder globalHolder)
     {
-        ElementAssertor elementAssertor = null;
-        
+        ElementAssertor<?> elementAssertor = null;
         
         
         return elementAssertor;

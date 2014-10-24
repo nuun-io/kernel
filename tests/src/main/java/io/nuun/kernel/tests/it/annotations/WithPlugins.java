@@ -10,7 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation can be used on integration tests to specify manually which plugins SEED will load.
+ * This annotation can be used on integration tests to specify manually which plugins Nuun will load.
  *
  * @author epo.jemba@kametic.com
  */

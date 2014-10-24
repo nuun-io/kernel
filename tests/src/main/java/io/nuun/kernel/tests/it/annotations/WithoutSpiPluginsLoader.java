@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation can be used on integration tests to disable SEED automatic plugin loading.
+ * This annotation can be used on integration tests to disable Nuun automatic plugin loading.
  *
  * @author epo.jemba@kametic.com
  */

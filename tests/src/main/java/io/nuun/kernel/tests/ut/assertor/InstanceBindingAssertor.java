@@ -16,7 +16,7 @@
  */
 package io.nuun.kernel.tests.ut.assertor;
 
-import com.google.inject.spi.Element;
+import com.google.inject.spi.InstanceBinding;
 
 /**
  *
@@ -25,7 +25,7 @@ import com.google.inject.spi.Element;
  * @author pierre.thirouin@gmail.com
  *
  */
-public class InstanceBindingAssertor implements ElementAssertor
+public class InstanceBindingAssertor implements ElementAssertor<InstanceBinding<?>>
 {
 
     public InstanceBindingAssertor()
@@ -33,7 +33,7 @@ public class InstanceBindingAssertor implements ElementAssertor
     }
 
     @Override
-    public boolean asserts(Element candidate)
+    public boolean asserts(InstanceBinding<?> candidate)
     {
         return false;
     }

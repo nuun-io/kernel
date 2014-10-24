@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.inject.Key;
+import com.google.inject.spi.Element;
 
 /**
  * 
@@ -39,17 +40,17 @@ import com.google.inject.Key;
  */
 public abstract class ModuleAssertor
 {
-    private ElementMap<ElementAssertor> assertors;
+    private ElementMap<ElementAssertor<? extends Element>> assertors;
     
     private List<GlobalHolder> globalHolders;
     
     public ModuleAssertor()
     {
-        assertors = new ElementMap<ElementAssertor>();
+        assertors = new ElementMap<ElementAssertor<?>>();
         globalHolders = new ArrayList<GlobalHolder>();
     }
     
-    public ElementMap<ElementAssertor> assertions ()
+    public ElementMap<? extends ElementAssertor<? extends Element>> assertions ()
     {
         return assertors;
     }
