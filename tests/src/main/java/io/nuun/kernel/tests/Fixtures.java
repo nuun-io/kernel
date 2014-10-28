@@ -6,8 +6,8 @@ import io.nuun.kernel.tests.ut.fixture.FixtureConfiguration;
 /**
  * 
  * 
- * @author epo.jemba@kametic.com
- * @author pierre.thirouin@gmail.com
+ * @author epo.jemba{@literal @}kametic.com
+ * @author pierre.thirouin{@literal @}gmail.com
  *
  */
 public class Fixtures

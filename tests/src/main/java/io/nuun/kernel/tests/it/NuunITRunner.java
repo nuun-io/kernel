@@ -32,7 +32,7 @@ import com.google.inject.Injector;
 import com.google.inject.ProvisionException;
 
 /**
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public class NuunITRunner extends BlockJUnit4ClassRunner

@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 /**
  * This annotation can be used on integration tests to disable Nuun automatic plugin loading.
  *
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

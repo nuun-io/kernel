@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * The class will be in major cases an Exception, an Error or a Throwable. But it can
  * be anything expected.
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

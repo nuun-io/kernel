@@ -30,7 +30,7 @@ import org.kametic.specifications.TrueSpecification;
 
 /**
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

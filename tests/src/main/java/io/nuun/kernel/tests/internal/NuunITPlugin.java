@@ -32,7 +32,7 @@ import org.kametic.specifications.Specification;
 
 
 /**
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public class NuunITPlugin extends AbstractPlugin

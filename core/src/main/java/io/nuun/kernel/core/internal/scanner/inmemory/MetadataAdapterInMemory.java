@@ -31,7 +31,7 @@ import com.google.common.base.Joiner;
 /**
  *
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public class MetadataAdapterInMemory implements MetadataAdapter<Class<?>, Field, Method> {

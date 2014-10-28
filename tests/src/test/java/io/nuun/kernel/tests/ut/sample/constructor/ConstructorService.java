@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2014 Kametic <epo.jemba@kametic.com>
+ * Copyright (C) 2014 Kametic <epo.jemba{@literal @}kametic.com>
  *
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * or any later version
@@ -14,20 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.api.inmemory;
+package io.nuun.kernel.tests.ut.sample.constructor;
 
-import java.util.Collection;
 
 /**
- * A simple representation of an in memory classpath. Only usefull for unit testing on plugins.
- * 
+ *
  * @author epo.jemba{@literal @}kametic.com
  *
  */
-public interface Classpath {
-	
-	ClasspathAbstractContainer<?> entry(String container);
-	
-	Collection<ClasspathAbstractContainer<?>> entries();
+public class ConstructorService {
+    
+    private Payload payload;
+
+    public ConstructorService(Payload payload)
+    {
+        this.payload = payload;
+    }
+    
+    public Payload doStuff(Payload input)
+    {
+        return payload;
+    }
 
 }

@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 /**
  * 
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public abstract class ClasspathAbstractElement<E>

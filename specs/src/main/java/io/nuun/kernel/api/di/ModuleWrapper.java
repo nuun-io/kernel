@@ -21,7 +21,7 @@ package io.nuun.kernel.api.di;
  * <p>
  * The encapsulated object, can be a <strong>Guice Module</strong>, and <strong>ApplicationContext<strong>, <strong> PicoContainer </strong>, etc
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public interface ModuleWrapper

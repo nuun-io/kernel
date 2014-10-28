@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  */
 public abstract class ClasspathBuilder
 {

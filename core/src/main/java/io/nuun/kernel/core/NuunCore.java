@@ -25,7 +25,7 @@ import io.nuun.kernel.core.internal.KernelCoreFactory;
  * 
  * 
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public class NuunCore

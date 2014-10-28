@@ -32,7 +32,7 @@ import com.google.common.collect.Maps;
 /**
  *
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public class InMemoryUrlTypeTest {

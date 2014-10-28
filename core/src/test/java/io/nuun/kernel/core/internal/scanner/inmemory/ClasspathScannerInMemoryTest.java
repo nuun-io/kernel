@@ -33,7 +33,7 @@ import io.nuun.kernel.core.pluginsit.dummy7.Module7;
 /**
  *
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public class ClasspathScannerInMemoryTest  extends ClasspathScannerTestBase

@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 /**
  * This annotation can be used on integration tests to specify manually which plugins Nuun will load.
  *
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

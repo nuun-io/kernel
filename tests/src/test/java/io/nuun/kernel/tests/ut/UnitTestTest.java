@@ -17,6 +17,10 @@
 package io.nuun.kernel.tests.ut;
 
 import static io.nuun.kernel.tests.ut.assertor.dsl.Wildcard.ANY;
+
+import java.util.List;
+
+import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
 import io.nuun.kernel.tests.Fixtures;
@@ -24,12 +28,13 @@ import io.nuun.kernel.tests.internal.visitor.MapElementVisitor;
 import io.nuun.kernel.tests.ut.assertor.ModuleAssertor;
 import io.nuun.kernel.tests.ut.assertor.dsl.Wildcard;
 import io.nuun.kernel.tests.ut.fixture.FixtureConfiguration;
-import io.nuun.kernel.tests.ut.sample.SamplePlugin;
-import io.nuun.kernel.tests.ut.sample.Service1;
-import io.nuun.kernel.tests.ut.sample.Service1Impl;
-import io.nuun.kernel.tests.ut.sample.Service1Provider;
+import io.nuun.kernel.tests.ut.sample.dummy.SamplePlugin;
+import io.nuun.kernel.tests.ut.sample.dummy.Service1;
+import io.nuun.kernel.tests.ut.sample.dummy.Service1Impl;
+import io.nuun.kernel.tests.ut.sample.dummy.Service1Provider;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kametic.specifications.AbstractSpecification;
 import org.kametic.specifications.Specification;
@@ -46,18 +51,46 @@ import com.google.inject.spi.Elements;
  * @author epo.jemba{@literal @}kametic.com
  * @author pierre.thirouin{@literal @}gmail.com
  */
-public class UnitTestTest
+public abstract class UnitTestTest
 {
 
-    private FixtureConfiguration newGivenWhenThenFixture;
+    protected FixtureConfiguration newGivenWhenThenFixture;
 
     @Before
     public void init()
     {
         newGivenWhenThenFixture = Fixtures.newGivenWhenThenFixture();
+        
+    }
+    
+    abstract Class<? extends Plugin>  underTestClass() ;
+    abstract List<Class<?>> classpath ();
+    abstract ModuleAssertor moduleAssertor();
+    
+    @Test
+    public void assertPlugin () {
+        
+        ClasspathBuilder classpathBuilder = new ClasspathBuilder()
+        {
+            
+            @Override
+            public void configure()
+            {
+                addJar("unit-test.jar");
+                for (Class<?> classpathEntry : classpath())
+                {
+                    addClass(classpathEntry);
+                }
+            }
+        };
+        
+        Class<? extends Plugin> underTestClass = underTestClass();
+        newGivenWhenThenFixture.given(underTestClass ).whenUsing(classpathBuilder).then().assertModule(moduleAssertor());
+        
     }
 
     @Test
+    @Ignore
     public void checkFixture()
     {
         
@@ -82,6 +115,7 @@ public class UnitTestTest
                     @Override
                     public void configure()
                     {
+
                         assertBind(Key.get(Service1Impl.class));
                         assertBind(Key.get(Service1Impl.class)).asEagerSingleton();
                         assertBind(ANY).twice();

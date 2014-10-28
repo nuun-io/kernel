@@ -22,7 +22,7 @@ import io.nuun.kernel.tests.ut.assertor.dsl.TimesBuilder;
 /**
  *
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public class TimesBuilderImpl implements TimesBuilder

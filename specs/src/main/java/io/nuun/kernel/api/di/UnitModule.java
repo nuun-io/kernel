@@ -17,7 +17,7 @@
 package io.nuun.kernel.api.di;
 /**
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public interface UnitModule extends ModuleWrapper

@@ -18,7 +18,7 @@ package io.nuun.kernel.api.plugin;
 /**
  * InitState will be returned back by plugins when when kernel will initialize them.
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public enum InitState

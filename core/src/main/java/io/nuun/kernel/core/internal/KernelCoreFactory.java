@@ -20,7 +20,7 @@ import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.config.KernelConfiguration;
 
 /**
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  */
 public class KernelCoreFactory
 {

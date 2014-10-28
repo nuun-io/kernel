@@ -25,7 +25,7 @@ import javax.inject.Qualifier;
 
 /**
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

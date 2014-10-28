@@ -21,7 +21,7 @@ import java.util.Collection;
 import com.google.inject.AbstractModule;
 
 /**
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public class NuunITModule extends AbstractModule

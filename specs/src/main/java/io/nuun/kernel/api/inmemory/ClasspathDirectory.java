@@ -19,7 +19,7 @@ package io.nuun.kernel.api.inmemory;
 /**
  *
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public class ClasspathDirectory<S extends ClasspathDirectory<S>> extends ClasspathAbstractContainer<S> {

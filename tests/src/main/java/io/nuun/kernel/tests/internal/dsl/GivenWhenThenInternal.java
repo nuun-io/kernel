@@ -42,8 +42,8 @@ import com.google.inject.spi.Elements;
 
 /**
  * 
- * @author epo.jemba@kametic.com
- * @author pierre.thirouin@gmail.com
+ * @author epo.jemba{@literal @}kametic.com
+ * @author pierre.thirouin{@literal @}gmail.com
  *
  */
 public class GivenWhenThenInternal implements FixtureConfiguration, WhenBuilder, ThenBuilder , WhenBuilderMore , AssertBuilder
@@ -134,7 +134,7 @@ public class GivenWhenThenInternal implements FixtureConfiguration, WhenBuilder,
         ModuleDiff moduleDiff = new ModuleDiff(unitModule.as(Module.class), assertor);
         ElementMap<ElementDelta> diff = moduleDiff.diff();
         
-        System.out.println(assertor.globalHolders().toString());
+//        System.out.println(assertor.globalHolders().toString());
         
         if ( ! diff.isEmpty()) {
             throw new AssertionError("Oups , ça marche pas !");

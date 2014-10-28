@@ -14,24 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.tests.ut.sample;
-
-import com.google.inject.Provider;
+package io.nuun.kernel.tests.ut.sample.dummy;
 
 /**
  *
  * 
- * @author epo.jemba@kametic.com
- * @author pierre.thirouin@gmail.com
+ * @author epo.jemba{@literal @}kametic.com
+ * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public class Service4Provider implements Provider<Service4>
+public interface Service1
 {
-
-    @Override
-    public Service4 get()
-    {
-        return null;
-    }
+    String action ();
 
 }

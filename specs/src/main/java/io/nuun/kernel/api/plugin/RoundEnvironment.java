@@ -22,7 +22,7 @@ package io.nuun.kernel.api.plugin;
  * <p>
  *  
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public interface RoundEnvironment

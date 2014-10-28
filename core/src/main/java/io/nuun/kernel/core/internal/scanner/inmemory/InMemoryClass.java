@@ -19,7 +19,7 @@ package io.nuun.kernel.core.internal.scanner.inmemory;
 /**
  *
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public class InMemoryClass extends InMemoryFile<Class<?>> {

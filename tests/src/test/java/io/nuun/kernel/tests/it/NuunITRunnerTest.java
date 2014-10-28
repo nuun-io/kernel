@@ -26,7 +26,7 @@ import com.google.inject.Inject;
 /**
  * 
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 @RunWith(NuunITRunner.class)

@@ -14,47 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.tests.ut.sample;
-
-import javax.inject.Provider;
+package io.nuun.kernel.tests.ut.sample.dummy;
 
 /**
  *
  * 
- * @author epo.jemba@kametic.com
- * @author pierre.thirouin@gmail.com
+ * @author epo.jemba{@literal @}kametic.com
+ * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public class Service1Provider implements Provider<Service1>
+public class Service2Impl implements Service2
 {
-    
-    private String name;
-
-   
-    
-    public Service1Provider()
-    {
-        
-    }
-    public Service1Provider(String name)
-    {
-        this.name = name;
-        
-    }
-    
 
     @Override
-    public Service1 get()
+    public String action()
     {
-        return new Service1()
-        {
-            
-            @Override
-            public String action()
-            {
-                return name;
-            }
-        };
+        return "zob";
     }
 
 }

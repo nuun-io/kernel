@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 /**
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 package io.nuun.kernel.spi;

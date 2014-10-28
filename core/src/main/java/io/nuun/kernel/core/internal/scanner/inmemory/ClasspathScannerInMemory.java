@@ -28,7 +28,7 @@ import org.reflections.util.ConfigurationBuilder;
 import org.reflections.vfs.Vfs;
 
 /**
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  */
 public class ClasspathScannerInMemory extends ClasspathScannerDisk
 {

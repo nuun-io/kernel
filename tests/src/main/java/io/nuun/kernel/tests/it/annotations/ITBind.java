@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * This annotation can be used in integration tests to mark classes for automatic binding. Classes will be bound to
  * themselves.
  *
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

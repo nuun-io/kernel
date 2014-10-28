@@ -21,8 +21,8 @@ import com.google.inject.spi.InstanceBinding;
 /**
  *
  * 
- * @author epo.jemba@kametic.com
- * @author pierre.thirouin@gmail.com
+ * @author epo.jemba{@literal @}kametic.com
+ * @author pierre.thirouin{@literal @}gmail.com
  *
  */
 public class InstanceBindingAssertor implements ElementAssertor<InstanceBinding<?>>

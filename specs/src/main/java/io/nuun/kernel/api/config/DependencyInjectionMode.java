@@ -26,7 +26,7 @@ package io.nuun.kernel.api.config;
  * 
  * They were inspired by Guice Stage.
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public enum DependencyInjectionMode {

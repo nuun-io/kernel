@@ -24,7 +24,7 @@ import org.reflections.vfs.Vfs.File;
 /**
  *
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public abstract class InMemoryFile<T> implements File {

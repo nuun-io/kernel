@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.tests.ut.sample;
+package io.nuun.kernel.tests.ut.sample.dummy;
 
 import io.nuun.kernel.core.AbstractPlugin;
 
@@ -28,8 +28,8 @@ import com.google.inject.util.Providers;
 /**
  *
  * 
- * @author epo.jemba@kametic.com
- * @author pierre.thirouin@gmail.com
+ * @author epo.jemba{@literal @}kametic.com
+ * @author pierre.thirouin{@literal @}gmail.com
  *
  */
 public class SamplePlugin extends AbstractPlugin
@@ -76,6 +76,7 @@ public class SamplePlugin extends AbstractPlugin
 
             }
             
+            // ProviderInstanceBinding
             @Provides
             public Service2 provideService2()
             {

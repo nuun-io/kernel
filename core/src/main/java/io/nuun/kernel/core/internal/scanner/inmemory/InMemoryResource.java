@@ -21,7 +21,7 @@ import io.nuun.kernel.api.inmemory.Resource;
 /**
  *
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public class InMemoryResource extends InMemoryFile<Resource> {

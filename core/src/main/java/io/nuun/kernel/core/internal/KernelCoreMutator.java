@@ -19,7 +19,7 @@ package io.nuun.kernel.core.internal;
 /**
  *
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public interface KernelCoreMutator

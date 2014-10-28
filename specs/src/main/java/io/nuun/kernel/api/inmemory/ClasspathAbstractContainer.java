@@ -23,7 +23,7 @@ import java.util.List;
 /**
  *
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public abstract class ClasspathAbstractContainer< S extends ClasspathAbstractContainer<S>>

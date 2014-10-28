@@ -21,8 +21,8 @@ import io.nuun.kernel.tests.internal.dsl.holder.GlobalHolder;
 /**
  *
  * 
- * @author epo.jemba@kametic.com
- * @author pierre.thirouin@gmail.com
+ * @author epo.jemba{@literal @}kametic.com
+ * @author pierre.thirouin{@literal @}gmail.com
  *
  */
 public class ElementAssertorFactory

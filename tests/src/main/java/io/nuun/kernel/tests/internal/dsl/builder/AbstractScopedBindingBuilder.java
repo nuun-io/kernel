@@ -26,8 +26,8 @@ import io.nuun.kernel.tests.ut.assertor.dsl.ScopedBindingBuilder;
 /**
  *
  * 
- * @author epo.jemba@kametic.com
- * @author pierre.thirouin@gmail.com
+ * @author epo.jemba{@literal @}kametic.com
+ * @author pierre.thirouin{@literal @}gmail.com
  *
  */
 public abstract class AbstractScopedBindingBuilder<B> implements ScopedBindingBuilder<B>

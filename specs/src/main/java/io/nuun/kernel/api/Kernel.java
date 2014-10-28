@@ -26,7 +26,7 @@ import java.util.List;
  *
  * The Kernel is the main component of the I.O.C. technical stack.
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public interface Kernel

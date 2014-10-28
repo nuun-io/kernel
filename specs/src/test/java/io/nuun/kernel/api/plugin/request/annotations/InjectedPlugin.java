@@ -32,7 +32,7 @@ import javax.inject.Named;
 import org.kametic.specifications.AbstractSpecification;
 
 /**
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public class InjectedPlugin extends TestPlugin

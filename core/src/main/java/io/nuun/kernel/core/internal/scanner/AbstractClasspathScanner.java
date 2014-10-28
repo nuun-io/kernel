@@ -31,7 +31,7 @@ import com.google.common.collect.Collections2;
 /**
  *
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public abstract class AbstractClasspathScanner implements ClasspathScanner {

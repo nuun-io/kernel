@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2014 Kametic <epo.jemba@kametic.com>
+ * Copyright (C) 2014 Kametic <epo.jemba{@literal @}kametic.com>
  *
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * or any later version
@@ -14,30 +14,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.tests.internal.dsl.holder;
+package io.nuun.kernel.tests.ut.sample;
 
-import io.nuun.kernel.tests.ut.assertor.dsl.Wildcard;
-
-import org.kametic.specifications.Specification;
+import io.nuun.kernel.core.AbstractPlugin;
 
 /**
  *
  * 
  * @author epo.jemba{@literal @}kametic.com
- * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public interface InjectedHolder
+public abstract class AbstractTestPlugin extends AbstractPlugin
 {
+
+    @Override
+    public String name()
+    {
+        return this.getClass().getName().toLowerCase();
+    }
     
-    void setInstance(Object injectedInstance);
+    @Override
+    public Object nativeUnitModule()
+    {
+        Object object = null;
+        try
+        {
+            object = underTestModuleClass ().newInstance();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        
+        return object;
+    }
     
-    void setSpecification(Specification<Object> injectedSpecification);
+    protected abstract Class<?> underTestModuleClass ();
     
-    void setClass(Class<?> injectedClass) ;
     
-    void setWildcard(Wildcard injectedWildcard);
-    
-    void setInjectedTimes(Integer injectedTimes);
 
 }

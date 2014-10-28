@@ -14,20 +14,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.api.inmemory;
+package io.nuun.kernel.tests.ut.sample.dummy;
 
-import java.util.Collection;
+import javax.inject.Provider;
 
 /**
- * A simple representation of an in memory classpath. Only usefull for unit testing on plugins.
+ *
  * 
  * @author epo.jemba{@literal @}kametic.com
+ * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public interface Classpath {
-	
-	ClasspathAbstractContainer<?> entry(String container);
-	
-	Collection<ClasspathAbstractContainer<?>> entries();
+public class Service1Provider implements Provider<Service1>
+{
+    
+    private String name;
+
+   
+    
+    public Service1Provider()
+    {
+        
+    }
+    public Service1Provider(String name)
+    {
+        this.name = name;
+        
+    }
+    
+
+    @Override
+    public Service1 get()
+    {
+        return new Service1()
+        {
+            
+            @Override
+            public String action()
+            {
+                return name;
+            }
+        };
+    }
 
 }

@@ -20,7 +20,7 @@ package io.nuun.kernel.api.config;
  * classpathScanMode let you configure the kernel regarding
  * Classpath Scan.
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public enum ClasspathScanMode {

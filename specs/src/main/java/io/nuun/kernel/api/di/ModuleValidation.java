@@ -21,7 +21,7 @@ package io.nuun.kernel.api.di;
  * <p>
  * The Module type to validate is Guice module.
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  */
 public interface ModuleValidation
 {

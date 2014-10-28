@@ -26,7 +26,7 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 
 /**
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 public class CoreITFixture extends AbstractFixture<Kernel> {

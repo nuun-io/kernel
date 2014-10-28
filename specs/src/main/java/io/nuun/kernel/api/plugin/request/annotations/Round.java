@@ -27,7 +27,7 @@ import javax.inject.Qualifier;
  * 
  * Round annotation. Round number starts with 0.
  * 
- * @author epo.jemba@kametic.com
+ * @author epo.jemba{@literal @}kametic.com
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
