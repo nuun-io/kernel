@@ -45,7 +45,6 @@ public class InstanceTest extends UnitTestTest
     }
 
     @Override
-    
     List<Class<?>> classpath ()
     {
         return  Lists.<Class<?>>newArrayList(InstanceService.class,InstanceServiceImpl.class);
@@ -56,7 +55,6 @@ public class InstanceTest extends UnitTestTest
     {
         return new ModuleAssertor()
         {
-            
             @Override
             public void configure()
             {

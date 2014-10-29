@@ -40,4 +40,12 @@ public interface ElementAssertor<E extends Element>
      * @return the number of time an element should comply with this assertions.
      */
     int expectedTimes();
+    
+    
+    /**
+     * 
+     * 
+     * @return the target asserted element
+     */
+    Class<E> targetType();
 }

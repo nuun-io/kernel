@@ -130,11 +130,12 @@ public class GivenWhenThenInternal implements FixtureConfiguration, WhenBuilder,
     public AssertBuilder assertModule(ModuleAssertor assertor)
     {
         UnitModule unitModule = kernel.unitModule(pluginClass);
+        // 
         assertor.configure();
+        // 
         ModuleDiff moduleDiff = new ModuleDiff(unitModule.as(Module.class), assertor);
+        // 
         ElementMap<ElementDelta> diff = moduleDiff.diff();
-        
-//        System.out.println(assertor.globalHolders().toString());
         
         if ( ! diff.isEmpty()) {
             throw new AssertionError("Oups , ça marche pas !");

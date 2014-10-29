@@ -76,6 +76,7 @@ public abstract class UnitTestTest
             @Override
             public void configure()
             {
+            	
                 addJar("unit-test.jar");
                 for (Class<?> classpathEntry : classpath())
                 {

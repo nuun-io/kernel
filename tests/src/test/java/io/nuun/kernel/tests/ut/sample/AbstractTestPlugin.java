@@ -30,7 +30,7 @@ public abstract class AbstractTestPlugin extends AbstractPlugin
     @Override
     public String name()
     {
-        return this.getClass().getName().toLowerCase();
+        return this.getClass().getSimpleName().toLowerCase();
     }
     
     @Override

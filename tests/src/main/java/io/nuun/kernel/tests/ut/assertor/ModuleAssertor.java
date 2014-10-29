@@ -54,7 +54,20 @@ public abstract class ModuleAssertor
     
     public ElementMap<? extends ElementAssertor<? extends Element>> assertions ()
     {
-        return assertors;
+        computeAssertors();
+    	return assertors;
+    }
+    
+    private void computeAssertors()
+    {
+    	assertors.clear();
+    	ElementAssertorFactory factory = new ElementAssertorFactory();
+    	
+    	for ( GlobalHolder globalHolder : globalHolders)
+    	{
+    		ElementAssertor<?> elementAssertor = factory.create(globalHolder);
+    		assertors.put(elementAssertor., value)
+    	}
     }
     
     //
