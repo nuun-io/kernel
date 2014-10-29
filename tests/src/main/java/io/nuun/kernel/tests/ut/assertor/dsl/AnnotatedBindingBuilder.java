@@ -14,7 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.tests.internal.dsl.holder;
+package io.nuun.kernel.tests.ut.assertor.dsl;
+
+import java.lang.annotation.Annotation;
+
+
 
 /**
  *
@@ -23,8 +27,10 @@ package io.nuun.kernel.tests.internal.dsl.holder;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public interface TimesHolder extends HolderBase
+public interface AnnotatedBindingBuilder<T> extends LinkedBindingBuilder<T>
 {
-    void setTimes(Integer times);
+    LinkedBindingBuilder<T> annotatedWith(Class<? extends Annotation> annotationType);
+    
+    LinkedBindingBuilder<T> annotatedWith(Annotation annotation);
 
 }

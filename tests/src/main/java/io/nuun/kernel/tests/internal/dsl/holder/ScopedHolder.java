@@ -27,7 +27,7 @@ import com.google.inject.Scope;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public interface ScopedHolder
+public interface ScopedHolder extends HolderBase
 {
       void setScopeAnnotation(Class<? extends Annotation> scopeAnnotation);
       

@@ -28,7 +28,7 @@ import com.google.inject.TypeLiteral;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public interface InjecteeHolder
+public interface InjecteeHolder extends HolderBase
 {
     public void setInjecteeClass(Class<?> injecteeClass);
     

@@ -27,7 +27,7 @@ import org.kametic.specifications.Specification;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public interface InjectedHolder
+public interface InjectedHolder extends HolderBase
 {
     
     void setInstance(Object injectedInstance);

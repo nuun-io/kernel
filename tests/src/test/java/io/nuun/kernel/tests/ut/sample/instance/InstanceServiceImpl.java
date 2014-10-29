@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2014 Kametic <epo.jemba@kametic.com>
+ * Copyright (C) 2014 Kametic <epo.jemba{@literal @}kametic.com>
  *
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * or any later version
@@ -14,30 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.tests.ut.assertor;
-
-import com.google.inject.spi.UntargettedBinding;
+package io.nuun.kernel.tests.ut.sample.instance;
 
 /**
  *
  * 
  * @author epo.jemba{@literal @}kametic.com
- * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public class UntargettedBindingAsserto implements ElementAssertor<UntargettedBinding<?>>
+public class InstanceServiceImpl implements InstanceService
 {
+    private String name;
 
-    @Override
-    public boolean asserts(UntargettedBinding<?> candidate)
+    public InstanceServiceImpl(String name)
     {
-        return false;
+        this.name = name;
     }
-
+    
     @Override
-    public int expectedTimes()
+    public String toString()
     {
-        return 0;
+        return name;
     }
+    
 
 }

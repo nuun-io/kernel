@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2014 Kametic <epo.jemba@kametic.com>
+ * Copyright (C) 2014 Kametic <epo.jemba{@literal @}kametic.com>
  *
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * or any later version
@@ -16,15 +16,17 @@
  */
 package io.nuun.kernel.tests.internal.dsl.holder;
 
+import java.lang.annotation.Annotation;
+
 /**
  *
  * 
  * @author epo.jemba{@literal @}kametic.com
- * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public interface TimesHolder extends HolderBase
+public interface AnnotatedHolder extends HolderBase
 {
-    void setTimes(Integer times);
-
+  void setAnnotatedWith(Class<? extends Annotation> annotationType);
+    
+  void setAnnotatedWith(Annotation annotation);
 }

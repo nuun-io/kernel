@@ -33,7 +33,7 @@ import com.google.inject.TypeLiteral;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public class GlobalHolder implements InjecteeHolder, InjectedHolder , ScopedHolder , TimesHolder
+public class GlobalHolder implements InjecteeHolder, AnnotatedHolder , InjectedHolder , ScopedHolder , TimesHolder
 {
     // 1 - injectees
     protected Class<?> injecteeClass;
@@ -41,6 +41,9 @@ public class GlobalHolder implements InjecteeHolder, InjectedHolder , ScopedHold
     protected TypeLiteral<?> injecteeTypeLiteral;
     protected Wildcard injecteeWildcard;
     protected Integer injecteeTimes;
+    //
+    protected Annotation annotation;
+    protected Class<? extends Annotation> annotationType;
     
     // 2 - injected-s
     protected Object injectedInstance;
@@ -96,6 +99,20 @@ public class GlobalHolder implements InjecteeHolder, InjectedHolder , ScopedHold
         this.injecteeTimes = injecteeTimes;
     }
 
+    ////////////////////////////////////////////////////
+    
+    @Override
+    public void setAnnotatedWith(Annotation annotation)
+    {
+        this.annotation = annotation;
+    }
+    
+    @Override
+    public void setAnnotatedWith(Class<? extends Annotation> annotationType)
+    {
+        this.annotationType = annotationType;
+    }
+    
     ////////////////////////////////////////////////////
     
     @Override
@@ -155,13 +172,22 @@ public class GlobalHolder implements InjecteeHolder, InjectedHolder , ScopedHold
     {
         this.times = times;
     }
+    
+    @Override
+    public <T> T as(Class<T> fromType)
+    {
+        return fromType.cast(this);
+    }
 
+    
+    
+    
     @Override
     public String toString()
     {
         StringBuilder builder = new StringBuilder();
         builder.append("GlobalHolder [");
-        builder.append("Injectee\n");
+        builder.append("\nInjectee Info\n");
         if (injecteeClass != null)
         {
             builder.append("injecteeClass=").append(injecteeClass).append(", ");
@@ -182,7 +208,16 @@ public class GlobalHolder implements InjecteeHolder, InjectedHolder , ScopedHold
         {
             builder.append("injecteeTimes=").append(injecteeTimes).append(", ");
         }
-        builder.append("Injected\n");
+        builder.append("\nAnnotation Info\n");
+        if (annotation != null)
+        {
+            builder.append("annotation=").append(annotation).append(", ");
+        }
+        if (annotationType != null)
+        {
+            builder.append("annotationType=").append(annotationType).append(", ");
+        }
+        builder.append("\nInjected Info\n");
         if (injectedInstance != null)
         {
             builder.append("injectedInstance=").append(injectedInstance).append(", ");
@@ -203,7 +238,7 @@ public class GlobalHolder implements InjecteeHolder, InjectedHolder , ScopedHold
         {
             builder.append("injectedTimes=").append(injectedTimes).append(", ");
         }
-        builder.append("Scoped\n");
+        builder.append("\nScope Info\n");
         if (scopeAnnotation != null)
         {
             builder.append("scopeAnnotation=").append(scopeAnnotation).append(", ");
@@ -220,17 +255,13 @@ public class GlobalHolder implements InjecteeHolder, InjectedHolder , ScopedHold
         {
             builder.append("scopeTimes=").append(scopeTimes).append(", ");
         }
-        builder.append("Global Times\n");
+        builder.append("\nGlobal Times\n");
         if (times != null)
         {
             builder.append("times=").append(times);
         }
-        builder.append("\n]");
+        builder.append("]");
         return builder.toString();
     }
-    
-    //
-    
-
 
 }

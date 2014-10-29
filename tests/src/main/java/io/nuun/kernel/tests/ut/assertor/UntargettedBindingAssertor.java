@@ -14,7 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.tests.internal.dsl.holder;
+package io.nuun.kernel.tests.ut.assertor;
+
+import com.google.inject.spi.UntargettedBinding;
 
 /**
  *
@@ -23,8 +25,19 @@ package io.nuun.kernel.tests.internal.dsl.holder;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public interface TimesHolder extends HolderBase
+public class UntargettedBindingAssertor implements ElementAssertor<UntargettedBinding<?>>
 {
-    void setTimes(Integer times);
+
+    @Override
+    public boolean asserts(UntargettedBinding<?> candidate)
+    {
+        return false;
+    }
+
+    @Override
+    public int expectedTimes()
+    {
+        return 0;
+    }
 
 }

@@ -17,10 +17,12 @@
 package io.nuun.kernel.tests.ut.assertor;
 
 import io.nuun.kernel.tests.internal.ElementMap;
+import io.nuun.kernel.tests.internal.dsl.builder.AnnotatedBindingBuilderImpl;
 import io.nuun.kernel.tests.internal.dsl.builder.LinkedBindingBuilderImpl;
 import io.nuun.kernel.tests.internal.dsl.builder.TimedScopedBindingBuilderImpl;
 import io.nuun.kernel.tests.internal.dsl.holder.GlobalHolder;
 import io.nuun.kernel.tests.internal.dsl.holder.InjecteeHolder;
+import io.nuun.kernel.tests.ut.assertor.dsl.AnnotatedBindingBuilder;
 import io.nuun.kernel.tests.ut.assertor.dsl.LinkedBindingBuilder;
 import io.nuun.kernel.tests.ut.assertor.dsl.TimedScopedBindingBuilder;
 import io.nuun.kernel.tests.ut.assertor.dsl.Wildcard;
@@ -61,10 +63,21 @@ public abstract class ModuleAssertor
         GlobalHolder globalHolder = new GlobalHolder();
         globalHolders.add(globalHolder);
         
-        InjecteeHolder injecteeHolder = globalHolder;
-        injecteeHolder.setInjecteeKey(key);
+        
+        globalHolder.as(InjecteeHolder.class). setInjecteeKey(key);
         
         return new LinkedBindingBuilderImpl<T>(globalHolder);
+    }
+    
+    //
+    protected <T> AnnotatedBindingBuilder<T> assertBind(Class<T> clss)
+    {
+        GlobalHolder globalHolder = new GlobalHolder();
+        globalHolders.add(globalHolder);
+
+        globalHolder.as(InjecteeHolder.class) .setInjecteeClass(clss);
+        
+        return new AnnotatedBindingBuilderImpl<T>(globalHolder);
     }
     
 

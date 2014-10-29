@@ -30,6 +30,8 @@ public interface LinkedBindingBuilder<T> extends ScopedBindingBuilder<Void>
     
     void toInstance(T instance);
     
+    TimesBuilder toInstance(Wildcard wildcard);
+    
     ScopedBindingBuilder<Void> to(Class<? extends T> instanceClass);
     
     TimedScopedBindingBuilder to(Wildcard wildcard);
