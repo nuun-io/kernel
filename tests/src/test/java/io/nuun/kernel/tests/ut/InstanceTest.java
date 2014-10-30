@@ -61,6 +61,9 @@ public class InstanceTest extends UnitTestTest
                 assertBind(InstanceService.class).toInstance(new InstanceServiceImpl("empty"));
                 assertBind(InstanceService.class).toInstance(ANY).once();
                 assertBind(InstanceService.class).annotatedWith(Names.named("one")).toInstance(new InstanceServiceImpl("one"));
+                
+                assertBind(InstanceService.class).annotatedWith(Wildcard.ANY).toInstance(new InstanceServiceImpl("one")).once();
+                
                 assertBind(InstanceService.class).annotatedWith(Names.named("one")).toInstance(Wildcard.ANY).twice();
             }
         } ;

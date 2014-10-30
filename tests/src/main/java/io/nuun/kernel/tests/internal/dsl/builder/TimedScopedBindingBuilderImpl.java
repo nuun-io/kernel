@@ -28,7 +28,7 @@ import io.nuun.kernel.tests.ut.assertor.dsl.TimesBuilder;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public class TimedScopedBindingBuilderImpl extends AbstractScopedBindingBuilder<TimesBuilder> implements TimedScopedBindingBuilder
+public class TimedScopedBindingBuilderImpl extends AbstractScopedBindingBuilderImpl<TimesBuilder> implements TimedScopedBindingBuilder
 {
     
     public TimedScopedBindingBuilderImpl(ScopedHolder scopedHolder)
@@ -55,7 +55,7 @@ public class TimedScopedBindingBuilderImpl extends AbstractScopedBindingBuilder<
     }
     
     @Override
-    protected TimesBuilder doReturn()
+    protected TimesBuilder doReturnScope()
     {
         return new TimesBuilderImpl((TimesHolder) scopedHolder) ;
     }

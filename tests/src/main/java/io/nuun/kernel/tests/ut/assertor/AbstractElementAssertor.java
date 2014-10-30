@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2014 Kametic <epo.jemba@kametic.com>
+ * Copyright (C) 2014 Kametic <epo.jemba{@literal @}kametic.com>
  *
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * or any later version
@@ -16,24 +16,21 @@
  */
 package io.nuun.kernel.tests.ut.assertor;
 
-import com.google.inject.spi.InstanceBinding;
+import java.lang.reflect.ParameterizedType;
+
+import com.google.inject.spi.Element;
 
 /**
  *
  * 
  * @author epo.jemba{@literal @}kametic.com
- * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public class InstanceBindingAssertor extends AbstractElementAssertor<InstanceBinding<?>>
+public class AbstractElementAssertor<E extends Element> implements ElementAssertor<E>
 {
 
-    public InstanceBindingAssertor()
-    {
-    }
-
     @Override
-    public boolean asserts(InstanceBinding<?> candidate)
+    public boolean asserts(E candidate)
     {
         return false;
     }
@@ -42,6 +39,14 @@ public class InstanceBindingAssertor extends AbstractElementAssertor<InstanceBin
     public int expectedTimes()
     {
         return 0;
+    }
+
+    @Override
+    public Class<E> targetType()
+    {
+        @SuppressWarnings("unchecked")
+        Class<E> elementClass = (Class<E>)((ParameterizedType)this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        return elementClass;
     }
 
 }

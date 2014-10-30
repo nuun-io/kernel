@@ -25,14 +25,14 @@ package io.nuun.kernel.tests.ut.assertor.dsl;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public interface LinkedBindingBuilder<T> extends ScopedBindingBuilder<Void>
+public interface LinkedBindingBuilder<T,B> extends ScopedBindingBuilder<B>
 {
     
     void toInstance(T instance);
     
     TimesBuilder toInstance(Wildcard wildcard);
     
-    ScopedBindingBuilder<Void> to(Class<? extends T> instanceClass);
+    ScopedBindingBuilder<B> to(Class<? extends T> instanceClass);
     
     TimedScopedBindingBuilder to(Wildcard wildcard);
 

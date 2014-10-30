@@ -21,9 +21,9 @@ package io.nuun.kernel.tests.ut.assertor.dsl;
  * 
  * @author epo.jemba{@literal @}kametic.com
  * @author pierre.thirouin{@literal @}gmail.com
- *
+ * TimedScopedBindingBuilder
  */
-public interface TimedLinkedBindingBuilder extends LinkedBindingBuilder<TimedScopedBindingBuilder> , TimesBuilder
+public interface TimedLinkedBindingBuilder<T> extends LinkedBindingBuilder<T,TimedScopedBindingBuilder> , TimesBuilder
 {
 
 }

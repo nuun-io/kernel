@@ -30,12 +30,12 @@ import io.nuun.kernel.tests.ut.assertor.dsl.ScopedBindingBuilder;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public abstract class AbstractScopedBindingBuilder<B> implements ScopedBindingBuilder<B>
+public abstract class AbstractScopedBindingBuilderImpl<B> implements ScopedBindingBuilder<B>
 {
     
     protected ScopedHolder scopedHolder;
 
-    public AbstractScopedBindingBuilder(ScopedHolder scopedHolder)
+    public AbstractScopedBindingBuilderImpl(ScopedHolder scopedHolder)
     {
         this.scopedHolder = scopedHolder;
     }
@@ -44,23 +44,23 @@ public abstract class AbstractScopedBindingBuilder<B> implements ScopedBindingBu
     public B in(Class<? extends Annotation> scopeAnnotation)
     {
         scopedHolder.setScopeAnnotation(scopeAnnotation);
-        return doReturn();
+        return doReturnScope();
     }
 
     @Override
     public B in(Scope scope)
     {
         scopedHolder.setScope(scope);
-        return doReturn();
+        return doReturnScope();
     }
 
     @Override
     public B asEagerSingleton()
     {
         scopedHolder.setEagerSingleton();
-        return doReturn();
+        return doReturnScope();
     }
     
-    abstract protected B doReturn();
+    abstract protected B doReturnScope();
 
 }

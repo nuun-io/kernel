@@ -18,6 +18,7 @@ package io.nuun.kernel.tests.internal.dsl.holder;
 
 import java.lang.annotation.Annotation;
 
+import io.nuun.kernel.tests.ut.assertor.DslContent;
 import io.nuun.kernel.tests.ut.assertor.dsl.Wildcard;
 
 import org.kametic.specifications.Specification;
@@ -33,7 +34,7 @@ import com.google.inject.TypeLiteral;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public class GlobalHolder implements InjecteeHolder, AnnotatedHolder , InjectedHolder , ScopedHolder , TimesHolder
+public class GlobalHolder implements InjecteeHolder, AnnotatedHolder , InjectedHolder , ScopedHolder , TimesHolder , DslContent
 {
     // 1 - injectees
     protected Class<?> injecteeClass;
@@ -42,8 +43,8 @@ public class GlobalHolder implements InjecteeHolder, AnnotatedHolder , InjectedH
     protected Wildcard injecteeWildcard;
     protected Integer injecteeTimes;
     //
-    protected Annotation annotation;
-    protected Class<? extends Annotation> annotationType;
+    protected Annotation injecteeAnnotation;
+    protected Class<? extends Annotation> injecteeAnnotationType;
     
     // 2 - injected-s
     protected Object injectedInstance;
@@ -52,7 +53,7 @@ public class GlobalHolder implements InjecteeHolder, AnnotatedHolder , InjectedH
     protected Wildcard injectedWildcard;
     protected Integer injectedTimes;
     
-    // 3 - annotation
+    // 3 - scope
     protected Class<? extends Annotation> scopeAnnotation;
     protected Scope scope;
     protected Boolean isEagerSingleton;
@@ -104,13 +105,13 @@ public class GlobalHolder implements InjecteeHolder, AnnotatedHolder , InjectedH
     @Override
     public void setAnnotatedWith(Annotation annotation)
     {
-        this.annotation = annotation;
+        injecteeAnnotation = annotation;
     }
     
     @Override
     public void setAnnotatedWith(Class<? extends Annotation> annotationType)
     {
-        this.annotationType = annotationType;
+        injecteeAnnotationType = annotationType;
     }
     
     ////////////////////////////////////////////////////
@@ -179,9 +180,6 @@ public class GlobalHolder implements InjecteeHolder, AnnotatedHolder , InjectedH
         return fromType.cast(this);
     }
 
-    
-    
-    
     @Override
     public String toString()
     {
@@ -209,13 +207,13 @@ public class GlobalHolder implements InjecteeHolder, AnnotatedHolder , InjectedH
             builder.append("injecteeTimes=").append(injecteeTimes).append(", ");
         }
         builder.append("\nAnnotation Info\n");
-        if (annotation != null)
+        if (injecteeAnnotation != null)
         {
-            builder.append("annotation=").append(annotation).append(", ");
+            builder.append("injecteeAnnotation=").append(injecteeAnnotation).append(", ");
         }
-        if (annotationType != null)
+        if (injecteeAnnotationType != null)
         {
-            builder.append("annotationType=").append(annotationType).append(", ");
+            builder.append("injecteeAnnotationType=").append(injecteeAnnotationType).append(", ");
         }
         builder.append("\nInjected Info\n");
         if (injectedInstance != null)
@@ -263,5 +261,7 @@ public class GlobalHolder implements InjecteeHolder, AnnotatedHolder , InjectedH
         builder.append("]");
         return builder.toString();
     }
+
+    
 
 }

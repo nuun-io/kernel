@@ -66,7 +66,7 @@ public abstract class ModuleAssertor
     	for ( GlobalHolder globalHolder : globalHolders)
     	{
     		ElementAssertor<?> elementAssertor = factory.create(globalHolder);
-    		assertors.put(elementAssertor., value)
+    		assertors.put ( elementAssertor.targetType() , elementAssertor );
     	}
     }
     
@@ -83,14 +83,14 @@ public abstract class ModuleAssertor
     }
     
     //
-    protected <T> AnnotatedBindingBuilder<T> assertBind(Class<T> clss)
+    protected <T> AnnotatedBindingBuilder<T,Void> assertBind(Class<T> clss)
     {
         GlobalHolder globalHolder = new GlobalHolder();
         globalHolders.add(globalHolder);
 
         globalHolder.as(InjecteeHolder.class) .setInjecteeClass(clss);
         
-        return new AnnotatedBindingBuilderImpl<T>(globalHolder);
+        return new AnnotatedBindingBuilderImpl<Void>(globalHolder);
     }
     
 

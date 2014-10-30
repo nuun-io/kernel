@@ -18,10 +18,15 @@ package io.nuun.kernel.tests.internal.dsl.builder;
 
 import java.lang.annotation.Annotation;
 
+import com.google.inject.Scope;
+
 import io.nuun.kernel.tests.internal.dsl.holder.AnnotatedHolder;
 import io.nuun.kernel.tests.internal.dsl.holder.InjectedHolder;
 import io.nuun.kernel.tests.ut.assertor.dsl.AnnotatedBindingBuilder;
 import io.nuun.kernel.tests.ut.assertor.dsl.LinkedBindingBuilder;
+import io.nuun.kernel.tests.ut.assertor.dsl.ScopedBindingBuilder;
+import io.nuun.kernel.tests.ut.assertor.dsl.TimedLinkedBindingBuilder;
+import io.nuun.kernel.tests.ut.assertor.dsl.Wildcard;
 
 /**
  *
@@ -29,7 +34,7 @@ import io.nuun.kernel.tests.ut.assertor.dsl.LinkedBindingBuilder;
  * @author epo.jemba{@literal @}kametic.com
  *
  */
-public class AnnotatedBindingBuilderImpl<T> extends LinkedBindingBuilderImpl<T> implements AnnotatedBindingBuilder<T>
+public class AnnotatedBindingBuilderImpl<T,B> extends LinkedBindingBuilderImpl<T,B> implements AnnotatedBindingBuilder<T,B>
 {
 
     public AnnotatedBindingBuilderImpl(AnnotatedHolder annotatedHolder)
@@ -38,16 +43,26 @@ public class AnnotatedBindingBuilderImpl<T> extends LinkedBindingBuilderImpl<T> 
     }
     
     @Override
-    public LinkedBindingBuilder<T> annotatedWith(Class<? extends Annotation> annotationType)
+    public LinkedBindingBuilder<T,B> annotatedWith(Class<? extends Annotation> annotationType)
     {
-        return new LinkedBindingBuilderImpl<T>(injectedHolder);
+        injectedHolder.as(AnnotatedHolder.class).setAnnotatedWith(annotationType);
+        return new LinkedBindingBuilderImpl<T,B>(injectedHolder);
         
     }
     
     @Override
-    public LinkedBindingBuilder<T> annotatedWith(Annotation annotation)
+    public LinkedBindingBuilder<T,B> annotatedWith(Annotation annotation)
     {
-        return new LinkedBindingBuilderImpl<T>(injectedHolder);
+        injectedHolder.as(AnnotatedHolder.class).setAnnotatedWith(annotation);
+        return new LinkedBindingBuilderImpl<T,B>(injectedHolder);
     }
+
+
+    @Override
+    public TimedLinkedBindingBuilder<T> annotatedWith(Wildcard wildcard)
+    {
+        return null;
+    }
+
 
 }

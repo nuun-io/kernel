@@ -25,7 +25,7 @@ import com.google.inject.spi.UntargettedBinding;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public class UntargettedBindingAssertor implements ElementAssertor<UntargettedBinding<?>>
+public class UntargettedBindingAssertor extends  AbstractElementAssertor<UntargettedBinding<?>>
 {
 
     @Override

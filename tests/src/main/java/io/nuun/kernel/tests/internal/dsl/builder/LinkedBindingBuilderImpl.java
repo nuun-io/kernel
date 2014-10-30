@@ -32,7 +32,7 @@ import io.nuun.kernel.tests.ut.assertor.dsl.Wildcard;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public class LinkedBindingBuilderImpl<T>  extends ScopedBindingBuilderImpl implements LinkedBindingBuilder<T>
+public abstract class LinkedBindingBuilderImpl<T,B>  extends AbstractScopedBindingBuilderImpl<B> implements LinkedBindingBuilder<T,Void>
 {
     
     protected InjectedHolder injectedHolder;
@@ -48,6 +48,7 @@ public class LinkedBindingBuilderImpl<T>  extends ScopedBindingBuilderImpl imple
     {
         injectedHolder.setInstance(instance);
     }
+    
     @Override
     public TimesBuilder toInstance(Wildcard wildcard)
     {
@@ -59,7 +60,8 @@ public class LinkedBindingBuilderImpl<T>  extends ScopedBindingBuilderImpl imple
     public ScopedBindingBuilder<Void> to(Class<? extends T> implementation)
     {
         injectedHolder.setClass(implementation);
-        return new ScopedBindingBuilderImpl((ScopedHolder) this.injectedHolder  );
+        return doReturnLinked();
+//        return new ScopedBindingBuilderImpl((ScopedHolder) this.injectedHolder );
     }
 
     @Override
@@ -68,5 +70,7 @@ public class LinkedBindingBuilderImpl<T>  extends ScopedBindingBuilderImpl imple
         injectedHolder.setWildcard(wildcard);
         return  new TimedScopedBindingBuilderImpl((ScopedHolder) this.injectedHolder );
     }
+    
+    abstract protected ScopedBindingBuilder<Void> doReturnLinked();
 
 }

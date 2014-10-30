@@ -31,8 +31,9 @@ public class ElementAssertorFactory
     {
         ElementAssertor<?> elementAssertor = null;
         
-        
-        return elementAssertor;
+        if (globalHolder.isInstanceBinding())
+        {
+            return elementAssertor;
+        }
     }
-
 }

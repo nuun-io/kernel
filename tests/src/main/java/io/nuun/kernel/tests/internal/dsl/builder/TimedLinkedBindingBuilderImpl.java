@@ -17,6 +17,7 @@
 package io.nuun.kernel.tests.internal.dsl.builder;
 
 import io.nuun.kernel.tests.internal.dsl.holder.InjectedHolder;
+import io.nuun.kernel.tests.internal.dsl.holder.ScopedHolder;
 import io.nuun.kernel.tests.ut.assertor.dsl.TimedLinkedBindingBuilder;
 import io.nuun.kernel.tests.ut.assertor.dsl.TimedScopedBindingBuilder;
 
@@ -27,7 +28,7 @@ import io.nuun.kernel.tests.ut.assertor.dsl.TimedScopedBindingBuilder;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public class TimedLinkedBindingBuilderImpl  extends LinkedBindingBuilderImpl<TimedScopedBindingBuilder> implements TimedLinkedBindingBuilder
+public class TimedLinkedBindingBuilderImpl<T>  extends LinkedBindingBuilderImpl<T,TimedScopedBindingBuilder> implements TimedLinkedBindingBuilder<T>
 {
 
     public TimedLinkedBindingBuilderImpl(InjectedHolder injectedHolder)
@@ -51,6 +52,18 @@ public class TimedLinkedBindingBuilderImpl  extends LinkedBindingBuilderImpl<Tim
     public void twice()
     {
         times(2);
+    }
+
+    @Override
+    protected TimedScopedBindingBuilder doReturnLinked()
+    {
+        return new TimedScopedBindingBuilderImpl(scopedHolder);
+    }
+
+    @Override
+    protected TimedScopedBindingBuilder doReturnScope()
+    {
+        return new Tim;
     }
     
     

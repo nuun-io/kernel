@@ -25,7 +25,7 @@ import io.nuun.kernel.tests.internal.dsl.holder.ScopedHolder;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public class ScopedBindingBuilderImpl extends AbstractScopedBindingBuilder<Void>
+public class ScopedBindingBuilderImpl extends AbstractScopedBindingBuilderImpl<Void>
 {
 
     public ScopedBindingBuilderImpl(ScopedHolder scopedHolder)
@@ -35,7 +35,7 @@ public class ScopedBindingBuilderImpl extends AbstractScopedBindingBuilder<Void>
     }
 
     @Override
-    protected Void doReturn()
+    protected Void doReturnScope()
     {
         return null;
     }

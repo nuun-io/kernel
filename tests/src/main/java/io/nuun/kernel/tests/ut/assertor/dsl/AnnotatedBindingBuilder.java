@@ -27,10 +27,12 @@ import java.lang.annotation.Annotation;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public interface AnnotatedBindingBuilder<T> extends LinkedBindingBuilder<T>
+public interface AnnotatedBindingBuilder<T,B> extends LinkedBindingBuilder<T,B>
 {
-    LinkedBindingBuilder<T> annotatedWith(Class<? extends Annotation> annotationType);
+    LinkedBindingBuilder<T,B> annotatedWith(Class<? extends Annotation> annotationType);
     
-    LinkedBindingBuilder<T> annotatedWith(Annotation annotation);
+    LinkedBindingBuilder<T,B> annotatedWith(Annotation annotation);
+    
+    TimedLinkedBindingBuilder<T> annotatedWith(Wildcard wildcard);
 
 }
