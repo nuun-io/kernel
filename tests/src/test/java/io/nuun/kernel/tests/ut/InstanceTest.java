@@ -16,10 +16,10 @@
  */
 package io.nuun.kernel.tests.ut;
 
-import static io.nuun.kernel.tests.ut.assertor.dsl.Wildcard.ANY;
+import static io.nuun.kernel.tests.ut.assertor.dsl.wildcard.Wildcard.ANY;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.tests.ut.assertor.ModuleAssertor;
-import io.nuun.kernel.tests.ut.assertor.dsl.Wildcard;
+import io.nuun.kernel.tests.ut.assertor.dsl.wildcard.Wildcard;
 import io.nuun.kernel.tests.ut.sample.instance.InstancePlugin;
 import io.nuun.kernel.tests.ut.sample.instance.InstanceService;
 import io.nuun.kernel.tests.ut.sample.instance.InstanceServiceImpl;

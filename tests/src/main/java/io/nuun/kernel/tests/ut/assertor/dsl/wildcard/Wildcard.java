@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.tests.ut.assertor.dsl;
+package io.nuun.kernel.tests.ut.assertor.dsl.wildcard;
 
 /**
  *
@@ -23,8 +23,23 @@ package io.nuun.kernel.tests.ut.assertor.dsl;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public enum Wildcard
+public interface Wildcard
 {
-    ANY;
+	 
+    
+    public enum All implements Wildcard{
+    	ANY
+    }
+    
+    public enum TypeLiteral implements WildcardTypeLiteral{
+    	ANY_TYPE_LITERAL
+    }
+    public enum Key implements WildcardKey{
+    	ANY_KEY
+    }
+    public enum Class implements WildcardClass{
+    	ANY_CLASS
+    }
+    
 
 }

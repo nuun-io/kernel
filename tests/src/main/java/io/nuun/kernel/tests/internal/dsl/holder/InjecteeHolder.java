@@ -16,7 +16,7 @@
  */
 package io.nuun.kernel.tests.internal.dsl.holder;
 
-import io.nuun.kernel.tests.ut.assertor.dsl.Wildcard;
+import io.nuun.kernel.tests.ut.assertor.dsl.wildcard.Wildcard;
 
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;

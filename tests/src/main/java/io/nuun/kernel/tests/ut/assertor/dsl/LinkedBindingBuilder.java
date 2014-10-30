@@ -16,6 +16,8 @@
  */
 package io.nuun.kernel.tests.ut.assertor.dsl;
 
+import io.nuun.kernel.tests.ut.assertor.dsl.wildcard.Wildcard;
+
 
 
 /**
@@ -29,10 +31,11 @@ public interface LinkedBindingBuilder<T> extends ScopedBindingBuilder<Void>
 {
     
     void toInstance(T instance);
+
+    ScopedBindingBuilder<Void> to(Class<? extends T> instanceClass);
     
     TimesBuilder toInstance(Wildcard wildcard);
     
-    ScopedBindingBuilder<Void> to(Class<? extends T> instanceClass);
     
     TimedScopedBindingBuilder to(Wildcard wildcard);
 

@@ -25,7 +25,7 @@ import com.google.inject.spi.InstanceBinding;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public class InstanceBindingAssertor implements ElementAssertor<InstanceBinding<?>>
+public class InstanceBindingAssertor extends AbstractElementAssertor<InstanceBinding<?>>
 {
 
     public InstanceBindingAssertor()

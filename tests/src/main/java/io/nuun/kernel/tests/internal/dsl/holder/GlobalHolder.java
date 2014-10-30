@@ -18,7 +18,7 @@ package io.nuun.kernel.tests.internal.dsl.holder;
 
 import java.lang.annotation.Annotation;
 
-import io.nuun.kernel.tests.ut.assertor.dsl.Wildcard;
+import io.nuun.kernel.tests.ut.assertor.dsl.wildcard.Wildcard;
 
 import org.kametic.specifications.Specification;
 

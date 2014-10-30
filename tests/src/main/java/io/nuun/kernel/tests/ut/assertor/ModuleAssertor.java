@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2014 Kametic <epo.jemba@kametic.com>
+ * Copyright (C) 2014 Kametic <epo.jemba@kametic.com> 
  *
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * or any later version
@@ -25,7 +25,7 @@ import io.nuun.kernel.tests.internal.dsl.holder.InjecteeHolder;
 import io.nuun.kernel.tests.ut.assertor.dsl.AnnotatedBindingBuilder;
 import io.nuun.kernel.tests.ut.assertor.dsl.LinkedBindingBuilder;
 import io.nuun.kernel.tests.ut.assertor.dsl.TimedScopedBindingBuilder;
-import io.nuun.kernel.tests.ut.assertor.dsl.Wildcard;
+import io.nuun.kernel.tests.ut.assertor.dsl.wildcard.Wildcard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +69,14 @@ public abstract class ModuleAssertor
     		assertors.put(elementAssertor., value)
     	}
     }
+    /*
+	Assertor ::= ( assertBind(Key) | assertBind(TypeLiteral) ) <LinkedBindingBuilder>   |  assertBind (Class) <AnnotatedBindingBuilder>  |
+	             ( assertBind(WildcardKey) | assertBind(WildcardTypeLiteral) ) <TimedLinkedBindingBuilder>
+	               
+    LinkedBindingBuilder(T) ::= toInstance(T) | to(Class(? extends T))  <ScopedBindingBuilder> | 
+                                toInstance(WildCardInstance) <TimedBuilder>| to(WildcardClass) <TimedScopedBindingBuilder> 
+     */
+    
     
     //
     protected <T >LinkedBindingBuilder<T> assertBind(Key<T> key)

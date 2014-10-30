@@ -23,7 +23,7 @@ import io.nuun.kernel.tests.ut.assertor.dsl.LinkedBindingBuilder;
 import io.nuun.kernel.tests.ut.assertor.dsl.ScopedBindingBuilder;
 import io.nuun.kernel.tests.ut.assertor.dsl.TimedScopedBindingBuilder;
 import io.nuun.kernel.tests.ut.assertor.dsl.TimesBuilder;
-import io.nuun.kernel.tests.ut.assertor.dsl.Wildcard;
+import io.nuun.kernel.tests.ut.assertor.dsl.wildcard.Wildcard;
 
 /**
  *

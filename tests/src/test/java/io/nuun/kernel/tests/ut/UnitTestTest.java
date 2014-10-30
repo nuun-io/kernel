@@ -16,7 +16,7 @@
  */
 package io.nuun.kernel.tests.ut;
 
-import static io.nuun.kernel.tests.ut.assertor.dsl.Wildcard.ANY;
+import static io.nuun.kernel.tests.ut.assertor.dsl.wildcard.Wildcard.ANY;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
 import io.nuun.kernel.tests.Fixtures;
 import io.nuun.kernel.tests.internal.visitor.MapElementVisitor;
 import io.nuun.kernel.tests.ut.assertor.ModuleAssertor;
-import io.nuun.kernel.tests.ut.assertor.dsl.Wildcard;
+import io.nuun.kernel.tests.ut.assertor.dsl.wildcard.Wildcard;
 import io.nuun.kernel.tests.ut.fixture.FixtureConfiguration;
 import io.nuun.kernel.tests.ut.sample.dummy.SamplePlugin;
 import io.nuun.kernel.tests.ut.sample.dummy.Service1;
