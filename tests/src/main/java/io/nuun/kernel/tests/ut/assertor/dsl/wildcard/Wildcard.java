@@ -40,6 +40,16 @@ public interface Wildcard
     public enum Class implements WildcardClass{
     	ANY_CLASS
     }
+    public enum Object implements WildcardObject{
+        ANY_OBJECT
+    }
+    public enum Annotation implements WildcardAnnotation{
+        ANY_ANNOTATION
+    }
+    
+    public enum Scope implements WildcardScope{
+        ANY_ANNOTATION
+    }
     
 
 }

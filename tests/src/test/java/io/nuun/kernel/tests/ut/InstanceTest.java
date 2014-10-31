@@ -16,7 +16,6 @@
  */
 package io.nuun.kernel.tests.ut;
 
-import static io.nuun.kernel.tests.ut.assertor.dsl.wildcard.Wildcard.ANY;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.tests.ut.assertor.ModuleAssertor;
 import io.nuun.kernel.tests.ut.assertor.dsl.wildcard.Wildcard;
@@ -24,9 +23,9 @@ import io.nuun.kernel.tests.ut.sample.instance.InstancePlugin;
 import io.nuun.kernel.tests.ut.sample.instance.InstanceService;
 import io.nuun.kernel.tests.ut.sample.instance.InstanceServiceImpl;
 
+import java.util.Arrays;
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import com.google.inject.name.Names;
 
 /**
@@ -47,7 +46,8 @@ public class InstanceTest extends UnitTestTest
     @Override
     List<Class<?>> classpath ()
     {
-        return  Lists.<Class<?>>newArrayList(InstanceService.class,InstanceServiceImpl.class);
+        return Arrays.<Class<?>>asList(InstanceService.class,InstanceServiceImpl.class);
+
     }
 
     @Override
