@@ -70,7 +70,7 @@ public abstract class ModuleAssertor
     	}
     }
     /**
-     * DSL Grammar. 
+     * DSL Grammar..
      
 <pre>
 <Assertor> ::=
@@ -81,30 +81,30 @@ public abstract class ModuleAssertor
              ( assertBind(WildcardKey) | assertBind(WildcardTypeLiteral) ) <CardinalLinkedBindingBuilder[T]> |
              assertBind (WildcardClass) <CardinalAnnotatedBindingBuilder[T]>  ;
              
- =======================================   Linked Binding Builder  ================================================ 
+ =======================================   Linked Binding Builder  ================================================
 
 <WildcardLinkedBindingBuilder> ::=
-             ( to(WildcardClass           | to(WildcardTypeLiteral) | to (WildcardKey)) )  <CardinalScopedBindingBuilder>  |             
-             toInstance(WildCardInstance) <CardinalBuilder>  ;                                                                 
+             ( to(WildcardClass           | to(WildcardTypeLiteral) | to (WildcardKey)) )  <CardinalScopedBindingBuilder>  |
+             toInstance(WildCardInstance) <CardinalBuilder>  ;
                             
-<LinkedBindingBuilder[T]> ::= 
+<LinkedBindingBuilder[T]> ::=
              ( to(Class[? extends T])     | to(TypeLiteral [T])     | to (Key[T])       )  <ScopedBindingBuilder>       |
              toInstance(T)                                    | <ScopedBindingBuilder>
              
              <WildcardLinkedBindingBuilder>
              ;
               
-<CardinalLinkedBindingBuilder[T]> ::= 
+<CardinalLinkedBindingBuilder[T]> ::=
              ( to(Class[? extends T])     | to(TypeLiteral [T])     | to (Key[T])       )  <CardinalScopedBindingBuilder>  |
              toInstance(T)                 <CardinalBuilder>     | <CardinalScopedBindingBuilder> |
              
              <WildcardLinkedBindingBuilder>;
 
-=======================================   Annotated Binding Builder  ================================================ 
+=======================================   Annotated Binding Builder  ================================================
              
 <WildcardAnnotatedBindingBuilder> ::=
-             annotatedWith ( WildcardClass )        <CardinalLinkedBindingBuilder[T]>    |     
-             annotatedWith ( WildCardAnnotation )   <CardinalLinkedBindingBuilder[T]> ;        
+             annotatedWith ( WildcardClass )        <CardinalLinkedBindingBuilder[T]>    |
+             annotatedWith ( WildCardAnnotation )   <CardinalLinkedBindingBuilder[T]> ;
 
 <AnnotatedBindingBuilder[T]> ::=
              annotatedWith ( Class<? extends Annotation> ) <LinkedBindingBuilder[T]> |
@@ -120,7 +120,7 @@ public abstract class ModuleAssertor
              in ( WildcardClass )              <CardinalBuilder> | in ( WildcardScope ) <CardinalBuilder>  ;
 
 <ScopedBindingBuilder> ::=
-             in ( Class<? extends Annotation> )     | in ( Scope )  | asEagerSingleton ()  <CardinalBuilder> | <WildcardScopedBindingBuilder> 
+             in ( Class<? extends Annotation> )     | in ( Scope )  | asEagerSingleton ()  <CardinalBuilder> | <WildcardScopedBindingBuilder>
 
 <CardinalScopedBindingBuilder> ::=
              ( in ( Class<? extends Annotation> )  | in ( Scope )  | asEagerSingleton ()  ) <CardinalBuilder> | <WildcardScopedBindingBuilder> ;
