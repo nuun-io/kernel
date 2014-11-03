@@ -78,14 +78,14 @@ public abstract class ModuleAssertor
              ( assertBind(Key [T] )    | assertBind(TypeLiteral [T]) )     <LinkedBindingBuilder[T]>      |
              assertBind (Class [T])   <AnnotatedBindingBuilder>  |
              
-             ( assertBind(WildcardKey) | assertBind(WildcardTypeLiteral) ) <TimedLinkedBindingBuilder[T]> |
-             assertBind (WildcardClass) <TimedAnnotatedBindingBuilder[T]>  ;
+             ( assertBind(WildcardKey) | assertBind(WildcardTypeLiteral) ) <CardinalLinkedBindingBuilder[T]> |
+             assertBind (WildcardClass) <CardinalAnnotatedBindingBuilder[T]>  ;
              
  =======================================   Linked Binding Builder  ================================================ 
 
 <WildcardLinkedBindingBuilder> ::=
-             ( to(WildcardClass           | to(WildcardTypeLiteral) | to (WildcardKey)) )  <TimedScopedBindingBuilder>  |             
-             toInstance(WildCardInstance) <TimedBuilder>  ;                                                                 
+             ( to(WildcardClass           | to(WildcardTypeLiteral) | to (WildcardKey)) )  <CardinalScopedBindingBuilder>  |             
+             toInstance(WildCardInstance) <CardinalBuilder>  ;                                                                 
                             
 <LinkedBindingBuilder[T]> ::= 
              ( to(Class[? extends T])     | to(TypeLiteral [T])     | to (Key[T])       )  <ScopedBindingBuilder>       |
@@ -94,40 +94,40 @@ public abstract class ModuleAssertor
              <WildcardLinkedBindingBuilder>
              ;
               
-<TimedLinkedBindingBuilder[T]> ::= 
-             ( to(Class[? extends T])     | to(TypeLiteral [T])     | to (Key[T])       )  <TimedScopedBindingBuilder>  |
-             toInstance(T)                 <TimedBuilder>     | <TimedScopedBindingBuilder> |
+<CardinalLinkedBindingBuilder[T]> ::= 
+             ( to(Class[? extends T])     | to(TypeLiteral [T])     | to (Key[T])       )  <CardinalScopedBindingBuilder>  |
+             toInstance(T)                 <CardinalBuilder>     | <CardinalScopedBindingBuilder> |
              
              <WildcardLinkedBindingBuilder>;
 
 =======================================   Annotated Binding Builder  ================================================ 
              
 <WildcardAnnotatedBindingBuilder> ::=
-             annotatedWith ( WildcardClass )        <TimedLinkedBindingBuilder[T]>    |     
-             annotatedWith ( WildCardAnnotation )   <TimedLinkedBindingBuilder[T]> ;        
+             annotatedWith ( WildcardClass )        <CardinalLinkedBindingBuilder[T]>    |     
+             annotatedWith ( WildCardAnnotation )   <CardinalLinkedBindingBuilder[T]> ;        
 
 <AnnotatedBindingBuilder[T]> ::=
              annotatedWith ( Class<? extends Annotation> ) <LinkedBindingBuilder[T]> |
              annotatedWith ( Annotation )                  <LinkedBindingBuilder[T]> | <WildcardAnnotatedBindingBuilder>;
              
-<TimedAnnotatedBindingBuilder[T]> ::=   // <AnnotatedBindingBuilder[T]> | <TimeBuilder>
-             annotatedWith ( Class<? extends Annotation> ) <TimedLinkedBindingBuilder[T]> |
-             annotatedWith ( Annotation )                  <TimedLinkedBindingBuilder[T]> | <WildcardAnnotatedBindingBuilder>;
+<CardinalAnnotatedBindingBuilder[T]> ::=   // <AnnotatedBindingBuilder[T]> | <TimeBuilder>
+             annotatedWith ( Class<? extends Annotation> ) <CardinalLinkedBindingBuilder[T]> |
+             annotatedWith ( Annotation )                  <CardinalLinkedBindingBuilder[T]> | <WildcardAnnotatedBindingBuilder>;
 
 =======================================  Scoped Binding Builder ================================================
              
 <WildcardScopedBindingBuilder> ::=
-             in ( WildcardClass )              <TimedBuilder> | in ( WildcardScope ) <TimedBuilder> | asEagerSingletonWildcard () <TimedBuilder> ;
+             in ( WildcardClass )              <CardinalBuilder> | in ( WildcardScope ) <CardinalBuilder>  ;
 
 <ScopedBindingBuilder> ::=
-             in ( Class<? extends Annotation> )     | in ( Scope )  | asEagerSingleton ()                  | <WildcardScopedBindingBuilder> 
+             in ( Class<? extends Annotation> )     | in ( Scope )  | asEagerSingleton ()  <CardinalBuilder> | <WildcardScopedBindingBuilder> 
 
-<TimedScopedBindingBuilder> ::=
-             ( in ( Class<? extends Annotation> )  | in ( Scope )  | asEagerSingleton ()  ) <TimedBuilder> | <WildcardScopedBindingBuilder> ;
+<CardinalScopedBindingBuilder> ::=
+             ( in ( Class<? extends Annotation> )  | in ( Scope )  | asEagerSingleton ()  ) <CardinalBuilder> | <WildcardScopedBindingBuilder> ;
 
-// =======================================  // Timed Builder // ================================================ //
+// =======================================  // Cardinal Builder // ================================================ //
 
-<TimedBuilder> ::= once() | twice () | times(int) ;
+<CardinalBuilder> ::= once() | twice () | times(int) ;
                                ;
 
 </pre>
