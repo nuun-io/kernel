@@ -16,22 +16,19 @@
  */
 package io.nuun.kernel.tests.ut;
 
-import static io.nuun.kernel.tests.ut.assertor.dsl.wildcard.Wildcard.ANY;
-
-import java.util.List;
-
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
 import io.nuun.kernel.tests.Fixtures;
 import io.nuun.kernel.tests.internal.visitor.MapElementVisitor;
 import io.nuun.kernel.tests.ut.assertor.ModuleAssertor;
-import io.nuun.kernel.tests.ut.assertor.dsl.wildcard.Wildcard;
 import io.nuun.kernel.tests.ut.fixture.FixtureConfiguration;
 import io.nuun.kernel.tests.ut.sample.dummy.SamplePlugin;
 import io.nuun.kernel.tests.ut.sample.dummy.Service1;
 import io.nuun.kernel.tests.ut.sample.dummy.Service1Impl;
 import io.nuun.kernel.tests.ut.sample.dummy.Service1Provider;
+
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -39,9 +36,7 @@ import org.junit.Test;
 import org.kametic.specifications.AbstractSpecification;
 import org.kametic.specifications.Specification;
 
-import com.google.inject.Key;
 import com.google.inject.Module;
-import com.google.inject.Scopes;
 import com.google.inject.Stage;
 import com.google.inject.spi.Element;
 import com.google.inject.spi.Elements;
@@ -117,17 +112,17 @@ public abstract class UnitTestTest
                     public void configure()
                     {
 
-                        assertBind(Key.get(Service1Impl.class));
-                        assertBind(Key.get(Service1Impl.class)).asEagerSingleton();
-                        assertBind(ANY).twice();
-                        assertBind(Wildcard.ANY) .asEagerSingleton().once();
-                        //
-                        assertBind(Key.get(String.class)).toInstance("toto");
-                        assertBind(Key.get(String.class)).to(Wildcard.ANY).once();
-                        assertBind(Key.get(String.class)).to(ANY).asEagerSingleton().once();
-                        //
-                        assertBind(Key.get(String.class)).to(String.class).in(Scopes.SINGLETON);
-                        assertBind(Key.get(String.class)).to(Wildcard.ANY).in(Scopes.SINGLETON).times(10);
+//                        assertBind(Key.get(Service1Impl.class));
+//                        assertBind(Key.get(Service1Impl.class)).asEagerSingleton();
+//                        assertBind(ANY).twice();
+//                        assertBind(Wildcard.ANY) .asEagerSingleton().once();
+//                        //
+//                        assertBind(Key.get(String.class)).toInstance("toto");
+//                        assertBind(Key.get(String.class)).to(Wildcard.ANY).once();
+//                        assertBind(Key.get(String.class)).to(ANY).asEagerSingleton().once();
+//                        //
+//                        assertBind(Key.get(String.class)).to(String.class).in(Scopes.SINGLETON);
+//                        assertBind(Key.get(String.class)).to(Wildcard.ANY).in(Scopes.SINGLETON).times(10);
 
                     }
                 })

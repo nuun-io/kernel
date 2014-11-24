@@ -40,4 +40,10 @@ public class UntargettedBindingAssertor implements ElementAssertor<UntargettedBi
         return 0;
     }
 
+    @Override
+    public Class<UntargettedBinding<?>> targetType()
+    {
+        return null;
+    }
+
 }

@@ -65,12 +65,12 @@ public abstract class ModuleAssertor
     	
     	for ( GlobalHolder globalHolder : globalHolders)
     	{
-    		ElementAssertor<?> elementAssertor = factory.create(globalHolder);
-    		assertors.put(elementAssertor., value)
+//    		ElementAssertor<?> elementAssertor = factory.create(globalHolder);
+//    		assertors.put(elementAssertor., value)
     	}
     }
     /**
-     * DSL Grammar. 
+     * DSL Grammar.
      
 <pre>
 <Assertor> ::=
@@ -81,30 +81,30 @@ public abstract class ModuleAssertor
              ( assertBind(WildcardKey) | assertBind(WildcardTypeLiteral) ) <TimedLinkedBindingBuilder[T]> |
              assertBind (WildcardClass) <TimedAnnotatedBindingBuilder[T]>  ;
              
- =======================================   Linked Binding Builder  ================================================ 
+ =======================================   Linked Binding Builder  ================================================
 
 <WildcardLinkedBindingBuilder> ::=
-             ( to(WildcardClass           | to(WildcardTypeLiteral) | to (WildcardKey)) )  <TimedScopedBindingBuilder>  |             
-             toInstance(WildCardInstance) <TimedBuilder>  ;                                                                 
+             ( to(WildcardClass           | to(WildcardTypeLiteral) | to (WildcardKey)) )  <TimedScopedBindingBuilder>  |
+             toInstance(WildCardInstance) <TimedBuilder>  ;
                             
-<LinkedBindingBuilder[T]> ::= 
+<LinkedBindingBuilder[T]> ::=
              ( to(Class[? extends T])     | to(TypeLiteral [T])     | to (Key[T])       )  <ScopedBindingBuilder>       |
              toInstance(T)                                    | <ScopedBindingBuilder>
              
              <WildcardLinkedBindingBuilder>
              ;
               
-<TimedLinkedBindingBuilder[T]> ::= 
+<TimedLinkedBindingBuilder[T]> ::=
              ( to(Class[? extends T])     | to(TypeLiteral [T])     | to (Key[T])       )  <TimedScopedBindingBuilder>  |
              toInstance(T)                 <TimedBuilder>     | <TimedScopedBindingBuilder> |
              
              <WildcardLinkedBindingBuilder>;
 
-=======================================   Annotated Binding Builder  ================================================ 
+=======================================   Annotated Binding Builder  ================================================
              
 <WildcardAnnotatedBindingBuilder> ::=
-             annotatedWith ( WildcardClass )        <TimedLinkedBindingBuilder[T]>    |     
-             annotatedWith ( WildCardAnnotation )   <TimedLinkedBindingBuilder[T]> ;        
+             annotatedWith ( WildcardClass )        <TimedLinkedBindingBuilder[T]>    |
+             annotatedWith ( WildCardAnnotation )   <TimedLinkedBindingBuilder[T]> ;
 
 <AnnotatedBindingBuilder[T]> ::=
              annotatedWith ( Class<? extends Annotation> ) <LinkedBindingBuilder[T]> |
@@ -120,7 +120,7 @@ public abstract class ModuleAssertor
              in ( WildcardClass )              <TimedBuilder> | in ( WildcardScope ) <TimedBuilder> | asEagerSingletonWildcard () <TimedBuilder> ;
 
 <ScopedBindingBuilder> ::=
-             in ( Class<? extends Annotation> )     | in ( Scope )  | asEagerSingleton ()                  | <WildcardScopedBindingBuilder> 
+             in ( Class<? extends Annotation> )     | in ( Scope )  | asEagerSingleton ()                  | <WildcardScopedBindingBuilder>
 
 <TimedScopedBindingBuilder> ::=
              ( in ( Class<? extends Annotation> )  | in ( Scope )  | asEagerSingleton ()  ) <TimedBuilder> | <WildcardScopedBindingBuilder> ;

@@ -18,15 +18,12 @@ package io.nuun.kernel.tests.ut;
 
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.tests.ut.assertor.ModuleAssertor;
-import io.nuun.kernel.tests.ut.assertor.dsl.wildcard.Wildcard;
 import io.nuun.kernel.tests.ut.sample.instance.InstancePlugin;
 import io.nuun.kernel.tests.ut.sample.instance.InstanceService;
 import io.nuun.kernel.tests.ut.sample.instance.InstanceServiceImpl;
 
 import java.util.Arrays;
 import java.util.List;
-
-import com.google.inject.name.Names;
 
 /**
  *
@@ -59,9 +56,9 @@ public class InstanceTest extends UnitTestTest
             public void configure()
             {
                 assertBind(InstanceService.class).toInstance(new InstanceServiceImpl("empty"));
-                assertBind(InstanceService.class).toInstance(ANY).once();
-                assertBind(InstanceService.class).annotatedWith(Names.named("one")).toInstance(new InstanceServiceImpl("one"));
-                assertBind(InstanceService.class).annotatedWith(Names.named("one")).toInstance(Wildcard.ANY).twice();
+//                assertBind(InstanceService.class).toInstance(ANY).once();
+//                assertBind(InstanceService.class).annotatedWith(Names.named("one")).toInstance(new InstanceServiceImpl("one"));
+//                assertBind(InstanceService.class).annotatedWith(Names.named("one")).toInstance(Wildcard.ANY).twice();
             }
         } ;
     }
