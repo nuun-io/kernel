@@ -70,8 +70,13 @@ public abstract class ModuleAssertor
     	}
     }
     /**
+<<<<<<< HEAD
      * DSL Grammar.
      
+=======
+     * DSL Grammar..
+
+>>>>>>> .
 <pre>
 <Assertor> ::=
              
