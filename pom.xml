@@ -9,7 +9,7 @@
         
   <groupId>io.nuun</groupId>
   <artifactId>kernel</artifactId>
-  <version>1.0.M2-SNAPSHOT</version>
+  <version>1.0.M2</version>
   
   <modules>
     <module>core</module>
