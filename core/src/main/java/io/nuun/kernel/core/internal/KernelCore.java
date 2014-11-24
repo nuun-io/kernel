@@ -714,7 +714,7 @@ public final class KernelCore implements Kernel
                     
                     if (unitModule == null && overridingUnitModule == null)
                     {
-                        logger.info("For information Plugin {} does not provide any UnitModule via unitModule() nor overrindingUnitModule().",  pluginName);
+                        logger.info("For information Plugin {} does not provide any UnitModule via unitModule() nor overridingUnitModule().",  pluginName);
                     }
 
                 }
