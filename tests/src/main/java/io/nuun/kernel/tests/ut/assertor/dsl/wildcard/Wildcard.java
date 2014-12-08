@@ -25,7 +25,6 @@ package io.nuun.kernel.tests.ut.assertor.dsl.wildcard;
  */
 public interface Wildcard
 {
-	 
     
     public enum All implements Wildcard{
     	ANY
@@ -48,7 +47,7 @@ public interface Wildcard
     }
     
     public enum Scope implements WildcardScope{
-        ANY_ANNOTATION
+        ANY_SCOPE
     }
     
 

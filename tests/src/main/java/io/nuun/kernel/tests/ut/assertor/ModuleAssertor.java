@@ -23,6 +23,7 @@ import io.nuun.kernel.tests.internal.dsl.builder.TimedScopedBindingBuilderImpl;
 import io.nuun.kernel.tests.internal.dsl.holder.GlobalHolder;
 import io.nuun.kernel.tests.internal.dsl.holder.InjecteeHolder;
 import io.nuun.kernel.tests.ut.assertor.dsl.AnnotatedBindingBuilder;
+import io.nuun.kernel.tests.ut.assertor.dsl.Assertor;
 import io.nuun.kernel.tests.ut.assertor.dsl.LinkedBindingBuilder;
 import io.nuun.kernel.tests.ut.assertor.dsl.TimedScopedBindingBuilder;
 import io.nuun.kernel.tests.ut.assertor.dsl.wildcard.Wildcard;
@@ -40,7 +41,7 @@ import com.google.inject.spi.Element;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public abstract class ModuleAssertor
+public abstract class ModuleAssertor implements Assertor
 {
     private ElementMap<ElementAssertor<? extends Element>> assertors;
     
