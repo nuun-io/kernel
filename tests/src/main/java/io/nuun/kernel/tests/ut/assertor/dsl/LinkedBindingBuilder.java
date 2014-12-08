@@ -34,7 +34,7 @@ public interface LinkedBindingBuilder<T> extends ScopedBindingBuilder<Void>
 
     ScopedBindingBuilder<Void> to(Class<? extends T> instanceClass);
     
-    TimesBuilder toInstance(Wildcard wildcard);
+    CardinalBuilder toInstance(Wildcard wildcard);
     
     
     TimedScopedBindingBuilder to(Wildcard wildcard);

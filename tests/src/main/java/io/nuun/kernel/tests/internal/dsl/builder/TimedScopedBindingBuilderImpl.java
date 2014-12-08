@@ -19,7 +19,7 @@ package io.nuun.kernel.tests.internal.dsl.builder;
 import io.nuun.kernel.tests.internal.dsl.holder.ScopedHolder;
 import io.nuun.kernel.tests.internal.dsl.holder.TimesHolder;
 import io.nuun.kernel.tests.ut.assertor.dsl.TimedScopedBindingBuilder;
-import io.nuun.kernel.tests.ut.assertor.dsl.TimesBuilder;
+import io.nuun.kernel.tests.ut.assertor.dsl.CardinalBuilder;
 
 /**
  *
@@ -28,7 +28,7 @@ import io.nuun.kernel.tests.ut.assertor.dsl.TimesBuilder;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public class TimedScopedBindingBuilderImpl extends AbstractScopedBindingBuilder<TimesBuilder> implements TimedScopedBindingBuilder
+public class TimedScopedBindingBuilderImpl extends AbstractScopedBindingBuilder<CardinalBuilder> implements TimedScopedBindingBuilder
 {
     
     public TimedScopedBindingBuilderImpl(ScopedHolder scopedHolder)
@@ -55,7 +55,7 @@ public class TimedScopedBindingBuilderImpl extends AbstractScopedBindingBuilder<
     }
     
     @Override
-    protected TimesBuilder doReturn()
+    protected CardinalBuilder doReturn()
     {
         return new TimesBuilderImpl((TimesHolder) scopedHolder) ;
     }

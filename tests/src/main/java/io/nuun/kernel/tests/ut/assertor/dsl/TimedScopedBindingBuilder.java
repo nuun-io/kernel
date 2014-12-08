@@ -24,7 +24,7 @@ package io.nuun.kernel.tests.ut.assertor.dsl;
  * @author pierre.thirouin{@literal @}gmail.com
  *
  */
-public interface TimedScopedBindingBuilder extends ScopedBindingBuilder<TimesBuilder>, TimesBuilder
+public interface TimedScopedBindingBuilder extends ScopedBindingBuilder<CardinalBuilder>, CardinalBuilder
 {
 
 

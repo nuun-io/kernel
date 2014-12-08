@@ -22,7 +22,7 @@ import io.nuun.kernel.tests.internal.dsl.holder.TimesHolder;
 import io.nuun.kernel.tests.ut.assertor.dsl.LinkedBindingBuilder;
 import io.nuun.kernel.tests.ut.assertor.dsl.ScopedBindingBuilder;
 import io.nuun.kernel.tests.ut.assertor.dsl.TimedScopedBindingBuilder;
-import io.nuun.kernel.tests.ut.assertor.dsl.TimesBuilder;
+import io.nuun.kernel.tests.ut.assertor.dsl.CardinalBuilder;
 import io.nuun.kernel.tests.ut.assertor.dsl.wildcard.Wildcard;
 
 /**
@@ -49,7 +49,7 @@ public class LinkedBindingBuilderImpl<T>  extends ScopedBindingBuilderImpl imple
         injectedHolder.setInstance(instance);
     }
     @Override
-    public TimesBuilder toInstance(Wildcard wildcard)
+    public CardinalBuilder toInstance(Wildcard wildcard)
     {
         injectedHolder.setWildcard(wildcard);
         return new TimesBuilderImpl(injectedHolder.as(TimesHolder.class));

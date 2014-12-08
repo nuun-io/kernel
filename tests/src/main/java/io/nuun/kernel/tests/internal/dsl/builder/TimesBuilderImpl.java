@@ -17,7 +17,7 @@
 package io.nuun.kernel.tests.internal.dsl.builder;
 
 import io.nuun.kernel.tests.internal.dsl.holder.TimesHolder;
-import io.nuun.kernel.tests.ut.assertor.dsl.TimesBuilder;
+import io.nuun.kernel.tests.ut.assertor.dsl.CardinalBuilder;
 
 /**
  *
@@ -25,7 +25,7 @@ import io.nuun.kernel.tests.ut.assertor.dsl.TimesBuilder;
  * @author epo.jemba{@literal @}kametic.com
  *
  */
-public class TimesBuilderImpl implements TimesBuilder
+public class TimesBuilderImpl implements CardinalBuilder
 {
 
     private TimesHolder timesHolder;
