@@ -23,11 +23,9 @@ import io.nuun.kernel.api.di.UnitModule;
 import java.util.List;
 
 /**
- *
  * The Kernel is the main component of the I.O.C. technical stack.
  * 
  * @author epo.jemba{@literal @}kametic.com
- *
  */
 public interface Kernel
 {
@@ -76,7 +74,7 @@ public interface Kernel
      * This will rarely be the case. We advise developers to be careful with plugins.
      * 
      * @param plugin this is the plugin from which we want the UnitModule.
-     * @return
+     * @return the unitModule
      */
     public abstract UnitModule unitModule(Class<? extends Plugin> plugin);
     
@@ -86,7 +84,7 @@ public interface Kernel
      * This will rarely be the case. We advise developers to be careful with plugins.
      * 
      * @param plugin this is the plugin from which we want the UnitModule.
-     * @return
+     * @return the unitModule
      */
     public abstract UnitModule overridingUnitModule(Class<? extends Plugin> plugin);
     
@@ -100,7 +98,7 @@ public interface Kernel
      * This will rarely be the case. We advise developers to be careful with plugins.
      * 
      * @param plugin this is the plugin from which we want the UnitModule.
-     * @return
+     * @return the unitModule
      */
     public abstract UnitModule nonGuiceUnitModule(Class<? extends Plugin> plugin);
     
@@ -114,7 +112,7 @@ public interface Kernel
      * This will rarely be the case. We advise developers to be careful with plugins.
      * 
      * @param plugin this is the plugin from which we want the UnitModule.
-     * @return
+     * @return the unitModule
      */
     public abstract UnitModule nonGuiceOverridingUnitModule(Class<? extends Plugin> plugin);
 

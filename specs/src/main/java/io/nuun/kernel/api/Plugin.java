@@ -37,28 +37,28 @@ import java.util.Set;
 public interface Plugin
 {
     /**
-     * Lifecycle method : init()
+     * Lifecycle method: init()
      */
     InitState init(InitContext initContext);
 
     /**
-     * Lifecycle method : start()
+     * Lifecycle method: start()
      */
     void start(Context context);
 
     /**
-     * Lifecycle method : stop()
+     * Lifecycle method: stop()
      */
     void stop();
 
     /**
-     * Lifecycle method : destroy()
+     * Lifecycle method: destroy()
      */
     void destroy();
 
     /**
      * The name of the plugin. Plugin won't be installed, if there is no a name. And if this name is not
-     * unique. Mandatory
+     * unique. Mandatory.
      * 
      * @return the plugin name.
      */
@@ -67,37 +67,37 @@ public interface Plugin
     /**
      * The description of the plugin.
      * 
-     * @return
+     * @return the description
      */
     String description();
 
     /* ============================= PLUGIN info and requests ============================= * */
 
     /**
-     * list of kernel params needed by this plugins required by this plugin
+     * list of kernel params needed by this plugins, required by this plugin.
      * 
-     * @return
+     * @return the kernel params requests
      */
     Collection<KernelParamsRequest> kernelParamsRequests();
 
     /**
-     * List of classpath request needed by
+     * List of classpath request needed by this plugin.
      * 
-     * @return
+     * @return the classpath scan requests
      */
     Collection<ClasspathScanRequest> classpathScanRequests();
 
     /**
-     * List of bind request
+     * List of bind request.
      * 
-     * @return
+     * @return the binding requests
      */
     Collection<BindingRequest> bindingRequests();
 
     /**
-     * list of plugins dependencies required by this plugin
+     * list of plugins dependencies required by this plugin.
      * 
-     * @return
+     * @return the required plugin classes
      */
     Collection<Class<? extends Plugin>> requiredPlugins();
 
@@ -112,30 +112,31 @@ public interface Plugin
      *  InitContext?
      * 
      * 
-     * @return
+     * @return the dependent plugin classes
      */
     Collection<Class<? extends Plugin>> dependentPlugins();
 
     /**
      * The prefix for all the properties for this plugin.
      * 
-     * @return
+     * @return the properties prefix
      */
     String pluginPropertiesPrefix();
 
     /**
-     * The package root from where the nuun core will scan for annotation
+     * The package root(s) from where the nuun core will scan for annotation. It is possible
+     * to specify multiple package roots by separating them by a comma.
      * 
-     * @return
+     * @return the package roots
      */
     String pluginPackageRoot();
 
     /**
-     * Return an object that will contains the dependency injection definitions. Mostly a {@link Module} but
+     * Return an object that will contains the dependency injection definitions. Mostly a Guice module but
      * it can be other dependency injection object from other ioc frameworks : Spring, Tapestry, Jodd, etc.
      * The kernel must have a {@link DependencyInjectionProvider} that handle it.
      * 
-     * @return
+     * @return the unit module
      */
     UnitModule unitModule();
 
@@ -144,7 +145,7 @@ public interface Plugin
      * It can serve as test bindings replacement, environment definition.
      * Those can be also handled by a {@link DependencyInjectionProvider} if keys match.
      * 
-     * @return
+     * @return the unit module
      */
     UnitModule overridingUnitModule();
 
@@ -155,11 +156,11 @@ public interface Plugin
     void provideContainerContext(Object containerContext);
     
     /**
-     * The kernel allow the plugin to compute additionnal classpath to scan. Method can use the containerContext - that
-     * may be a ServletContext for servlet environement, BundleContext for osgi environnement or something
+     * The kernel allows the plugin to compute additional classpath to scan. Method can use the containerContext - that
+     * may be a ServletContext for servlet environment, BundleContext for OSGI environment or something
      * else - given to the plugin via method provideContainerContext.
      * 
-     * @return
+     * @return urls to scan
      */
     Set<URL> computeAdditionalClasspathScan();
 
@@ -182,10 +183,10 @@ public interface Plugin
     Map<String, String> kernelParametersAliases();
     
     /**
-     * Round Environment provide information regarding the current round to the plugin.
+     * Round Environment provides information regarding the current round to the plugin.
      * The kernel pass this object to the plugin before all
      * 
-     * @param roundEnvironment
+     * @param roundEnvironment the round
      */
     void provideRoundEnvironment (RoundEnvironment roundEnvironment);
 

@@ -17,27 +17,23 @@
 package io.nuun.kernel.api.di;
 
 /**
- * 
- * Object Graph is the Nuun Kernel API element abstraction for injector part of the Dependency Injection engine. 
- * 
- * @author epo.jemba{@literal @}kametic.com
+ * Object Graph is the Nuun Kernel API element abstraction for injector part of the Dependency Injection engine.
  *
+ * @author epo.jemba{@literal @}kametic.com
  */
 public interface ObjectGraph
 {
     /**
-     * 
-     * 
      * @return the raw object graph provider.
      */
     Object get();
-    
+
     /**
-     * Cast or Convert the current objet graph injector.
+     * Cast or Convert the current object graph injector.
      * <p>
-     * Will send an IllegaStateException if can not convert or cast.
-     * 
-     * @param targetType
+     * Will send an IllegalStateException if can not convert or cast.
+     *
+     * @param targetType the target type
      * @return the ObjectGraph object casted as T type or adapted as T.
      */
     <T>  T as(Class<T> targetType);
