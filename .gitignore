@@ -14,3 +14,7 @@ hs_err_pid*
 .classpath
 .project
 .settings
+
+# Intellij IDEA
+*.iml
+.idea/
