@@ -106,6 +106,15 @@ public class AssertUtils
         return false;
     }
 
+    /**
+     * Indicates if the class name or at least the name of one of its annotations matches the regex.
+     * <p>
+     * Notice that the classes with a package name starting with "java.lang" will be ignored.
+     * </p>
+     * @param memberDeclaringClass the class to check
+     * @param metaAnnotationRegex the regex to match
+     * @return true if the regex matches, false otherwise
+     */
     public static boolean hasAnnotationDeepRegex(Class<?> memberDeclaringClass, String metaAnnotationRegex)
     {
         
@@ -197,6 +206,14 @@ public class AssertUtils
         }
     }
 
+    /**
+     * Asserts that the given parameter is true, otherwise throws an
+     * {@link java.lang.IllegalArgumentException}.
+     *
+     * @param asserted the assertion result
+     * @param message the error message
+     * @throws java.lang.IllegalArgumentException if {@code asserted} is false
+     */
     public static void assertionIllegalArgument(boolean asserted, String message)
     {
         if (!asserted) {
@@ -204,6 +221,14 @@ public class AssertUtils
 		}
     }
 
+    /**
+     * Asserts that the given parameter is true, otherwise throws an
+     * {@link java.lang.NullPointerException}.
+     *
+     * @param asserted the assertion result
+     * @param message the error message
+     * @throws java.lang.NullPointerException if {@code asserted} is false
+     */
     public static void assertionNullPointer(boolean asserted, String message)
     {
         if (!asserted) {
@@ -211,11 +236,27 @@ public class AssertUtils
 		}
     }
 
+    /**
+     * Asserts that the given parameter is not null, otherwise throws an
+     * {@link java.lang.IllegalArgumentException}.
+     *
+     * @param underAssertion the object to check
+     * @param message the error message
+     * @throws java.lang.IllegalArgumentException if {@code asserted} is null
+     */
     public static void assertLegal(Object underAssertion, String message)
     {
         assertionIllegalArgument(underAssertion != null, message);
     }
 
+    /**
+     * Asserts that the given parameter is not null, otherwise throws an
+     * {@link java.lang.NullPointerException}.
+     *
+     * @param underAssertion the object to check
+     * @param message the error message
+     * @throws java.lang.NullPointerException if {@code asserted} is null
+     */
     public static void assertNotNull(Object underAssertion, String message)
     {
         assertionNullPointer(underAssertion != null, message);

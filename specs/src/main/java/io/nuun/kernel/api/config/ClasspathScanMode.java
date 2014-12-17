@@ -17,18 +17,23 @@
 package io.nuun.kernel.api.config;
 
 /**
- * classpathScanMode let you configure the kernel regarding
- * Classpath Scan.
+ * ClasspathScanMode lets you configure the kernel regarding Classpath Scan.
  * 
  * @author epo.jemba{@literal @}kametic.com
- *
  */
 public enum ClasspathScanMode {
 	
-	/** this mode is the nominal behaviour where the scanner will reach information from the filesystem*/
-	NOMINAL ,
+	/**
+	 *  This mode is the nominal behaviour where the scanner
+	 *  will reach information from the filesystem.
+	 */
+	NOMINAL,
 	
-	/**this mode tell to the kernel to read its class and resources information from the memory. this mode will be usefull mainly for unit test.  */
-	IN_MEMORY;
+	/**
+	 * This mode tells the kernel to read its class and resources
+	 * information from the memory. This mode will be use mainly
+	 * for unit test.
+	 */
+	IN_MEMORY
 
 }
