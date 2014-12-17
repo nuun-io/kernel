@@ -133,7 +133,7 @@ public interface Plugin
 
     /**
      * Return an object that will contains the dependency injection definitions. Mostly a Guice module but
-     * it can be other dependency injection object from other ioc frameworks : Spring, Tapestry, Jodd, etc.
+     * it can be other dependency injection object from other DI frameworks : Spring, Tapestry, Jodd, etc.
      * The kernel must have a {@link DependencyInjectionProvider} that handle it.
      * 
      * @return the unit module
