@@ -18,11 +18,11 @@ package io.nuun.kernel.api.config;
 
 /**
  * Kernel modes are the mode in which the internal dependency injection framework should work.
- * <li>
- *    <ul> Production Mode
- *    <ul> Dev Mode
- *    <ul> Tools Mode
- * </li>
+ * <ul>
+ *    <li> Production Mode </li>
+ *    <li> Dev Mode </li>
+ *    <li> Tools Mode </li>
+ * </ul>
  * 
  * They were inspired by Guice Stage.
  * 

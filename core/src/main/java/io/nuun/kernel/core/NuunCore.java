@@ -22,20 +22,29 @@ import io.nuun.kernel.core.internal.KernelConfigurationInternal;
 import io.nuun.kernel.core.internal.KernelCoreFactory;
 
 /**
- * 
- * 
- * 
- * @author epo.jemba{@literal @}kametic.com
+ * NuunCore is a class used to create the Nuun core objects, ie. the kernel and its configuration.
  *
+ * @author epo.jemba{@literal @}kametic.com
  */
 public class NuunCore
 {
-    
+
+    /**
+     * Creates a kernel configuration which will be used to instantiate a new kernel.
+     *
+     * @return a kernelConfiguration
+     */
     public static KernelConfiguration newKernelConfiguration()
     {
         return new KernelConfigurationInternal();
     }
-    
+
+    /**
+     * Creates a kernel with the given configuration.
+     *
+     * @param configuration the kernel configuration
+     * @return the kernel
+     */
     public static Kernel createKernel(KernelConfiguration configuration)
     {
         KernelCoreFactory factory = new KernelCoreFactory();

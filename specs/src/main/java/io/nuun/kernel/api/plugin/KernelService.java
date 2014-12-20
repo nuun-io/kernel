@@ -17,10 +17,9 @@
 package io.nuun.kernel.api.plugin;
 
 /**
+ * A kernel service.
  * 
- * 
- * @author epo.jemba{@literal @}kametic.com
- *
+ * @author epo.jemba@kametic.com
  */
 public interface KernelService
 {

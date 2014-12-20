@@ -16,21 +16,20 @@
  */
 package io.nuun.kernel.core.internal.context;
 
-import static com.google.common.collect.Collections2.filter;
-import static com.google.common.collect.Collections2.transform;
-import io.nuun.kernel.api.plugin.context.Context;
-
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import io.nuun.kernel.api.plugin.context.Context;
+
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+
+import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Collections2.transform;
 
 /**
  * @author Epo Jemba
@@ -43,7 +42,7 @@ public class ContextInternal implements Context
     public final Injector mainInjector;
 
     /**
-     * 
+     * Constructor.
      */
     @Inject
     public ContextInternal(Injector mainInjector)

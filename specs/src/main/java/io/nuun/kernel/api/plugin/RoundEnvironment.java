@@ -17,26 +17,21 @@
 package io.nuun.kernel.api.plugin;
 
 /**
- * 
  * The kernel initializes all the plugins inside rounds.
- * <p>
- *  
  * 
  * @author epo.jemba{@literal @}kametic.com
- *
  */
 public interface RoundEnvironment
 {
-    
+
     /**
      * @return the current round number.
      */
     public int roundNumber();
-    
+
     /**
      * @return true if we are in the first round.
      */
     public boolean firstRound();
-    
     
 }

@@ -16,11 +16,17 @@
  */
 package io.nuun.kernel.api.plugin;
 
+/**
+ * Default implementation of {@link io.nuun.kernel.api.plugin.RoundEnvironment}.
+ */
 public class RoundEnvironementInternal implements RoundEnvironment
 {
 
     private int roundNumber = 0;
-    
+
+    /**
+     * Constructor.
+     */
     public RoundEnvironementInternal()
     {
     }    
@@ -30,8 +36,10 @@ public class RoundEnvironementInternal implements RoundEnvironment
     {
         return this.roundNumber;
     }
-    
-    
+
+    /**
+     * Increments the round number.
+     */
     public void incrementRoundNumber()
     {
         this.roundNumber++;

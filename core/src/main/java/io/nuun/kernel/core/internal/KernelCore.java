@@ -16,6 +16,14 @@
  */
 package io.nuun.kernel.core.internal;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.Stage;
+import com.google.inject.util.Modules;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.ClasspathScanMode;
@@ -36,39 +44,17 @@ import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.core.internal.context.InitContextInternal;
 import io.nuun.kernel.core.internal.graph.Graph;
 import io.nuun.kernel.spi.DependencyInjectionProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.ServiceLoader;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.google.inject.Stage;
-import com.google.inject.util.Modules;
 
 /**
  * @author Epo Jemba
@@ -85,8 +71,8 @@ public final class KernelCore implements Kernel
 
     private ServiceLoader<Plugin>                          pluginLoader;
     private boolean                                        spiPluginEnabled               = true;
-    private Map<String, Plugin>                            plugins                        = Collections.synchronizedMap(new HashMap<String, Plugin>());     //
-    private Map<String, Plugin>                            pluginsToAdd                   = Collections.synchronizedMap(new HashMap<String, Plugin>());     //
+    private Map<String, Plugin>                            plugins                        = Collections.synchronizedMap(new HashMap<String, Plugin>());
+    private Map<String, Plugin>                            pluginsToAdd                   = Collections.synchronizedMap(new HashMap<String, Plugin>());
 
     private final InitContextInternal                      initContext;
     private Injector                                       mainInjector;
@@ -131,40 +117,24 @@ public final class KernelCore implements Kernel
         kernelConfigurationInternal.apply(this);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see io.nuun.kernel.core.internal.Kernel#name()
-     */
     @Override
     public String name()
     {
         return name;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see io.nuun.kernel.core.internal.Kernel#isStarted()
-     */
     @Override
     public boolean isStarted()
     {
         return started;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see io.nuun.kernel.core.internal.Kernel#isInitialized()
-     */
     @Override
     public boolean isInitialized()
     {
         return initialized;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see io.nuun.kernel.core.internal.Kernel#init()
-     */
     @Override
     public synchronized void init()
     {
@@ -432,60 +402,36 @@ public final class KernelCore implements Kernel
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see io.nuun.kernel.core.internal.Kernel#getObjectGraphProvider()
-     */
     @Override
     public ObjectGraph objectGraph()
     {
         return new ObjectGraphEmbedded(mainInjector);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see io.nuun.kernel.core.internal.Kernel#unitModule()
-     */
     @Override
     public UnitModule unitModule(Class<? extends Plugin> pluginClass)
     {
         return unitModules.get(pluginClass);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see io.nuun.kernel.core.internal.Kernel#getOverridingModuleProvider()
-     */
     @Override
     public UnitModule overridingUnitModule(Class<? extends Plugin> pluginClass)
     {
         return overridingUnitModules.get(pluginClass);
     }
-    
-    /*
-     * (non-Javadoc)
-     * @see io.nuun.kernel.core.internal.Kernel#getOverridingModuleProvider()
-     */
+
     @Override
     public UnitModule nonGuiceUnitModule(Class<? extends Plugin> plugin)
     {
         return nonGuiceUnitModules.get(plugin);
     }
-    
-    /*
-     * (non-Javadoc)
-     * @see io.nuun.kernel.core.internal.Kernel#getOverridingModuleProvider()
-     */
+
     @Override
     public UnitModule nonGuiceOverridingUnitModule(Class<? extends Plugin> plugin)
     {
         return nonGuiceOverridingUnitModules.get(plugin);
     }
 
-    /*
-     * (non-Javadoc)
-     * @see io.nuun.kernel.core.internal.Kernel#getOverridingModuleProvider()
-     */
     @Override
     public GlobalModule globalModule()
     {
@@ -498,10 +444,6 @@ public final class KernelCore implements Kernel
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see io.nuun.kernel.core.internal.Kernel#stop()
-     */
     @Override
     public void stop()
     {
@@ -522,9 +464,6 @@ public final class KernelCore implements Kernel
         }
     }
 
-    /**
-     * 
-     */
     @SuppressWarnings("unchecked")
     private void initPlugins()
     {

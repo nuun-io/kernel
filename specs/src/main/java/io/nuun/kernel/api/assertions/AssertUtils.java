@@ -21,37 +21,75 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+/**
+ * Provides assertions commonly used by Nuun plugins.
+ */
 public class AssertUtils
 {
 
     // INTERFACE
-    public static boolean isInterface(Class<? extends Object> klazz)
+
+    /**
+     * Indicates if the given class is an interface.
+     *
+     * @param candidate the class to check
+     * @return true if the class is an interface, false otherwise
+     */
+    public static boolean isInterface(Class<? extends Object> candidate)
     {
-        return klazz.isInterface();
+        return candidate.isInterface();
     }
 
-    public static void assertInterface(Class<? extends Object> klazz)
+    /**
+     * Asserts that the given class is an interface.
+     *
+     * @param candidate the class to check
+     * @throws IllegalArgumentException if the assertion is not satisfied
+     */
+    public static void assertInterface(Class<? extends Object> candidate)
     {
-        assertionIllegalArgument(isInterface(klazz), "Type " + klazz + " must be an interface.");
+        assertionIllegalArgument(isInterface(candidate), "Type " + candidate + " must be an interface.");
     }
 
     // CLASS //
-    public static boolean isClass(Class<? extends Object> klazz)
+
+    /**
+     * Indicates if the class is not an interface.
+     *
+     * @param candidate the class to check
+     * @return true if class is not an interface, false otherwise
+     */
+    public static boolean isClass(Class<? extends Object> candidate)
     {
-        return !isInterface(klazz);
+        return !isInterface(candidate);
     }
 
-    public static void assertIsClass(Class<? extends Object> klazz)
+    /**
+     * Asserts that the class is not an interface.
+     *
+     * @param candidate the class to check
+     * @throws IllegalArgumentException if the assertion is not satisfied
+     */
+    public static void assertIsClass(Class<? extends Object> candidate)
     {
-        assertionIllegalArgument(isClass(klazz), "Type " + klazz + " must not be an interface.");
+        assertionIllegalArgument(isClass(candidate), "Type " + candidate + " must not be an interface.");
     }
 
     // ANNOTATION //
 
-    public static boolean hasAnnotationDeep(Class<?> memberDeclaringClass, Class<? extends Annotation> klass)
+    /**
+     * Indicates if a class or at least one of its annotations is annotated by a given annotation.
+     * <p>
+     * Notice that the classes with a package name starting with "java.lang" will be ignored.
+     * </p>
+     * @param memberDeclaringClass the class to check
+     * @param candidate the annotation to find
+     * @return true if the annotation is found, false otherwise
+     */
+    public static boolean hasAnnotationDeep(Class<?> memberDeclaringClass, Class<? extends Annotation> candidate)
     {
 
-        if (memberDeclaringClass.equals(klass))
+        if (memberDeclaringClass.equals(candidate))
         {
             return true;
         }
@@ -59,7 +97,7 @@ public class AssertUtils
         for (Annotation anno : memberDeclaringClass.getAnnotations())
         {
             Class<? extends Annotation> annoClass = anno.annotationType();
-            if (!annoClass.getPackage().getName().startsWith("java.lang") && hasAnnotationDeep(annoClass, klass))
+            if (!annoClass.getPackage().getName().startsWith("java.lang") && hasAnnotationDeep(annoClass, candidate))
             {
                 return true;
             }
@@ -68,6 +106,15 @@ public class AssertUtils
         return false;
     }
 
+    /**
+     * Indicates if the class name or at least the name of one of its annotations matches the regex.
+     * <p>
+     * Notice that the classes with a package name starting with "java.lang" will be ignored.
+     * </p>
+     * @param memberDeclaringClass the class to check
+     * @param metaAnnotationRegex the regex to match
+     * @return true if the regex matches, false otherwise
+     */
     public static boolean hasAnnotationDeepRegex(Class<?> memberDeclaringClass, String metaAnnotationRegex)
     {
         
@@ -159,6 +206,14 @@ public class AssertUtils
         }
     }
 
+    /**
+     * Asserts that the given parameter is true, otherwise throws an
+     * {@link java.lang.IllegalArgumentException}.
+     *
+     * @param asserted the assertion result
+     * @param message the error message
+     * @throws java.lang.IllegalArgumentException if {@code asserted} is false
+     */
     public static void assertionIllegalArgument(boolean asserted, String message)
     {
         if (!asserted) {
@@ -166,6 +221,14 @@ public class AssertUtils
 		}
     }
 
+    /**
+     * Asserts that the given parameter is true, otherwise throws an
+     * {@link java.lang.NullPointerException}.
+     *
+     * @param asserted the assertion result
+     * @param message the error message
+     * @throws java.lang.NullPointerException if {@code asserted} is false
+     */
     public static void assertionNullPointer(boolean asserted, String message)
     {
         if (!asserted) {
@@ -173,11 +236,27 @@ public class AssertUtils
 		}
     }
 
+    /**
+     * Asserts that the given parameter is not null, otherwise throws an
+     * {@link java.lang.IllegalArgumentException}.
+     *
+     * @param underAssertion the object to check
+     * @param message the error message
+     * @throws java.lang.IllegalArgumentException if {@code asserted} is null
+     */
     public static void assertLegal(Object underAssertion, String message)
     {
         assertionIllegalArgument(underAssertion != null, message);
     }
 
+    /**
+     * Asserts that the given parameter is not null, otherwise throws an
+     * {@link java.lang.NullPointerException}.
+     *
+     * @param underAssertion the object to check
+     * @param message the error message
+     * @throws java.lang.NullPointerException if {@code asserted} is null
+     */
     public static void assertNotNull(Object underAssertion, String message)
     {
         assertionNullPointer(underAssertion != null, message);

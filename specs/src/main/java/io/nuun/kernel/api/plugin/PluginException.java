@@ -18,8 +18,10 @@ package io.nuun.kernel.api.plugin;
 
 
 /**
- * @author Epo Jemba
+ * A plugin exception is a {@code RuntimeException} which can be thrown
+ * by a plugin when something wrong happened during its lifecycle.
  *
+ * @author Epo Jemba
  */
 public class PluginException extends RuntimeException
 {

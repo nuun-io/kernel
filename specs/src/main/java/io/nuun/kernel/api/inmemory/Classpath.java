@@ -19,7 +19,7 @@ package io.nuun.kernel.api.inmemory;
 import java.util.Collection;
 
 /**
- * A simple representation of an in memory classpath. Only usefull for unit testing on plugins.
+ * A simple representation of an in memory classpath. Only useful for unit testing on plugins.
  * 
  * @author epo.jemba{@literal @}kametic.com
  *
