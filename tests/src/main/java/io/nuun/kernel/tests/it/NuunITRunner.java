@@ -16,20 +16,20 @@
  */
 package io.nuun.kernel.tests.it;
 
-import static io.nuun.kernel.core.NuunCore.createKernel;
-import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
+import com.google.inject.Injector;
+import com.google.inject.ProvisionException;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.config.KernelConfiguration;
 import io.nuun.kernel.tests.it.annotations.Expect;
+import io.nuun.kernel.tests.it.annotations.WithParams;
 import io.nuun.kernel.tests.it.annotations.WithPlugins;
 import io.nuun.kernel.tests.it.annotations.WithoutSpiPluginsLoader;
-
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 
-import com.google.inject.Injector;
-import com.google.inject.ProvisionException;
+import static io.nuun.kernel.core.NuunCore.createKernel;
+import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 
 /**
  * @author epo.jemba{@literal @}kametic.com
@@ -70,7 +70,6 @@ public class NuunITRunner extends BlockJUnit4ClassRunner
             test = kernel.objectGraph().as(Injector.class).getInstance(getTestClass().getJavaClass());
         } catch (Throwable t)
         {
-//          t.printStackTrace();
             
             if (t.getClass().equals(ProvisionException.class) )
             {
@@ -89,21 +88,19 @@ public class NuunITRunner extends BlockJUnit4ClassRunner
         if (expecting && ! catchOccured)
         {
             
-            String message = "EXPECTED_EXCEPTION_DID_NOT_OCCURED";
+            String message = "EXPECTED_EXCEPTION_DID_NOT_OCCURRED";
             message += "\n\tExpected class = " + expectedClass;
             message += "\n\tActual throwable = " + actualThrowable;
-            NuunITException exception = new NuunITException(message,actualThrowable);
-            throw exception;
+            throw new NuunITException(message, actualThrowable);
             
         }
         
-        if (! expecting  && catchOccured)
+        if (! expecting && catchOccured)
         {
-            String message = "UNEXPECTED_EXCEPTION_OCCURED";
+            String message = "UNEXPECTED_EXCEPTION_OCCURRED";
             message += "\n\tExpected class = " + expectedClass;
             message += "\n\tActual throwable = " + actualThrowable;
-            NuunITException exception = new NuunITException(message,actualThrowable);
-            throw exception;
+            throw new NuunITException(message, actualThrowable);
         }
         
         
@@ -112,24 +109,30 @@ public class NuunITRunner extends BlockJUnit4ClassRunner
     
     private Kernel initKernel() {
 
-        KernelConfiguration configuration =
-                newKernelConfiguration()
-                 ;
+        KernelConfiguration configuration = newKernelConfiguration();
         
         withoutSpiPluginsLoader(configuration);
         withPlugins(configuration);
+        withParams(configuration);
         
         Kernel underTest = createKernel ( configuration  );
         
-        underTest.init(); //
-        underTest.start(); //
+        underTest.init();
+        underTest.start();
         return underTest;
+    }
+
+    private void withParams(KernelConfiguration configuration) {
+        WithParams annotation = getTestClass().getJavaClass().getAnnotation(WithParams.class);
+        if (annotation != null) {
+            configuration.params(annotation.value());
+        }
     }
 
 
     private void withPlugins(KernelConfiguration configuration) {
         WithPlugins annotation = getTestClass().getJavaClass().getAnnotation(WithPlugins.class);
-        if(annotation!=null){
+        if(annotation != null) {
             configuration.plugins(annotation.value());
         }
     }

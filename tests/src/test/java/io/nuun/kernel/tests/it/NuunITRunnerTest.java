@@ -16,12 +16,13 @@
  */
 package io.nuun.kernel.tests.it;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import com.google.inject.Inject;
+import io.nuun.kernel.api.Kernel;
+import io.nuun.kernel.tests.it.annotations.WithParams;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.google.inject.Inject;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * 
@@ -29,6 +30,7 @@ import com.google.inject.Inject;
  * @author epo.jemba{@literal @}kametic.com
  *
  */
+@WithParams({Kernel.NUUN_ROOT_PACKAGE, "io.nuun.kernel.tests"})
 @RunWith(NuunITRunner.class)
 public class NuunITRunnerTest
 {
