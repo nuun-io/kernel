@@ -95,9 +95,10 @@ public final class KernelCore implements Kernel
     private final List<ModuleValidation>                   globalModuleValidations        = Collections.synchronizedList(new ArrayList<ModuleValidation>());
     private final Map<Class<? extends Plugin>, UnitModule> unitModules                    = Maps.newConcurrentMap();
     private final Map<Class<? extends Plugin>, UnitModule> overridingUnitModules          = Maps.newConcurrentMap();
-    private final Map<Class<? extends Plugin>, UnitModule> nonGuiceUnitModules           = Maps.newConcurrentMap();
-    private final Map<Class<? extends Plugin>, UnitModule> nonGuiceOverridingUnitModules = Maps.newConcurrentMap();
+    private final Map<Class<? extends Plugin>, UnitModule> nonGuiceUnitModules            = Maps.newConcurrentMap();
+    private final Map<Class<? extends Plugin>, UnitModule> nonGuiceOverridingUnitModules  = Maps.newConcurrentMap();
     private Module                                         mainFinalModule;
+    private ExtensionManager                               extensionManager;
 
     KernelCore(KernelConfigurationInternal kernelConfigurationInternal)
     {
@@ -145,9 +146,12 @@ public final class KernelCore implements Kernel
             initRoundEnvironment();
             checkPlugins();
             fetchGlobalParametersFromPlugins();
+            extensionManager = new ExtensionManager(fetchedPlugins, Thread.currentThread().getContextClassLoader());
+            extensionManager.initializing();
             initPlugins();
             computeGlobalModuleProviders();
             initialized = true;
+            extensionManager.initialized();
         }
         else
         {
@@ -359,9 +363,10 @@ public final class KernelCore implements Kernel
     @Override
     public synchronized void start()
     {
+        extensionManager.starting();
+
         if (initialized)
         {
-
             // Compute Guice Stage
             Stage stage = Stage.PRODUCTION;
             if (dependencyInjectionMode == DependencyInjectionMode.PRODUCTION)
@@ -395,6 +400,7 @@ public final class KernelCore implements Kernel
             }
 
             started = true;
+            extensionManager.started();
         }
         else
         {
@@ -447,6 +453,7 @@ public final class KernelCore implements Kernel
     @Override
     public void stop()
     {
+        extensionManager.stopping();
         if (started)
         {
             ListIterator<Plugin> li = orderedPlugins.listIterator(orderedPlugins.size());
@@ -457,6 +464,7 @@ public final class KernelCore implements Kernel
                 Plugin plugin = li.previous();
                 plugin.stop();
             }
+            extensionManager.stopped();
         }
         else
         {
