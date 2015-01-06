@@ -71,13 +71,8 @@ public abstract class ModuleAssertor implements Assertor
     	}
     }
     /**
-<<<<<<< HEAD
-     * DSL Grammar.
-     
-=======
      * DSL Grammar..
 
->>>>>>> .
 <pre>
 <Assertor> ::=
              
@@ -92,6 +87,7 @@ public abstract class ModuleAssertor implements Assertor
 <WildcardLinkedBindingBuilder> ::=
              ( to(WildcardClass           | to(WildcardTypeLiteral) | to (WildcardKey)) )  <CardinalScopedBindingBuilder>  |             
              toInstance(WildCardInstance) <CardinalBuilder>  ;                                                                 
+
                             
 <LinkedBindingBuilder[T]> ::=
              ( to(Class[? extends T])     | to(TypeLiteral [T])     | to (Key[T])       )  <ScopedBindingBuilder>       |
@@ -101,6 +97,7 @@ public abstract class ModuleAssertor implements Assertor
              ;
               
 <CardinalLinkedBindingBuilder[T]> ::= 
+
              ( to(Class[? extends T])     | to(TypeLiteral [T])     | to (Key[T])       )  <CardinalScopedBindingBuilder>  |
              toInstance(T)                 <CardinalBuilder>     | <CardinalScopedBindingBuilder> |
              
@@ -128,10 +125,11 @@ public abstract class ModuleAssertor implements Assertor
 <ScopedBindingBuilder> ::=
              in ( Class<? extends Annotation> )     | in ( Scope )  | asEagerSingleton ()  <CardinalBuilder> | <WildcardScopedBindingBuilder> 
 
+
 <CardinalScopedBindingBuilder> ::=
              ( in ( Class<? extends Annotation> )  | in ( Scope )  | asEagerSingleton ()  ) <CardinalBuilder> | <WildcardScopedBindingBuilder> ;
 
-// =======================================  // Timed Builder // ================================================ //
+// =======================================  // Cardinal Builder // ================================================ //
 
 <CardinalBuilder> ::= once() | twice () | times(int) ;
                                ;
