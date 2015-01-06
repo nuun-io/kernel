@@ -33,7 +33,7 @@ import io.nuun.kernel.api.di.ModuleValidation;
 import io.nuun.kernel.api.di.ObjectGraph;
 import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.plugin.InitState;
-import io.nuun.kernel.api.plugin.RoundEnvironementInternal;
+import io.nuun.kernel.api.plugin.RoundEnvironmentInternal;
 import io.nuun.kernel.api.plugin.context.Context;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.BindingRequest;
@@ -89,7 +89,7 @@ public final class KernelCore implements Kernel
     private List<Iterator<Plugin>>                         pluginIterators;
     private List<Plugin>                                   fetchedPlugins;
     private Set<URL>                                       globalAdditionalClasspath;
-    private RoundEnvironementInternal                      roundEnv;
+    private RoundEnvironmentInternal roundEnv;
     private DependencyInjectionMode                        dependencyInjectionMode;
     private ClasspathScanMode                              classpathScanMode              = ClasspathScanMode.NOMINAL;
     private final List<ModuleValidation>                   globalModuleValidations        = Collections.synchronizedList(new ArrayList<ModuleValidation>());
@@ -162,7 +162,7 @@ public final class KernelCore implements Kernel
     private void initRoundEnvironment()
     {
         // we initialize plugins
-        roundEnv = new RoundEnvironementInternal();
+        roundEnv = new RoundEnvironmentInternal();
 
         for (Plugin plugin : fetchedPlugins)
         {
