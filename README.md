@@ -1,4 +1,4 @@
-Nuun Kernel [![Build status](https://travis-ci.org/nuun-io/kernel.svg?branch=master)](https://travis-ci.org/nuun-io/kernel)
+Nuun Kernel [![Build status](https://travis-ci.org/nuun-io/kernel.svg?branch=master)](https://travis-ci.org/nuun-io/kernel) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.nuun/kernel/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.nuun/kernel)
 ===========
 
 Nuun is a powerful and flexible inversion control micro-framework for building enterprise class stack.
