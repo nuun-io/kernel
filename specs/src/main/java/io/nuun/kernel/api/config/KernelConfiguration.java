@@ -21,6 +21,8 @@ import io.nuun.kernel.api.di.ModuleValidation;
 
 /**
  * Kernel configuration is used as an helper object to instantiate a Nuun kernel.
+ * 
+ * @author epo.jemba{@literal @}kametic.com
  */
 public interface KernelConfiguration
 {
