@@ -1,9 +1,9 @@
 Nuun Kernel [![Build status](https://travis-ci.org/nuun-io/kernel.svg?branch=master)](https://travis-ci.org/nuun-io/kernel) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.nuun/kernel/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.nuun/kernel) [![Stories in Ready](https://badge.waffle.io/nuun-io/kernel.png?label=ready&title=Ready)](https://waffle.io/nuun-io/kernel)
 ===========
 
-Nuun is a powerful and flexible inversion control micro-framework for building enterprise class stack.
+Nuun is a powerful and flexible **inversion control micro-framework** for building enterprise class stack.
 
-Nuun brings a clean kernel/plugin design plus a JSR 330 compliant injection mechanism backed by 
+Nuun brings a clean **kernel/plugin design** plus a JSR 330 compliant injection mechanism backed by 
 Google Guice. It is designed to be compatible with the major injection frameworks (spring, guice for now, 
 tapestry, picocontainer, jodd, etc to come ...). Nuun aims to be a future reference for enterprise
 application developement.
@@ -39,6 +39,10 @@ git clone https://github.com/nuun-io/kernel.git
 cd kernel
 mvn clean install
 ```
+
+## Documentation
+
+See the current [reference documentation](https://github.com/nuun-io/kernel/wiki).
 
 ## Want to contribute ?
 
