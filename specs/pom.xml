@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.nuun</groupId>
 		<artifactId>kernel</artifactId>
-		<version>1.0.M4</version>
+		<version>1.0.M5-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>kernel-specs</artifactId>
