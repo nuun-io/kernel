@@ -616,6 +616,8 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
             }
         }
 
+        urls.addAll(ClasspathHelper.forManifest(urls));
+
         return urls;
     }
 
