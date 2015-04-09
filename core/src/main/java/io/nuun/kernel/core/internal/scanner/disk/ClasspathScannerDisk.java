@@ -17,6 +17,8 @@
 package io.nuun.kernel.core.internal.scanner.disk;
 
 import static org.reflections.util.FilterBuilder.prefix;
+
+import com.google.common.collect.Maps;
 import io.nuun.kernel.api.assertions.AssertUtils;
 import io.nuun.kernel.core.internal.scanner.AbstractClasspathScanner;
 
@@ -28,7 +30,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -40,14 +41,13 @@ import org.reflections.scanners.ResourcesScanner;
 import org.reflections.scanners.Scanner;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
-import org.reflections.scanners.TypesScanner;
+import org.reflections.scanners.TypeElementsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
@@ -88,10 +88,9 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
         commands = new ArrayList<ClasspathScannerDisk.ScannerCommand>();
     }
 
-    protected static interface ScannerCommand
+    protected interface ScannerCommand
     {
         void execute (Reflections reflections);
-        Scanner scanner ();
     }
     
 
@@ -104,12 +103,6 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
 
         ScannerCommand command = new ScannerCommand()
         {
-            @Override
-            public Scanner scanner()
-            {
-                return new TypeAnnotationsScanner();
-            }
-            
             @Override
             public void execute(Reflections reflections)
             {
@@ -144,7 +137,7 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
             @Override
             public void execute(Reflections reflections)
             {
-                Multimap<String, String> multimap = reflections.getStore().get(TypesScanner.class);
+                Multimap<String, String> multimap = reflections.getStore().get(TypeElementsScanner.class.getSimpleName());
                 Collection<Class<?>> typesAnnotatedWith = Sets.newHashSet();
                 for (String className : multimap.keys())
                 {
@@ -155,12 +148,6 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
                     }
                 }
                 callback.callback(postTreatment(typesAnnotatedWith));
-            }
-
-            @Override
-            public Scanner scanner()
-            {
-                return new TypesScanner();
             }
 
         });
@@ -182,7 +169,7 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
             @Override
             public void execute(Reflections reflections)
             {
-                Multimap<String, String> multimap = reflections.getStore().get(TypesScanner.class);
+                Multimap<String, String> multimap = reflections.getStore().get(TypeElementsScanner.class.getSimpleName());
                 
                 Collection<Class<?>> typesAnnotatedWith = Sets.newHashSet();
                 
@@ -196,11 +183,6 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
                     }
                 }
                 callback.callback(postTreatment(typesAnnotatedWith));
-            }
-            @Override
-            public Scanner scanner()
-            {
-                return new TypesScanner();
             }
         });
     }
@@ -235,8 +217,8 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
               {
                   Store store = reflections.getStore();
                   
-                  Multimap<String, String> multimap = store.get(TypeAnnotationsScanner.class);
-                  
+                  Multimap<String, String> multimap = store.get(TypeAnnotationsScanner.class.getSimpleName());
+
                   List<String> key = new ArrayList<String>();
                   for (String loopKey : multimap.keySet())
                   {
@@ -256,12 +238,6 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
                   callback .callback(postTreatment(typesAnnotatedWith));
               }
               
-              @Override
-              public Scanner scanner()
-              {
-                  return new TypeAnnotationsScanner();
-              }
-              
           });
     }
 
@@ -277,7 +253,7 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
             public void execute(Reflections reflections)
             {
                 Store store = reflections.getStore();
-                Multimap<String, String> multimap = store.get(TypesScanner.class);
+                Multimap<String, String> multimap = store.get(TypeElementsScanner.class.getSimpleName());
                 Collection<String> collectionOfString = new HashSet<String>();
                 for (String loopKey : multimap.keySet())
                 {
@@ -301,12 +277,6 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
 
             }
 
-            @Override
-            public Scanner scanner()
-            {
-                return new TypesScanner();
-            }
-
         });
 
 
@@ -323,7 +293,7 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
               public void execute(Reflections reflections)
               {
                   Store store = reflections.getStore();
-                  Multimap<String, String> multimap = store.get(TypesScanner.class);
+                  Multimap<String, String> multimap = store.get(TypeElementsScanner.class.getSimpleName());
                   Collection<String> collectionOfString = multimap.keySet();
                   
                   Collection<Class<?>> types = null;
@@ -352,12 +322,6 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
                   
               }
               
-              @Override
-              public Scanner scanner()
-              {
-                  return new TypesScanner();
-              }
-              
           });
 
 
@@ -379,11 +343,6 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
                 // empty just add
             }
 
-            @Override
-            public Scanner scanner()
-            {
-                return new SubTypesScanner();
-            }
         });
         queue(new ScannerCommand()
         {
@@ -394,7 +353,7 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
             public void execute(Reflections reflections)
             {
                 Store store = reflections.getStore();
-                Multimap<String, String> multimap = store.get(TypesScanner.class);
+                Multimap<String, String> multimap = store.get(TypeElementsScanner.class.getSimpleName());
 
                 Collection<String> collectionOfString = new HashSet<String>();
 
@@ -441,12 +400,6 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
 
             }
 
-            @Override
-            public Scanner scanner()
-            {
-                return new TypesScanner();
-
-            }
         });
 
     }
@@ -464,12 +417,6 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
                   Set<String> resources = reflections.getResources(Pattern.compile(pattern));
                   callback.callback(resources);
                   
-              }
-              
-              @Override
-              public Scanner scanner()
-              {
-                  return new ResourcesScanner();
               }
               
           });
@@ -513,12 +460,6 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
               
           }
           
-          @Override
-          public Scanner scanner()
-          {
-              return new SubTypesScanner();
-          }
-          
       });
 
     }
@@ -529,10 +470,7 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
     @Override
     public void doClasspathScan()
     {
-        
-        Scanner[] scanners = getScanners();
-        
-        ConfigurationBuilder configurationBuilder = configurationBuilder().addUrls(computeUrls()).setScanners ( scanners ) ;
+        ConfigurationBuilder configurationBuilder = configurationBuilder().addUrls(computeUrls()).setScanners ( getScanners() ) ;
         
         Reflections reflections = new Reflections(configurationBuilder);
         
@@ -544,25 +482,12 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
 
     protected Scanner[] getScanners()
     {
-        Map<Class<?> , Scanner> scannersByClass = Maps.newHashMap();
-        for(  ScannerCommand command : commands)
-        {
-            Scanner scanner = command.scanner();
-            
-            if (!scannersByClass.containsKey(scanner.getClass()))
-            {
-                scannersByClass.put(scanner.getClass(), scanner);
-            }
-        }
-        
-        Collection<Scanner> scanners = scannersByClass.values();
-        int size = scanners.size();
-        
-        Scanner[] arrayOfScanners = new Scanner[size];
-        
-        scanners.toArray(arrayOfScanners);
-
-        return arrayOfScanners;
+        return new Scanner[] {
+                buildTypeElementsScanner(),
+                new SubTypesScanner(),
+                new TypeAnnotationsScanner(),
+                new ResourcesScanner()
+        };
     }
 
     public void setAdditionalClasspath(Set<URL> additionalClasspath)
@@ -623,6 +548,11 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
 
     private <T> Collection<Class<? extends T>> toClasses(Collection<String> names)
     {
-        return ReflectionUtils.<T> forNames(names, this.getClass().getClassLoader());
+        return ReflectionUtils.<T> forNames(names, new ClassLoader[]{ this.getClass().getClassLoader() });
+    }
+
+    private TypeElementsScanner buildTypeElementsScanner()
+    {
+        return new TypeElementsScanner().includeFields(false).includeMethods(false).includeAnnotations(false);
     }
 }

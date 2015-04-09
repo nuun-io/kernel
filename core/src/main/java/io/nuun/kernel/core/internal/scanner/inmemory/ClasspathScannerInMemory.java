@@ -22,6 +22,8 @@ import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.core.internal.scanner.disk.ClasspathScannerDisk;
 
 import java.net.MalformedURLException;
+import java.util.Iterator;
+
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanner;
 import org.reflections.util.ConfigurationBuilder;
@@ -35,11 +37,6 @@ public class ClasspathScannerInMemory extends ClasspathScannerDisk
 
     private final Classpath classpath;
 
-    static
-    {
-        Vfs.addDefaultURLTypes(new InMemoryUrlType());
-    }
-    
     public ClasspathScannerInMemory(Classpath classpath, String... packageRoot)
     {
         super(null, packageRoot);
