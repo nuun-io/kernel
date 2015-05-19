@@ -22,9 +22,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Excludes the annotated class from the classpath scan.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE})
 public @interface Ignore
 {
+    /**
+     * The optional reason why the class is ignored.
+     */
+     String value() default "";
 }
