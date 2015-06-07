@@ -111,22 +111,40 @@
   <build>
     <resources>
       <resource>
-	<directory>${basedir}/src/main/resources</directory>
-	<filtering>true</filtering>
+        <directory>${basedir}/src/main/resources</directory>
+        <filtering>true</filtering>
       </resource>
       <resource>
-	<directory>${basedir}</directory>
-	<targetPath>META-INF</targetPath>
-	<includes>
-	  <include>LICENSE</include>
-	  <include>NOTICE</include>
-	</includes>
+        <directory>${basedir}</directory>
+        <targetPath>META-INF</targetPath>
+        <includes>
+          <include>LICENSE</include>
+          <include>NOTICE</include>
+        </includes>
       </resource>
     </resources>
     <plugins>
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-release-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.7.2.201409121644</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.eluder.coveralls</groupId>
+        <artifactId>coveralls-maven-plugin</artifactId>
+        <version>3.1.0</version>
       </plugin>
     </plugins>
   </build>
