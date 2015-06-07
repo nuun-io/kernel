@@ -34,7 +34,7 @@ import com.google.common.collect.Collections2;
 
 /**
  *
- *
+ * 
  * @author epo.jemba{@literal @}kametic.com
  *
  */
@@ -107,7 +107,7 @@ public abstract class AbstractClasspathScanner implements ClasspathScanner
 	            for (Annotation annotation : clazz.getAnnotations())
 	            {
 	                logger.trace("Checking annotation {} for Ignore", annotation.annotationType().getName());
-	                if (annotation.annotationType().equals(Ignore.class) || annotation.annotationType().getName().endsWith("Ignore"))
+	                if (annotation.annotationType().equals(Ignore.class) || annotation.annotationType().getAnnotation(Ignore.class) != null)
 	                {
 	                    toKeep = false;
 	                }
