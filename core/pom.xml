@@ -9,7 +9,6 @@
 
 	<artifactId>kernel-core</artifactId>
 
-
 	<name>Nuun IO Kernel Core</name>
 
 	<description>
@@ -17,8 +16,7 @@
     This project contains the core implementation of the Kernel.
 
     See Kernel parent description.
-    
-  </description>
+    </description>
 
 	<inceptionYear>2012</inceptionYear>
 
@@ -56,7 +54,6 @@
 			<version>13.0.1</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
@@ -88,9 +85,6 @@
 			<artifactId>commons-collections</artifactId>
 			<version>3.2.1</version>
 		</dependency>
-
-
-
 	</dependencies>
 
 </project>

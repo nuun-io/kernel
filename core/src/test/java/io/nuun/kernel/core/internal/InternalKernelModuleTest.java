@@ -16,25 +16,23 @@
  */
 package io.nuun.kernel.core.internal;
 
+import com.google.inject.Binding;
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.spi.DefaultElementVisitor;
+import com.google.inject.spi.StaticInjectionRequest;
 import io.nuun.kernel.core.internal.concerns.ConcernTest;
 import io.nuun.kernel.core.internal.concerns.sample.BugPlugin;
 import io.nuun.kernel.core.internal.concerns.sample.CachePlugin;
 import io.nuun.kernel.core.internal.concerns.sample.LogPlugin;
 import io.nuun.kernel.core.internal.concerns.sample.SecurityPlugin;
 import io.nuun.kernel.core.internal.context.InitContextInternal;
-
-import java.util.HashMap;
-
 import org.fest.assertions.Assertions;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.google.inject.Binding;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.spi.DefaultElementVisitor;
-import com.google.inject.spi.StaticInjectionRequest;
+import java.util.HashMap;
 
 public class InternalKernelModuleTest
 {
@@ -45,35 +43,9 @@ public class InternalKernelModuleTest
     @Before
     public void init()
     {
-
-        underTest = new KernelGuiceModuleInternal(new InitContextInternal("nuun-", new HashMap<String, String>()) );
-//        Module aggregationModule = new AbstractModule()
-//        {
-//
-//            @Override
-//            protected void configure()
-//            {
-//                bind(Holder.class);
-//                bind(HolderForPlugin.class);
-//                bind(HolderForContext.class);
-//                bind(HolderForPrefixWithName.class);
-//                bind(HolderForBeanWithParentType.class);
-//                install(underTest);
-//            }
-//        };
-//
-//        injector = Guice.createInjector(Stage.PRODUCTION, aggregationModule);
+        underTest = new KernelGuiceModuleInternal(new InitContextInternal("nuun-", new HashMap<String, String>()));
     }
 
-    // @Test
-    // public void logger_should_be_injected_even_on_child_class()
-    // {
-    // Holder holder = injector.getInstance(HolderChild.class);
-    // assertThat(holder.getLogger()).isNotNull();
-    // }
-    //
-
-    
     @Test
     public void computeOrder_should_works ()
     {
@@ -94,20 +66,11 @@ public class InternalKernelModuleTest
             Binding<?> binding = injector.getBinding(key);
             binding.acceptVisitor(new DefaultElementVisitor<Void>()
             {
-
-                /*
-                 * (non-Javadoc)
-                 * 
-                 * @see
-                 * com.google.inject.spi.DefaultElementVisitor#visit(com.google
-                 * .inject.Binding)
-                 */
                 @Override
                 public <T> Void visit(Binding<T> binding)
                 {
                     System.err.println(">> Binding " + binding.toString().replaceAll(",", ",\n   ") + " at \n   " + binding.getSource());
                     return null;
-
                 }
 
                 @Override
@@ -117,8 +80,6 @@ public class InternalKernelModuleTest
                     return null;
                 }
             });
-
         }
     }
-
 }

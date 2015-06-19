@@ -19,7 +19,6 @@
  */
 package io.nuun.kernel.core.pluginsit.dummy1;
 
-import static org.fest.assertions.Assertions.assertThat;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.plugin.InitState;
@@ -31,6 +30,8 @@ import io.nuun.kernel.api.plugin.request.KernelParamsRequest;
 import io.nuun.kernel.core.AbstractPlugin;
 import io.nuun.kernel.core.internal.KernelCoreTest;
 import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
@@ -38,8 +39,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author Epo Jemba
@@ -56,74 +56,40 @@ public class DummyPlugin extends AbstractPlugin
 
     private com.google.inject.Module module;
 
-    /**
-     * 
-     */
     public DummyPlugin()
     {
-
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.nuunframework.kernel.plugin.Plugin#name()
-     */
     @Override
     public String name()
     {
         return "dummyPlugin";
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.nuunframework.kernel.plugin.Plugin#description()
-     */
     @Override
     public String description()
     {
         return "description";
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.nuunframework.kernel.plugin.Plugin#propertiesPrefix()
-     */
     @Override
     public String pluginPropertiesPrefix()
     {
         return "dummy-";
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.nuunframework.kernel.plugin.Plugin#packageRoot()
-     */
     @Override
     public String pluginPackageRoot()
     {
         return  DummyPlugin.class.getPackage().getName();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.nuunframework.kernel.plugin.Plugin#module()
-     */
     @Override
     public Object nativeUnitModule()
     {
         return module;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.nuunframework.kernel.plugin.Plugin#init()
-     */
     @Override
     public InitState init(InitContext initContext)
     {
@@ -150,25 +116,24 @@ public class DummyPlugin extends AbstractPlugin
 
         Map<String, Collection<Class<?>>> scannedSubTypesByParentRegex = initContext.scannedSubTypesByParentRegex();
         Collection<Class<?>> cParent2 = scannedSubTypesByParentRegex.get(".*WithCustomSuffix");
-        
-        logger.info("c2 : " +cParent2.toString());
+
         assertThat(cParent2).hasSize(2);
         
         Map<String, Collection<Class<?>>> scannedTypesByRegex = initContext.scannedTypesByRegex();
         Collection<Class<?>> cParent3 = scannedTypesByRegex.get(".*WithCustomSuffix");
 
-        Collection<Class<?>> klasses = new HashSet<Class<?>>();
-        klasses.addAll(cParent3);
-        klasses.addAll(cParent2);
-        klasses.addAll(cParent1);
-        klasses.addAll(cAnnotations2);
-        klasses.addAll(cAnnotations1);
+        Collection<Class<?>> classes = new HashSet<Class<?>>();
+        classes.addAll(cParent3);
+        classes.addAll(cParent2);
+        classes.addAll(cParent1);
+        classes.addAll(cAnnotations2);
+        classes.addAll(cAnnotations1);
 
-        module = new DummyModule(klasses);
+        module = new DummyModule(classes);
         
-        assertThat( initContext.pluginsRequired() ).isNotNull();
-        assertThat( initContext.pluginsRequired() ).hasSize(1);
-        assertThat( initContext.pluginsRequired().iterator().next().getClass() ).isEqualTo(DummyPlugin2.class);
+        assertThat(initContext.pluginsRequired()).isNotNull();
+        assertThat(initContext.pluginsRequired()).hasSize(1);
+        assertThat(initContext.pluginsRequired().iterator().next().getClass()).isEqualTo(DummyPlugin2.class);
         return InitState.INITIALIZED;
 
     }
@@ -182,25 +147,16 @@ public class DummyPlugin extends AbstractPlugin
         }
         else
         {
-            System.out.println("PAS OK");
+            System.out.println("KO");
         }
     }
-    
-    
-    /* (non-Javadoc)
-     * @see org.nuunframework.kernel.plugin.AbstractPlugin#bindingRequests()
-     */
+
     @Override
     public Collection<BindingRequest> bindingRequests()
     {
         return bindingRequestsBuilder().subtypeOfRegex(".*WithCustom2Suffix").build();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.nuunframework.kernel.plugin.AbstractPlugin#classpathScanRequests()
-     */
     @Override
     public Collection<ClasspathScanRequest> classpathScanRequests()
     {
@@ -213,74 +169,24 @@ public class DummyPlugin extends AbstractPlugin
             .build();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.nuunframework.kernel.plugin.AbstractPlugin#requiredKernelParams()
-     */
     @Override
     public Collection<KernelParamsRequest> kernelParamsRequests()
     {
-
         return kernelParamsRequestBuilder().mandatory("dummy.plugin1").build();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.nuunframework.kernel.plugin.AbstractPlugin#requiredPlugins()
-     */
-    @SuppressWarnings(
-    {
-        "unchecked"
-    })
+    @SuppressWarnings("unchecked")
     @Override
     public Collection<Class<? extends Plugin>> requiredPlugins()
     {
         return collectionOf(DummyPlugin2.class);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.nuunframework.kernel.plugin.Plugin#destroy()
-     */
     @Override
     public void destroy()
     {
     }
 
-    // public Collection<String> annotationNames()
-    // {
-    // return collectionOf("MarkerSample3");
-    // }
-    // public Collection<Class<? extends Annotation>> annotationTypes()
-    // {
-    // return (Collection) collectionOf(MarkerSample4.class);
-    //
-    // }
-    // public Collection<Class<?>> parentTypes()
-    // {
-    // return (Collection) collectionOf(DummyMarker.class);
-    // }
-    //
-    // /*
-    // * (non-Javadoc)
-    // *
-    // * @see org.nuunframework.kernel.plugin.AbstractPlugin#typesNames()
-    // */
-    // @SuppressWarnings("unchecked")
-    // @Override
-    // public Collection<String> typesNames()
-    // {
-    // return (Collection<String>) collectionOf("WithCustomSuffix");
-    // }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.nuunframework.kernel.plugin.Plugin#start()
-     */
     @Override
     public void start(Context context)
     {
@@ -288,11 +194,6 @@ public class DummyPlugin extends AbstractPlugin
         logger.info("DummyPlugin is starting");
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.nuunframework.kernel.plugin.AbstractPlugin#stop()
-     */
     @Override
     public void stop()
     {
@@ -307,16 +208,5 @@ public class DummyPlugin extends AbstractPlugin
         m.put(ALIAS_DUMMY_PLUGIN1, "dummy.plugin1");
         return m;
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.nuunframework.kernel.plugin.AbstractPlugin#kernelParamsRequired()
-     */
-    // @Override
-    // public Collection<String> kernelParamsRequired()
-    // {
-    // return convertToCollection("zerzerze" , "zerzer");
-    // }
 
 }
