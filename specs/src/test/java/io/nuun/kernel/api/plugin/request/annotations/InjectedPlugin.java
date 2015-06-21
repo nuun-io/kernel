@@ -21,15 +21,13 @@ import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.KernelService;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.RequestType;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
+import org.kametic.specifications.AbstractSpecification;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.kametic.specifications.AbstractSpecification;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 
 /**
  * @author epo.jemba{@literal @}kametic.com
@@ -104,7 +102,7 @@ public class InjectedPlugin extends TestPlugin
     {
         System.out.println("Constructors");
         System.out.println("Enclosing class " + MySpecification.class.getEnclosingClass());
-        
+
         Constructor<?>[] constructors = MySpecification.class.getDeclaredConstructors();
         if (constructors != null)
         {
@@ -136,10 +134,8 @@ public class InjectedPlugin extends TestPlugin
             {
                 e.printStackTrace();
             }
-               
                System.out.println( "s " + specification.isSatisfiedBy(getClass()));
             }
         }
     }
-
 }

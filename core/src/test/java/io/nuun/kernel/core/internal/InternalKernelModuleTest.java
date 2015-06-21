@@ -16,11 +16,6 @@
  */
 package io.nuun.kernel.core.internal;
 
-import com.google.inject.Binding;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.spi.DefaultElementVisitor;
-import com.google.inject.spi.StaticInjectionRequest;
 import io.nuun.kernel.core.internal.concerns.ConcernTest;
 import io.nuun.kernel.core.internal.concerns.sample.BugPlugin;
 import io.nuun.kernel.core.internal.concerns.sample.CachePlugin;
@@ -29,7 +24,6 @@ import io.nuun.kernel.core.internal.concerns.sample.SecurityPlugin;
 import io.nuun.kernel.core.internal.context.InitContextInternal;
 import org.fest.assertions.Assertions;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -37,7 +31,6 @@ import java.util.HashMap;
 public class InternalKernelModuleTest
 {
 
-    Injector injector;
 	private KernelGuiceModuleInternal underTest;
 
     @Before
@@ -49,37 +42,10 @@ public class InternalKernelModuleTest
     @Test
     public void computeOrder_should_works ()
     {
-    	Assertions.assertThat( underTest.computeOrder(SecurityPlugin.Module.class)).isEqualTo(12884901888L);
-    	Assertions.assertThat( underTest.computeOrder(LogPlugin.Module.class)).isEqualTo(-4294967296L);
-    	Assertions.assertThat( underTest.computeOrder(CachePlugin.Module.class)).isEqualTo(12884901886L);
-    	Assertions.assertThat( underTest.computeOrder(ConcernTest.Module.class)).isEqualTo(0);
-    	Assertions.assertThat( underTest.computeOrder(BugPlugin.Module.class)).isEqualTo(15032385535L);
-    }
-    
-    @Test
-    @Ignore
-    public void injectorCheck()
-    {
-        for (Key<?> key : injector.getAllBindings().keySet())
-        {
-            System.err.println("> " + key + " => " + key.getTypeLiteral().getRawType());
-            Binding<?> binding = injector.getBinding(key);
-            binding.acceptVisitor(new DefaultElementVisitor<Void>()
-            {
-                @Override
-                public <T> Void visit(Binding<T> binding)
-                {
-                    System.err.println(">> Binding " + binding.toString().replaceAll(",", ",\n   ") + " at \n   " + binding.getSource());
-                    return null;
-                }
-
-                @Override
-                public Void visit(StaticInjectionRequest element)
-                {
-                    System.err.println(">> Static injection is fragile! Please fix " + element.getType().getName() + " at " + element.getSource());
-                    return null;
-                }
-            });
-        }
+    	Assertions.assertThat(underTest.computeOrder(SecurityPlugin.Module.class)).isEqualTo(12884901888L);
+    	Assertions.assertThat(underTest.computeOrder(LogPlugin.Module.class)).isEqualTo(-4294967296L);
+    	Assertions.assertThat(underTest.computeOrder(CachePlugin.Module.class)).isEqualTo(12884901886L);
+    	Assertions.assertThat(underTest.computeOrder(ConcernTest.Module.class)).isEqualTo(0);
+    	Assertions.assertThat(underTest.computeOrder(BugPlugin.Module.class)).isEqualTo(15032385535L);
     }
 }

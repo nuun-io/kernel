@@ -89,12 +89,10 @@ public class Graph {
 //		logger.debug("Topologically sorted order: ");
 //		for (int j = 0; j < orig_nVerts; j++)
 //			logger.debug("" + sortedArray[j]);
-//		System.out.println("");
 		return sortedArray;
 	}
 
-	public int noSuccessors() // returns vert with no successors (or -1 if no
-								// such verts)
+	public int noSuccessors() // returns vert with no successors (or -1 if no such verts)
 	{
 		boolean isEdge; // edge from row to column in adjMat
 

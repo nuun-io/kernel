@@ -19,43 +19,26 @@
  */
 package io.nuun.kernel.core.pluginsit.dummy1;
 
-import java.util.Collection;
-
-import javax.annotation.Nullable;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
 import com.google.inject.util.Providers;
 
+import javax.annotation.Nullable;
+import java.util.Collection;
 
 /**
  * @author Epo Jemba
- *
  */
 public class DummyModule extends AbstractModule
 {
-
-    
-    
-    
     private final Collection<Class<?>> classes;
 
-
-    /**
-     * 
-     */
     public DummyModule(Collection<Class<?>> classes)
     {
         this.classes = classes;
     }
-    
-    
-    /* (non-Javadoc)
-     * @see com.google.inject.AbstractModule#configure()
-     */
-    @SuppressWarnings({
-            "rawtypes", "unchecked"
-    })
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     protected void configure()
     {
@@ -64,7 +47,6 @@ public class DummyModule extends AbstractModule
         Provider ofNull = Providers.of(null);
         for (Class<?> klass : classes)
         {
-            System.err.println("logger " + klass);
             if (klass.getAnnotation(Nullable.class)== null )
             {
                 bind(klass);
@@ -75,5 +57,4 @@ public class DummyModule extends AbstractModule
             }
         }
     }
-
 }

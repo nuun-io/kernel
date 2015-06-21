@@ -137,19 +137,6 @@ public class DummyPlugin extends AbstractPlugin
         return InitState.INITIALIZED;
 
     }
-    
-    public static void main(String[] args)
-    {
-        String ee = "zerzerzer.eer.EpoWithCustomSuffix";
-        if (ee.matches(".*WithCustomSuffix"))
-        {
-            System.out.println("OK");
-        }
-        else
-        {
-            System.out.println("KO");
-        }
-    }
 
     @Override
     public Collection<BindingRequest> bindingRequests()

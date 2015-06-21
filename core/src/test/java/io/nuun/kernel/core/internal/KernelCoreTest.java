@@ -108,7 +108,6 @@ public class KernelCoreTest
         @Override
         public Object invoke(MethodInvocation invocation) throws Throwable
         {
-            System.err.println("inside " + DummyInterceptor.class);
             return invocation.proceed();
         }
     }

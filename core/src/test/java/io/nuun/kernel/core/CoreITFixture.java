@@ -168,11 +168,8 @@ public class CoreITFixture extends AbstractFixture<Kernel> {
 			}
 			
 			cf.spiActivated = spiActivated;
-			
 
 			return cf;
 		}
-
 	}
-
 }

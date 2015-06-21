@@ -16,7 +16,6 @@
  */
 package io.nuun.kernel.core.pluginsit.dummy6;
 
-import static org.fest.assertions.Assertions.assertThat;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
@@ -25,6 +24,8 @@ import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.nuun.kernel.core.AbstractPlugin;
 
 import java.util.Collection;
+
+import static org.fest.assertions.Assertions.assertThat;
 /**
  * 
  * A 2 rounds plugin
@@ -49,9 +50,9 @@ public class DummyPlugin6_B extends AbstractPlugin
     @Override
     public Collection<Class<? extends Plugin>> dependentPlugins()
     {
-        if (roundEnvironment != null && roundEnvironment.firstRound() )
+        if (roundEnvironment != null && roundEnvironment.firstRound())
         {
-            return collectionOf(  DummyPlugin6_D.class , DummyPlugin6_C.class);
+            return collectionOf(DummyPlugin6_D.class, DummyPlugin6_C.class);
         }
         else
         {
@@ -59,11 +60,10 @@ public class DummyPlugin6_B extends AbstractPlugin
         }
     }
     
-    
     @Override
     public Collection<BindingRequest> bindingRequests()
     {
-        if (roundEnvironment.roundNumber() == 3 )
+        if (roundEnvironment.roundNumber() == 3)
         {
             return bindingRequestsBuilder().annotationType(Marker66.class).build();
         }
@@ -73,21 +73,18 @@ public class DummyPlugin6_B extends AbstractPlugin
     @Override
     public Collection<ClasspathScanRequest> classpathScanRequests()
     {
-        
-        if (roundEnvironment.roundNumber() == 4 )
+        if (roundEnvironment.roundNumber() == 4)
         {
             return classpathScanRequestBuilder().annotationType(Marker6.class).build();
-            
         }
         
         return super.classpathScanRequests();
     }
-    
-    
+
     @Override
     public InitState init(InitContext initContext)
     {
-        if (roundEnvironment.roundNumber() != 5 )
+        if (roundEnvironment.roundNumber() != 5)
         {
             Collection<? extends Plugin> dependentPlugins = initContext.dependentPlugins();
             assertThat(dependentPlugins).isNotNull();
@@ -99,10 +96,8 @@ public class DummyPlugin6_B extends AbstractPlugin
             {
                 assertThat(dependentPlugins).hasSize(0);
             }
-            
-            
-            
-            if (roundEnvironment.roundNumber() == 4 )
+
+            if (roundEnvironment.roundNumber() == 4)
             {
                 Collection<Class<?>> collection = initContext.scannedClassesByAnnotationClass().get(Marker6.class);
                 assertThat(collection).hasSize(2);
@@ -112,8 +107,7 @@ public class DummyPlugin6_B extends AbstractPlugin
                 Collection<Class<?>> collection = initContext.scannedClassesByAnnotationClass().get(Marker6.class);
                 assertThat(collection).isNullOrEmpty();
             }
-            
-            
+
             for (Plugin plugin : dependentPlugins)
             {
                 if (DummyPlugin6_D.class.isAssignableFrom(plugin.getClass())) 
@@ -132,7 +126,6 @@ public class DummyPlugin6_B extends AbstractPlugin
         {
             return InitState.INITIALIZED;
         }
-        
     }
 
     @Override

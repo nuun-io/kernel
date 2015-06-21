@@ -8,8 +8,6 @@
  */
 package io.nuun.kernel.core;
 
-import static io.nuun.kernel.core.NuunCore.createKernel;
-import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
@@ -17,16 +15,17 @@ import io.nuun.kernel.core.pluginsit.dummy5.DescendantFromClass;
 import io.nuun.kernel.core.pluginsit.dummy5.DummyPlugin5;
 import io.nuun.kernel.core.pluginsit.dummy5.GrandParentClass;
 import io.nuun.kernel.core.pluginsit.dummy5.ParentClass;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import static io.nuun.kernel.core.NuunCore.createKernel;
+import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 
 /**
  * @author epo.jemba{@literal @}kametic.com
  */
 public class KernelSuite8Test
 {
-    private Kernel    underTest;
 
     @Before
     public void init()
@@ -43,14 +42,6 @@ public class KernelSuite8Test
             }
         };
 
-        /*
-         * 
-          collection = scannedSubTypesByAncestorClass.get(GrandParentClass.class);
-        
-        assertThat(collection).isNotEmpty();
-        assertThat(collection).hasSize(2);
-        assertThat(collection).containsOnly(DescendantFromClass.class , ParentClass.class);
-         */
         cpb.configure();
     }
 
@@ -58,18 +49,15 @@ public class KernelSuite8Test
     public void dependee_plugins_that_misses_should_be_source_of_error()
     {
 
-        underTest = createKernel(
-                //
-                newKernelConfiguration() //
-                  .classpathScanMode(ClasspathScanMode.IN_MEMORY) //
-                  .withoutSpiPluginsLoader()     //
-                  .plugins(new DummyPlugin5())   //
-                );
+        Kernel underTest = createKernel(
+
+                newKernelConfiguration()
+                        .classpathScanMode(ClasspathScanMode.IN_MEMORY)
+                        .withoutSpiPluginsLoader()
+                        .plugins(new DummyPlugin5())
+        );
 
         underTest.init();
         underTest.start();
-
-
     }
-
 }

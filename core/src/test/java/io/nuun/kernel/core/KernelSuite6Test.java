@@ -36,18 +36,15 @@ public class KernelSuite6Test
     {
         try
         {
- 
             underTest = createKernel(
-                    //
-                    newKernelConfiguration() //
-                      .withoutSpiPluginsLoader()     //
-                      .plugins( //
-                              new DummyPlugin6_A(), //
-                              new DummyPlugin6_B() //
-                              /** ,* new* DummyPlugin6_C) */
-                              , //
-                              new DummyPlugin6_D() //
-                      )   //
+
+                    newKernelConfiguration()
+                      .withoutSpiPluginsLoader()
+                      .plugins(
+                              new DummyPlugin6_A(),
+                              new DummyPlugin6_B(),
+                              new DummyPlugin6_D()
+                      )
                     );
             underTest.init();
             assertThat(true).isFalse();
@@ -64,23 +61,20 @@ public class KernelSuite6Test
     @Test
     public void dependee_plugins_should_start()
     {
-
         DummyPlugin6_C dummyPlugin6_C = new DummyPlugin6_C();
         DummyPlugin6_D dummyPlugin6_D = new DummyPlugin6_D();
 
-        
         underTest = createKernel(
-                //
-                newKernelConfiguration() //
-                  .withoutSpiPluginsLoader()     //
-                  .plugins( //
+
+                newKernelConfiguration()
+                  .withoutSpiPluginsLoader()
+                  .plugins(
                           new DummyPlugin6_A(),
                           new DummyPlugin6_B(),
                           dummyPlugin6_C,
                           dummyPlugin6_D
-                  )   //
+                  )
                 );
-        
         
         assertThat(dummyPlugin6_C.isInternal()).isFalse();
         assertThat(dummyPlugin6_D.isInternal()).isFalse();
@@ -92,7 +86,6 @@ public class KernelSuite6Test
         
         T2 instance = underTest.objectGraph().as(Injector.class).getInstance(T2.class);
         assertThat(instance).isNotNull();
-
     }
     
     @After
@@ -103,5 +96,4 @@ public class KernelSuite6Test
         	underTest.stop();
         }
     }
-
 }

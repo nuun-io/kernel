@@ -71,19 +71,20 @@ public class KernelMulticoreTest
                         );
                 
                 assertThat(underTest.name()).startsWith(Kernel.KERNEL_PREFIX_NAME);
-                System.out.println(">" + underTest.name());
-                
-                underTest.addPlugins( DummyPlugin2.class);
-                underTest.addPlugins( DummyPlugin3.class);
-                underTest.addPlugins( plugin4);
-                underTest.addPlugins( DummyPlugin5.class);
+
+                underTest.addPlugins(DummyPlugin3.class);
+                underTest.addPlugins(DummyPlugin2.class);
+                underTest.addPlugins(plugin4);
+                underTest.addPlugins(DummyPlugin5.class);
+
                 underTest.init();
                 
                 assertThat(underTest.isInitialized()).isTrue();
-                System.out.println(">" + underTest.name() + " initialized  = " + underTest.isInitialized());
+
                 underTest.start();
+
                 assertThat(underTest.isStarted()).isTrue();
-                System.out.println(">" + underTest.name() + " started  = " + underTest.isStarted());
+
                 underTest.stop();
             }
             catch (InterruptedException e)
