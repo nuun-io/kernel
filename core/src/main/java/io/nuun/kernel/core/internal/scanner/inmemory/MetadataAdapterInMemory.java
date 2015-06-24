@@ -213,4 +213,8 @@ public class MetadataAdapterInMemory implements MetadataAdapter<Class<?>, Field,
 		return Modifier.isPublic(accessFlag);
 	}
 
+	@Override
+	public boolean acceptsInput(String file) {
+		return true;
+	}
 }

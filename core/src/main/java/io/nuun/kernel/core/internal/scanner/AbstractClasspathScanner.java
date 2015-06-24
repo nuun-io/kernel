@@ -20,8 +20,12 @@ import io.nuun.kernel.api.annotations.Ignore;
 import io.nuun.kernel.core.KernelException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 
+import io.nuun.kernel.core.internal.scanner.inmemory.InMemoryUrlType;
+import org.reflections.vfs.Vfs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,21 +34,32 @@ import com.google.common.collect.Collections2;
 
 /**
  *
- * 
+ *
  * @author epo.jemba{@literal @}kametic.com
  *
  */
-public abstract class AbstractClasspathScanner implements ClasspathScanner {
-	
-	
-	
-	  private final boolean           reachAbstractClass;
-	  
-	  
+public abstract class AbstractClasspathScanner implements ClasspathScanner
+{
+
+      static
+      {
+          Vfs.setDefaultURLTypes(Arrays.asList(
+				  new InMemoryUrlType(),
+                  Vfs.DefaultUrlTypes.jarFile,
+                  Vfs.DefaultUrlTypes.jarUrl,
+                  Vfs.DefaultUrlTypes.directory,
+                  Vfs.DefaultUrlTypes.jarInputStream
+          ));
+      }
+
+
+      private final boolean           reachAbstractClass;
+
+
 	  public AbstractClasspathScanner(boolean reachAbstractClass) {
 		this.reachAbstractClass = reachAbstractClass;
 	  }
-	
+
 
 	  protected Collection<Class<?>> postTreatment(Collection<Class<?>> set)
 	    {
