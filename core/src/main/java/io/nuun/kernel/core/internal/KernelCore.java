@@ -445,9 +445,9 @@ public final class KernelCore implements Kernel
     }
 
     @Override
-    public List<Plugin> plugins()
+    public Map<String, Plugin> plugins()
     {
-        return null;
+        return this.plugins;
     }
 
     @Override

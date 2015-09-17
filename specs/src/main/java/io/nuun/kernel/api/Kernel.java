@@ -20,7 +20,7 @@ import io.nuun.kernel.api.di.GlobalModule;
 import io.nuun.kernel.api.di.ObjectGraph;
 import io.nuun.kernel.api.di.UnitModule;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * The Kernel is the main component of the I.O.C. technical stack.
@@ -60,13 +60,13 @@ public interface Kernel
     public abstract boolean isInitialized();
     
     /**
-     * After the kernel is initialized, if necessary, one can ask for the list of the plugins.
+     * After the kernel is initialized, if necessary, one can ask for the map of plugins.
      * <p>
      * This will rarely be the case. We advise developers to be careful with plugins.
      * 
-     * @return the list of plugins initialized.
+     * @return map of plugins organized by name
      */
-    public List<Plugin> plugins();
+    public Map<String, Plugin> plugins();
     
     /**
      * After the kernel is initialized, one can ask for the particular UnitModule created by one plugin.
