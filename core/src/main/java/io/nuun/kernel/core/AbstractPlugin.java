@@ -25,35 +25,20 @@ import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.RoundEnvironment;
 import io.nuun.kernel.api.plugin.context.Context;
 import io.nuun.kernel.api.plugin.context.InitContext;
-import io.nuun.kernel.api.plugin.request.BindingRequest;
-import io.nuun.kernel.api.plugin.request.BindingRequestBuilder;
-import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
-import io.nuun.kernel.api.plugin.request.ClasspathScanRequestBuilder;
-import io.nuun.kernel.api.plugin.request.KernelParamsRequest;
-import io.nuun.kernel.api.plugin.request.KernelParamsRequestBuilder;
+import io.nuun.kernel.api.plugin.request.*;
 import io.nuun.kernel.api.plugin.request.builders.BindingRequestBuilderMain;
 import io.nuun.kernel.core.internal.ModuleEmbedded;
 import io.nuun.kernel.spi.DependencyInjectionProvider;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import org.kametic.specifications.AbstractSpecification;
-import org.kametic.specifications.AndSpecification;
-import org.kametic.specifications.NotSpecification;
-import org.kametic.specifications.OrSpecification;
-import org.kametic.specifications.Specification;
+import org.kametic.specifications.*;
 import org.kametic.specifications.reflect.ClassMethodsAnnotatedWith;
 import org.kametic.specifications.reflect.DescendantOfSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.net.URL;
+import java.util.*;
 
 /**
  * @author Epo Jemba
@@ -108,11 +93,6 @@ public abstract class AbstractPlugin implements Plugin
     public void start(Context context)
     {
         this.context = context;
-    }
-
-    @Override
-    public void destroy()
-    {
     }
 
     // /**

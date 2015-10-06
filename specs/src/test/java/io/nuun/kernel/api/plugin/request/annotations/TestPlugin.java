@@ -22,24 +22,13 @@ import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.RoundEnvironment;
 import io.nuun.kernel.api.plugin.context.Context;
 import io.nuun.kernel.api.plugin.context.InitContext;
-import io.nuun.kernel.api.plugin.request.BindingRequest;
-import io.nuun.kernel.api.plugin.request.BindingRequestBuilder;
-import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
-import io.nuun.kernel.api.plugin.request.ClasspathScanRequestBuilder;
-import io.nuun.kernel.api.plugin.request.KernelParamsRequest;
-import io.nuun.kernel.api.plugin.request.KernelParamsRequestBuilder;
+import io.nuun.kernel.api.plugin.request.*;
 import io.nuun.kernel.spi.DependencyInjectionProvider;
-
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.URL;
+import java.util.*;
 
 /**
  * @author epo.jemba{@literal @}kametic.com
@@ -90,11 +79,6 @@ public abstract class TestPlugin implements Plugin
     public void start(Context context)
     {
         this.context = context;
-    }
-
-    @Override
-    public void destroy()
-    {
     }
 
     // /**
