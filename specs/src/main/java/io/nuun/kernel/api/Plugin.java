@@ -52,11 +52,6 @@ public interface Plugin
     void stop();
 
     /**
-     * Lifecycle method: destroy()
-     */
-    void destroy();
-
-    /**
      * The name of the plugin. Plugin won't be installed, if there is no a name. And if this name is not
      * unique. Mandatory.
      * 

@@ -170,11 +170,6 @@ public class DummyPlugin extends AbstractPlugin
     }
 
     @Override
-    public void destroy()
-    {
-    }
-
-    @Override
     public void start(Context context)
     {
         assertThat(context).isNotNull();
