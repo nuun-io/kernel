@@ -16,24 +16,15 @@
  */
 package io.nuun.kernel.core;
 
+import com.google.inject.Injector;
+import io.nuun.kernel.api.Kernel;
+import io.nuun.kernel.core.pluginsit.dummy6.*;
+import org.junit.After;
+import org.junit.Test;
+
 import static io.nuun.kernel.core.NuunCore.createKernel;
 import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import static org.fest.assertions.Assertions.assertThat;
-import io.nuun.kernel.api.Kernel;
-import io.nuun.kernel.api.Plugin;
-import io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_A;
-import io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_B;
-import io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_C;
-import io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_D;
-import io.nuun.kernel.core.pluginsit.dummy6.T2;
-
-import java.util.ArrayList;
-
-import org.junit.After;
-import org.junit.Test;
-import org.powermock.reflect.Whitebox;
-
-import com.google.inject.Injector;
 
 public class KernelSuite6Test
 {
@@ -45,18 +36,15 @@ public class KernelSuite6Test
     {
         try
         {
- 
             underTest = createKernel(
-                    //
-                    newKernelConfiguration() //
-                      .withoutSpiPluginsLoader()     //
-                      .plugins( //
-                              new DummyPlugin6_A(), //
-                              new DummyPlugin6_B() //
-                              /** ,* new* DummyPlugin6_C) */
-                              , //
-                              new DummyPlugin6_D() //
-                      )   //
+
+                    newKernelConfiguration()
+                      .withoutSpiPluginsLoader()
+                      .plugins(
+                              new DummyPlugin6_A(),
+                              new DummyPlugin6_B(),
+                              new DummyPlugin6_D()
+                      )
                     );
             underTest.init();
             assertThat(true).isFalse();
@@ -64,33 +52,29 @@ public class KernelSuite6Test
         }
         catch (KernelException ke)
         {
-//            underTest.stop();
             assertThat(ke.getMessage())
                     .isEqualTo(
-                            "plugin dummy-plugin-6-B misses the following plugin/s as dependee/s [class io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_D, class io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_C]");
+                            "Plugin dummy-plugin-6-B misses the following plugin/s as dependee/s [class io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_D, class io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_C]");
         }
     }
 
     @Test
     public void dependee_plugins_should_start()
     {
-
         DummyPlugin6_C dummyPlugin6_C = new DummyPlugin6_C();
         DummyPlugin6_D dummyPlugin6_D = new DummyPlugin6_D();
 
-        
         underTest = createKernel(
-                //
-                newKernelConfiguration() //
-                  .withoutSpiPluginsLoader()     //
-                  .plugins( //
+
+                newKernelConfiguration()
+                  .withoutSpiPluginsLoader()
+                  .plugins(
                           new DummyPlugin6_A(),
                           new DummyPlugin6_B(),
                           dummyPlugin6_C,
                           dummyPlugin6_D
-                  )   //
+                  )
                 );
-        
         
         assertThat(dummyPlugin6_C.isInternal()).isFalse();
         assertThat(dummyPlugin6_D.isInternal()).isFalse();
@@ -102,41 +86,6 @@ public class KernelSuite6Test
         
         T2 instance = underTest.objectGraph().as(Injector.class).getInstance(T2.class);
         assertThat(instance).isNotNull();
-
-    }
-
-    @Test
-    public void plugin_sort_algo() throws Exception
-    {
-        underTest = createKernel(
-                //
-                newKernelConfiguration() //
-                  .withoutSpiPluginsLoader()     //
-          
-                );
-        
-        
-        underTest.init();
-        underTest.start();
-        
-        
-        ArrayList<Plugin> plugins = new ArrayList<Plugin>(), plugins2 = null;
-
-//        DummyPlugin6_A a = new DummyPlugin6_A();
-//        plugins.add(a);
-        DummyPlugin6_C c = new DummyPlugin6_C();
-        plugins.add(c);
-        DummyPlugin6_D d = new DummyPlugin6_D();
-        plugins.add(d);
-        DummyPlugin6_B b = new DummyPlugin6_B();  // <--- C ,  D
-        plugins.add(b);
-
-        plugins2 = Whitebox.invokeMethod(underTest, "initRoundEnvironment");
-        plugins2 = Whitebox.invokeMethod(underTest, "sortPlugins", plugins);
-
-        assertThat(plugins2).isNotNull();
-        assertThat(plugins2).containsOnly(b, c, d);
-        assertThat(plugins2).containsSequence(b, d, c );
     }
     
     @After
@@ -147,5 +96,4 @@ public class KernelSuite6Test
         	underTest.stop();
         }
     }
-
 }

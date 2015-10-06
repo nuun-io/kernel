@@ -18,19 +18,15 @@ package io.nuun.kernel.core.internal.scanner.inmemory;
 
 
 
-import static org.fest.assertions.Assertions.assertThat;
-
 import org.junit.Test;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 /**
- *
- * 
  * @author epo.jemba{@literal @}kametic.com
- *
  */
 public class InMemoryClasspathBuilderTest
 {
-
     @Test
     public void testConfigure()
     {
@@ -49,8 +45,6 @@ public class InMemoryClasspathBuilderTest
         };
         
         builder.configure();
-        
-        System.out.println( InMemoryMultiThreadClasspath.INSTANCE.entries() );
         
         assertThat(InMemoryMultiThreadClasspath.INSTANCE.entries()).hasSize(2);
     }

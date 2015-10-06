@@ -95,22 +95,16 @@ public interface Plugin
     Collection<BindingRequest> bindingRequests();
 
     /**
-     * list of plugins dependencies required by this plugin.
+     * List of plugins dependencies required by this plugin.
+     * The plugin's init phase will be executed after these dependencies.
      * 
      * @return the required plugin classes
      */
     Collection<Class<? extends Plugin>> requiredPlugins();
 
     /**
-     * list of plugins that become dependent on "this" plugin.
-     * Returns
-     * 
-     *  If Z. return {A.class} A.will become dependent on Z.
-     *  Z will virtually need A. Even if Z did not ask for it.
-     *  this allow pre init between plugin.
-     * 
-     *  InitContext?
-     * 
+     * List of plugins that become dependent on "this" plugin.
+     * The plugin's init phase will be executed after these dependencies.
      * 
      * @return the dependent plugin classes
      */
@@ -165,16 +159,14 @@ public interface Plugin
     Set<URL> computeAdditionalClasspathScan();
 
     /**
-     * return a dependency injection provider to the kernel.
+     * Returns Dependency injection provider to the kernel.
      * 
      * @return a DependencyInjectionProvider
      */
     DependencyInjectionProvider dependencyInjectionProvider();
 
     /**
-     * Re
-     * 
-     * return a Map which contains
+     * Returns a map which contains:
      * <pre>
      * - key :the alias to create.
      * - value :  kernel parameter to alias.
@@ -188,6 +180,6 @@ public interface Plugin
      * 
      * @param roundEnvironment the round
      */
-    void provideRoundEnvironment (RoundEnvironment roundEnvironment);
+    void provideRoundEnvironment(RoundEnvironment roundEnvironment);
 
 }

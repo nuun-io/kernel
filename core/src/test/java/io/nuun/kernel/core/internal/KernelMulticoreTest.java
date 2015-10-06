@@ -16,30 +16,31 @@
  */
 package io.nuun.kernel.core.internal;
 
-import static io.nuun.kernel.core.NuunCore.createKernel;
-import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
-import static org.fest.assertions.Assertions.assertThat;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.core.pluginsit.dummy1.DummyPlugin;
 import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin2;
 import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin3;
 import io.nuun.kernel.core.pluginsit.dummy4.DummyPlugin4;
 import io.nuun.kernel.core.pluginsit.dummy5.DummyPlugin5;
+import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
 
-import org.junit.Test;
+import static io.nuun.kernel.core.NuunCore.createKernel;
+import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 public class KernelMulticoreTest
 {
-
+    private static CountDownLatch startLatch;
 
     @Test
     public void dependee_plugins_that_misses_should_be_source_of_error() throws InterruptedException
     {
-        CountDownLatch startLatch = new CountDownLatch(1);
-        for (int threadNo = 0; threadNo < 2; threadNo++) {
-            Thread t = new KernelHolder(startLatch);
+        startLatch = new CountDownLatch(1);
+        for (int threadNo = 0; threadNo < 3; threadNo++) {
+            Thread t = new KernelHolder();
             t.start();
           }
           // give the threads chance to start up; we could perform
@@ -50,26 +51,19 @@ public class KernelMulticoreTest
     
     static class KernelHolder extends Thread
     {
-        public KernelHolder(CountDownLatch startLatch)
-        {
-        }
-        
-        
+
         @SuppressWarnings("unchecked")
         @Override
         public void run()
         {
-            
-//            try
+            try
             {
-                System.out.println("Before");
-//                startLatch.await();
+                startLatch.await();
                 KernelCore underTest;
                 DummyPlugin4 plugin4 = new DummyPlugin4();
                 
                 underTest = (KernelCore) createKernel(
-                        //
-                        newKernelConfiguration() //
+                        newKernelConfiguration()
                         .params (
                                 DummyPlugin.ALIAS_DUMMY_PLUGIN1 , "WAZAAAA",
                                 DummyPlugin.NUUNROOTALIAS       , "internal,"+KernelCoreTest.class.getPackage().getName()
@@ -77,29 +71,26 @@ public class KernelMulticoreTest
                         );
                 
                 assertThat(underTest.name()).startsWith(Kernel.KERNEL_PREFIX_NAME);
-                System.out.println(">" + underTest.name());
-                
-                underTest.addPlugins( DummyPlugin2.class);
-                underTest.addPlugins( DummyPlugin3.class);
-                underTest.addPlugins( plugin4);
-                underTest.addPlugins( DummyPlugin5.class);
+
+                underTest.addPlugins(DummyPlugin3.class);
+                underTest.addPlugins(DummyPlugin2.class);
+                underTest.addPlugins(plugin4);
+                underTest.addPlugins(DummyPlugin5.class);
+
                 underTest.init();
                 
                 assertThat(underTest.isInitialized()).isTrue();
-                System.out.println(">" + underTest.name() + " initialized  = " + underTest.isInitialized());
+
                 underTest.start();
+
                 assertThat(underTest.isStarted()).isTrue();
-                System.out.println(">" + underTest.name() + " started  = " + underTest.isStarted());
+
                 underTest.stop();
             }
-//            catch (InterruptedException e)
-//            {
-//                e.printStackTrace();
-//            }
+            catch (InterruptedException e)
+            {
+                fail(e.getMessage());
+            }
         }
-        
-        
     }
-
-
 }

@@ -28,7 +28,7 @@ public class ClasspathScannerReflectionsTest extends ClasspathScannerTestBase
     
     @Override
     protected AbstractClasspathScanner createUnderTest() {
-    	return  new ClasspathScannerDisk(new ClasspathStrategy(), true, "", "META-INF.properties," + MyModule2.class.getPackage().getName());
+    	return new ClasspathScannerDisk(new ClasspathStrategy(), true, "", "META-INF.properties," + MyModule2.class.getPackage().getName());
     }
  
 }

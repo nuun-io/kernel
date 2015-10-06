@@ -16,19 +16,18 @@
  */
 package io.nuun.kernel.core;
 
-import static io.nuun.kernel.core.NuunCore.createKernel;
-import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
-import static org.fest.assertions.Assertions.assertThat;
-import io.nuun.kernel.api.Kernel;
-import io.nuun.kernel.core.pluginsit.dummy7.DummyPlugin7_A;
-import io.nuun.kernel.core.pluginsit.dummy7.DummyPlugin7_B;
-
-import org.junit.After;
-import org.junit.Test;
-
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
+import io.nuun.kernel.api.Kernel;
+import io.nuun.kernel.core.pluginsit.dummy7.DummyPlugin7_A;
+import io.nuun.kernel.core.pluginsit.dummy7.DummyPlugin7_B;
+import org.junit.After;
+import org.junit.Test;
+
+import static io.nuun.kernel.core.NuunCore.createKernel;
+import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
+import static org.fest.assertions.Assertions.assertThat;
 
 public class KernelSuite7Test
 {
@@ -38,16 +37,15 @@ public class KernelSuite7Test
     @Test
     public void dependee_plugins_that_misses_should_be_source_of_error()
     {
-
         
         underTest = createKernel(
-                //
-                newKernelConfiguration() //
-                  .withoutSpiPluginsLoader()     //
-                  .plugins( //
-                          new DummyPlugin7_A(), //
-                          new DummyPlugin7_B() //
-                  )   //
+
+                newKernelConfiguration()
+                  .withoutSpiPluginsLoader()
+                  .plugins(
+                          new DummyPlugin7_A(),
+                          new DummyPlugin7_B()
+                  )
                 );
         
         underTest.init();
@@ -62,13 +60,13 @@ public class KernelSuite7Test
     public void dependee_plugins_that_misses_should_be_source_of_error_()
     {
         underTest = createKernel(
-                //
-                newKernelConfiguration() //
-                  .withoutSpiPluginsLoader()     //
-                  .plugins( //
-                          new DummyPlugin7_A(), //
-                          new DummyPlugin7_B() //
-                  )   //
+
+                newKernelConfiguration()
+                  .withoutSpiPluginsLoader()
+                  .plugins(
+                          new DummyPlugin7_A(),
+                          new DummyPlugin7_B()
+                  )
                 );
         underTest.init();
         underTest.start();
@@ -76,7 +74,6 @@ public class KernelSuite7Test
         String resa = underTest.objectGraph().as(Injector.class).getInstance(Key.get(String.class, Names.named("dep7b")));
         assertThat(resa).isNotNull();
         assertThat(resa).isEqualTo("dep7bOVER");
-
     }
 
     @After

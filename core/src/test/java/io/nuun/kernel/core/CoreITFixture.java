@@ -16,18 +16,17 @@
  */
 package io.nuun.kernel.core;
 
-import static io.nuun.kernel.core.NuunCore.createKernel;
-import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
+import com.google.inject.AbstractModule;
+import com.google.inject.Module;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.KernelConfiguration;
-import com.google.inject.AbstractModule;
-import com.google.inject.Injector;
-import com.google.inject.Module;
+
+import static io.nuun.kernel.core.NuunCore.createKernel;
+import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 
 /**
  * @author epo.jemba{@literal @}kametic.com
- *
  */
 public class CoreITFixture extends AbstractFixture<Kernel> {
 
@@ -41,32 +40,20 @@ public class CoreITFixture extends AbstractFixture<Kernel> {
 	public CoreITFixture() {
 	}
 
-	public CoreITFixture(String... kernelParams) {
-		this.kernelParams = kernelParams;
-	}
-	
-	public Injector  getInjector ()
-	{
-		return kernel.objectGraph().as(Injector.class);
-	}
-
 	@Override
 	protected Kernel createUnitUnderTest() {
         
-		if (null == kernel) {
+		if (kernel == null) {
 			
-			KernelConfiguration configuration= null;
+			KernelConfiguration configuration = newKernelConfiguration()
+					.params(kernelParams)
+					.withoutSpiPluginsLoader()
+					.plugins(plugins)
+					.plugins(createInternalPluginFromModules());
 			
-	        kernel = createKernel(
-	                //
-	                configuration= newKernelConfiguration() //
-	                  .params(kernelParams)
-	                  .withoutSpiPluginsLoader()     //
-	                  .plugins(plugins)   //
-	                  .plugins(createInternalPluginFromModules())   //
-	                );
+	        kernel = createKernel(configuration);
 	        
-	        if(! spiActivated) {
+	        if(!spiActivated) {
                 configuration.withoutSpiPluginsLoader();
             }
 			///////////////
@@ -181,11 +168,8 @@ public class CoreITFixture extends AbstractFixture<Kernel> {
 			}
 			
 			cf.spiActivated = spiActivated;
-			
 
 			return cf;
 		}
-
 	}
-
 }

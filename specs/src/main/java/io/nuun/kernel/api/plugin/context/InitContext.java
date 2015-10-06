@@ -18,18 +18,17 @@ package io.nuun.kernel.api.plugin.context;
 
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.di.UnitModule;
+import org.kametic.specifications.Specification;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.kametic.specifications.Specification;
-
 /**
+ * The holder class containing all the data available at the {@code init} step.
  * 
  * @author Epo Jemba
- *
  */
 @SuppressWarnings("rawtypes")
 public interface InitContext
@@ -64,24 +63,26 @@ public interface InitContext
     public abstract Map<Specification, Collection<Class<?>>> scannedTypesBySpecification();
     
     /**
-     * Return instances of the Plugin asked by the plugin
+     * Returns plugin instances required by the current plugin.
+     * The plugin's init phase will be executed after theirs.
      * 
      * @return the instances of the plugin declared required by the method Plugin.pluginDependenciesRequired()
      */
-    public abstract Collection<? extends Plugin> pluginsRequired ();
+    public abstract Collection<? extends Plugin> pluginsRequired();
 
     
     /**
      * Returns instances of the plugins that become dependent on this plugin.
+     * The plugin's init phase will be executed before theirs.
      * 
-     * @return
+     * @return dependent plugins
      */
-    public abstract Collection<? extends Plugin> dependentPlugins ();
+    public abstract Collection<? extends Plugin> dependentPlugins();
 
     /**
-     * Round Number of the initialization.
+     * The current initialization round.
      * 
-     * @return
+     * @return the current round number
      */
     public abstract int roundNumber();
 

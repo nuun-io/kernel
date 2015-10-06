@@ -16,35 +16,29 @@
  */
 package io.nuun.kernel.core.internal;
 
-import static org.reflections.ReflectionUtils.withAnnotation;
-import io.nuun.kernel.api.di.UnitModule;
-import io.nuun.kernel.api.plugin.context.Context;
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.core.internal.context.ContextInternal;
-import io.nuun.kernel.core.internal.context.InitContextInternal;
-import io.nuun.kernel.spi.Concern;
-
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.util.Providers;
+import io.nuun.kernel.api.di.UnitModule;
+import io.nuun.kernel.api.plugin.context.Context;
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.core.internal.context.ContextInternal;
+import io.nuun.kernel.core.internal.context.InitContextInternal;
+import io.nuun.kernel.spi.Concern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nullable;
+import java.lang.annotation.Annotation;
+import java.util.*;
+
+import static org.reflections.ReflectionUtils.withAnnotation;
 
 /**
- * Bootstrap Plugin needed to initialize an application. Propose
+ * Bootstrap the plugins needed to initialize the application.
  * 
  * @author ejemba
  */
@@ -55,12 +49,11 @@ public class KernelGuiceModuleInternal extends AbstractModule
 
     private final InitContextInternal currentContext;
     
-    private boolean overriding = false;
+    private boolean                   overriding = false;
 
     public KernelGuiceModuleInternal(InitContextInternal kernelContext)
     {
         currentContext = kernelContext;
-
     }
 
     public KernelGuiceModuleInternal overriding()
@@ -75,11 +68,10 @@ public class KernelGuiceModuleInternal extends AbstractModule
         // All bindings will be needed explicitly.
         // this simple line makes the framework bullet-proof !
         binder().requireExplicitBindings();
-        // We ContextInternal as implementation of Context
+
         bind(Context.class).to(ContextInternal.class);
 
         // Bind Types, Subtypes from classpath
-        // ===================================
         bindFromClasspath();
 
         // Start Plugins
@@ -93,7 +85,7 @@ public class KernelGuiceModuleInternal extends AbstractModule
         List<Installable> installableList = new ArrayList<Installable>();
         Map<Class<?>, Object> classesWithScopes = currentContext.classesWithScopes();
         
-        if (! overriding )
+        if (!overriding)
         {
             Collection<Class<?>> classes = currentContext.classesToBind();
             
@@ -108,14 +100,13 @@ public class KernelGuiceModuleInternal extends AbstractModule
         }
         else
         {
-            logger.info("Installing overriding modules");
+            logger.debug("Installing overriding modules");
             for (Object o : currentContext.moduleOverridingResults())
             {
                 installableList.add(new Installable(o));
             }
         }
-        
-        
+
         Collections.sort(installableList , Collections.reverseOrder());
         
         Provider nullProvider = Providers.of(null);
@@ -125,12 +116,12 @@ public class KernelGuiceModuleInternal extends AbstractModule
         {
         	Object installableInner = installable.inner;
             // Checking for Module
-        	if (UnitModule.class.isAssignableFrom(installableInner.getClass())  )
+        	if (UnitModule.class.isAssignableFrom(installableInner.getClass()))
         	{ // install module
         	    Object moduleObject = UnitModule.class.cast(installableInner).nativeModule();
-                if (Module.class.isAssignableFrom( moduleObject.getClass()) )
+                if (Module.class.isAssignableFrom( moduleObject.getClass()))
         	    {
-        	        logger.info("installing module {}", moduleObject);
+        	        logger.debug("installing module {}", moduleObject);
         	        install(Module.class.cast(moduleObject));
         	    }
         	    else
@@ -150,12 +141,12 @@ public class KernelGuiceModuleInternal extends AbstractModule
                 {
                     if (scope == null)
                     {
-                        logger.info("binding {} with no scope.", classpathClass.getName());
+                        logger.debug("binding {} with no scope.", classpathClass.getName());
                         bind(classpathClass);
                     }
                     else
                     {
-                        logger.info("binding {} in scope {}.", classpathClass.getName() , scope.toString());
+                        logger.debug("binding {} in scope {}.", classpathClass.getName() , scope.toString());
                         bind(classpathClass).in((Scope) scope);
                     }
                 }
@@ -171,14 +162,13 @@ public class KernelGuiceModuleInternal extends AbstractModule
     class Installable implements Comparable<Installable>
     {
         
-        Object inner;
+        private Object inner;
 
         Installable (Object inner)
         {
             this.inner = inner;
-            
         }
-        
+
         @Override
         public int compareTo(Installable anInstallable)
         {
@@ -226,7 +216,7 @@ public class KernelGuiceModuleInternal extends AbstractModule
             	throw new IllegalStateException("Object to compare is not a class nor a Module " + this);
             }
             
-            return  computeOrder(innerClass).compareTo( computeOrder(toCompare) )  ;
+            return  computeOrder(innerClass).compareTo(computeOrder(toCompare));
         }
         
         @Override
@@ -236,14 +226,14 @@ public class KernelGuiceModuleInternal extends AbstractModule
         }
     }
     
-    Long computeOrder (Class<?> moduleCläss)    {
+    Long computeOrder(Class<?> moduleClass) {
         
     	Long finalOrder = 0l;
     	boolean reachAtLeastOnce = false;
     	
-        for(Annotation annotation : moduleCläss.getAnnotations())
+        for(Annotation annotation : moduleClass.getAnnotations())
         {
-            if ( Matchers.annotatedWith(Concern.class).matches(annotation.annotationType()) )
+            if (Matchers.annotatedWith(Concern.class).matches(annotation.annotationType()))
             {
                 reachAtLeastOnce = true;
             	Concern concern = annotation.annotationType().getAnnotation(Concern.class);
@@ -278,63 +268,11 @@ public class KernelGuiceModuleInternal extends AbstractModule
             }
         }
         
-    	if (! reachAtLeastOnce) {
+    	if (!reachAtLeastOnce) {
 			finalOrder = (long) 0;
 		}
     	
         return finalOrder;
     }
-
-    public static boolean hasAnnotationDeep(Class<?> memberDeclaringClass, Class<? extends Annotation> klass)
-    {
-
-        if (memberDeclaringClass.equals(klass))
-        {
-            return true;
-        }
-
-        for (Annotation anno : memberDeclaringClass.getAnnotations())
-        {
-            Class<? extends Annotation> annoClass = anno.annotationType();
-            if (!annoClass.getPackage().getName().startsWith("java.lang") && hasAnnotationDeep(annoClass, klass))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    
-    
-    // private void configureProperties()
-    // {
-    //
-    // // find all properties classes in the classpath
-    // Collection<String> propertiesFiles = this.currentContext.propertiesFiles();
-    //
-    // // add properties from plugins
-    // CompositeConfiguration configuration = new CompositeConfiguration();
-    // for (String propertiesFile : propertiesFiles)
-    // {
-    // logger.info("adding {} to module", propertiesFile);
-    // configuration.addConfiguration(configuration(propertiesFile));
-    // }
-    // install(new ConfigurationGuiceModule(configuration));
-    // }
-
-    // protected void bindSubTypesOf(Class<?> cläss)
-    // {
-    // this.currentContext.parentTypesClasses.add(cläss);
-    // }
-    //
-    // protected void bindAnnotationClass(Class<? extends Annotation> cläss)
-    // {
-    // this.currentContext.annotationTypes.add(cläss);
-    // }
-    //
-    // protected void bindAnnotationName(String className)
-    // {
-    // this.currentContext.annotationNames.add(className);
-    // }
 
 }
