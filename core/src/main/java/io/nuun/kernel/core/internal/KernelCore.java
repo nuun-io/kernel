@@ -285,7 +285,7 @@ public final class KernelCore implements Kernel
                     else
                     {
                         logger.error("Plugin {} misses parameter/s : {}", pluginName, kernelParamsRequests.toString());
-                        throw new KernelException("Plugin " + pluginName + " miss parameter/s : " + kernelParamsRequests.toString());
+                        throw new KernelException("Plugin " + pluginName + " misses parameter/s : " + kernelParamsRequests.toString());
                     }
 
                 }
