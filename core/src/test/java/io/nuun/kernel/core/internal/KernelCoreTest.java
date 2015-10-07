@@ -74,7 +74,7 @@ public class KernelCoreTest
         
         configuration
             .param(DummyPlugin.ALIAS_DUMMY_PLUGIN1, "WAZAAAA")
-            .param(DummyPlugin.NUUNROOTALIAS , "internal," + KernelCoreTest.class.getPackage().getName());
+            .param(DummyPlugin.NUUN_ROOT_ALIAS, "internal," + KernelCoreTest.class.getPackage().getName());
 
         underTest = (KernelCore) NuunCore.createKernel(configuration);
         try
