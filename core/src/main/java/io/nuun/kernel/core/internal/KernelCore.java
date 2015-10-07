@@ -102,10 +102,11 @@ public final class KernelCore implements Kernel
     KernelCore(KernelConfigurationInternal kernelConfigurationInternal)
     {
         name = KERNEL_PREFIX_NAME + kernels.size();
+        // The kernel instance can be named, so the logger has to be differentiated
         logger = LoggerFactory.getLogger(KernelCore.class.getPackage().getName() + '.' + name());
         initContext = new InitContextInternal(NUUN_PROPERTIES_PREFIX, kernelParamsAndAlias, classpathScanMode);
 
-        if (!kernels.contains(name()))
+        if (!kernels.containsKey(name()))
         {
             kernels.put(name(), this);
         }
@@ -141,10 +142,7 @@ public final class KernelCore implements Kernel
         if (!initialized)
         {
             List<Plugin> fetchedPlugins = fetchPlugins(pluginsToAdd.values());
-            computeAliases(fetchedPlugins);
-            initRoundEnvironment(fetchedPlugins);
-            checkPlugins(fetchedPlugins);
-            fetchGlobalParametersFromPlugins();
+            preparePlugins(fetchedPlugins);
             extensionManager = new ExtensionManager(fetchedPlugins, Thread.currentThread().getContextClassLoader());
             extensionManager.initializing();
             initPlugins();
@@ -156,6 +154,13 @@ public final class KernelCore implements Kernel
         {
             throw new KernelException("Kernel is already initialized");
         }
+    }
+
+    public void preparePlugins(List<Plugin> fetchedPlugins) {
+        computeAliases(fetchedPlugins);
+        initRoundEnvironment(fetchedPlugins);
+        checkPlugins(fetchedPlugins);
+        fetchGlobalParametersFromPlugins();
     }
 
     private void initRoundEnvironment(List<? extends Plugin> fetchedPlugins)
