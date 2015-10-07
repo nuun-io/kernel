@@ -48,6 +48,8 @@ See the current [reference documentation](https://github.com/nuun-io/kernel/wiki
 
 Contributions are welcome; please refer to our [contributing guidelines](CONTRIBUTING.md).
 
+To see our current work, take look at our [board](https://waffle.io/nuun-io/kernel).
+
 ## Copyright and license
 
 Code is released under [LGPLv3 license](LICENSE).
