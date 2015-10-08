@@ -26,10 +26,8 @@ import io.nuun.kernel.api.config.KernelConfiguration;
 import io.nuun.kernel.core.AbstractPlugin;
 import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.core.NuunCore;
-import io.nuun.kernel.core.internal.context.ContextInternal;
 import io.nuun.kernel.core.internal.scanner.sample.*;
-import io.nuun.kernel.core.pluginsit.dummy1.Bean6;
-import io.nuun.kernel.core.pluginsit.dummy1.*;
+import io.nuun.kernel.core.pluginsit.dummy1.DummyPlugin;
 import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin2;
 import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin3;
 import io.nuun.kernel.core.pluginsit.dummy4.DummyPlugin4;
@@ -46,7 +44,8 @@ import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
@@ -162,29 +161,7 @@ public class KernelCoreIT
         assertThat(holder.context).isNotNull();
         assertThat(holder.context instanceof ContextInternal).isTrue();
 
-        ContextInternal contextInternal = (ContextInternal) holder.context;
-
-        assertThat(contextInternal.mainInjector).isNotNull();
-
-        assertThat(holder.context.getClassAnnotatedWith(MarkerSample4.class)).isNotEmpty();
-        assertThat(holder.context.getClassAnnotatedWith(MarkerSample4.class)).hasSize(1);
-        assertThat(holder.context.getClassAnnotatedWith(MarkerSample4.class)).containsOnly(Bean6.class);
-
-        // TODO: search by regex, like for the scans
-        assertThat(holder.context.getClassAnnotatedWithRegex(".*MarkerSample3")).isNotEmpty();
-        assertThat(holder.context.getClassAnnotatedWithRegex(".*MarkerSample3")).hasSize(1);
-        assertThat(holder.context.getClassAnnotatedWithRegex(".*MarkerSample3")).containsOnly(Bean9.class);
-
-        // TODO: add parent type by regex
-        assertThat(holder.context.getClassWithParentType(DummyMarker.class)).isNotEmpty();
-        assertThat(holder.context.getClassWithParentType(DummyMarker.class)).hasSize(1);
-        assertThat(holder.context.getClassWithParentType(DummyMarker.class)).containsOnly(BeanWithParentType.class);
-
-        // TODO: search by regex, like for the scans
-        assertThat(holder.context.getClassTypeByRegex(".*WithCustomSuffix")).isNotEmpty();
-        assertThat(holder.context.getClassTypeByRegex(".*WithCustomSuffix")).hasSize(3); // was 2
-        assertThat(holder.context.getClassTypeByRegex(".*WithCustomSuffix"))
-                .containsOnly(BeanWithCustomSuffix.class, ParentClassWithCustomSuffix.class, ParentInterfaceWithCustomSuffix.class);
+        assertThat(holder.context.applicationObjectGraph()).isNotNull();
     }
 
     @Test

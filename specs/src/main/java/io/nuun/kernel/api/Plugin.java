@@ -18,7 +18,7 @@ package io.nuun.kernel.api;
 
 import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.plugin.InitState;
-import io.nuun.kernel.api.plugin.RoundEnvironment;
+import io.nuun.kernel.api.plugin.Round;
 import io.nuun.kernel.api.plugin.context.Context;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.BindingRequest;
@@ -173,8 +173,8 @@ public interface Plugin
      * Round Environment provides information regarding the current round to the plugin.
      * The kernel pass this object to the plugin before all
      * 
-     * @param roundEnvironment the round
+     * @param round the round
      */
-    void provideRoundEnvironment(RoundEnvironment roundEnvironment);
+    void provideRoundEnvironment(Round round);
 
 }

@@ -21,7 +21,6 @@ import io.nuun.kernel.core.internal.concerns.sample.BugPlugin;
 import io.nuun.kernel.core.internal.concerns.sample.CachePlugin;
 import io.nuun.kernel.core.internal.concerns.sample.LogPlugin;
 import io.nuun.kernel.core.internal.concerns.sample.SecurityPlugin;
-import io.nuun.kernel.core.internal.context.InitContextInternal;
 import org.fest.assertions.Assertions;
 import org.junit.Before;
 import org.junit.Test;

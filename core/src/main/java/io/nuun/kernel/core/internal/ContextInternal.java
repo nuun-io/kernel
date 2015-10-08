@@ -14,41 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.nuun.kernel.api.plugin;
+package io.nuun.kernel.core.internal;
+
+import com.google.inject.Injector;
+import io.nuun.kernel.api.di.ObjectGraph;
+import io.nuun.kernel.api.plugin.context.Context;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
- * Default implementation of {@link io.nuun.kernel.api.plugin.RoundEnvironment}.
+ * @author Epo Jemba
+ * 
  */
-public class RoundEnvironmentInternal implements RoundEnvironment
+@Singleton
+public class ContextInternal implements Context
 {
 
-    private int roundNumber = 0;
+    public final Injector mainInjector;
 
     /**
      * Constructor.
+     *
+     * @param mainInjector the guice main injector
      */
-    public RoundEnvironmentInternal()
+    @Inject
+    public ContextInternal(Injector mainInjector)
     {
-    }    
-    
-    @Override
-    public int roundNumber()
-    {
-        return this.roundNumber;
-    }
-
-    /**
-     * Increments the round number.
-     */
-    public void incrementRoundNumber()
-    {
-        this.roundNumber++;
+        this.mainInjector = mainInjector;
     }
 
     @Override
-    public boolean firstRound()
-    {
-        return this.roundNumber == 0;
+    public ObjectGraph applicationObjectGraph() {
+        return new ObjectGraphEmbedded(mainInjector);
     }
-
 }

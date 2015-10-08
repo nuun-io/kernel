@@ -33,7 +33,7 @@ import io.nuun.kernel.api.di.ModuleValidation;
 import io.nuun.kernel.api.di.ObjectGraph;
 import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.plugin.InitState;
-import io.nuun.kernel.api.plugin.RoundEnvironmentInternal;
+import io.nuun.kernel.api.plugin.RoundInternal;
 import io.nuun.kernel.api.plugin.context.Context;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.BindingRequest;
@@ -41,7 +41,6 @@ import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.nuun.kernel.api.plugin.request.KernelParamsRequest;
 import io.nuun.kernel.api.plugin.request.KernelParamsRequestType;
 import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.core.internal.context.InitContextInternal;
 import io.nuun.kernel.spi.DependencyInjectionProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +86,7 @@ public final class KernelCore implements Kernel
 
     private Collection<DependencyInjectionProvider>        globalDependencyInjectionProviders;
     private Set<URL>                                       globalAdditionalClasspath;
-    private RoundEnvironmentInternal roundEnv;
+    private RoundInternal roundEnv;
     private DependencyInjectionMode                        dependencyInjectionMode;
     private ClasspathScanMode                              classpathScanMode              = ClasspathScanMode.NOMINAL;
     private final List<ModuleValidation>                   globalModuleValidations        = Collections.synchronizedList(new ArrayList<ModuleValidation>());
@@ -155,7 +154,7 @@ public final class KernelCore implements Kernel
     private void initRoundEnvironment(List<? extends Plugin> fetchedPlugins)
     {
         // we initialize plugins
-        roundEnv = new RoundEnvironmentInternal();
+        roundEnv = new RoundInternal();
 
         for (Plugin plugin : fetchedPlugins)
         {
@@ -460,9 +459,9 @@ public final class KernelCore implements Kernel
         { // ROUND ITERATIONS
 
             // we update the number of initialization round.
-            initContext.roundNumber(roundEnv.roundNumber());
+            initContext.roundNumber(roundEnv.index());
 
-            logger.info("Initializing: round " + roundEnv.roundNumber());
+            logger.info("Initializing: round " + roundEnv.index());
 
             for (Plugin plugin : roundOrderedPlugins)
             {
@@ -573,7 +572,7 @@ public final class KernelCore implements Kernel
                 // given
                 Collection<Class<? extends Plugin>> requiredPluginsClasses = plugin.requiredPlugins();
                 Collection<Class<? extends Plugin>> dependentPluginsClasses = plugin.dependentPlugins();
-                if (roundEnv.roundNumber() == 0 && requiredPluginsClasses != null && !requiredPluginsClasses.isEmpty() || dependentPluginsClasses != null
+                if (roundEnv.index() == 0 && requiredPluginsClasses != null && !requiredPluginsClasses.isEmpty() || dependentPluginsClasses != null
                         && !dependentPluginsClasses.isEmpty())
                 {
                     Collection<Plugin> requiredPlugins = filterPlugins(globalPlugins, requiredPluginsClasses);
@@ -628,9 +627,9 @@ public final class KernelCore implements Kernel
             }
             roundOrderedPlugins = nextRoundOrderedPlugins;
             // increment round number
-            roundEnv.incrementRoundNumber();
+            roundEnv.next();
         }
-        while (!roundOrderedPlugins.isEmpty() && roundEnv.roundNumber() < MAXIMAL_ROUND_NUMBER);
+        while (!roundOrderedPlugins.isEmpty() && roundEnv.index() < MAXIMAL_ROUND_NUMBER);
 
         // When all round are done.
 

@@ -16,27 +16,20 @@
  */
 package io.nuun.kernel.core.internal.scanner.inmemory;
 
-import static io.nuun.kernel.api.inmemory.ClasspathResource.res;
 import io.nuun.kernel.api.inmemory.ClasspathClass;
 import io.nuun.kernel.api.inmemory.ClasspathDirectory;
 import io.nuun.kernel.api.inmemory.ClasspathJar;
 import io.nuun.kernel.core.internal.scanner.AbstractClasspathScanner;
 import io.nuun.kernel.core.internal.scanner.ClasspathScannerTestBase;
-import io.nuun.kernel.core.internal.scanner.sample.Bean1;
-import io.nuun.kernel.core.internal.scanner.sample.Bean2;
-import io.nuun.kernel.core.internal.scanner.sample.Bean3;
-import io.nuun.kernel.core.internal.scanner.sample.Bean6;
-import io.nuun.kernel.core.internal.scanner.sample.MyModule1;
-import io.nuun.kernel.core.internal.scanner.sample.MyModule4;
+import io.nuun.kernel.core.internal.scanner.sample.*;
 import io.nuun.kernel.core.pluginsit.dummy7.Module7;
 
+import static io.nuun.kernel.api.inmemory.ClasspathResource.res;
+
 /**
- *
- * 
  * @author epo.jemba{@literal @}kametic.com
- *
  */
-public class ClasspathScannerInMemoryTest  extends ClasspathScannerTestBase
+public class ClasspathScannerInMemoryTest extends ClasspathScannerTestBase
 {
 
 	private InMemoryMultiThreadClasspath classpath = InMemoryMultiThreadClasspath.INSTANCE;
@@ -50,31 +43,27 @@ public class ClasspathScannerInMemoryTest  extends ClasspathScannerTestBase
          .add (
         		 ClasspathDirectory.create ("default")
         		 
-	                 .add(res("META-INF/properties" , "tst-one.properties" ) )
-	                 .add(res("META-INF/properties" , "tst-two.properties") )
+	                 .add(res("META-INF/properties", "tst-one.properties"))
+	                 .add(res("META-INF/properties", "tst-two.properties"))
         		 )
          .add (
         		 ClasspathJar.create ("app.jar")
         		 
-	        		 .add(new ClasspathClass(Bean1.class ))
-	        		 .add(new ClasspathClass(Bean2.class ))
-	        		 .add(new ClasspathClass(Bean3.class ))
-	        		 .add(new ClasspathClass(Bean6.class ))
+	        		 .add(new ClasspathClass(Bean1.class))
+	        		 .add(new ClasspathClass(Bean2.class))
+	        		 .add(new ClasspathClass(Bean3.class))
+	        		 .add(new ClasspathClass(Bean6.class))
         		 
         		 )
          .add (
         		 ClasspathJar.create ("modules.jar")
         		 
-	        		 .add(new ClasspathClass(MyModule1.class ))
-	        		 .add(new ClasspathClass(MyModule4.class ))
-	        		 .add(new ClasspathClass(Module7.class ))
+	        		 .add(new ClasspathClass(MyModule1.class))
+	        		 .add(new ClasspathClass(MyModule4.class))
+	        		 .add(new ClasspathClass(Module7.class))
         		 
-        		 )
-         ;
-		
-        
-		
-		return new ClasspathScannerInMemory(classpath);
-		
+        		 );
+
+        return new ClasspathScannerInMemory(classpath);
 	}
 }

@@ -19,7 +19,7 @@ package io.nuun.kernel.core;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.plugin.InitState;
-import io.nuun.kernel.api.plugin.RoundEnvironment;
+import io.nuun.kernel.api.plugin.Round;
 import io.nuun.kernel.api.plugin.context.Context;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.*;
@@ -48,7 +48,7 @@ public abstract class AbstractPlugin implements Plugin
 
     protected Context          context = null;
     protected Object           containerContext = null;
-    protected RoundEnvironment roundEnvironment;
+    protected Round round;
 
     // ============================= PLUGIN LIFE CYCLE USED BY KERNEL =============================
 
@@ -288,9 +288,9 @@ public abstract class AbstractPlugin implements Plugin
     }
     
     @Override
-    public void provideRoundEnvironment(RoundEnvironment roundEnvironment)
+    public void provideRoundEnvironment(Round round)
     {
-        this.roundEnvironment = roundEnvironment;
+        this.round = round;
     }
     
     

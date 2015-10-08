@@ -50,7 +50,7 @@ public class DummyPlugin6_B extends AbstractPlugin
     @Override
     public Collection<Class<? extends Plugin>> dependentPlugins()
     {
-        if (roundEnvironment != null && roundEnvironment.firstRound())
+        if (round != null && round.isFirst())
         {
             return collectionOf(DummyPlugin6_D.class, DummyPlugin6_C.class);
         }
@@ -63,7 +63,7 @@ public class DummyPlugin6_B extends AbstractPlugin
     @Override
     public Collection<BindingRequest> bindingRequests()
     {
-        if (roundEnvironment.roundNumber() == 3)
+        if (round.index() == 3)
         {
             return bindingRequestsBuilder().annotationType(Marker66.class).build();
         }
@@ -73,7 +73,7 @@ public class DummyPlugin6_B extends AbstractPlugin
     @Override
     public Collection<ClasspathScanRequest> classpathScanRequests()
     {
-        if (roundEnvironment.roundNumber() == 4)
+        if (round.index() == 4)
         {
             return classpathScanRequestBuilder().annotationType(Marker6.class).build();
         }
@@ -84,11 +84,11 @@ public class DummyPlugin6_B extends AbstractPlugin
     @Override
     public InitState init(InitContext initContext)
     {
-        if (roundEnvironment.roundNumber() != 5)
+        if (round.index() != 5)
         {
             Collection<? extends Plugin> dependentPlugins = initContext.dependentPlugins();
             assertThat(dependentPlugins).isNotNull();
-            if (roundEnvironment.firstRound())
+            if (round.isFirst())
             {
                 assertThat(dependentPlugins).hasSize(2);
             }
@@ -97,7 +97,7 @@ public class DummyPlugin6_B extends AbstractPlugin
                 assertThat(dependentPlugins).hasSize(0);
             }
 
-            if (roundEnvironment.roundNumber() == 4)
+            if (round.index() == 4)
             {
                 Collection<Class<?>> collection = initContext.scannedClassesByAnnotationClass().get(Marker6.class);
                 assertThat(collection).hasSize(2);
