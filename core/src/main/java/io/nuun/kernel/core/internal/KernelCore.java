@@ -146,9 +146,9 @@ public final class KernelCore implements Kernel
     }
 
     public void preparePlugins(List<Plugin> fetchedPlugins) {
-        computeAliases(fetchedPlugins);
         initRoundEnvironment(fetchedPlugins);
         checkPlugins(fetchedPlugins);
+        computeAliases(fetchedPlugins);
         fetchGlobalParametersFromPlugins();
     }
 
@@ -296,24 +296,31 @@ public final class KernelCore implements Kernel
         // Check for required and dependent plugins
         for (Plugin plugin : plugins.values())
         {
-            {
-                Collection<Class<? extends Plugin>> pluginDependenciesRequired = plugin.requiredPlugins();
+            assertDependenciesArePresent(plugin, pluginClasses);
+        }
+    }
 
-                if (pluginDependenciesRequired != null && !pluginDependenciesRequired.isEmpty() && !pluginClasses.containsAll(pluginDependenciesRequired))
-                {
-                    throw new KernelException(
-                            "Plugin %s misses the following plugin/s as dependency/ies %s", plugin.name(), pluginDependenciesRequired.toString());
-                }
-            }
+    /**
+     * Verifies that the plugin dependencies are present in the plugin list.
+     * The list should contains both dependent and required plugins.
+     *
+     * @param plugin the plugin to check
+     * @param availablePlugins the list of available plugins
+     */
+    private void assertDependenciesArePresent(Plugin plugin, List<Class<? extends Plugin>> availablePlugins) {
+        Collection<Class<? extends Plugin>> requiredPlugins = plugin.requiredPlugins();
 
-            {
-                Collection<Class<? extends Plugin>> dependentPlugin = plugin.dependentPlugins();
+        if (requiredPlugins != null && !requiredPlugins.isEmpty() && !availablePlugins.containsAll(requiredPlugins))
+        {
+            throw new KernelException("Plugin %s misses the following plugin/s as dependency/ies %s", plugin.name(), requiredPlugins.toString());
+        }
 
-                if (dependentPlugin != null && !dependentPlugin.isEmpty() && !pluginClasses.containsAll(dependentPlugin))
-                {
-                    throw new KernelException("Plugin %s misses the following plugin/s as dependee/s %s", plugin.name(), dependentPlugin.toString());
-                }
-            }
+
+        Collection<Class<? extends Plugin>> dependentPlugins = plugin.dependentPlugins();
+
+        if (dependentPlugins != null && !dependentPlugins.isEmpty() && !availablePlugins.containsAll(dependentPlugins))
+        {
+            throw new KernelException("Plugin %s misses the following plugin/s as dependee/s %s", plugin.name(), dependentPlugins.toString());
         }
     }
 
@@ -442,9 +449,9 @@ public final class KernelCore implements Kernel
 
         // We sort them
         ArrayList<Plugin> unOrderedPlugins = new ArrayList<Plugin>(globalPlugins);
-        logger.debug("unordered plugins: (" + unOrderedPlugins.size() + ") " + unOrderedPlugins);
+        logger.trace("unordered plugins: (" + unOrderedPlugins.size() + ") " + unOrderedPlugins);
         orderedPlugins = pluginSortStrategy.sortPlugins(unOrderedPlugins);
-        logger.debug("ordered plugins: (" + orderedPlugins.size() + ") " + orderedPlugins);
+        logger.trace("ordered plugins: (" + orderedPlugins.size() + ") " + orderedPlugins);
         Map<String, InitState> states = new HashMap<String, InitState>();
 
         ArrayList<Plugin> roundOrderedPlugins = new ArrayList<Plugin>(orderedPlugins);
@@ -734,13 +741,20 @@ public final class KernelCore implements Kernel
         return null;
     }
 
-    private Collection<Plugin> filterPlugins(Collection<Plugin> collection, Collection<Class<? extends Plugin>> pluginDependenciesRequired)
+    /**
+     * Filters a collection of plugin instances according to a collection of plugin classes.
+     *
+     * @param plugins the plugin instances
+     * @param requiredPlugins the required plugin classes
+     * @return the filtered set of plugins
+     */
+    private Set<Plugin> filterPlugins(Collection<Plugin> plugins, Collection<Class<? extends Plugin>> requiredPlugins)
     {
         Set<Plugin> filteredSet = new HashSet<Plugin>();
 
-        for (Plugin plugin : collection)
+        for (Plugin plugin : plugins)
         {
-            if (pluginDependenciesRequired.contains(plugin.getClass()))
+            if (requiredPlugins.contains(plugin.getClass()))
             {
                 filteredSet.add(plugin);
             }
