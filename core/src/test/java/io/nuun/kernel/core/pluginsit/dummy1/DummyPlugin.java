@@ -29,7 +29,7 @@ import io.nuun.kernel.api.plugin.request.BindingRequest;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.nuun.kernel.api.plugin.request.KernelParamsRequest;
 import io.nuun.kernel.core.AbstractPlugin;
-import io.nuun.kernel.core.internal.KernelCoreTest;
+import io.nuun.kernel.core.internal.KernelCoreIT;
 import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin2;
 
 import java.lang.annotation.Annotation;
@@ -48,13 +48,14 @@ public class DummyPlugin extends AbstractPlugin
     public  static final String ALIAS_DUMMY_PLUGIN1 = "alias.dummy.plugin1";
 
     public static final String NUUN_ROOT_ALIAS = "nuunrootalias";
+    public static final String NAME = "dummyPlugin";
 
     private Module module;
 
     @Override
     public String name()
     {
-        return "dummyPlugin";
+        return NAME;
     }
 
     @Override
@@ -90,7 +91,7 @@ public class DummyPlugin extends AbstractPlugin
 
         String param2 = initContext.kernelParam(Kernel.NUUN_ROOT_PACKAGE);
         assertThat(param2).isNotNull();
-        assertThat(param2).isEqualTo("internal," + KernelCoreTest.class.getPackage().getName());
+        assertThat(param2).isEqualTo("internal," + KernelCoreIT.class.getPackage().getName());
 
         Map<Class<? extends Annotation>, Collection<Class<?>>> scannedClassesByAnnotationClass = initContext.scannedClassesByAnnotationClass();
 

@@ -66,7 +66,7 @@ public class KernelMulticoreTest
                         newKernelConfiguration()
                         .params (
                                 DummyPlugin.ALIAS_DUMMY_PLUGIN1 , "WAZAAAA",
-                                DummyPlugin.NUUN_ROOT_ALIAS, "internal,"+KernelCoreTest.class.getPackage().getName()
+                                DummyPlugin.NUUN_ROOT_ALIAS, "internal,"+KernelCoreIT.class.getPackage().getName()
                                 )
                         );
                 

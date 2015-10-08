@@ -1,1 +1,2 @@
-io.nuun.kernel.core.pluginsit.dummy1.DummyPlugin
+it.fixture.NoOpPlugin1
+it.fixture.NoOpPlugin2

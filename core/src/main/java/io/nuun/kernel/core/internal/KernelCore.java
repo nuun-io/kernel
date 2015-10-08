@@ -102,7 +102,7 @@ public final class KernelCore implements Kernel
     {
         name = KERNEL_PREFIX_NAME + kernelIndex.getAndIncrement();
         // The kernel instance can be named, so the logger has to be differentiated
-        logger = LoggerFactory.getLogger(KernelCore.class.getPackage().getName() + '.' + name());
+        logger = LoggerFactory.getLogger(KernelCore.class.getName() + ' ' + name());
         initContext = new InitContextInternal(NUUN_PROPERTIES_PREFIX, kernelParamsAndAlias, classpathScanMode);
         kernelConfigurationInternal.apply(this);
     }
@@ -176,7 +176,7 @@ public final class KernelCore implements Kernel
             plugin.provideContainerContext(containerContext);
 
             String name = plugin.name();
-            logger.info("Get additional classpath to scan from Plugin {}.", name);
+            logger.debug("Get additional classpath to scan from Plugin {}.", name);
 
             Set<URL> computeAdditionalClasspathScan = plugin.computeAdditionalClasspathScan();
             if (computeAdditionalClasspathScan != null && computeAdditionalClasspathScan.size() > 0)
@@ -247,7 +247,6 @@ public final class KernelCore implements Kernel
 
     private void checkPlugins(List<Plugin> fetchedPlugins)
     {
-        logger.info("Plugins initialisation");
         plugins.clear();
 
         List<Class<? extends Plugin>> pluginClasses = new ArrayList<Class<? extends Plugin>>();
@@ -456,13 +455,14 @@ public final class KernelCore implements Kernel
 
         ArrayList<Plugin> roundOrderedPlugins = new ArrayList<Plugin>(orderedPlugins);
 
+
         do
         { // ROUND ITERATIONS
 
             // we update the number of initialization round.
             initContext.roundNumber(roundEnv.roundNumber());
 
-            logger.info("ROUND " + roundEnv.roundNumber() + " of the kernel initialisation.");
+            logger.info("Initializing: round " + roundEnv.roundNumber());
 
             for (Plugin plugin : roundOrderedPlugins)
             {
@@ -582,7 +582,7 @@ public final class KernelCore implements Kernel
                 }
 
                 String name = plugin.name();
-                logger.info("initializing Plugin {}.", name);
+                logger.info("Plugin {}.", name);
                 InitState state = plugin.init(actualInitContext);
                 states.put(name, state);
             }
@@ -615,9 +615,8 @@ public final class KernelCore implements Kernel
 
                     }
 
-                    if (unitModule == null && overridingUnitModule == null)
-                    {
-                        logger.info("For information Plugin {} does not provide any UnitModule via unitModule() nor overridingUnitModule().",  pluginName);
+                    if (unitModule == null && overridingUnitModule == null) {
+                        logger.debug("For information Plugin {} does not provide any UnitModule via unitModule() nor overridingUnitModule().",  pluginName);
                     }
 
                 }
