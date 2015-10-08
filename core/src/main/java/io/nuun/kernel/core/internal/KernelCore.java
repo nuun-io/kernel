@@ -81,7 +81,6 @@ public final class KernelCore implements Kernel
 
     private boolean                                        started                        = false;
     private boolean                                        initialized                    = false;
-    private Context                                        context;
     private Collection<DependencyInjectionProvider>        dependencyInjectionProviders;
     private Object                                         containerContext;
     private List<Plugin>                                   orderedPlugins;
@@ -258,7 +257,6 @@ public final class KernelCore implements Kernel
             String pluginName = plugin.name();
             if (Strings.isNullOrEmpty(pluginName))
             {
-                logger.warn("Plugin {} has no correct name it won't be installed.", plugin.getClass());
                 throw new KernelException("Plugin %s doesn't have a correct name. It won't be installed.", pluginName);
             }
 
@@ -284,15 +282,12 @@ public final class KernelCore implements Kernel
                 }
                 else
                 {
-                    logger.error("Plugin {} misses parameter/s : {}", pluginName, kernelParamsRequests.toString());
                     throw new KernelException("Plugin " + pluginName + " misses parameter/s : " + kernelParamsRequests.toString());
                 }
 
             }
             else
             {
-                logger.error("Can not have 2 plugins {} of the same type {}. Please fix this before the kernel can start.", pluginName, plugin.getClass()
-                        .getName());
                 throw new KernelException("Can not have 2 Plugin %s of the same type %s. please fix this before the kernel can start.", pluginName, plugin
                         .getClass().getName());
             }
@@ -306,7 +301,6 @@ public final class KernelCore implements Kernel
 
                 if (pluginDependenciesRequired != null && !pluginDependenciesRequired.isEmpty() && !pluginClasses.containsAll(pluginDependenciesRequired))
                 {
-                    logger.error("Plugin {} misses the following plugin/s as dependency/ies {}", plugin.name(), pluginDependenciesRequired.toString());
                     throw new KernelException(
                             "Plugin %s misses the following plugin/s as dependency/ies %s", plugin.name(), pluginDependenciesRequired.toString());
                 }
@@ -317,7 +311,6 @@ public final class KernelCore implements Kernel
 
                 if (dependentPlugin != null && !dependentPlugin.isEmpty() && !pluginClasses.containsAll(dependentPlugin))
                 {
-                    logger.error("Plugin {} misses the following plugin/s as dependee/s {}", plugin.name(), dependentPlugin.toString());
                     throw new KernelException("Plugin %s misses the following plugin/s as dependee/s %s", plugin.name(), dependentPlugin.toString());
                 }
             }
@@ -350,7 +343,7 @@ public final class KernelCore implements Kernel
 
             // Here we can pass the mainInjector to the non guice modules
 
-            context = mainInjector.getInstance(Context.class);
+            Context context = mainInjector.getInstance(Context.class);
 
             // 1) inject plugins via injector
             // 2) inject context via injector
@@ -670,7 +663,7 @@ public final class KernelCore implements Kernel
                 initContext.addChildOverridingModule(Module.class.cast(unitModule.nativeModule()));
                 overridingUnitModules.put(plugin.getClass(), unitModule);
             }
-        } //
+        }
     }
 
     /**
@@ -723,7 +716,6 @@ public final class KernelCore implements Kernel
         }
         else
         {
-            logger.error("Kernel did not recognize module {} of plugin {}", nativeUnitModule, pluginName);
             throw new KernelException(
                     "Kernel did not recognize module %s of plugin %s. Please provide a DependencyInjectionProvider.",
                     nativeUnitModule.toString(), pluginName);
