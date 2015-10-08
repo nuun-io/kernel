@@ -53,7 +53,7 @@ import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.nuun.kernel.core.internal.utils.NuunReflectionUtils.silentNewInstance;
 
@@ -64,7 +64,7 @@ public final class KernelCore implements Kernel
 {
 
     private static final int                               MAXIMAL_ROUND_NUMBER           = 50;
-    private static final ConcurrentHashMap<String, Kernel> kernels                        = new ConcurrentHashMap<String, Kernel>();
+    private static AtomicInteger                           kernelIndex = new AtomicInteger();
     private final Logger                                   logger;
     private final String                                   name;
 
@@ -101,20 +101,10 @@ public final class KernelCore implements Kernel
 
     KernelCore(KernelConfigurationInternal kernelConfigurationInternal)
     {
-        name = KERNEL_PREFIX_NAME + kernels.size();
+        name = KERNEL_PREFIX_NAME + kernelIndex.getAndIncrement();
         // The kernel instance can be named, so the logger has to be differentiated
         logger = LoggerFactory.getLogger(KernelCore.class.getPackage().getName() + '.' + name());
         initContext = new InitContextInternal(NUUN_PROPERTIES_PREFIX, kernelParamsAndAlias, classpathScanMode);
-
-        if (!kernels.containsKey(name()))
-        {
-            kernels.put(name(), this);
-        }
-        else
-        {
-            throw new KernelException(String.format("A kernel named %s already exists", name()));
-        }
-
         kernelConfigurationInternal.apply(this);
     }
 
