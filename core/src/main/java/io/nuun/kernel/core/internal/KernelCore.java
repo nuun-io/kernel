@@ -799,7 +799,6 @@ public final class KernelCore implements Kernel
 
     void createDependencyInjectionProvidersMap(Collection<Class<?>> dependencyInjectionProvidersClasses)
     {
-
         dependencyInjectionProviders = new HashSet<DependencyInjectionProvider>();
 
         for (Class<?> dependencyInjectionProviderClass : dependencyInjectionProvidersClasses)
@@ -819,7 +818,6 @@ public final class KernelCore implements Kernel
     void addContainerContext(Object containerContext)
     {
         this.containerContext = containerContext;
-
     }
 
     void spiPluginEnabled()
@@ -847,7 +845,7 @@ public final class KernelCore implements Kernel
     /**
      * @param pluginClasses plugins to add
      */
-    void addPlugins(Class<? extends Plugin>... pluginClasses)
+    void addPlugins(List<Class<? extends Plugin>> pluginClasses)
     {
         for (Class<? extends Plugin> class1 : pluginClasses)
         {

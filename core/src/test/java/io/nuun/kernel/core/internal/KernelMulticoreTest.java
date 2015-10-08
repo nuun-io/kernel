@@ -72,10 +72,10 @@ public class KernelMulticoreTest
                 
                 assertThat(underTest.name()).startsWith(Kernel.KERNEL_PREFIX_NAME);
 
-                underTest.addPlugins(DummyPlugin3.class);
-                underTest.addPlugins(DummyPlugin2.class);
-                underTest.addPlugins(plugin4);
-                underTest.addPlugins(DummyPlugin5.class);
+                underTest.addPlugin(DummyPlugin3.class);
+                underTest.addPlugin(DummyPlugin2.class);
+                underTest.addPlugin(plugin4);
+                underTest.addPlugin(DummyPlugin5.class);
 
                 underTest.init();
                 

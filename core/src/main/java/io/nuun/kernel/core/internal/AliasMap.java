@@ -9,7 +9,6 @@ import java.util.Map;
  * 
  * 
  * @author epo.jemba{@literal @}kametic.com
- *
  */
 public class AliasMap extends HashMap<String, String>
 {
