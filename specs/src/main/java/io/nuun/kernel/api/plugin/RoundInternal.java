@@ -25,13 +25,13 @@ public class RoundInternal implements Round
     private int roundIndex = 0;
 
     @Override
-    public int index()
+    public int number()
     {
         return this.roundIndex;
     }
 
     /**
-     * Increments the round index.
+     * Increments the round number.
      */
     public void next()
     {

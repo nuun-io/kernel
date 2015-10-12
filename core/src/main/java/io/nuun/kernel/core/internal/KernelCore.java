@@ -459,9 +459,9 @@ public final class KernelCore implements Kernel
         { // ROUND ITERATIONS
 
             // we update the number of initialization round.
-            initContext.roundNumber(roundEnv.index());
+            initContext.roundNumber(roundEnv.number());
 
-            logger.info("Initializing: round " + roundEnv.index());
+            logger.info("Initializing: round " + roundEnv.number());
 
             for (Plugin plugin : roundOrderedPlugins)
             {
@@ -572,7 +572,7 @@ public final class KernelCore implements Kernel
                 // given
                 Collection<Class<? extends Plugin>> requiredPluginsClasses = plugin.requiredPlugins();
                 Collection<Class<? extends Plugin>> dependentPluginsClasses = plugin.dependentPlugins();
-                if (roundEnv.index() == 0 && requiredPluginsClasses != null && !requiredPluginsClasses.isEmpty() || dependentPluginsClasses != null
+                if (roundEnv.number() == 0 && requiredPluginsClasses != null && !requiredPluginsClasses.isEmpty() || dependentPluginsClasses != null
                         && !dependentPluginsClasses.isEmpty())
                 {
                     Collection<Plugin> requiredPlugins = filterPlugins(globalPlugins, requiredPluginsClasses);
@@ -629,7 +629,7 @@ public final class KernelCore implements Kernel
             // increment round number
             roundEnv.next();
         }
-        while (!roundOrderedPlugins.isEmpty() && roundEnv.index() < MAXIMAL_ROUND_NUMBER);
+        while (!roundOrderedPlugins.isEmpty() && roundEnv.number() < MAXIMAL_ROUND_NUMBER);
 
         // When all round are done.
 

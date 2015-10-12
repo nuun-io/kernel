@@ -21,7 +21,7 @@ package io.nuun.kernel.api.plugin;
  * plugin requests then execute the plugin {@code init()} method until
  * the plugin is initialized.
  * <p>
- * This class represents the current loop index.
+ * This class represents the current loop number.
  * </p>
  *
  * @author epo.jemba{@literal @}kametic.com
@@ -32,9 +32,9 @@ public interface Round
     /**
      * The current round number.
      *
-     * @return the round index
+     * @return the round number
      */
-    public int index();
+    public int number();
 
     /**
      * Indicates if this is the first round.
