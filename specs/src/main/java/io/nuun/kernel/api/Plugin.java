@@ -170,11 +170,11 @@ public interface Plugin
     Map<String, String> kernelParametersAliases();
     
     /**
-     * Round Environment provides information regarding the current round to the plugin.
-     * The kernel pass this object to the plugin before all
+     * The {@link io.nuun.kernel.api.plugin.Round} provides information regarding the current round to the plugin.
+     * The method is called by the kernel.
      * 
      * @param round the round
      */
-    void provideRoundEnvironment(Round round);
+    void provideRound(Round round);
 
 }

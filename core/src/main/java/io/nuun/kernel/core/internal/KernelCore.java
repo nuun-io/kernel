@@ -159,7 +159,7 @@ public final class KernelCore implements Kernel
         for (Plugin plugin : fetchedPlugins)
         {
             // we pass the roundEnvironment
-            plugin.provideRoundEnvironment(roundEnv);
+            plugin.provideRound(roundEnv);
         }
     }
 

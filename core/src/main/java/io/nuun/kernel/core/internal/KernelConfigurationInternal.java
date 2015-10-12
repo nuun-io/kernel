@@ -82,8 +82,21 @@ public class KernelConfigurationInternal implements KernelConfiguration, KernelC
     }
 
     @Override
-    public KernelConfiguration plugins(Class<? extends Plugin>... pluginsClass) {
+    public KernelConfiguration addPlugin(Class<? extends Plugin> pluginsClass) {
         Collections.addAll(this.pluginsClass, pluginsClass);
+        return this;
+    }
+
+    @Override
+    public KernelConfiguration plugins(Class<? extends Plugin>... pluginsClasses) {
+        Collections.addAll(this.pluginsClass, pluginsClasses);
+        return this;
+    }
+
+    @Override
+    public KernelConfiguration addPlugin(Plugin plugin)
+    {
+        this.plugins = ObjectArrays.concat(plugin, this.plugins);
         return this;
     }
 

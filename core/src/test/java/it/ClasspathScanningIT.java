@@ -14,7 +14,6 @@ import org.junit.Test;
  *
  * @author pierre.thirouin@ext.mpsa.com (Pierre Thirouin)
  */
-@SuppressWarnings("unchecked")
 public class ClasspathScanningIT {
 
     /**
@@ -22,11 +21,11 @@ public class ClasspathScanningIT {
      * All the classes annotated or meta annotation with {@code Ignore} should be ignored.
      */
     @Test
-    public void test_scanned_classes_with_ignored_classes() {
+    public void test_class_scan_and_ignored_policy() {
         KernelConfiguration kernelConfig = NuunCore.newKernelConfiguration()
                 .withoutSpiPluginsLoader()
                 .param(Kernel.NUUN_ROOT_PACKAGE, "it.fixture.scan")
-                .plugins(ScanningPlugin.class);
+                .addPlugin(ScanningPlugin.class);
 
         Kernel kernel = NuunCore.createKernel(kernelConfig);
         kernel.init();

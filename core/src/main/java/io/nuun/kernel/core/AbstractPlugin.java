@@ -288,7 +288,7 @@ public abstract class AbstractPlugin implements Plugin
     }
     
     @Override
-    public void provideRoundEnvironment(Round round)
+    public void provideRound(Round round)
     {
         this.round = round;
     }
