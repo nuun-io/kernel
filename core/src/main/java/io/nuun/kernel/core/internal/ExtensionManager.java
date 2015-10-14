@@ -34,7 +34,7 @@ import java.util.*;
 public class ExtensionManager
 {
 
-    private final List<Plugin>                         fetchedPlugins;
+    private final Collection<Plugin>                         fetchedPlugins;
     private final ClassLoader                          contextClassLoader;
     private final Multimap<KernelExtension<?>, Plugin> kernelExtensions = ArrayListMultimap.create();
 
@@ -43,7 +43,7 @@ public class ExtensionManager
      *
      * @param fetchedPlugins the plugin list
      */
-    public ExtensionManager(List<Plugin> fetchedPlugins, ClassLoader contextClassLoader)
+    public ExtensionManager(Collection<Plugin> fetchedPlugins, ClassLoader contextClassLoader)
     {
         this.fetchedPlugins = fetchedPlugins;
         this.contextClassLoader = contextClassLoader;

@@ -16,7 +16,7 @@
  */
 package io.nuun.kernel.core.pluginsit.dummy6;
 
-import io.nuun.kernel.api.Plugin;
+import com.google.common.collect.Lists;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.BindingRequest;
@@ -45,14 +45,13 @@ public class DummyPlugin6_B extends AbstractPlugin
     {
         return "dummy-plugin-6-B";
     }
-    
-    @SuppressWarnings("unchecked")
+
     @Override
-    public Collection<Class<? extends Plugin>> dependentPlugins()
+    public Collection<Class<?>> dependentPlugins()
     {
         if (round != null && round.isFirst())
         {
-            return collectionOf(DummyPlugin6_D.class, DummyPlugin6_C.class);
+            return Lists.<Class<?>>newArrayList(DummyPlugin6_D.class, DummyPlugin6_C.class);
         }
         else
         {
@@ -86,7 +85,7 @@ public class DummyPlugin6_B extends AbstractPlugin
     {
         if (round.number() != 5)
         {
-            Collection<? extends Plugin> dependentPlugins = initContext.dependentPlugins();
+            Collection<?> dependentPlugins = initContext.dependentPlugins();
             assertThat(dependentPlugins).isNotNull();
             if (round.isFirst())
             {
@@ -108,7 +107,7 @@ public class DummyPlugin6_B extends AbstractPlugin
                 assertThat(collection).isNullOrEmpty();
             }
 
-            for (Plugin plugin : dependentPlugins)
+            for (Object plugin : dependentPlugins)
             {
                 if (DummyPlugin6_D.class.isAssignableFrom(plugin.getClass())) 
                 {

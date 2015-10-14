@@ -209,13 +209,13 @@ public abstract class AbstractPlugin implements Plugin
     }
 
     @Override
-    public Collection<Class<? extends Plugin>> requiredPlugins()
+    public Collection<Class<?>> requiredPlugins()
     {
         return Collections.emptySet();
     }
     
     @Override
-    public Collection<Class<? extends Plugin>> dependentPlugins()
+    public Collection<Class<?>> dependentPlugins()
     {
         return Collections.emptySet();
     }
@@ -298,11 +298,6 @@ public abstract class AbstractPlugin implements Plugin
     public Map<String, String> kernelParametersAliases()
     {
         return new HashMap<String, String>();
-    }
-
-    protected Collection<Class<? extends Plugin>> collectionOf(Class<? extends Plugin>... items)
-    {
-        return Arrays.asList(items);
     }
     
     protected UnitModule unitModule(Object module)

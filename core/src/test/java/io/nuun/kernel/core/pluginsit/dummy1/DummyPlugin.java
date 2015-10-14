@@ -19,9 +19,9 @@
  */
 package io.nuun.kernel.core.pluginsit.dummy1;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Module;
 import io.nuun.kernel.api.Kernel;
-import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.Context;
 import io.nuun.kernel.api.plugin.context.InitContext;
@@ -153,11 +153,10 @@ public class DummyPlugin extends AbstractPlugin
         return kernelParamsRequestBuilder().mandatory("dummy.plugin1").build();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Collection<Class<? extends Plugin>> requiredPlugins()
+    public Collection<Class<?>> requiredPlugins()
     {
-        return collectionOf(DummyPlugin2.class);
+        return Lists.<Class<?>>newArrayList(DummyPlugin2.class);
     }
 
     @Override

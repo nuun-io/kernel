@@ -16,7 +16,6 @@
  */
 package io.nuun.kernel.api.plugin.context;
 
-import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.di.UnitModule;
 import org.kametic.specifications.Specification;
 
@@ -68,8 +67,8 @@ public interface InitContext
      * 
      * @return the instances of the plugin declared required by the method Plugin.pluginDependenciesRequired()
      */
-    public abstract Collection<? extends Plugin> pluginsRequired();
-
+    @Deprecated
+    public abstract Collection<?> pluginsRequired();
     
     /**
      * Returns instances of the plugins that become dependent on this plugin.
@@ -77,8 +76,12 @@ public interface InitContext
      * 
      * @return dependent plugins
      */
-    public abstract Collection<? extends Plugin> dependentPlugins();
+    @Deprecated
+    public abstract Collection<?> dependentPlugins();
 
+    public abstract List<?> dependencies();
+
+    public abstract <T> T dependency(Class<T> dependencyClass);
     /**
      * The current initialization round.
      * 

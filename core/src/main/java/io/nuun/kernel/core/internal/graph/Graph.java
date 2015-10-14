@@ -16,15 +16,8 @@
  */
 package io.nuun.kernel.core.internal.graph;
 
-
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class Graph {
 
-	Logger logger = LoggerFactory.getLogger(Graph.class);
-	
 	private final int MAX_VERTS;
 
 	private Vertex vertexList[]; // list of vertices
@@ -35,8 +28,8 @@ public class Graph {
 
 	private char sortedArray[];
 
-	public Graph(int maxvert) {
-		MAX_VERTS =maxvert;
+	public Graph(int maximumVertices) {
+		MAX_VERTS = maximumVertices;
 		vertexList = new Vertex[MAX_VERTS];
 		matrix = new int[MAX_VERTS][MAX_VERTS];
 		numVerts = 0;
@@ -45,7 +38,7 @@ public class Graph {
 				matrix[i][k] = 0;
 			}
 		}
-		sortedArray = new char[MAX_VERTS]; // sorted vert labels
+		sortedArray = new char[MAX_VERTS]; // sorted vertex labels
 	}
 
 	public int addVertex(char lab) {
@@ -54,8 +47,7 @@ public class Graph {
 	}
 
 	/**
-	 * 
-	 * end depends on start
+	 * Adds an edge where {@code end} depends on {@code start}
 	 * 
 	 * @param start dependee
 	 * @param end dependent
@@ -76,7 +68,6 @@ public class Graph {
 			int currentVertex = noSuccessors();
 			if (currentVertex == -1) // must be a cycle
 			{
-				System.out.println("ERROR: Graph has cycles");
 				return null;
 			}
 			// insert vertex label in sorted array (start at end)
@@ -85,10 +76,6 @@ public class Graph {
 			deleteVertex(currentVertex); // delete vertex
 		}
 
-		// vertices all gone; display sortedArray
-//		logger.debug("Topologically sorted order: ");
-//		for (int j = 0; j < orig_nVerts; j++)
-//			logger.debug("" + sortedArray[j]);
 		return sortedArray;
 	}
 
@@ -113,8 +100,7 @@ public class Graph {
 	}
 
 	public void deleteVertex(int delVert) {
-		if (delVert != numVerts - 1) // if not last vertex, delete from
-										// vertexList
+		if (delVert != numVerts - 1) // if not last vertex, delete from vertexList
 		{
 			for (int j = delVert; j < numVerts - 1; j++) {
 				vertexList[j] = vertexList[j + 1];

@@ -6,11 +6,12 @@ import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.core.AbstractPlugin;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author pierre.thirouin@ext.mpsa.com (Pierre Thirouin)
  */
-public class WithRequiredDepsPlugin extends AbstractPlugin {
+public class WithRequiredFacetPlugin extends AbstractPlugin {
 
     public static final String NAME = "with-required-deps";
 
@@ -19,26 +20,25 @@ public class WithRequiredDepsPlugin extends AbstractPlugin {
         return NAME;
     }
 
+
     @Override
     public InitState init(InitContext initContext) {
-        boolean isInitialized = false;
 
-        for (Object plugin : initContext.pluginsRequired()) {
-            if (plugin instanceof RequiredPlugin1){
-                isInitialized = ((RequiredPlugin1) plugin).isInitialized();
-            }
+        Facet1 facet1 = initContext.dependency(Facet1.class);
+
+        if (!facet1.isInitialized()) {
+            throw new IllegalStateException("Facet1 should be initialized before WithRequiredFacetPlugin");
         }
 
-        if (!isInitialized) {
-            throw new IllegalStateException("RequiredPlugin1 should not be initialized before WithRequiredDepsPlugin");
+        List<?> dependencies = initContext.dependencies();
+        if (dependencies.size() != 1) {
+            throw new IllegalStateException("WithRequiredFacetPlugin should have only one dependency");
         }
 
         return InitState.INITIALIZED;
     }
-
     @Override
     public Collection<Class<?>> requiredPlugins() {
-        return Lists.<Class<?>>newArrayList(RequiredPlugin1.class);
+        return Lists.<Class<?>>newArrayList(Facet1Plugin.class);
     }
-
 }

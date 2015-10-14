@@ -16,39 +16,28 @@
  */
 package io.nuun.kernel.core.internal.scanner.disk;
 
-import static org.reflections.util.FilterBuilder.prefix;
-
-import io.nuun.kernel.core.internal.utils.AssertUtils;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import io.nuun.kernel.core.internal.scanner.AbstractClasspathScanner;
-
-import java.lang.annotation.Annotation;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
-
+import io.nuun.kernel.core.internal.utils.AssertUtils;
 import org.kametic.specifications.Specification;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import org.reflections.Store;
-import org.reflections.scanners.ResourcesScanner;
+import org.reflections.scanners.*;
 import org.reflections.scanners.Scanner;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.scanners.TypeAnnotationsScanner;
-import org.reflections.scanners.TypeElementsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
+import java.lang.annotation.Annotation;
+import java.net.URL;
+import java.util.*;
+import java.util.regex.Pattern;
+
+import static org.reflections.util.FilterBuilder.prefix;
 
 public class ClasspathScannerDisk extends AbstractClasspathScanner
 {
@@ -547,7 +536,7 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
 
     private <T> Collection<Class<? extends T>> toClasses(Collection<String> names)
     {
-        return ReflectionUtils.<T> forNames(names, new ClassLoader[]{ this.getClass().getClassLoader() });
+        return ReflectionUtils.forNames(names, new ClassLoader[]{ this.getClass().getClassLoader() });
     }
 
     private TypeElementsScanner buildTypeElementsScanner()

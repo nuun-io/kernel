@@ -4,10 +4,7 @@ import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.config.KernelConfiguration;
 import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.core.NuunCore;
-import it.fixture.dependencies.DependentPlugin1;
-import it.fixture.dependencies.RequiredPlugin1;
-import it.fixture.dependencies.WithDependentDepsPlugin;
-import it.fixture.dependencies.WithRequiredDepsPlugin;
+import it.fixture.dependencies.*;
 import org.junit.Test;
 
 /**
@@ -66,6 +63,20 @@ public class PluginDependencyIT {
         KernelConfiguration kernelConfig = NuunCore.newKernelConfiguration()
                 .withoutSpiPluginsLoader()
                 .addPlugin(WithRequiredDepsPlugin.class);
+
+        Kernel kernel = NuunCore.createKernel(kernelConfig);
+        kernel.init();
+    }
+
+    /**
+     * WithDependentDepsPlugin throws an exception if DependentPlugin1 is initialized before it.
+     */
+    @Test
+    public void test_required_facet() {
+        KernelConfiguration kernelConfig = NuunCore.newKernelConfiguration()
+                .withoutSpiPluginsLoader()
+                .addPlugin(Facet1Plugin.class)
+                .addPlugin(WithRequiredFacetPlugin.class);
 
         Kernel kernel = NuunCore.createKernel(kernelConfig);
         kernel.init();
