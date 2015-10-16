@@ -27,10 +27,10 @@ public interface DependencyInjectionProvider
     /**
      * Checks whether the dependency injection provider supports the given unit module.
      *
-     * @param unitModule a specific unit module
+     * @param bindingDefinitions an object containing binding definitions
      * @return true if the provider supports this unit module, false otherwise
      */
-    boolean canHandle(Class<?> unitModule);
+    boolean canHandle(Class<?> bindingDefinitions);
 
     /**
      * Converts a unit module from a dependency injection provider into a Nuun unit module.
@@ -38,11 +38,11 @@ public interface DependencyInjectionProvider
      * Internally Nuun will use a Guice unit module.
      * </p>
      *
-     * @param unitModule an object containing binding definitions
+     * @param bindingDefinitions an object containing binding definitions
      *
      * @return a Nuun unit module
      */
-    UnitModule convert(Object unitModule);
+    UnitModule convert(Object bindingDefinitions);
 
     /**
      * Returns a bridge from kernel to module with this DI.
