@@ -66,16 +66,16 @@ public class KernelMulticoreTest
                         newKernelConfiguration()
                         .params (
                                 DummyPlugin.ALIAS_DUMMY_PLUGIN1 , "WAZAAAA",
-                                DummyPlugin.NUUNROOTALIAS       , "internal,"+KernelCoreTest.class.getPackage().getName()
+                                DummyPlugin.NUUN_ROOT_ALIAS, "internal,"+KernelCoreIT.class.getPackage().getName()
                                 )
                         );
                 
                 assertThat(underTest.name()).startsWith(Kernel.KERNEL_PREFIX_NAME);
 
-                underTest.addPlugins(DummyPlugin3.class);
-                underTest.addPlugins(DummyPlugin2.class);
-                underTest.addPlugins(plugin4);
-                underTest.addPlugins(DummyPlugin5.class);
+                underTest.addPlugin(DummyPlugin3.class);
+                underTest.addPlugin(DummyPlugin2.class);
+                underTest.addPlugin(plugin4);
+                underTest.addPlugin(DummyPlugin5.class);
 
                 underTest.init();
                 

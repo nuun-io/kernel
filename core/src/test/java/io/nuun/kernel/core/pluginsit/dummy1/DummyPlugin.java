@@ -19,6 +19,7 @@
  */
 package io.nuun.kernel.core.pluginsit.dummy1;
 
+import com.google.inject.Module;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.plugin.InitState;
@@ -28,10 +29,8 @@ import io.nuun.kernel.api.plugin.request.BindingRequest;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.nuun.kernel.api.plugin.request.KernelParamsRequest;
 import io.nuun.kernel.core.AbstractPlugin;
-import io.nuun.kernel.core.internal.KernelCoreTest;
+import io.nuun.kernel.core.internal.KernelCoreIT;
 import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
@@ -43,27 +42,20 @@ import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author Epo Jemba
- * 
  */
 public class DummyPlugin extends AbstractPlugin
 {
-
     public  static final String ALIAS_DUMMY_PLUGIN1 = "alias.dummy.plugin1";
 
-    public static final String NUUNROOTALIAS = "nuunrootalias";
+    public static final String NUUN_ROOT_ALIAS = "nuunrootalias";
+    public static final String NAME = "dummyPlugin";
 
-    private Logger logger = LoggerFactory.getLogger(DummyPlugin.class);
-
-    private com.google.inject.Module module;
-
-    public DummyPlugin()
-    {
-    }
+    private Module module;
 
     @Override
     public String name()
     {
-        return "dummyPlugin";
+        return NAME;
     }
 
     @Override
@@ -97,12 +89,12 @@ public class DummyPlugin extends AbstractPlugin
         assertThat(param).isNotEmpty();
         assertThat(param).isEqualTo("WAZAAAA");
 
-        String param2 = initContext.kernelParam( Kernel.NUUN_ROOT_PACKAGE );
+        String param2 = initContext.kernelParam(Kernel.NUUN_ROOT_PACKAGE);
         assertThat(param2).isNotNull();
-        assertThat(param2).isEqualTo("internal,"+KernelCoreTest.class.getPackage().getName());
-        
+        assertThat(param2).isEqualTo("internal," + KernelCoreIT.class.getPackage().getName());
+
         Map<Class<? extends Annotation>, Collection<Class<?>>> scannedClassesByAnnotationClass = initContext.scannedClassesByAnnotationClass();
-        
+
         Collection<Class<?>> cAnnotations1 = scannedClassesByAnnotationClass.get(MarkerSample4.class);
         assertThat(cAnnotations1).hasSize(1);
 
@@ -118,7 +110,7 @@ public class DummyPlugin extends AbstractPlugin
         Collection<Class<?>> cParent2 = scannedSubTypesByParentRegex.get(".*WithCustomSuffix");
 
         assertThat(cParent2).hasSize(2);
-        
+
         Map<String, Collection<Class<?>>> scannedTypesByRegex = initContext.scannedTypesByRegex();
         Collection<Class<?>> cParent3 = scannedTypesByRegex.get(".*WithCustomSuffix");
 
@@ -130,12 +122,11 @@ public class DummyPlugin extends AbstractPlugin
         classes.addAll(cAnnotations1);
 
         module = new DummyModule(classes);
-        
+
         assertThat(initContext.pluginsRequired()).isNotNull();
         assertThat(initContext.pluginsRequired()).hasSize(1);
         assertThat(initContext.pluginsRequired().iterator().next().getClass()).isEqualTo(DummyPlugin2.class);
         return InitState.INITIALIZED;
-
     }
 
     @Override
@@ -147,13 +138,13 @@ public class DummyPlugin extends AbstractPlugin
     @Override
     public Collection<ClasspathScanRequest> classpathScanRequests()
     {
-        return classpathScanRequestBuilder() //
-            .annotationRegex(".*MarkerSample3") //
-            .annotationType(MarkerSample4.class) //
-            .subtypeOf(DummyMarker.class) //
-            .subtypeOfRegex(".*WithCustomSuffix") //
-            .typeOfRegex(".*WithCustomSuffix") //
-            .build();
+        return classpathScanRequestBuilder()
+                .annotationRegex(".*MarkerSample3")
+                .annotationType(MarkerSample4.class)
+                .subtypeOf(DummyMarker.class)
+                .subtypeOfRegex(".*WithCustomSuffix")
+                .typeOfRegex(".*WithCustomSuffix")
+                .build();
     }
 
     @Override
@@ -173,20 +164,14 @@ public class DummyPlugin extends AbstractPlugin
     public void start(Context context)
     {
         assertThat(context).isNotNull();
-        logger.info("DummyPlugin is starting");
     }
 
-    @Override
-    public void stop()
-    {
-        logger.info("DummyPlugin is stopping");
-    }
 
     @Override
     public Map<String, String> kernelParametersAliases()
     {
         Map<String, String> m = new HashMap<String, String>();
-        m.put(NUUNROOTALIAS, Kernel.NUUN_ROOT_PACKAGE);
+        m.put(NUUN_ROOT_ALIAS, Kernel.NUUN_ROOT_PACKAGE);
         m.put(ALIAS_DUMMY_PLUGIN1, "dummy.plugin1");
         return m;
     }

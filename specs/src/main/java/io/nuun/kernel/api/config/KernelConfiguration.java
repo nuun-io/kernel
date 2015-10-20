@@ -51,12 +51,28 @@ public interface KernelConfiguration
     KernelConfiguration containerContext(Object containerContext);
 
     /**
-     * Specifies the plugins to be used by the Nuun kernel.
+     * Specifies a plugin to be used by the Nuun kernel.
      *
-     * @param pluginsClass the plugin classes
+     * @param pluginsClass the plugin class
      * @return itself
      */
-    KernelConfiguration plugins(Class<? extends Plugin>... pluginsClass);
+    KernelConfiguration addPlugin(Class<? extends Plugin> pluginsClass);
+
+    /**
+     * Specifies the plugins to be used by the Nuun kernel.
+     *
+     * @param pluginsClasses the plugin classes
+     * @return itself
+     */
+    KernelConfiguration plugins(Class<? extends Plugin>... pluginsClasses);
+
+    /**
+     * Specifies a plugin to be used by the Nuun kernel.
+     *
+     * @param plugins the plugin instance
+     * @return itself
+     */
+    KernelConfiguration addPlugin(Plugin plugins);
 
     /**
      * Specifies the plugins to be used by the Nuun kernel.

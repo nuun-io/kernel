@@ -17,38 +17,30 @@
 package io.nuun.kernel.api.plugin;
 
 /**
- * Default implementation of {@link io.nuun.kernel.api.plugin.RoundEnvironment}.
+ * Plugins are initialized by the kernel in a loop. This loop computes
+ * plugin requests then execute the plugin {@code init()} method until
+ * the plugin is initialized.
+ * <p>
+ * This class represents the current loop number.
+ * </p>
+ *
+ * @author epo.jemba{@literal @}kametic.com
  */
-public class RoundEnvironmentInternal implements RoundEnvironment
+public interface Round
 {
 
-    private int roundNumber = 0;
+    /**
+     * The current round number.
+     *
+     * @return the round number
+     */
+    public int number();
 
     /**
-     * Constructor.
+     * Indicates if this is the first round.
+     *
+     * @return true if it's the first round, false otherwise.
      */
-    public RoundEnvironmentInternal()
-    {
-    }    
+    public boolean isFirst();
     
-    @Override
-    public int roundNumber()
-    {
-        return this.roundNumber;
-    }
-
-    /**
-     * Increments the round number.
-     */
-    public void incrementRoundNumber()
-    {
-        this.roundNumber++;
-    }
-
-    @Override
-    public boolean firstRound()
-    {
-        return this.roundNumber == 0;
-    }
-
 }

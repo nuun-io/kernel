@@ -16,23 +16,20 @@
  */
 package io.nuun.kernel.api.plugin.context;
 
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-
+import io.nuun.kernel.api.di.ObjectGraph;
 
 /**
- * @author Epo Jemba
+ * The context passed at the plugin start phase.
  *
+ * @author Epo Jemba
  */
 public interface Context
 {
-    
-    Collection<Class<?>> getClassAnnotatedWith(Class<? extends Annotation> clazz);
-    
-    Collection<Class<?>> getClassAnnotatedWithRegex(String name);
-    
-    Collection<Class<?>> getClassWithParentType(Class<?> parentClass);
-    
-    Collection<Class<?>> getClassTypeByRegex(String typeNameSuffix);
 
+    /**
+     * Returns the application object graph.
+     *
+     * @return the object graph
+     */
+    ObjectGraph applicationObjectGraph();
 }

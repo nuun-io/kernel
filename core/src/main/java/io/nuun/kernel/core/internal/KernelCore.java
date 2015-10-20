@@ -33,7 +33,7 @@ import io.nuun.kernel.api.di.ModuleValidation;
 import io.nuun.kernel.api.di.ObjectGraph;
 import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.plugin.InitState;
-import io.nuun.kernel.api.plugin.RoundEnvironmentInternal;
+import io.nuun.kernel.api.plugin.RoundInternal;
 import io.nuun.kernel.api.plugin.context.Context;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.BindingRequest;
@@ -41,7 +41,6 @@ import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.nuun.kernel.api.plugin.request.KernelParamsRequest;
 import io.nuun.kernel.api.plugin.request.KernelParamsRequestType;
 import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.core.internal.context.InitContextInternal;
 import io.nuun.kernel.spi.DependencyInjectionProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +52,7 @@ import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.nuun.kernel.core.internal.utils.NuunReflectionUtils.silentNewInstance;
 
@@ -64,7 +63,7 @@ public final class KernelCore implements Kernel
 {
 
     private static final int                               MAXIMAL_ROUND_NUMBER           = 50;
-    private static final ConcurrentHashMap<String, Kernel> kernels                        = new ConcurrentHashMap<String, Kernel>();
+    private static AtomicInteger                           kernelIndex = new AtomicInteger();
     private final Logger                                   logger;
     private final String                                   name;
 
@@ -81,15 +80,13 @@ public final class KernelCore implements Kernel
 
     private boolean                                        started                        = false;
     private boolean                                        initialized                    = false;
-    private Context                                        context;
     private Collection<DependencyInjectionProvider>        dependencyInjectionProviders;
     private Object                                         containerContext;
     private List<Plugin>                                   orderedPlugins;
 
     private Collection<DependencyInjectionProvider>        globalDependencyInjectionProviders;
-    private List<Plugin>                                   fetchedPlugins;
     private Set<URL>                                       globalAdditionalClasspath;
-    private RoundEnvironmentInternal roundEnv;
+    private RoundInternal roundEnv;
     private DependencyInjectionMode                        dependencyInjectionMode;
     private ClasspathScanMode                              classpathScanMode              = ClasspathScanMode.NOMINAL;
     private final List<ModuleValidation>                   globalModuleValidations        = Collections.synchronizedList(new ArrayList<ModuleValidation>());
@@ -102,19 +99,10 @@ public final class KernelCore implements Kernel
 
     KernelCore(KernelConfigurationInternal kernelConfigurationInternal)
     {
-        name = KERNEL_PREFIX_NAME + kernels.size();
-        logger = LoggerFactory.getLogger(KernelCore.class.getPackage().getName() + '.' + name());
+        name = KERNEL_PREFIX_NAME + kernelIndex.getAndIncrement();
+        // The kernel instance can be named, so the logger has to be differentiated
+        logger = LoggerFactory.getLogger(KernelCore.class.getName() + ' ' + name());
         initContext = new InitContextInternal(NUUN_PROPERTIES_PREFIX, kernelParamsAndAlias, classpathScanMode);
-
-        if (!kernels.contains(name()))
-        {
-            kernels.put(name(), this);
-        }
-        else
-        {
-            throw new KernelException(String.format("A kernel named %s already exists", name()));
-        }
-
         kernelConfigurationInternal.apply(this);
     }
 
@@ -141,11 +129,8 @@ public final class KernelCore implements Kernel
     {
         if (!initialized)
         {
-            fetchPlugins();
-            computeAliases();
-            initRoundEnvironment();
-            checkPlugins();
-            fetchGlobalParametersFromPlugins();
+            List<Plugin> fetchedPlugins = fetchPlugins(pluginsToAdd.values());
+            preparePlugins(fetchedPlugins);
             extensionManager = new ExtensionManager(fetchedPlugins, Thread.currentThread().getContextClassLoader());
             extensionManager.initializing();
             initPlugins();
@@ -159,15 +144,22 @@ public final class KernelCore implements Kernel
         }
     }
 
-    private void initRoundEnvironment()
+    public void preparePlugins(List<Plugin> fetchedPlugins) {
+        initRoundEnvironment(fetchedPlugins);
+        checkPlugins(fetchedPlugins);
+        computeAliases(fetchedPlugins);
+        fetchGlobalParametersFromPlugins();
+    }
+
+    private void initRoundEnvironment(List<? extends Plugin> fetchedPlugins)
     {
         // we initialize plugins
-        roundEnv = new RoundEnvironmentInternal();
+        roundEnv = new RoundInternal();
 
         for (Plugin plugin : fetchedPlugins)
         {
             // we pass the roundEnvironment
-            plugin.provideRoundEnvironment(roundEnv);
+            plugin.provideRound(roundEnv);
         }
     }
 
@@ -183,7 +175,7 @@ public final class KernelCore implements Kernel
             plugin.provideContainerContext(containerContext);
 
             String name = plugin.name();
-            logger.info("Get additional classpath to scan from Plugin {}.", name);
+            logger.debug("Get additional classpath to scan from Plugin {}.", name);
 
             Set<URL> computeAdditionalClasspathScan = plugin.computeAdditionalClasspathScan();
             if (computeAdditionalClasspathScan != null && computeAdditionalClasspathScan.size() > 0)
@@ -208,10 +200,10 @@ public final class KernelCore implements Kernel
         }
     }
 
-    private void fetchPlugins()
+    private LinkedList<Plugin> fetchPlugins(Collection<? extends Plugin> pluginsToAdd)
     {
-        fetchedPlugins = new LinkedList<Plugin>();
-        for (Plugin plugin : pluginsToAdd.values())
+        LinkedList<Plugin> fetchedPlugins = new LinkedList<Plugin>();
+        for (Plugin plugin : pluginsToAdd)
         {
             fetchedPlugins.add(plugin);
         }
@@ -223,9 +215,10 @@ public final class KernelCore implements Kernel
                 fetchedPlugins.add(plugin);
             }
         }
+        return fetchedPlugins;
     }
 
-    private void computeAliases()
+    private AliasMap computeAliases(List<? extends Plugin> fetchedPlugins)
     {
         // Compute alias
         for (Plugin plugin : fetchedPlugins)
@@ -233,8 +226,8 @@ public final class KernelCore implements Kernel
             Map<String, String> pluginKernelParametersAliases = plugin.kernelParametersAliases();
             for (Entry<String, String> entry : pluginKernelParametersAliases.entrySet())
             {
-                // entry.getValue() is the alias to give
                 // entry.getKey() is the key to alias
+                // entry.getValue() is the alias to give
 
                 logger.info("Adding alias parameter \"{}\" to key \"{}\".", entry.getKey(), entry.getValue());
                 kernelParamsAndAlias.putAlias(entry.getKey(), entry.getValue());
@@ -247,87 +240,85 @@ public final class KernelCore implements Kernel
 
             fillPackagesRoot(tmp);
         }
+
+        return kernelParamsAndAlias;
     }
 
-    private void checkPlugins()
+    private void checkPlugins(List<Plugin> fetchedPlugins)
     {
-        logger.info("Plugins initialisation");
         plugins.clear();
 
         List<Class<? extends Plugin>> pluginClasses = new ArrayList<Class<? extends Plugin>>();
 
         for (Plugin plugin : fetchedPlugins)
         {
-
             String pluginName = plugin.name();
-            logger.debug("checking Plugin {}.", pluginName);
-            if (!Strings.isNullOrEmpty(pluginName))
+            if (Strings.isNullOrEmpty(pluginName))
             {
-                Object ok = plugins.put(pluginName, plugin);
-                if (ok == null)
-                {
-                    // Check for required parameter
-                    // ============================
-                    Collection<KernelParamsRequest> kernelParamsRequests = plugin.kernelParamsRequests();
-                    Collection<String> computedMandatoryParams = new HashSet<String>();
-                    for (KernelParamsRequest kernelParamsRequest : kernelParamsRequests)
-                    {
-                        if (kernelParamsRequest.requestType == KernelParamsRequestType.MANDATORY)
-                        {
-                            computedMandatoryParams.add(kernelParamsRequest.keyRequested);
-                        }
-                    }
-
-                    if (kernelParamsAndAlias.containsAllKeys(computedMandatoryParams))
-                    {
-                        pluginClasses.add(plugin.getClass());
-                    }
-                    else
-                    {
-                        logger.error("Plugin {} misses parameter/s : {}", pluginName, kernelParamsRequests.toString());
-                        throw new KernelException("Plugin " + pluginName + " misses parameter/s : " + kernelParamsRequests.toString());
-                    }
-
-                }
-                else
-                {
-                    logger.error("Can not have 2 plugins {} of the same type {}. Please fix this before the kernel can start.", pluginName, plugin.getClass()
-                            .getName());
-                    throw new KernelException("Can not have 2 Plugin %s of the same type %s. please fix this before the kernel can start.", pluginName, plugin
-                            .getClass().getName());
-                }
-            }
-            else
-            {
-                logger.warn("Plugin {} has no correct name it won't be installed.", plugin.getClass());
                 throw new KernelException("Plugin %s doesn't have a correct name. It won't be installed.", pluginName);
             }
 
+            Object ok = plugins.put(pluginName, plugin);
+            if (ok == null)
+            {
+                logger.debug("checking Plugin {}.", pluginName);
+                // Check for required parameter
+                // ============================
+                Collection<KernelParamsRequest> kernelParamsRequests = plugin.kernelParamsRequests();
+                Collection<String> computedMandatoryParams = new HashSet<String>();
+                for (KernelParamsRequest kernelParamsRequest : kernelParamsRequests)
+                {
+                    if (kernelParamsRequest.requestType == KernelParamsRequestType.MANDATORY)
+                    {
+                        computedMandatoryParams.add(kernelParamsRequest.keyRequested);
+                    }
+                }
+
+                if (kernelParamsAndAlias.containsAllKeys(computedMandatoryParams))
+                {
+                    pluginClasses.add(plugin.getClass());
+                }
+                else
+                {
+                    throw new KernelException("Plugin " + pluginName + " misses parameter/s : " + kernelParamsRequests.toString());
+                }
+
+            }
+            else
+            {
+                throw new KernelException("Can not have 2 Plugin %s of the same type %s. please fix this before the kernel can start.", pluginName, plugin
+                        .getClass().getName());
+            }
         }
 
         // Check for required and dependent plugins
         for (Plugin plugin : plugins.values())
         {
-            {
-                Collection<Class<? extends Plugin>> pluginDependenciesRequired = plugin.requiredPlugins();
+            assertDependenciesArePresent(plugin, pluginClasses);
+        }
+    }
 
-                if (pluginDependenciesRequired != null && !pluginDependenciesRequired.isEmpty() && !pluginClasses.containsAll(pluginDependenciesRequired))
-                {
-                    logger.error("Plugin {} misses the following plugin/s as dependency/ies {}", plugin.name(), pluginDependenciesRequired.toString());
-                    throw new KernelException(
-                            "Plugin %s misses the following plugin/s as dependency/ies %s", plugin.name(), pluginDependenciesRequired.toString());
-                }
-            }
+    /**
+     * Verifies that the plugin dependencies are present in the plugin list.
+     * The list should contains both dependent and required plugins.
+     *
+     * @param plugin the plugin to check
+     * @param availablePlugins the list of available plugins
+     */
+    private void assertDependenciesArePresent(Plugin plugin, List<Class<? extends Plugin>> availablePlugins) {
+        Collection<Class<? extends Plugin>> requiredPlugins = plugin.requiredPlugins();
 
-            {
-                Collection<Class<? extends Plugin>> dependentPlugin = plugin.dependentPlugins();
+        if (requiredPlugins != null && !requiredPlugins.isEmpty() && !availablePlugins.containsAll(requiredPlugins))
+        {
+            throw new KernelException("Plugin %s misses the following plugin/s as dependency/ies %s", plugin.name(), requiredPlugins.toString());
+        }
 
-                if (dependentPlugin != null && !dependentPlugin.isEmpty() && !pluginClasses.containsAll(dependentPlugin))
-                {
-                    logger.error("Plugin {} misses the following plugin/s as dependee/s {}", plugin.name(), dependentPlugin.toString());
-                    throw new KernelException("Plugin %s misses the following plugin/s as dependee/s %s", plugin.name(), dependentPlugin.toString());
-                }
-            }
+
+        Collection<Class<? extends Plugin>> dependentPlugins = plugin.dependentPlugins();
+
+        if (dependentPlugins != null && !dependentPlugins.isEmpty() && !availablePlugins.containsAll(dependentPlugins))
+        {
+            throw new KernelException("Plugin %s misses the following plugin/s as dependee/s %s", plugin.name(), dependentPlugins.toString());
         }
     }
 
@@ -357,7 +348,7 @@ public final class KernelCore implements Kernel
 
             // Here we can pass the mainInjector to the non guice modules
 
-            context = mainInjector.getInstance(Context.class);
+            Context context = mainInjector.getInstance(Context.class);
 
             // 1) inject plugins via injector
             // 2) inject context via injector
@@ -456,20 +447,21 @@ public final class KernelCore implements Kernel
 
         // We sort them
         ArrayList<Plugin> unOrderedPlugins = new ArrayList<Plugin>(globalPlugins);
-        logger.debug("unordered plugins: (" + unOrderedPlugins.size() + ") " + unOrderedPlugins);
+        logger.trace("unordered plugins: (" + unOrderedPlugins.size() + ") " + unOrderedPlugins);
         orderedPlugins = pluginSortStrategy.sortPlugins(unOrderedPlugins);
-        logger.debug("ordered plugins: (" + orderedPlugins.size() + ") " + orderedPlugins);
+        logger.trace("ordered plugins: (" + orderedPlugins.size() + ") " + orderedPlugins);
         Map<String, InitState> states = new HashMap<String, InitState>();
 
         ArrayList<Plugin> roundOrderedPlugins = new ArrayList<Plugin>(orderedPlugins);
+
 
         do
         { // ROUND ITERATIONS
 
             // we update the number of initialization round.
-            initContext.roundNumber(roundEnv.roundNumber());
+            initContext.roundNumber(roundEnv.number());
 
-            logger.info("ROUND " + roundEnv.roundNumber() + " of the kernel initialisation.");
+            logger.info("Initializing: round " + roundEnv.number());
 
             for (Plugin plugin : roundOrderedPlugins)
             {
@@ -580,7 +572,7 @@ public final class KernelCore implements Kernel
                 // given
                 Collection<Class<? extends Plugin>> requiredPluginsClasses = plugin.requiredPlugins();
                 Collection<Class<? extends Plugin>> dependentPluginsClasses = plugin.dependentPlugins();
-                if (roundEnv.roundNumber() == 0 && requiredPluginsClasses != null && !requiredPluginsClasses.isEmpty() || dependentPluginsClasses != null
+                if (roundEnv.number() == 0 && requiredPluginsClasses != null && !requiredPluginsClasses.isEmpty() || dependentPluginsClasses != null
                         && !dependentPluginsClasses.isEmpty())
                 {
                     Collection<Plugin> requiredPlugins = filterPlugins(globalPlugins, requiredPluginsClasses);
@@ -589,7 +581,7 @@ public final class KernelCore implements Kernel
                 }
 
                 String name = plugin.name();
-                logger.info("initializing Plugin {}.", name);
+                logger.info("Plugin {}.", name);
                 InitState state = plugin.init(actualInitContext);
                 states.put(name, state);
             }
@@ -617,14 +609,13 @@ public final class KernelCore implements Kernel
                     UnitModule overridingUnitModule = plugin.overridingUnitModule();
                     {
                         boolean override = true;
-                        
+
                         handleUnitModule(plugin, pluginName, overridingUnitModule, override);
-                        
+
                     }
-                    
-                    if (unitModule == null && overridingUnitModule == null)
-                    {
-                        logger.info("For information Plugin {} does not provide any UnitModule via unitModule() nor overridingUnitModule().",  pluginName);
+
+                    if (unitModule == null && overridingUnitModule == null) {
+                        logger.debug("For information Plugin {} does not provide any UnitModule via unitModule() nor overridingUnitModule().",  pluginName);
                     }
 
                 }
@@ -636,9 +627,9 @@ public final class KernelCore implements Kernel
             }
             roundOrderedPlugins = nextRoundOrderedPlugins;
             // increment round number
-            roundEnv.incrementRoundNumber();
+            roundEnv.next();
         }
-        while (!roundOrderedPlugins.isEmpty() && roundEnv.roundNumber() < MAXIMAL_ROUND_NUMBER);
+        while (!roundOrderedPlugins.isEmpty() && roundEnv.number() < MAXIMAL_ROUND_NUMBER);
 
         // When all round are done.
 
@@ -663,9 +654,9 @@ public final class KernelCore implements Kernel
                 // we then convert the non guice native module into a guice module as this is the internal DI engine.
                 unitModule = convertNativeModule(pluginName, unitModule.nativeModule(), override);
             }
-            
+
             validateUnitModule(unitModule);
-            
+
             if (!override)
             // we feed the matching unitModules map
             {
@@ -677,7 +668,7 @@ public final class KernelCore implements Kernel
                 initContext.addChildOverridingModule(Module.class.cast(unitModule.nativeModule()));
                 overridingUnitModules.put(plugin.getClass(), unitModule);
             }
-        } //
+        }
     }
 
     /**
@@ -730,7 +721,6 @@ public final class KernelCore implements Kernel
         }
         else
         {
-            logger.error("Kernel did not recognize module {} of plugin {}", nativeUnitModule, pluginName);
             throw new KernelException(
                     "Kernel did not recognize module %s of plugin %s. Please provide a DependencyInjectionProvider.",
                     nativeUnitModule.toString(), pluginName);
@@ -749,13 +739,20 @@ public final class KernelCore implements Kernel
         return null;
     }
 
-    private Collection<Plugin> filterPlugins(Collection<Plugin> collection, Collection<Class<? extends Plugin>> pluginDependenciesRequired)
+    /**
+     * Filters a collection of plugin instances according to a collection of plugin classes.
+     *
+     * @param plugins the plugin instances
+     * @param requiredPlugins the required plugin classes
+     * @return the filtered set of plugins
+     */
+    private Set<Plugin> filterPlugins(Collection<Plugin> plugins, Collection<Class<? extends Plugin>> requiredPlugins)
     {
         Set<Plugin> filteredSet = new HashSet<Plugin>();
 
-        for (Plugin plugin : collection)
+        for (Plugin plugin : plugins)
         {
-            if (pluginDependenciesRequired.contains(plugin.getClass()))
+            if (requiredPlugins.contains(plugin.getClass()))
             {
                 filteredSet.add(plugin);
             }
@@ -796,7 +793,6 @@ public final class KernelCore implements Kernel
 
     void createDependencyInjectionProvidersMap(Collection<Class<?>> dependencyInjectionProvidersClasses)
     {
-
         dependencyInjectionProviders = new HashSet<DependencyInjectionProvider>();
 
         for (Class<?> dependencyInjectionProviderClass : dependencyInjectionProvidersClasses)
@@ -816,7 +812,6 @@ public final class KernelCore implements Kernel
     void addContainerContext(Object containerContext)
     {
         this.containerContext = containerContext;
-
     }
 
     void spiPluginEnabled()
@@ -844,7 +839,7 @@ public final class KernelCore implements Kernel
     /**
      * @param pluginClasses plugins to add
      */
-    void addPlugins(Class<? extends Plugin>... pluginClasses)
+    void addPlugins(List<Class<? extends Plugin>> pluginClasses)
     {
         for (Class<? extends Plugin> class1 : pluginClasses)
         {

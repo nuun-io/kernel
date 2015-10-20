@@ -16,19 +16,19 @@
  */
 package io.nuun.kernel.core.internal;
 
+import com.google.common.collect.ObjectArrays;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.api.config.DependencyInjectionMode;
 import io.nuun.kernel.api.config.KernelConfiguration;
 import io.nuun.kernel.api.di.ModuleValidation;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author epo.jemba{@literal @}kametic.com
@@ -36,22 +36,15 @@ import org.slf4j.LoggerFactory;
 public class KernelConfigurationInternal implements KernelConfiguration, KernelCoreMutator
 {
 
-    private final Logger              logger;
+    private final Logger              logger = LoggerFactory.getLogger(KernelConfiguration.class);
     List<String>                      parameters = new ArrayList<String>();
     private Object                    containerContext;
-    @SuppressWarnings("unchecked")
-    private Class<? extends Plugin>[] pluginsClass = new Class[0];
+    private List<Class<? extends Plugin>> pluginsClass = new ArrayList<Class<? extends Plugin>>();
     private Plugin[]                  plugins = new Plugin[0];
     private boolean                   useSpi     = true;
     private DependencyInjectionMode   dependencyInjectionMode;
     private ClasspathScanMode         classpathScanMode = ClasspathScanMode.NOMINAL;
     private List<ModuleValidation> validations = new ArrayList<ModuleValidation>();
-
-    public KernelConfigurationInternal()
-    {
-        logger                 = LoggerFactory.getLogger( KernelConfiguration.class);
-    }
-    
     
     @Override
     public KernelConfiguration param(String key, String value)
@@ -77,10 +70,7 @@ public class KernelConfigurationInternal implements KernelConfiguration, KernelC
     {
         cleanParamsSize();
 
-        for (String entry : paramEntries)
-        {
-            parameters.add(entry);
-        }
+        Collections.addAll(parameters, paramEntries);
         return this;
     }
 
@@ -92,16 +82,28 @@ public class KernelConfigurationInternal implements KernelConfiguration, KernelC
     }
 
     @Override
-    public KernelConfiguration plugins(Class<? extends Plugin>... pluginsClass)
+    public KernelConfiguration addPlugin(Class<? extends Plugin> pluginsClass) {
+        Collections.addAll(this.pluginsClass, pluginsClass);
+        return this;
+    }
+
+    @Override
+    public KernelConfiguration plugins(Class<? extends Plugin>... pluginsClasses) {
+        Collections.addAll(this.pluginsClass, pluginsClasses);
+        return this;
+    }
+
+    @Override
+    public KernelConfiguration addPlugin(Plugin plugin)
     {
-        this.pluginsClass = concat(this.pluginsClass, pluginsClass);
+        this.plugins = ObjectArrays.concat(plugin, this.plugins);
         return this;
     }
 
     @Override
     public KernelConfiguration plugins(Plugin... plugins)
     {
-        this.plugins = this.<Plugin>concat(this.plugins, plugins);
+        this.plugins = ObjectArrays.concat(this.plugins, plugins, Plugin.class);
         return this;
     }
 
@@ -184,18 +186,6 @@ public class KernelConfigurationInternal implements KernelConfiguration, KernelC
             kernelCore.provideGlobalDiDefValidation(validation);
         }
 
-    }
-
-    private <T> T[] concat(T[] A, T[] B)
-    {
-        int aLen = A.length;
-        int bLen = B.length;
-                
-        @SuppressWarnings("unchecked")
-        T[] C =  (T[]) Array.newInstance(A.getClass().getComponentType(), aLen + bLen) ;
-        System.arraycopy(A, 0, C, 0, aLen);
-        System.arraycopy(B, 0, C, aLen, bLen);
-        return C;
     }
 
 }

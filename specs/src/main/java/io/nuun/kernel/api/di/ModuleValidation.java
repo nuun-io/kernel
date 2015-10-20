@@ -20,23 +20,24 @@ package io.nuun.kernel.api.di;
  * This API element will give the opportunity to the kernel to assert UnitModule given by plugins.
  * <p>
  * The Module type to validate is Guice module.
- * 
+ *
  * @author epo.jemba{@literal @}kametic.com
  */
 public interface ModuleValidation
 {
-    
+
     /**
-     * 
-     * @param moduleType
+     * Verifies that the module validation can handle the given native module.
+     *
+     * @param nativeModuleType nativeModuleType
      * @return true if this validation object can handle this kind of class
      */
-    boolean canHandle (Class<?> nativeModuleType);
-    
+    boolean canHandle(Class<?> nativeModuleType);
+
     /**
-     * validate the given <code> dependencyInjectionDef </code>
-     * 
-     * @param unitModule
+     * Validates the given <code> dependencyInjectionDef </code>
+     *
+     * @param unitModule the unit module to validate
      */
     void validate(UnitModule unitModule);
 

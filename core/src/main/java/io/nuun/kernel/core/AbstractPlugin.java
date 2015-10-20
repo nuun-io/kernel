@@ -14,15 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * 
- */
 package io.nuun.kernel.core;
 
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.plugin.InitState;
-import io.nuun.kernel.api.plugin.RoundEnvironment;
+import io.nuun.kernel.api.plugin.Round;
 import io.nuun.kernel.api.plugin.context.Context;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.*;
@@ -47,40 +44,17 @@ public abstract class AbstractPlugin implements Plugin
 {
 
     
-    Logger logger = LoggerFactory.getLogger(AbstractPlugin.class);
-    
-    
-    protected Context                         context = null;
-    protected Object                          containerContext = null;
-    protected RoundEnvironment roundEnvironment;
-    @SuppressWarnings("unused")
-    private Map<String, String>               kernelParams;
-    @SuppressWarnings("unused")
-    private InitContext                       initContext;
-    private final KernelParamsRequestBuilder  paramsBuilder;
-    private final ClasspathScanRequestBuilder scanBuilder;
-    private final BindingRequestBuilder       bindingBuilder;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPlugin.class);
 
-    /**
-     * 
-     */
-    public AbstractPlugin()
-    {
-        paramsBuilder = new KernelParamsRequestBuilder();
-        scanBuilder = new ClasspathScanRequestBuilder();
-        bindingBuilder = new BindingRequestBuilder();
-    }
+    protected Context          context = null;
+    protected Object           containerContext = null;
+    protected Round round;
 
-    /**
-     * ============================= PLUGIN LIFE CYCLE USED BY KERNEL =============================
-     * @return
-     **/
+    // ============================= PLUGIN LIFE CYCLE USED BY KERNEL =============================
 
     @Override
     public InitState init(InitContext initContext)
     {
-        this.initContext = initContext;
-        
         return InitState.INITIALIZED;
     }
 
@@ -95,29 +69,24 @@ public abstract class AbstractPlugin implements Plugin
         this.context = context;
     }
 
-    // /**
-    // * ============================= PLUGIN Utilities Helpers =============================
-    // *
-    // *
-    // **/
+    // ============================= PLUGIN request builders =============================
 
     protected KernelParamsRequestBuilder kernelParamsRequestBuilder()
     {
-        paramsBuilder.reset();
-        return paramsBuilder;
+        return new KernelParamsRequestBuilder();
     }
 
     protected ClasspathScanRequestBuilder classpathScanRequestBuilder()
     {
-        scanBuilder.reset();
-        return scanBuilder;
+        return new ClasspathScanRequestBuilder();
     }
 
     protected BindingRequestBuilderMain bindingRequestsBuilder()
     {
-        bindingBuilder.reset();
-        return bindingBuilder;
+        return new BindingRequestBuilder();
     }
+
+    // ============================= PLUGIN Utilities Helpers =============================
 
     protected Specification<Class<?>> or(Specification<Class<?>>... participants)
     {
@@ -165,7 +134,7 @@ public abstract class AbstractPlugin implements Plugin
                     }
                     catch (Throwable throwable)
                     {
-                        logger.debug("fieldAnnotatedWith : " +candidate +  " missing " + throwable );
+                        LOGGER.debug("fieldAnnotatedWith : " + candidate + " missing " + throwable);
                     }
     			}
     			
@@ -319,9 +288,9 @@ public abstract class AbstractPlugin implements Plugin
     }
     
     @Override
-    public void provideRoundEnvironment(RoundEnvironment roundEnvironment)
+    public void provideRound(Round round)
     {
-        this.roundEnvironment = roundEnvironment;
+        this.round = round;
     }
     
     

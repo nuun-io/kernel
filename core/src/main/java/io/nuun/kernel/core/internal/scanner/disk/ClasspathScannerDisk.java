@@ -18,8 +18,7 @@ package io.nuun.kernel.core.internal.scanner.disk;
 
 import static org.reflections.util.FilterBuilder.prefix;
 
-import com.google.common.collect.Maps;
-import io.nuun.kernel.api.assertions.AssertUtils;
+import io.nuun.kernel.core.internal.utils.AssertUtils;
 import io.nuun.kernel.core.internal.scanner.AbstractClasspathScanner;
 
 import java.lang.annotation.Annotation;

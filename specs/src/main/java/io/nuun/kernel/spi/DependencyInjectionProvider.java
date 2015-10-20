@@ -18,26 +18,38 @@ package io.nuun.kernel.spi;
 
 import io.nuun.kernel.api.di.UnitModule;
 
-
+/**
+ * This provider interface is an SPI to change the dependency injection engine used by Nuun.
+ */
 public interface DependencyInjectionProvider
 {
-    
-    boolean canHandle (Class<?> injectionDefinition);
 
     /**
-     * Convert framework DI definition in nuun internal DI dependency guice module.
+     * Checks whether the dependency injection provider supports the given unit module.
      *
-     * @param injectionDefinition
-     * @return Guice Plugin
+     * @param bindingDefinitions an object containing binding definitions
+     * @return true if the provider supports this unit module, false otherwise
      */
-    UnitModule convert(Object injectionDefinition);
+    boolean canHandle(Class<?> bindingDefinitions);
 
     /**
-     * This method will return a bridge from kernel to module with this DI.
+     * Converts a unit module from a dependency injection provider into a Nuun unit module.
+     * <p>
+     * Internally Nuun will use a Guice unit module.
+     * </p>
+     *
+     * @param bindingDefinitions an object containing binding definitions
+     *
+     * @return a Nuun unit module
+     */
+    UnitModule convert(Object bindingDefinitions);
+
+    /**
+     * Returns a bridge from kernel to module with this DI.
      * For example a FactoryBean in the Spring world.
      *
      * @return an object able to deal with all kernel dependencies
      */
-    Object kernelDIProvider ();
+    Object kernelDIProvider();
 
 }

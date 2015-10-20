@@ -16,7 +16,7 @@
  */
 package io.nuun.kernel.core.internal.scanner.disk;
 
-import io.nuun.kernel.api.assertions.AssertUtils;
+import io.nuun.kernel.core.internal.utils.AssertUtils;
 
 import java.lang.annotation.Annotation;
 

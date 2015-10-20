@@ -19,7 +19,9 @@
  */
 package io.nuun.kernel.core.pluginsit.dummy23;
 
-import static org.fest.assertions.Assertions.assertThat;
+import com.google.inject.AbstractModule;
+import com.google.inject.Key;
+import com.google.inject.name.Names;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
@@ -28,10 +30,7 @@ import io.nuun.kernel.core.AbstractPlugin;
 import java.util.Collection;
 import java.util.Map;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Key;
-//import org.nuunframework.configuration.common.NuunConfigurationPlugin;
-import com.google.inject.name.Names;
+import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author Epo Jemba
@@ -42,10 +41,6 @@ public class DummyPlugin3 extends AbstractPlugin
     private String resourcesRegex1 = ".*.json";
     private String resourcesRegex2 = ".*-applicationContext-.*.xml";
 
-    /*
-     * (non-Javadoc)
-     * @see org.nuunframework.kernel.plugin.AbstractPlugin#name()
-     */
     @Override
     public String name()
     {
@@ -55,7 +50,6 @@ public class DummyPlugin3 extends AbstractPlugin
     @Override
     public Collection<ClasspathScanRequest> classpathScanRequests()
     {
-
         return classpathScanRequestBuilder().resourcesRegex(resourcesRegex1).resourcesRegex(resourcesRegex2).build();
     }
 
@@ -72,11 +66,7 @@ public class DummyPlugin3 extends AbstractPlugin
         assertThat( mapResourcesByRegex.get(resourcesRegex2) ).hasSize(2); // TODO FIX THE CASE OF THE properties
         assertThat( mapResourcesByRegex.get(resourcesRegex2) ).contains("internal/sample1-applicationContext-business.xml");
         assertThat( mapResourcesByRegex.get(resourcesRegex2) ).contains("internal/sample2-applicationContext-persistence.xml");
-        
-//        NuunConfigurationPlugin confPlugin = (NuunConfigurationPlugin) initContext.pluginsRequired().iterator().next();
-//
-//        assertThat(confPlugin.getConfiguration().getString("value1")).isEqualTo("lorem ipsum");
-        
+
         return InitState.INITIALIZED;
     }
     
@@ -91,24 +81,8 @@ public class DummyPlugin3 extends AbstractPlugin
             {
                 bind(Key.get(String.class, Names.named("custom.name"))).toInstance("John");
                 bind(Key.get(String.class, Names.named("custom.name2"))).toInstance("Jane");
-//                bind(Key.get(String.class, Names.named("value1"))).toInstance();
                 bindConstant().annotatedWith(Names.named("value1")).to("lorem ipsum");
             }
         };
     }
-
-//     /* (non-Javadoc)
-//     * @see org.nuunframework.kernel.plugin.AbstractPlugin#pluginsRequired()
-//     */
-//     @SuppressWarnings({
-//            "unchecked", "rawtypes"
-//    })
-//    @Override
-//     public Collection<Class<? extends Plugin>> requiredPlugins()
-//     {
-//         return (Collection) collectionOf(NuunConfigurationPlugin.class);
-//     }
-     
-     
-
 }
