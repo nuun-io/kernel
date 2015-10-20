@@ -761,6 +761,11 @@ public class InitContextInternal implements InitContext
     }
 
     @Override
+    public Map<String, String> kernelParams() {
+        return kernelParams;
+    }
+
+    @Override
     public String kernelParam(String key)
     {
         return kernelParams.get(key);

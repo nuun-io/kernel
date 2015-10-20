@@ -33,33 +33,35 @@ import java.util.Map;
 public interface InitContext
 {
 
-    public abstract Map<Class<?>, Collection<Class<?>>> scannedSubTypesByParentClass();
+    Map<Class<?>, Collection<Class<?>>> scannedSubTypesByParentClass();
 
-    public abstract Map<Class<?>, Collection<Class<?>>> scannedSubTypesByAncestorClass();
+    Map<Class<?>, Collection<Class<?>>> scannedSubTypesByAncestorClass();
     
-    public abstract Map<String, Collection<Class<?>>> scannedSubTypesByParentRegex();
+    Map<String, Collection<Class<?>>> scannedSubTypesByParentRegex();
 
-    public abstract Map<Class<? extends Annotation>, Collection<Class<?>>> scannedClassesByAnnotationClass();
+    Map<Class<? extends Annotation>, Collection<Class<?>>> scannedClassesByAnnotationClass();
 
-    public abstract Map<String, Collection<Class<?>>> scannedClassesByAnnotationRegex();
+    Map<String, Collection<Class<?>>> scannedClassesByAnnotationRegex();
 
-    public abstract Map<String, Collection<String>> mapPropertiesFilesByPrefix();
+    Map<String, Collection<String>> mapPropertiesFilesByPrefix();
 
-    public abstract String kernelParam(String key);
+    Map<String, String> kernelParams();
 
-    public abstract Collection<Class<?>> classesToBind();
+    String kernelParam(String key);
 
-    public abstract List<UnitModule> moduleResults();
+    Collection<Class<?>> classesToBind();
+
+    List<UnitModule> moduleResults();
     
-    public abstract List<UnitModule> moduleOverridingResults();
+    List<UnitModule> moduleOverridingResults();
 
-    public abstract Collection<String> propertiesFiles();
+    Collection<String> propertiesFiles();
 
-    public abstract Map<String, Collection<Class<?>>> scannedTypesByRegex();
+    Map<String, Collection<Class<?>>> scannedTypesByRegex();
 
-    public abstract Map<String, Collection<String>> mapResourcesByRegex();
+    Map<String, Collection<String>> mapResourcesByRegex();
 
-    public abstract Map<Specification, Collection<Class<?>>> scannedTypesBySpecification();
+    Map<Specification, Collection<Class<?>>> scannedTypesBySpecification();
     
     /**
      * Returns plugin instances required by the current plugin.
@@ -68,7 +70,7 @@ public interface InitContext
      * @return the instances of the plugin declared required by the method Plugin.pluginDependenciesRequired()
      */
     @Deprecated
-    public abstract Collection<?> pluginsRequired();
+    Collection<?> pluginsRequired();
     
     /**
      * Returns instances of the plugins that become dependent on this plugin.
@@ -77,16 +79,16 @@ public interface InitContext
      * @return dependent plugins
      */
     @Deprecated
-    public abstract Collection<?> dependentPlugins();
+    Collection<?> dependentPlugins();
 
-    public abstract List<?> dependencies();
+    List<?> dependencies();
 
-    public abstract <T> T dependency(Class<T> dependencyClass);
+    <T> T dependency(Class<T> dependencyClass);
     /**
      * The current initialization round.
      * 
      * @return the current round number
      */
-    public abstract int roundNumber();
+    int roundNumber();
 
 }

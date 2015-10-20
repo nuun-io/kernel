@@ -28,7 +28,7 @@ import javax.inject.Singleton;
  * 
  */
 @Singleton
-public class ContextInternal implements Context
+class ContextInternal implements Context
 {
 
     public final Injector mainInjector;
