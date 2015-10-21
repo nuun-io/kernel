@@ -83,6 +83,8 @@ public interface InitContext
 
     List<?> dependencies();
 
+    <T> List<T> dependencies(Class<T> dependencyClass);
+
     <T> T dependency(Class<T> dependencyClass);
     /**
      * The current initialization round.

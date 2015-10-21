@@ -85,7 +85,6 @@ public class KernelCoreIT
         }
         catch (KernelException ke)
         {
-            assertThat(ke.getMessage()).isEqualTo("Plugin dummyPlugin misses the following plugin/s as dependency/ies [class io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin2]");
             underTest.addPlugin(DummyPlugin2.class);
             try {
                 underTest.init();
@@ -93,7 +92,6 @@ public class KernelCoreIT
             }
             catch (KernelException ke2)
             {
-                assertThat(ke2.getMessage()).isEqualTo("Plugin dummyPlugin2 misses the following plugin/s as dependency/ies [class io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin3]");
                 underTest.addPlugin(DummyPlugin3.class);
                 underTest.addPlugin(plugin4);
                 underTest.addPlugin(DummyPlugin5.class);

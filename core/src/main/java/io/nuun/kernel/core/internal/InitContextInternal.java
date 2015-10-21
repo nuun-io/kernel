@@ -818,6 +818,11 @@ public class InitContextInternal implements InitContext
     }
 
     @Override
+    public <T> List<T> dependencies(Class<T> dependencyClass) {
+        return new ArrayList<T>();
+    }
+
+    @Override
     public <T> T dependency(Class<T> dependencyClass) {
         return null;
     }

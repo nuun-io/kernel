@@ -35,10 +35,15 @@ public class WithRequiredFacetPlugin extends AbstractPlugin {
             throw new IllegalStateException("WithRequiredFacetPlugin should have only one dependency");
         }
 
+        List<Facet1> facet1s = initContext.dependencies(Facet1.class);
+        if (facet1s.size() != 1) {
+            throw new IllegalStateException("WithRequiredFacetPlugin should have only one dependency");
+        }
+
         return InitState.INITIALIZED;
     }
     @Override
     public Collection<Class<?>> requiredPlugins() {
-        return Lists.<Class<?>>newArrayList(Facet1Plugin.class);
+        return Lists.<Class<?>>newArrayList(Facet1.class);
     }
 }

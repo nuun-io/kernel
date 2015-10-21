@@ -131,7 +131,7 @@ public final class KernelCore implements Kernel
         pluginRegistry = fetchPlugins(pluginsToAdd.values());
         FacetRegistry facetRegistry = new FacetRegistry(pluginRegistry.getPlugins());
         DependencyProvider dependencyProvider = new DependencyProvider(pluginRegistry, facetRegistry);
-        preparePlugins(kernelParamsAndAlias);
+        preparePlugins(facetRegistry, kernelParamsAndAlias);
 
         extensionManager = new ExtensionManager(pluginRegistry.getPlugins(), Thread.currentThread().getContextClassLoader());
         extensionManager.initializing();
@@ -144,9 +144,13 @@ public final class KernelCore implements Kernel
         extensionManager.initialized();
     }
 
-    public void preparePlugins(AliasMap kernelParams) {
+    public void preparePlugins(FacetRegistry facetRegistry, AliasMap kernelParams) {
         initRoundEnvironment();
-        new PluginSpecification().isSatisfyBy(pluginRegistry, kernelParams);
+        PluginSpecification pluginSpecification = new PluginSpecification(facetRegistry);
+
+        for (Plugin plugin : pluginRegistry.getPlugins()) {
+            pluginSpecification.isSatisfyBy(plugin, kernelParams);
+        }
         computeAliases();
         fetchGlobalParametersFromPlugins();
     }
@@ -715,11 +719,16 @@ public final class KernelCore implements Kernel
                         {
                             return dependencyProvider.getDependent(pluginClass);
                         }
-                        else if (method.getName().equals("dependencies"))
+                        else if (method.getName().equals("dependencies") && args == null)
                         {
                             return dependencyProvider.getAll(pluginClass);
                         }
-                        else if (method.getName().equals("dependency"))
+                        else if (method.getName().equals("dependency") && args != null)
+                        {
+                            Class<?> dependencyClass = (Class<?>) args[0];
+                            return dependencyProvider.getFacet(pluginClass, dependencyClass);
+                        }
+                        else if (method.getName().equals("dependencies") && args != null && args.length == 1)
                         {
                             Class<?> dependencyClass = (Class<?>) args[0];
                             return dependencyProvider.getFacets(pluginClass, dependencyClass);

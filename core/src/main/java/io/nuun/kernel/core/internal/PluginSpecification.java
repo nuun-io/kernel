@@ -9,17 +9,18 @@ import java.util.*;
 
 class PluginSpecification {
 
-    PluginRegistry isSatisfyBy(final PluginRegistry pluginRegistry, final AliasMap kernelParams) {
+    private final FacetRegistry facetRegistry;
+
+    PluginSpecification(FacetRegistry facetRegistry) {
+        this.facetRegistry = facetRegistry;
+    }
+
+    void isSatisfyBy(final Plugin plugin, final AliasMap kernelParams) {
         // Check mandatory params
-        for (Plugin plugin : pluginRegistry.getPlugins()) {
-            checkMandatoryParams(plugin, kernelParams);
-        }
+        checkMandatoryParams(plugin, kernelParams);
 
         // Check for required and dependent plugins
-        for (Plugin plugin : pluginRegistry.getPlugins()) {
-            assertDependenciesArePresent(plugin, pluginRegistry.getPluginClasses());
-        }
-        return pluginRegistry;
+        assertDependenciesArePresent(plugin);
     }
 
     private void checkMandatoryParams(Plugin plugin, AliasMap kernelParams) {
@@ -41,20 +42,27 @@ class PluginSpecification {
      * Verifies that the plugin dependencies are present in the plugin list.
      * The list should contains both dependent and required plugins.
      *
-     * @param plugin           the plugin to check
-     * @param availablePlugins the list of available plugins
+     * @param plugin the plugin to check
      */
-    private void assertDependenciesArePresent(Plugin plugin, Collection<Class<? extends Plugin>> availablePlugins) {
-        Collection<Class<?>> requiredPlugins = plugin.requiredPlugins();
+    private void assertDependenciesArePresent(Plugin plugin) {
+        Collection<Class<?>> expectedDependency = new ArrayList<Class<?>>();
 
-        if (requiredPlugins != null && !requiredPlugins.isEmpty() && !availablePlugins.containsAll(requiredPlugins)) {
-            throw new KernelException("Plugin %s misses the following plugin/s as dependency/ies %s", plugin.name(), requiredPlugins.toString());
+        Collection<Class<?>> requiredPlugins = plugin.requiredPlugins();
+        if (requiredPlugins != null) {
+            expectedDependency.addAll(requiredPlugins);
         }
 
         Collection<Class<?>> dependentPlugins = plugin.dependentPlugins();
+        if (dependentPlugins != null) {
+            expectedDependency.addAll(dependentPlugins);
+        }
 
-        if (dependentPlugins != null && !dependentPlugins.isEmpty() && !availablePlugins.containsAll(dependentPlugins)) {
-            throw new KernelException("Plugin %s misses the following plugin/s as dependee/s %s", plugin.name(), dependentPlugins.toString());
+        for (Class<?> dependencyClass : expectedDependency) {
+            List<?> facets = facetRegistry.getFacets(dependencyClass);
+
+            if (facets.isEmpty()) {
+                throw new KernelException("Plugin %s misses the following dependency: %s", plugin.name(), dependencyClass.getCanonicalName());
+            }
         }
     }
 }

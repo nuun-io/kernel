@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author pierre.thirouin@ext.mpsa.com (Pierre Thirouin)
  */
-public class DependencyProvider {
+class DependencyProvider {
 
     private final PluginRegistry pluginRegistry;
     private final FacetRegistry facetRegistry;
@@ -71,10 +71,19 @@ public class DependencyProvider {
     }
 
     public <T> List<T> getFacets(Class<? extends Plugin> pluginClass, Class<T> facet) {
+        assertExplicitDependency(pluginClass, facet);
+        return facetRegistry.getFacets(facet);
+    }
+
+    public <T> T getFacet(Class<? extends Plugin> pluginClass, Class<T> facet) {
+        assertExplicitDependency(pluginClass, facet);
+        return facetRegistry.getFacet(facet);
+    }
+
+    private <T> void assertExplicitDependency(Class<? extends Plugin> pluginClass, Class<T> facet) {
         Plugin plugin = pluginRegistry.get(pluginClass);
         if (!plugin.requiredPlugins().contains(facet) && !plugin.dependentPlugins().contains(facet)) {
             throw new KernelException("The plugin " + pluginClass.getCanonicalName() + " doesn't specify a dependency with " + facet.getCanonicalName());
         }
-        return facetRegistry.getFacets(facet);
     }
 }
