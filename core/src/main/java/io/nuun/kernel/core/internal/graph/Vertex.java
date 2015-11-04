@@ -18,7 +18,7 @@ package io.nuun.kernel.core.internal.graph;
 
 public class Vertex {
 	
-	public char label;
+	public final char label;
 
 	public Vertex(char lab) {
 		label = lab;

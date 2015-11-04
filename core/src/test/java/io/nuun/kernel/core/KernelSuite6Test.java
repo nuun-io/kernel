@@ -53,8 +53,7 @@ public class KernelSuite6Test
         catch (KernelException ke)
         {
             assertThat(ke.getMessage())
-                    .isEqualTo(
-                            "Plugin dummy-plugin-6-B misses the following plugin/s as dependee/s [class io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_D, class io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_C]");
+                    .isEqualTo("Plugin dummy-plugin-6-B misses the following dependency: io.nuun.kernel.core.pluginsit.dummy6.DummyPlugin6_C");
         }
     }
 

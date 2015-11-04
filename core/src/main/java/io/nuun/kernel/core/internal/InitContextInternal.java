@@ -36,14 +36,7 @@ import io.nuun.kernel.core.internal.scanner.inmemory.InMemoryMultiThreadClasspat
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -206,12 +199,9 @@ public class InitContextInternal implements InitContext
         }
         else if (classpathScanMode == ClasspathScanMode.IN_MEMORY)
         {
-
             Classpath classpath = InMemoryMultiThreadClasspath.INSTANCE;
             classpathScanner = classpathScannerFactory.createInMemory(classpath, packageRootArray);
-
         }
-
     }
 
     class IsModuleOverriding implements Predicate<Class<? extends Module>>
@@ -241,10 +231,6 @@ public class InitContextInternal implements InitContext
     class ModuleClass2Instance implements Function<Class<? extends Module>, UnitModule>
     {
 
-        /*
-         * (non-Javadoc)
-         * @see com.google.common.base.Function#apply(java.lang.Object)
-         */
         @Override
         public UnitModule apply(Class<? extends Module> classpathClass)
         {
@@ -316,13 +302,6 @@ public class InitContextInternal implements InitContext
             };
             classpathScanner.scanClasspathForSpecification(new DescendantOfSpecification(parentType), callback); // ok
         }
-
-        // for (Class<?> type : this.typesClassesToScan)
-        // {
-        // scanClasspathForSubType = this.classpathScanner.scanClasspathForTypeClass(type);
-        // // clässes.addAll(scanClasspathForSubType);
-        // this.mapTypes.put(type, scanClasspathForSubType);
-        // }
 
         for (final String typeName : parentTypesRegexToScan)
         {
@@ -719,16 +698,6 @@ public class InitContextInternal implements InitContext
         parentTypesRegexToBind.add(type);
     }
 
-    /**
-     * @category bind
-     * @param specification
-     */
-    // public void addSpecificationToBind(Specification<Class<?>> specification)
-    // {
-    // this.specificationsToBind.add(specification);
-    // this.mapSpecificationScope.put(specification, Scopes.NO_SCOPE);
-    // }
-
     private void updateScope(Key key, Object scope)
     {
         if (scope != null)
@@ -739,7 +708,6 @@ public class InitContextInternal implements InitContext
         {
             mapOfScopes.put(key, Scopes.NO_SCOPE);
         }
-
     }
 
     public void addSpecificationToBind(Specification<Class<?>> specification, Object scope)
@@ -792,17 +760,10 @@ public class InitContextInternal implements InitContext
         childOverridingModules.add(new ModuleEmbedded(module));
     }
 
-    // public void setContainerContext(Object containerContext)
-    // {
-    // this.containerContext = containerContext;
-    // }
-
-    // INTERFACE KERNEL PARAM USED BY PLUGIN IN INIT //
-
-    // public Object containerContext()
-    // {
-    // return this.containerContext;
-    // }
+    @Override
+    public Map<String, String> kernelParams() {
+        return kernelParams;
+    }
 
     @Override
     public String kernelParam(String key)
@@ -849,6 +810,21 @@ public class InitContextInternal implements InitContext
     public Collection<? extends Plugin> dependentPlugins()
     {
         return Collections.emptySet();
+    }
+
+    @Override
+    public List<?> dependencies() {
+        return new ArrayList<Object>();
+    }
+
+    @Override
+    public <T> List<T> dependencies(Class<T> dependencyClass) {
+        return new ArrayList<T>();
+    }
+
+    @Override
+    public <T> T dependency(Class<T> dependencyClass) {
+        return null;
     }
 
     @Override

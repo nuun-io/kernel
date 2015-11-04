@@ -1,13 +1,11 @@
 package it.fixture.dependencies;
 
-import io.nuun.kernel.api.Plugin;
+import com.google.common.collect.Lists;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.core.AbstractPlugin;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author pierre.thirouin@ext.mpsa.com (Pierre Thirouin)
@@ -21,12 +19,11 @@ public class WithRequiredDepsPlugin extends AbstractPlugin {
         return NAME;
     }
 
-
     @Override
     public InitState init(InitContext initContext) {
         boolean isInitialized = false;
 
-        for (Plugin plugin : initContext.pluginsRequired()) {
+        for (Object plugin : initContext.pluginsRequired()) {
             if (plugin instanceof RequiredPlugin1){
                 isInitialized = ((RequiredPlugin1) plugin).isInitialized();
             }
@@ -38,11 +35,10 @@ public class WithRequiredDepsPlugin extends AbstractPlugin {
 
         return InitState.INITIALIZED;
     }
+
     @Override
-    public Collection<Class<? extends Plugin>> requiredPlugins() {
-        List<Class<? extends Plugin>> dependents = new ArrayList<Class<? extends Plugin>>();
-        dependents.add(RequiredPlugin1.class);
-        return dependents;
+    public Collection<Class<?>> requiredPlugins() {
+        return Lists.<Class<?>>newArrayList(RequiredPlugin1.class);
     }
 
 }

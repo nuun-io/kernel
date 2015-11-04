@@ -19,6 +19,7 @@
  */
 package io.nuun.kernel.core.internal;
 
+import com.google.common.collect.Lists;
 import com.google.inject.*;
 import com.google.inject.matcher.Matchers;
 import io.nuun.kernel.api.Plugin;
@@ -84,7 +85,6 @@ public class KernelCoreIT
         }
         catch (KernelException ke)
         {
-            assertThat(ke.getMessage()).isEqualTo("Plugin dummyPlugin misses the following plugin/s as dependency/ies [class io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin2]");
             underTest.addPlugin(DummyPlugin2.class);
             try {
                 underTest.init();
@@ -92,7 +92,6 @@ public class KernelCoreIT
             }
             catch (KernelException ke2)
             {
-                assertThat(ke2.getMessage()).isEqualTo("Plugin dummyPlugin2 misses the following plugin/s as dependency/ies [class io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin3]");
                 underTest.addPlugin(DummyPlugin3.class);
                 underTest.addPlugin(plugin4);
                 underTest.addPlugin(DummyPlugin5.class);
@@ -314,11 +313,9 @@ public class KernelCoreIT
 
     
     static abstract class AbstractTestPlugin extends AbstractPlugin{
-    	public Collection<Class<? extends Plugin>> dep(Class<? extends Plugin> klazz)
+    	public Collection<Class<?>> dep(Class<?> klazz)
     	{
-    		Collection<Class<? extends Plugin>> plugins = new ArrayList<Class<? extends Plugin>>();
-            plugins.add(klazz);
-            return plugins;
+            return Lists.<Class<?>>newArrayList(klazz);
     	}
     }
     
@@ -332,7 +329,7 @@ public class KernelCoreIT
     	@Override
 		public String name() {return this.getClass().getName(); }
     	@Override
-		public Collection<Class<? extends Plugin>> requiredPlugins() {return dep(p13.class); }
+		public Collection<Class<?>> requiredPlugins() {return dep(p13.class); }
     }
     static class p3 extends AbstractTestPlugin
     {
@@ -359,7 +356,7 @@ public class KernelCoreIT
     	@Override
 		public String name() {return this.getClass().getName(); }
     	@Override
-		public Collection<Class<? extends Plugin>> requiredPlugins() {return dep(p11.class); }
+		public Collection<Class<?>> requiredPlugins() {return dep(p11.class); }
     }
     static class p8 extends AbstractTestPlugin
     {
@@ -386,14 +383,14 @@ public class KernelCoreIT
     	@Override
 		public String name() {return this.getClass().getName(); }
     	@Override
-		public Collection<Class<? extends Plugin>> requiredPlugins() {return dep(p6.class); }
+		public Collection<Class<?>> requiredPlugins() {return dep(p6.class); }
     }
     static class p13 extends AbstractTestPlugin
     {
     	@Override
 		public String name() {return this.getClass().getName(); }
     	@Override
-		public Collection<Class<? extends Plugin>> requiredPlugins() {return dep(p11.class); }
+		public Collection<Class<?>> requiredPlugins() {return dep(p11.class); }
     }
     
     @Test

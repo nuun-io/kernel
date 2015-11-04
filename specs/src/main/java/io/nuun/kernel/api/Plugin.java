@@ -95,7 +95,7 @@ public interface Plugin
      * 
      * @return the required plugin classes
      */
-    Collection<Class<? extends Plugin>> requiredPlugins();
+    Collection<Class<?>> requiredPlugins();
 
     /**
      * List of plugins that become dependent on "this" plugin.
@@ -103,7 +103,7 @@ public interface Plugin
      * 
      * @return the dependent plugin classes
      */
-    Collection<Class<? extends Plugin>> dependentPlugins();
+    Collection<Class<?>> dependentPlugins();
 
     /**
      * The prefix for all the properties for this plugin.
