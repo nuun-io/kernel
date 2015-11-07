@@ -20,7 +20,7 @@ package io.nuun.kernel.api.di;
  * An encapsulation of the bindings definition of the actual dependency engine.
  * <p>
  * The encapsulated object, can be a <strong>Guice Module</strong>, and
- * <strong>ApplicationContext<strong>, <strong> PicoContainer </strong>, etc
+ * <strong>ApplicationContext</strong>, <strong> PicoContainer </strong>, etc
  * </p>
  *
  * @author epo.jemba{@literal @}kametic.com

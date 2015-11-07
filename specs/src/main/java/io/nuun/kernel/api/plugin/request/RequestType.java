@@ -62,7 +62,7 @@ public enum RequestType
      */
     SUBTYPE_OF_BY_TYPE_DEEP,
     /**
-     * Selection of the class is made via the Specification<Class> given.
+     * Selection of the class is made via the Specification{@literal<Class>} given.
      */
     VIA_SPECIFICATION, 
     

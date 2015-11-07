@@ -111,8 +111,8 @@ public class InitContextInternal implements InitContext
     private ClasspathScanMode                                      classpathScanMode;
 
     /**
-     * @param classpathScanMode
-     * @param inPackageRoots
+     * @param initialPropertiesPrefix
+     * @param kernelParams
      */
     public InitContextInternal(String initialPropertiesPrefix, Map<String, String> kernelParams)
     {
@@ -120,8 +120,9 @@ public class InitContextInternal implements InitContext
     }
 
     /**
+     * @param initialPropertiesPrefix
+     * @param kernelParams
      * @param classpathScanMode
-     * @param inPackageRoots
      */
     public InitContextInternal(String initialPropertiesPrefix, Map<String, String> kernelParams, ClasspathScanMode classpathScanMode)
     {

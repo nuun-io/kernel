@@ -28,7 +28,7 @@ import java.util.*;
 /**
  * The ExtensionManager handles the kernel extensions.
  *
- * @author Pierre Thirouin <pierre.thirouin@ext.mpsa.com>
+ * @author Pierre Thirouin {@literal<pierre.thirouin@ext.mpsa.com>}
  */
 @SuppressWarnings("unchecked")
 public class ExtensionManager
@@ -42,6 +42,7 @@ public class ExtensionManager
      * Constructor.
      *
      * @param fetchedPlugins the plugin list
+     * @param contextClassLoader the context classloader
      */
     public ExtensionManager(Collection<Plugin> fetchedPlugins, ClassLoader contextClassLoader)
     {

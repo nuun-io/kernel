@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 /**
  * This annotation can be used on integration tests to specify kernel parameters.
  *
- * @author Pierre Thirouin <pierre.thirouin@gmail.com>
+ * @author Pierre Thirouin {@literal <pierre.thirouin@gmail.com>}
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

@@ -33,7 +33,7 @@ public enum BindingType
      */
     SUPER,
     /**
-     * Binds the Implementation to the Classes specifed by @To(to={}) Equals: for(Class<?> class: toClasses)
+     * Binds the Implementation to the Classes specifed by @To(to={}) Equals: for(Class{@literal<?>} class: toClasses)
      * binder.bind(class).to(implementation);
      */
     CUSTOM

@@ -41,7 +41,7 @@ import java.util.Collection;
  * The list of plugin implementing the kernel extension marker will be passed to the kernel extension at each method call.
  * </p>
  * @param <T> the kernel extension marker to be implemented by plugins.
- * @author Pierre Thirouin <pierre.thirouin@ext.mpsa.com>
+ * @author Pierre Thirouin {@literal <pierre.thirouin@ext.mpsa.com>}
  */
 public interface KernelExtension<T>
 {
