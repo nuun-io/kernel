@@ -60,7 +60,6 @@ import static io.nuun.kernel.core.internal.utils.NuunReflectionUtils.silentNewIn
 public final class KernelCore implements Kernel
 {
 
-    private static final int                               MAXIMAL_ROUND_NUMBER           = 50;
     private static AtomicInteger                           kernelIndex                    = new AtomicInteger();
     private final Logger                                   logger;
     private final String                                   name;
@@ -467,7 +466,7 @@ public final class KernelCore implements Kernel
             // increment round number
             round.next();
         }
-        while (!roundOrderedPlugins.isEmpty() && round.number() < MAXIMAL_ROUND_NUMBER);
+        while (!roundOrderedPlugins.isEmpty() && !round.isMax());
 
         // When all round are done.
 

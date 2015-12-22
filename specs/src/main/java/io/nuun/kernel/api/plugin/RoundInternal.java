@@ -22,6 +22,8 @@ package io.nuun.kernel.api.plugin;
 public class RoundInternal implements Round
 {
 
+    private static final int MAXIMAL_ROUND_NUMBER = 50;
+
     private int roundIndex = 0;
 
     @Override
@@ -42,6 +44,11 @@ public class RoundInternal implements Round
     public boolean isFirst()
     {
         return this.roundIndex == 0;
+    }
+
+    @Override
+    public boolean isMax() {
+        return roundIndex == MAXIMAL_ROUND_NUMBER;
     }
 
 }
