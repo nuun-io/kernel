@@ -22,6 +22,7 @@ package io.nuun.kernel.core.internal;
 import com.google.common.collect.Lists;
 import com.google.inject.*;
 import com.google.inject.matcher.Matchers;
+import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.KernelConfiguration;
 import io.nuun.kernel.core.AbstractPlugin;
@@ -58,8 +59,8 @@ public class KernelCoreIT
 {
     private static Logger logger = LoggerFactory.getLogger(KernelCoreIT.class);
     
-    private static KernelCore underTest;
-    private static DummyPlugin4 plugin4 = new DummyPlugin4();
+    private static Kernel underTest;
+    private static DummyPlugin4 plugin4;
 
     private static long start;
 
@@ -69,37 +70,41 @@ public class KernelCoreIT
     public static void init()
     {
         start = System.currentTimeMillis();
-        
-        KernelConfiguration configuration = NuunCore.newKernelConfiguration().withoutSpiPluginsLoader();
-        
-        configuration
-            .param(DummyPlugin.ALIAS_DUMMY_PLUGIN1, "WAZAAAA")
-            .param(DummyPlugin.NUUN_ROOT_ALIAS, "internal," + KernelCoreIT.class.getPackage().getName());
-
-        underTest = (KernelCore) NuunCore.createKernel(configuration);
         try
         {
-            underTest.addPlugin(DummyPlugin.class);
+            underTest = createKernelWithPlugins(DummyPlugin.class);
             underTest.init();
             fail("Should Get a KernelException for dependency problem");
         }
         catch (KernelException ke)
         {
-            underTest.addPlugin(DummyPlugin2.class);
+            underTest = createKernelWithPlugins(DummyPlugin.class, DummyPlugin2.class);
             try {
                 underTest.init();
                 fail("Should get a KernelException for dependency problem");
             }
             catch (KernelException ke2)
             {
-                underTest.addPlugin(DummyPlugin3.class);
-                underTest.addPlugin(plugin4);
-                underTest.addPlugin(DummyPlugin5.class);
+                underTest = createKernelWithPlugins(DummyPlugin.class, DummyPlugin2.class,
+                        DummyPlugin3.class, DummyPlugin4.class, DummyPlugin5.class);
                 underTest.init();
+                plugin4 = (DummyPlugin4) underTest.plugins().get("dummuyPlugin4");
             }
         }
-
         underTest.start();
+    }
+
+    public static Kernel createKernelWithPlugins(Class<?>... plugins) {
+        KernelConfiguration configuration = NuunCore.newKernelConfiguration()
+                .withoutSpiPluginsLoader()
+                .param(DummyPlugin.ALIAS_DUMMY_PLUGIN1, "WAZAAAA")
+                .param(DummyPlugin.NUUN_ROOT_ALIAS, "internal," + KernelCoreIT.class.getPackage().getName());
+
+        for (Class<?> plugin : plugins) {
+            //noinspection unchecked
+            configuration.addPlugin((Class<? extends Plugin>) plugin);
+        }
+        return NuunCore.createKernel(configuration);
     }
 
     static class DummyInterceptor implements MethodInterceptor

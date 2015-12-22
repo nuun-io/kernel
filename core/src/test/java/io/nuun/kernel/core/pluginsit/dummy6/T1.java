@@ -19,5 +19,4 @@ package io.nuun.kernel.core.pluginsit.dummy6;
 @Marker6
 public class T1
 {
-
 }

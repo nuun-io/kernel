@@ -102,13 +102,13 @@ public class DependencyProviderTest {
 
     @Test
     public void test_provide_dependencies_never_null() {
-        List<Plugin> dependencies = underTest.getRequired(NoDepsPlugin.class);
+        List<Plugin> dependencies = underTest.getRequiredPluginsOf(NoDepsPlugin.class);
         Assertions.assertThat(dependencies).isNotNull();
     }
 
     @Test
     public void test_provide_required_dependencies() {
-        List<Plugin> dependencies = underTest.getRequired(WithDepsPlugin.class);
+        List<Plugin> dependencies = underTest.getRequiredPluginsOf(WithDepsPlugin.class);
 
         Assertions.assertThat(dependencies).hasSize(2);
         Assertions.assertThat(dependencies).containsOnly(requiredPlugin1, requiredPlugin2);
@@ -116,13 +116,13 @@ public class DependencyProviderTest {
 
     @Test
     public void test_provide_missing_dependent_dependencies() {
-        List<Plugin> dependencies = underTest.getDependent(NoDepsPlugin.class);
+        List<Plugin> dependencies = underTest.getDependentPluginsOf(NoDepsPlugin.class);
         Assertions.assertThat(dependencies).isNotNull();
     }
 
     @Test
     public void test_provide_dependent_dependencies() {
-        List<Plugin> dependencies = underTest.getDependent(WithDepsPlugin.class);
+        List<Plugin> dependencies = underTest.getDependentPluginsOf(WithDepsPlugin.class);
 
         Assertions.assertThat(dependencies).hasSize(1);
         Assertions.assertThat(dependencies).containsOnly(dependentPlugin);
@@ -130,7 +130,7 @@ public class DependencyProviderTest {
 
     @Test
     public void test_provide_all_dependencies() {
-        List<Plugin> dependencies = underTest.getAll(WithDepsPlugin.class);
+        List<Plugin> dependencies = underTest.getDependenciesOf(WithDepsPlugin.class);
 
         Assertions.assertThat(dependencies).hasSize(3);
         Assertions.assertThat(dependencies).containsOnly(requiredPlugin1, requiredPlugin2, dependentPlugin);

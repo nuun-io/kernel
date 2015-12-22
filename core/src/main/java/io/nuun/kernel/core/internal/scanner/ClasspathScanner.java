@@ -18,41 +18,27 @@ package io.nuun.kernel.core.internal.scanner;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.Set;
 
 import org.kametic.specifications.Specification;
 
 public interface ClasspathScanner
 {
+    Collection<Class<?>> scanTypes(String typeRegex);
 
-    void scanClasspathForAnnotation(Class<? extends Annotation> annotationType , Callback callback);
+    Collection<Class<?>> scanTypes(Specification<Class<?>> specification);
 
-    void scanClasspathForAnnotationRegex(String annotationTypeRegex, Callback callback);
+    Collection<Class<?>> scanTypesAnnotatedBy(Class<? extends Annotation> annotationType);
 
-    void scanClasspathForMetaAnnotationRegex(String metaAnnotationRegex, Callback callback);
+    Collection<Class<?>> scanTypesAnnotatedBy(String annotationTypeRegex);
 
-    void scanClasspathForSubTypeClass(Class<?> subType, Callback callback);
+    Collection<Class<?>> scanTypesMetaAnnotated(Class<? extends Annotation> annotationType);
 
-    void scanClasspathForTypeRegex(String typeRegex, Callback callback);
+    Collection<Class<?>> scanTypesMetaAnnotated(String metaAnnotationRegex);
 
-    void scanClasspathForSubTypeRegex(String typeRegex, Callback callback);
+    Collection<Class<?>> scanSubTypesOf(Class<?> subType);
 
-    void scanClasspathForResource(String pattern, CallbackResources callback);
+    Collection<Class<?>> scanSubTypesOf(String typeRegex);
 
-    void scanClasspathForSpecification(Specification<Class<?>> specification, Callback callback);
-
-    void scanClasspathForMetaAnnotation(Class<? extends Annotation> annotationType, Callback callback);
-    
-    void doClasspathScan ();
-    
-    
-    public static interface Callback
-    {
-        public void callback(Collection<Class<?>> scanResult);
-    }
-
-    public static interface CallbackResources
-    {
-        public void callback(Collection<String> scanResult);
-    }
-    
+    Set<String> scanResources(String pattern);
 }

@@ -16,109 +16,43 @@
  */
 package io.nuun.kernel.core.internal.scanner;
 
-import io.nuun.kernel.api.annotations.Ignore;
-import io.nuun.kernel.core.KernelException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import io.nuun.kernel.core.internal.scanner.inmemory.InMemoryUrlType;
 import org.reflections.vfs.Vfs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
- *
- * 
  * @author epo.jemba{@literal @}kametic.com
- *
  */
 public abstract class AbstractClasspathScanner implements ClasspathScanner
 {
+	static
+	{
+	  Vfs.setDefaultURLTypes(Arrays.asList(
+			  new InMemoryUrlType(),
+			  Vfs.DefaultUrlTypes.jarFile,
+			  Vfs.DefaultUrlTypes.jarUrl,
+			  Vfs.DefaultUrlTypes.directory,
+			  Vfs.DefaultUrlTypes.jarInputStream
+	  ));
+	}
 
-      static
-      {
-          Vfs.setDefaultURLTypes(Arrays.asList(
-				  new InMemoryUrlType(),
-                  Vfs.DefaultUrlTypes.jarFile,
-                  Vfs.DefaultUrlTypes.jarUrl,
-                  Vfs.DefaultUrlTypes.directory,
-                  Vfs.DefaultUrlTypes.jarInputStream
-          ));
-      }
+	private final boolean reachAbstractClass;
 
-
-      private final boolean           reachAbstractClass;
-
-
-	  public AbstractClasspathScanner(boolean reachAbstractClass) {
+	public AbstractClasspathScanner(boolean reachAbstractClass) {
 		this.reachAbstractClass = reachAbstractClass;
-	  }
+	}
 
-
-	  protected Collection<Class<?>> postTreatment(Collection<Class<?>> set)
-	    {
-
-	        // Sanity Check : throw a KernelException if one of the returned classes is null
-	        for (Class<?> class1 : set)
-	        {
-	            if (null == class1)
-	            {
-	                throw new KernelException("Scanned classes results can not be null. Please check Integrity of the classes.");
-	            }
-	        }
-
-	        Collection<Class<?>> filtered = Collections2.filter(set, new IgnorePredicate(reachAbstractClass));
-
-	        return filtered;
-
-	    }
-	  
-	  static class IgnorePredicate implements Predicate<Class<?>>
-	    {
-
-	        Logger                logger = LoggerFactory.getLogger(AbstractClasspathScanner.IgnorePredicate.class);
-
-	        private final boolean reachAbstractClass;
-
-	        public IgnorePredicate(boolean reachAbstractClass)
-	        {
-	            this.reachAbstractClass = reachAbstractClass;
-	        }
-
-	        @Override
-	        public boolean apply(Class<?> clazz)
-	        {
-
-	            logger.trace("Checking {} for Ignore", clazz.getName());
-
-	            boolean toKeep = true;
-
-	            if (Modifier.isAbstract(clazz.getModifiers()) && !reachAbstractClass && !clazz.isInterface())
-	            {
-	                toKeep = false;
-	            }
-
-	            for (Annotation annotation : clazz.getAnnotations())
-	            {
-	                logger.trace("Checking annotation {} for Ignore", annotation.annotationType().getName());
-	                if (annotation.annotationType().equals(Ignore.class) || annotation.annotationType().getAnnotation(Ignore.class) != null)
-	                {
-	                    toKeep = false;
-	                }
-	                logger.trace("Result tokeep = {}.", toKeep);
-	                if (!toKeep)
-	                {
-	                    break;
-	                }
-	            }
-	            return toKeep;
-	        }
-	    }
-
+	protected Collection<Class<?>> postTreatment(@Nullable Collection<Class<?>> set)
+	{
+		if (set == null) {
+            return Lists.newArrayList();
+        }
+		return Collections2.filter(set, new IgnorePredicate(reachAbstractClass));
+	}
 }

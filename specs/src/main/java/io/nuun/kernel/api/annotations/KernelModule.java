@@ -22,10 +22,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * The modules marked by this annotation will be automatically scanned and install by the kernel.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE})
 public @interface KernelModule
 {
-       boolean overriding() default false;
+    /**
+     * @return whether the module is an overriding module.
+     */
+    boolean overriding() default false;
 }

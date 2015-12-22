@@ -15,15 +15,13 @@
  * limitations under the License.
  */
 package io.nuun.kernel.api.di;
+
 /**
- * 
- * Global Module is the module created by the kernel for the whole application. It is the aggregation of all the UnitModule provided by plugins.
- * 
- * @author epo.jemba{@literal @}kametic.com
+ * Global Module is the module created by the kernel for the whole application.
+ * It is the aggregation of all the UnitModule provided by plugins.
  *
+ * @author epo.jemba@kametic.com
  */
 public interface GlobalModule extends ModuleWrapper
 {
-
-
 }

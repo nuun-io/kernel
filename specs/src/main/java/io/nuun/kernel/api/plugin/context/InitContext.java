@@ -26,17 +26,15 @@ import java.util.Map;
 
 /**
  * The holder class containing all the data available at the {@code init} step.
- * 
+ *
  * @author Epo Jemba
  */
-@SuppressWarnings("rawtypes")
 public interface InitContext
 {
-
     Map<Class<?>, Collection<Class<?>>> scannedSubTypesByParentClass();
 
     Map<Class<?>, Collection<Class<?>>> scannedSubTypesByAncestorClass();
-    
+
     Map<String, Collection<Class<?>>> scannedSubTypesByParentRegex();
 
     Map<Class<? extends Annotation>, Collection<Class<?>>> scannedClassesByAnnotationClass();
@@ -52,7 +50,7 @@ public interface InitContext
     Collection<Class<?>> classesToBind();
 
     List<UnitModule> moduleResults();
-    
+
     List<UnitModule> moduleOverridingResults();
 
     Collection<String> propertiesFiles();
@@ -62,20 +60,20 @@ public interface InitContext
     Map<String, Collection<String>> mapResourcesByRegex();
 
     Map<Specification, Collection<Class<?>>> scannedTypesBySpecification();
-    
+
     /**
      * Returns plugin instances required by the current plugin.
      * The plugin's init phase will be executed after theirs.
-     * 
+     *
      * @return the instances of the plugin declared required by the method Plugin.pluginDependenciesRequired()
      */
     @Deprecated
     Collection<?> pluginsRequired();
-    
+
     /**
      * Returns instances of the plugins that become dependent on this plugin.
      * The plugin's init phase will be executed before theirs.
-     * 
+     *
      * @return dependent plugins
      */
     @Deprecated
@@ -86,11 +84,9 @@ public interface InitContext
     <T> List<T> dependencies(Class<T> dependencyClass);
 
     <T> T dependency(Class<T> dependencyClass);
+
     /**
-     * The current initialization round.
-     * 
      * @return the current round number
      */
     int roundNumber();
-
 }

@@ -9,8 +9,13 @@ public class ClasspathStrategy {
         this.additional = true;
     }
 
-    public ClasspathStrategy(Strategy strategy, boolean additional) {
-        this.strategy = strategy;
+    public ClasspathStrategy(String strategy, boolean additional) {
+        if (strategy == null) {
+            this.strategy = Strategy.ALL;
+        }
+        else {
+            this.strategy = Strategy.valueOf(strategy.toUpperCase());
+        }
         this.additional = additional;
     }
 

@@ -20,32 +20,28 @@ import io.nuun.kernel.core.AbstractPlugin;
 
 public class DummyPlugin6_D extends AbstractPlugin
 {
+    private boolean internal = false;
 
     @Override
     public String name()
     {
-        return "dummy-plugin-6-D";
+        return "dummy-6-D";
     }
-
-    
-    private boolean internal = false;
 
     public boolean isInternal()
     {
         return internal;
     }
 
-
     public void setInternal(boolean internal)
     {
         this.internal = internal;
     }
 
-    
     @Override
     public String toString()
     {
         return "D";
     }
-    
+
 }

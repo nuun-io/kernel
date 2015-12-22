@@ -37,6 +37,8 @@ public class RoundInternal implements Round
      */
     public void next()
     {
+        if (isMax())
+            throw new IndexOutOfBoundsException("Exceeded the maximal round number");
         this.roundIndex++;
     }
 

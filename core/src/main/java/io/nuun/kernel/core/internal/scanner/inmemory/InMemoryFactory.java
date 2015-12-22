@@ -23,10 +23,7 @@ import java.net.URL;
 import java.util.regex.Pattern;
 
 /**
- *
- * 
  * @author epo.jemba{@literal @}kametic.com
- *
  */
 public class InMemoryFactory {
 	
@@ -36,33 +33,29 @@ public class InMemoryFactory {
 	public InMemoryFactory() {
 		handler = new InMemoryHandler();
 	}
-	
-	 
-	
-	public URL createInMemoryClass (Class<?> claSs) throws MalformedURLException
+
+	public URL createInMemoryClass(Class<?> claSs) throws MalformedURLException
 	{
 		return url( claSs.getName().replace('.', '/') + ".class");
 	}
 	
-	public URL createInMemoryResource (String resource) throws MalformedURLException
+	public URL createInMemoryResource(String resource) throws MalformedURLException
 	{
 		String content = resource.replace('\\', '/');
 		return url(content);
 	}
 	
-	private URL url (String content) throws MalformedURLException
+	private URL url(String content) throws MalformedURLException
 	{
 		assertElementName(content);
-		return new URL( (URL) null ,  INMEMORY	+ "://localhost/" + content , handler);
+		return new URL(null, INMEMORY + "://localhost/" + content, handler);
 	}
 
-    protected void assertElementName (String name)
+    protected void assertElementName(String name)
     {
     	if ( ! Pattern.matches(Resource.PATTERN, name))
     	{
-    		throw new IllegalArgumentException("\"" + name +"\" must be a valid ressource name : " + Resource.PATTERN );
+    		throw new IllegalArgumentException("\"" + name +"\" must be a valid ressource name : " + Resource.PATTERN);
     	}
-    	
     }
-	
 }
