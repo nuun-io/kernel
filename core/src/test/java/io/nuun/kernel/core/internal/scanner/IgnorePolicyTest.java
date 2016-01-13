@@ -16,11 +16,11 @@ import java.lang.annotation.Target;
  */
 public class IgnorePolicyTest {
 
-    private AbstractClasspathScanner.IgnorePredicate ignorePredicate;
+    private IgnorePredicate ignorePredicate;
 
     @Before
     public void testIgnore() {
-        ignorePredicate = new AbstractClasspathScanner.IgnorePredicate(false);
+        ignorePredicate = new IgnorePredicate(false);
     }
 
     @Test

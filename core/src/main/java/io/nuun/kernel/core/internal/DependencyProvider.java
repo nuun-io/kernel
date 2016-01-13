@@ -19,13 +19,8 @@ class DependencyProvider {
     private final PluginRegistry pluginRegistry;
     private final FacetRegistry facetRegistry;
 
-
-
-    private static enum DependencyType {
-        REQUIRED, DEPENDENT, ALL;
-    }
-    public DependencyProvider(PluginRegistry pluginRegistry) {
-        this(pluginRegistry, new FacetRegistry(pluginRegistry.getPlugins()));
+    private enum DependencyType {
+        REQUIRED, DEPENDENT, ALL
     }
 
     public DependencyProvider(PluginRegistry pluginRegistry, FacetRegistry facetRegistry) {
@@ -33,19 +28,19 @@ class DependencyProvider {
         this.facetRegistry = facetRegistry;
     }
 
-    public List<Plugin> getAll(Class<? extends Plugin> pluginClass) {
-        return getDependency(pluginClass, DependencyType.ALL);
+    public List<Plugin> getDependenciesOf(Class<? extends Plugin> pluginClass) {
+        return getDependenciesOf(pluginClass, DependencyType.ALL);
     }
 
-    public List<Plugin> getRequired(Class<? extends Plugin> pluginClass) {
-        return getDependency(pluginClass, DependencyType.REQUIRED);
+    public List<Plugin> getRequiredPluginsOf(Class<? extends Plugin> pluginClass) {
+        return getDependenciesOf(pluginClass, DependencyType.REQUIRED);
     }
 
-    public List<Plugin> getDependent(Class<? extends Plugin> pluginClass) {
-        return getDependency(pluginClass, DependencyType.DEPENDENT);
+    public List<Plugin> getDependentPluginsOf(Class<? extends Plugin> pluginClass) {
+        return getDependenciesOf(pluginClass, DependencyType.DEPENDENT);
     }
 
-    private List<Plugin> getDependency(Class<? extends Plugin> pluginClass, DependencyType dependencyType) {
+    private List<Plugin> getDependenciesOf(Class<? extends Plugin> pluginClass, DependencyType dependencyType) {
         Plugin plugin = pluginRegistry.get(pluginClass);
         List<Plugin> dependencies = new ArrayList<Plugin>();
         if (plugin != null) {
@@ -59,11 +54,11 @@ class DependencyProvider {
 
     private Collection<Class<?>> getDependencyClasses(Plugin plugin, DependencyType dependencyType) {
         Collection<Class<?>> requiredClasses = new ArrayList<Class<?>>();
-        if (dependencyType.equals(DependencyType.REQUIRED)) {
+        if (dependencyType == DependencyType.REQUIRED) {
             requiredClasses = plugin.requiredPlugins();
-        } else if (dependencyType.equals(DependencyType.DEPENDENT)) {
+        } else if (dependencyType == DependencyType.DEPENDENT) {
             requiredClasses = plugin.dependentPlugins();
-        } else if (dependencyType.equals(DependencyType.ALL)) {
+        } else if (dependencyType == DependencyType.ALL) {
             requiredClasses = plugin.requiredPlugins();
             requiredClasses.addAll(plugin.dependentPlugins());
         }

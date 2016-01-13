@@ -15,38 +15,38 @@ import java.util.Map;
 class PluginSortStrategy {
 
     private final FacetRegistry facetRegistry;
+    private final List<Plugin> plugins;
+    private Graph graph;
+    private Vertices vertices;
 
-    public PluginSortStrategy(FacetRegistry facetRegistry) {
+    public PluginSortStrategy(FacetRegistry facetRegistry, List<Plugin> unOrderedPlugins) {
         this.facetRegistry = facetRegistry;
+        this.plugins = unOrderedPlugins;
+        this.graph = new Graph(plugins.size());
+        this.vertices = new Vertices();
     }
 
-    public List<Plugin> sortPlugins(List<Plugin> unsortedPlugins) {
-        Graph graph = new Graph(unsortedPlugins.size());
-        Vertices vertices = new Vertices();
+    public List<Plugin> sortPlugins() {
+        addVertices();
+        addEdges();
+        return sortGraph();
+    }
 
-        // Add vertices
-        for (short i = 0; i < unsortedPlugins.size(); i++) {
+    private void addVertices() {
+        for (short i = 0; i < plugins.size(); i++) {
             char label = (char) i;
-            vertices.addVertex(label, graph.addVertex(label), unsortedPlugins.get(i));
+            vertices.addVertex(label, graph.addVertex(label), plugins.get(i));
         }
+    }
 
-        // add edges
-        for (Plugin source : unsortedPlugins) {
-            // based on required plugins
-            for (Class<?> requiredClass : source.requiredPlugins()) {
-                for (Class<?> dependencyClass : getCompleteDependencies(requiredClass)) {
-                    graph.addEdge(vertices.getIndex(dependencyClass), vertices.getIndex(source.getClass()));
-                }
-            }
-            // based on dependent plugins
-            for (Class<?> dependentClass : source.dependentPlugins()) {
-                for (Class<?> dependencyClass : getCompleteDependencies(dependentClass)) {
-                    graph.addEdge(vertices.getIndex(source.getClass()), vertices.getIndex(dependencyClass)); // we inverse
-                }
-            }
+    private void addEdges() {
+        for (Plugin source : plugins) {
+            addEdgesForRequiredPlugins(source);
+            addEdgesForDependentPlugins(source);
         }
+    }
 
-        // launch the algo
+    private ArrayList<Plugin> sortGraph() {
         char[] topologicalSort = graph.topologicalSort();
         if (topologicalSort == null) {
             throw new KernelException("Error when sorting plugins: either a Cycle in dependencies or another cause.");
@@ -56,8 +56,23 @@ class PluginSortStrategy {
         for (Character label : topologicalSort) {
             sorted.add(vertices.getPlugin(label));
         }
-
         return sorted;
+    }
+
+    private void addEdgesForRequiredPlugins(Plugin source) {
+        for (Class<?> requiredClass : source.requiredPlugins()) {
+            for (Class<?> dependencyClass : getCompleteDependencies(requiredClass)) {
+                graph.addEdge(vertices.getIndex(dependencyClass), vertices.getIndex(source.getClass()));
+            }
+        }
+    }
+
+    private void addEdgesForDependentPlugins(Plugin source) {
+        for (Class<?> dependentClass : source.dependentPlugins()) {
+            for (Class<?> dependencyClass : getCompleteDependencies(dependentClass)) {
+                graph.addEdge(vertices.getIndex(source.getClass()), vertices.getIndex(dependencyClass)); // we inverse
+            }
+        }
     }
 
     private List<Class<?>> getCompleteDependencies(Class<?> declaredDependency) {

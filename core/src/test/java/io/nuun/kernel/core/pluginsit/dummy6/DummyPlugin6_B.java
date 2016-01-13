@@ -26,12 +26,11 @@ import io.nuun.kernel.core.AbstractPlugin;
 import java.util.Collection;
 
 import static org.fest.assertions.Assertions.assertThat;
+
 /**
- * 
  * A 2 rounds plugin
  * 
  * @author ejemba
- *
  */
 public class DummyPlugin6_B extends AbstractPlugin
 {
@@ -43,13 +42,13 @@ public class DummyPlugin6_B extends AbstractPlugin
     @Override
     public String name()
     {
-        return "dummy-plugin-6-B";
+        return "dummy-6-B";
     }
 
     @Override
     public Collection<Class<?>> dependentPlugins()
     {
-        if (round != null && round.isFirst())
+        if (round.isFirst())
         {
             return Lists.<Class<?>>newArrayList(DummyPlugin6_D.class, DummyPlugin6_C.class);
         }

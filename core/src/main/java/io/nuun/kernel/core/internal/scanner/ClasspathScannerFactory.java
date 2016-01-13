@@ -27,17 +27,16 @@ import java.util.Set;
 
 public class ClasspathScannerFactory
 {
-    public ClasspathScanner create(ClasspathStrategy classpathStrategy, Set<URL> additionalClasspath , String... packageRoot)
+    public ClasspathScanner create(ClasspathStrategy classpathStrategy, Set<URL> additionalClasspath, String... packageRoot)
     {
         ClasspathScannerDisk classpathScannerDisk = new ClasspathScannerDisk(classpathStrategy, packageRoot);
         classpathScannerDisk.setAdditionalClasspath(additionalClasspath);
         return classpathScannerDisk;
     }
-    
-    public ClasspathScanner createInMemory (Classpath classpath  , String... packageRoot) {
-    	ClasspathScannerInMemory classpathScannerInMemory = new ClasspathScannerInMemory( classpath , packageRoot);
-    	
-    	return classpathScannerInMemory;
+
+    public ClasspathScanner createInMemory(Classpath classpath, String... packageRoot)
+    {
+        return new ClasspathScannerInMemory(classpath, packageRoot);
     }
 
     @Deprecated
@@ -47,9 +46,9 @@ public class ClasspathScannerFactory
     }
 
     @Deprecated
-    public ClasspathScanner create(ClasspathStrategy classpathStrategy, boolean reachAbstractClass ,  String packageRoot,String... packageRoots )
+    public ClasspathScanner create(ClasspathStrategy classpathStrategy, boolean reachAbstractClass, String packageRoot, String... packageRoots)
     {
-        return new ClasspathScannerDisk(classpathStrategy, reachAbstractClass , packageRoot ,packageRoots);
+        return new ClasspathScannerDisk(classpathStrategy, reachAbstractClass, packageRoot, packageRoots);
     }
 
 }

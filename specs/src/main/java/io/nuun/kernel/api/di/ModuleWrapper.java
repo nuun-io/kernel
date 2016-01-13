@@ -28,8 +28,9 @@ package io.nuun.kernel.api.di;
 public interface ModuleWrapper
 {
     /**
-     * 
-     * @return the actual native module.
+     * Returns a module which can be handled by the Nuun's internal DI engine.
+     *
+     * @return the native module
      */
     Object nativeModule();
     

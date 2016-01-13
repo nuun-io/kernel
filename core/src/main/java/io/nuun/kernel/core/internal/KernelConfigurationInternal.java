@@ -25,53 +25,61 @@ import io.nuun.kernel.api.di.ModuleValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author epo.jemba{@literal @}kametic.com
  */
-public class KernelConfigurationInternal implements KernelConfiguration, KernelCoreMutator
+public class KernelConfigurationInternal implements KernelConfiguration
 {
 
-    private final Logger              logger = LoggerFactory.getLogger(KernelConfiguration.class);
-    List<String>                      parameters = new ArrayList<String>();
-    private Object                    containerContext;
+    private final Logger logger = LoggerFactory.getLogger(KernelConfiguration.class);
+    private final AliasMap kernelParamsAndAlias = new AliasMap();
+
     private List<Class<? extends Plugin>> pluginsClass = new ArrayList<Class<? extends Plugin>>();
-    private Plugin[]                  plugins = new Plugin[0];
-    private boolean                   useSpi     = true;
-    private DependencyInjectionMode   dependencyInjectionMode;
-    private ClasspathScanMode         classpathScanMode = ClasspathScanMode.NOMINAL;
+    private Plugin[] plugins = new Plugin[0];
     private List<ModuleValidation> validations = new ArrayList<ModuleValidation>();
-    
+    private ClasspathScanMode classpathScanMode = ClasspathScanMode.NOMINAL;
+    private boolean isPluginScanEnabled = true;
+    private Object containerContext;
+    private DependencyInjectionMode dependencyInjectionMode = DependencyInjectionMode.PRODUCTION;
+
     @Override
     public KernelConfiguration param(String key, String value)
     {
-        cleanParamsSize();
-
-        parameters.add(key);
-        parameters.add(value);
-        
+        kernelParamsAndAlias.put(key, value);
         return this;
-    }
-
-    private void cleanParamsSize()
-    {
-        if (parameters.size() % 2 != 0)
-        {
-            parameters.add("");
-        }
     }
 
     @Override
     public KernelConfiguration params(String... paramEntries)
     {
-        cleanParamsSize();
+        if (isNotEvenNumber(paramEntries.length)) {
+            throw new IllegalArgumentException("An even number of parameters was expected but found: "
+                    + Arrays.toString(paramEntries));
+        }
 
-        Collections.addAll(parameters, paramEntries);
+        Iterator<String> it = Arrays.asList(paramEntries).iterator();
+        while (it.hasNext())
+        {
+            addParamKeyValue(it);
+        }
         return this;
+    }
+
+    public boolean isNotEvenNumber(int number) {
+        return number % 2 != 0;
+    }
+
+    private void addParamKeyValue(Iterator<String> it) {
+        String key = it.next();
+        String value = it.next();
+        logger.debug("Adding {} = {} as param to kernel", key, value);
+        kernelParamsAndAlias.put(key, value);
+    }
+
+    public AliasMap kernelParams() {
+        return kernelParamsAndAlias;
     }
 
     @Override
@@ -110,14 +118,14 @@ public class KernelConfigurationInternal implements KernelConfiguration, KernelC
     @Override
     public KernelConfiguration withoutSpiPluginsLoader()
     {
-        useSpi = false;
+        isPluginScanEnabled = false;
         return this;
     }
 
     @Override
     public KernelConfiguration withSpiPluginsLoader()
     {
-        useSpi = true;
+        isPluginScanEnabled = true;
         return this;
     }
 
@@ -134,7 +142,7 @@ public class KernelConfigurationInternal implements KernelConfiguration, KernelC
         this.classpathScanMode = classpathScanMode;
         return this;
     }
-    
+
     @Override
     public KernelConfiguration moduleValidation(ModuleValidation validation)
     {
@@ -145,47 +153,31 @@ public class KernelConfigurationInternal implements KernelConfiguration, KernelC
         return this;
     }
 
-    @Override
-    public void apply(KernelCore kernelCore)
-    {
-
-        // Update parameters
-        AliasMap kernelParamsAndAlias = kernelCore.paramsAndAlias();
-
-        Iterator<String> it = parameters.iterator();
-        while (it.hasNext())
-        {
-            String key = it.next();
-            String value = "";
-            if (it.hasNext())
-            {
-                value = it.next();
-            }
-            logger.info("Adding {} = {} as param to kernel", key, value);
-            kernelParamsAndAlias.put(key, value);
-        }
-        
-        kernelCore.addContainerContext(containerContext);
-        kernelCore.addPlugins(pluginsClass);
-        kernelCore.addPlugins(plugins);
-        if (useSpi)
-        {
-            kernelCore.spiPluginEnabled();
-        }
-        else
-        {
-            kernelCore.spiPluginDisabled();
-        }
-        
-        kernelCore.dependencyInjectionMode(dependencyInjectionMode);
-        
-        kernelCore.classpathScanMode(classpathScanMode);
-        
-        for ( ModuleValidation validation : validations)
-        {
-            kernelCore.provideGlobalDiDefValidation(validation);
-        }
-
+    public Object getContainerContext() {
+        return containerContext;
     }
 
+    public List<Class<? extends Plugin>> getPluginClasses() {
+        return pluginsClass;
+    }
+
+    public Plugin[] getPlugins() {
+        return plugins;
+    }
+
+    public boolean isPluginScanEnabled() {
+        return isPluginScanEnabled;
+    }
+
+    public DependencyInjectionMode getDependencyInjectionMode() {
+        return dependencyInjectionMode;
+    }
+
+    public ClasspathScanMode getClasspathScanMode() {
+        return classpathScanMode;
+    }
+
+    public List<ModuleValidation> getValidations() {
+        return validations;
+    }
 }

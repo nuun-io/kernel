@@ -13,26 +13,32 @@ import java.util.*;
  *
  * @author pierre.thirouin@ext.mpsa.com (Pierre Thirouin)
  */
-class FacetRegistry {
-
-    private final ListMultimap<Class<?>, Plugin> facets = ArrayListMultimap.create();
-    private final Map<Class<?>, Plugin> plugins = new HashMap<Class<?>, Plugin>();
+class FacetRegistry
+{
+    private final ListMultimap<Class<?>, Plugin> pluginsByFacet = ArrayListMultimap.create();
+    private final Map<Class<?>, Plugin> pluginsByClass = new HashMap<Class<?>, Plugin>();
 
     /**
      * Constructs a facet registry.
      *
      * @param plugins the list of plugin
      */
-    FacetRegistry(final Collection<Plugin> plugins) {
-        if (plugins != null) {
-            for (Plugin plugin : plugins) {
-                this.plugins.put(plugin.getClass(), plugin);
+    FacetRegistry(final Collection<Plugin> plugins)
+    {
+        for (Plugin plugin : plugins)
+        {
+            this.pluginsByClass.put(plugin.getClass(), plugin);
+            collectFacets(plugin);
+        }
+    }
 
-                for (Class<?> anInterface : plugin.getClass().getInterfaces()) {
-                    if (isFacet(anInterface)) {
-                        facets.put(anInterface, plugin);
-                    }
-                }
+    private void collectFacets(Plugin plugin)
+    {
+        for (Class<?> anInterface : plugin.getClass().getInterfaces())
+        {
+            if (isFacet(anInterface))
+            {
+                pluginsByFacet.put(anInterface, plugin);
             }
         }
     }
@@ -50,13 +56,17 @@ class FacetRegistry {
      * @return the facet implementation or null if not present
      * @throws java.lang.IllegalStateException if more than one implementation exists for the facet
      */
-    <T> T getFacet(@Nullable Class<T> facet) throws IllegalStateException {
+    <T> T getFacet(@Nullable Class<T> facet) throws IllegalStateException
+    {
         T plugin = null;
-        if (facet != null) {
+        if (facet != null)
+        {
             List<T> plugins = getFacets(facet);
-            if (plugins.size() > 1) {
-                throw new IllegalStateException("One implementation was expected for the " + facet.getSimpleName() + " facet, but found: " + plugins.toString());
-            } else if (plugins.size() == 1) {
+            if (plugins.size() > 1)
+            {
+                throw new IllegalStateException(String.format("One implementation was expected for the %s facet, but found: %s", facet.getSimpleName(), plugins.toString()));
+            } else if (plugins.size() == 1)
+            {
                 plugin = plugins.get(0);
             }
         }
@@ -75,21 +85,24 @@ class FacetRegistry {
      * @param <T>   the facet type
      * @return the list of facet implementations, or an empty list if not present
      */
-    <T> List<T> getFacets(@Nullable Class<T> facet) {
-        if (facet != null && Plugin.class.isAssignableFrom(facet)) {
+    @SuppressWarnings("unchecked")
+    <T> List<T> getFacets(@Nullable Class<T> facet)
+    {
+        if (facet != null && Plugin.class.isAssignableFrom(facet))
+        {
             List<T> ts = new ArrayList<T>();
-            Plugin plugin = plugins.get(facet);
-            if (plugin != null) {
-                //noinspection unchecked
+            Plugin plugin = pluginsByClass.get(facet);
+            if (plugin != null)
+            {
                 ts.add((T) plugin);
             }
             return ts;
         }
-        //noinspection unchecked
-        return (List<T>) facets.get(facet);
+        return (List<T>) pluginsByFacet.get(facet);
     }
 
-    private boolean isFacet(Class<?> aClass) {
+    private boolean isFacet(Class<?> aClass)
+    {
         return aClass.isAnnotationPresent(Facet.class);
     }
 }

@@ -42,12 +42,10 @@ import java.util.*;
  */
 public abstract class AbstractPlugin implements Plugin
 {
-
-    
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPlugin.class);
 
-    protected Context          context = null;
-    protected Object           containerContext = null;
+    protected Context context = null;
+    protected Object containerContext = null;
     protected Round round;
 
     // ============================= PLUGIN LIFE CYCLE USED BY KERNEL =============================
@@ -59,14 +57,14 @@ public abstract class AbstractPlugin implements Plugin
     }
 
     @Override
-    public void stop()
-    {
-    }
-
-    @Override
     public void start(Context context)
     {
         this.context = context;
+    }
+
+    @Override
+    public void stop()
+    {
     }
 
     // ============================= PLUGIN request builders =============================
@@ -108,25 +106,24 @@ public abstract class AbstractPlugin implements Plugin
         return new DescendantOfSpecification(ancestor);
     }
     
-    
-    protected Specification<Class<?>> classMethodsAnnotatedWith (final Class<? extends Annotation> annotationClass)
+    protected Specification<Class<?>> classMethodsAnnotatedWith(final Class<? extends Annotation> annotationClass)
     {
     	return new ClassMethodsAnnotatedWith(annotationClass);
     }
-    protected Specification<Class<?>> fieldAnnotatedWith (final Class<? extends Annotation> annotationClass)
+
+    protected Specification<Class<?>> fieldAnnotatedWith(final Class<? extends Annotation> annotationClass)
     {
     	return new AbstractSpecification<Class<?>> ()
     	{
     		@Override
     		public boolean isSatisfiedBy(Class<?> candidate) {
-    			
     			if (candidate != null)
     			{
     			    try
                     {
     			        for (Field field : candidate.getDeclaredFields())
     			        {
-    			            if (   field.isAnnotationPresent(annotationClass)   )
+    			            if (field.isAnnotationPresent(annotationClass))
     			            {
     			                return true;
     			            }
@@ -137,7 +134,6 @@ public abstract class AbstractPlugin implements Plugin
                         LOGGER.debug("fieldAnnotatedWith : " + candidate + " missing " + throwable);
                     }
     			}
-    			
     			return false;
     		}
     	};
@@ -173,7 +169,6 @@ public abstract class AbstractPlugin implements Plugin
                         }
                     }
                 }
-
                 return false;
             }
         };
@@ -239,8 +234,7 @@ public abstract class AbstractPlugin implements Plugin
     }
     
     /**
-     * 
-     * convenient method for plugin to return directly a native module rather than a UnitModule.
+     * Convenient method for plugin to return directly a native module rather than a UnitModule.
      * <p>
      * then {@link AbstractPlugin#unitModule()} will use {@link AbstractPlugin#nativeUnitModule()} to create the UnitModule.
      * 
@@ -252,14 +246,13 @@ public abstract class AbstractPlugin implements Plugin
     }
     
     /**
-     * 
-     * convenient method for plugin to return directly a native module rather than a UnitModule.
+     * Convenient method for plugin to return directly a native module rather than a UnitModule.
      * <p>
      * then {@link AbstractPlugin#unitModule()} will use {@link AbstractPlugin#nativeUnitModule()} to create the UnitModule.
      * 
      * @return the nativeModule for overring purpose.
      */
-    public Object nativeOverridingUnitModule ()
+    public Object nativeOverridingUnitModule()
     {
         return null;
     }
@@ -267,7 +260,7 @@ public abstract class AbstractPlugin implements Plugin
     @Override
     public UnitModule overridingUnitModule()
     {
-        return nativeOverridingUnitModule() != null ?  new ModuleEmbedded(nativeOverridingUnitModule()) : null;
+        return nativeOverridingUnitModule() != null ? new ModuleEmbedded(nativeOverridingUnitModule()) : null;
     }
 
     @Override
@@ -293,7 +286,6 @@ public abstract class AbstractPlugin implements Plugin
         this.round = round;
     }
     
-    
     @Override
     public Map<String, String> kernelParametersAliases()
     {
@@ -304,5 +296,4 @@ public abstract class AbstractPlugin implements Plugin
     {
         return new ModuleEmbedded(module);
     }
-
 }

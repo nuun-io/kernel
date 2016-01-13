@@ -61,21 +61,20 @@ public class KernelMulticoreTest
                 startLatch.await();
                 KernelCore underTest;
                 DummyPlugin4 plugin4 = new DummyPlugin4();
-                
+
                 underTest = (KernelCore) createKernel(
                         newKernelConfiguration()
-                        .params (
-                                DummyPlugin.ALIAS_DUMMY_PLUGIN1 , "WAZAAAA",
-                                DummyPlugin.NUUN_ROOT_ALIAS, "internal,"+KernelCoreIT.class.getPackage().getName()
+                                .params(
+                                        DummyPlugin.ALIAS_DUMMY_PLUGIN1, "WAZAAAA",
+                                        DummyPlugin.NUUN_ROOT_ALIAS, "internal," + KernelCoreIT.class.getPackage().getName()
                                 )
-                        );
+                                .addPlugin(DummyPlugin3.class)
+                                .addPlugin(DummyPlugin2.class)
+                                .addPlugin(plugin4)
+                                .addPlugin(DummyPlugin5.class)
+                );
                 
                 assertThat(underTest.name()).startsWith(Kernel.KERNEL_PREFIX_NAME);
-
-                underTest.addPlugin(DummyPlugin3.class);
-                underTest.addPlugin(DummyPlugin2.class);
-                underTest.addPlugin(plugin4);
-                underTest.addPlugin(DummyPlugin5.class);
 
                 underTest.init();
                 

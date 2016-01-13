@@ -24,7 +24,7 @@ public class DummyPlugin6_A extends AbstractPlugin
     @Override
     public String name()
     {
-        return "dummy-plugin-6-A";
+        return "dummy-6-A";
     }
     
     @Override

@@ -16,95 +16,45 @@
  */
 package io.nuun.kernel.core.internal.scanner;
 
-import static org.fest.assertions.Assertions.assertThat;
 import io.nuun.kernel.api.annotations.KernelModule;
-import io.nuun.kernel.core.internal.scanner.ClasspathScanner.Callback;
-import io.nuun.kernel.core.internal.scanner.ClasspathScanner.CallbackResources;
-import io.nuun.kernel.core.internal.scanner.sample.Bean1;
-import io.nuun.kernel.core.internal.scanner.sample.Bean2;
-import io.nuun.kernel.core.internal.scanner.sample.Bean3;
-import io.nuun.kernel.core.internal.scanner.sample.Bean6;
-import io.nuun.kernel.core.internal.scanner.sample.MyModule1;
-import io.nuun.kernel.core.internal.scanner.sample.MyModule4;
-import io.nuun.kernel.core.internal.scanner.sample.ScanMarkerSample;
-import io.nuun.kernel.core.internal.scanner.sample.ScanMarkerSample2;
+import io.nuun.kernel.core.internal.scanner.sample.*;
 import io.nuun.kernel.core.pluginsit.dummy7.Module7;
-
-import java.util.Collection;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collection;
+
+import static org.fest.assertions.Assertions.assertThat;
+
 /**
  *
- * 
  * @author epo.jemba{@literal @}kametic.com
- *
  */
 public abstract class ClasspathScannerTestBase
 {
 	protected AbstractClasspathScanner underTest;
-
-	protected TestCallback cb;
-	protected TestCallbackResources cbr;
-
-	protected static class TestCallback implements Callback
-	{
-		public Collection<Class<?>> scanResult;
-
-		@Override
-		public void callback(Collection<Class<?>> scanResult)
-		{
-			this.scanResult = scanResult;
-
-		}
-	}
-
-	protected static class TestCallbackResources implements CallbackResources
-	{
-		public Collection<String> scanResult;
-
-		@Override
-		public void callback(Collection<String> scanResult)
-		{
-			this.scanResult = scanResult;
-
-		}
-	}
 	    
 	@Before
 	public void init() {
-		
-		
 		underTest = createUnderTest();
-		
-
-		cb = new TestCallback();
-		cbr = new TestCallbackResources();
 	}
 	
 	protected abstract AbstractClasspathScanner createUnderTest ();
-	
-	
 	  
     @Test
-    public void classpathscanner_should_retrieve_type_with_annotation ()
+    public void classpathscanner_should_retrieve_type_with_annotation()
     {
-        underTest.scanClasspathForAnnotation(ScanMarkerSample.class , cb);
-        underTest.doClasspathScan();
-        Collection<Class<?>> scanClasspathForAnnotation = cb.scanResult;
-         
-         assertThat(scanClasspathForAnnotation).isNotNull();
-         assertThat(scanClasspathForAnnotation).hasSize(2);
-         assertThat(scanClasspathForAnnotation).containsOnly(Bean1.class , Bean3.class);
+        Collection<Class<?>> scanClasspathForAnnotation = underTest.scanTypesAnnotatedBy(ScanMarkerSample.class);
+
+        assertThat(scanClasspathForAnnotation).isNotNull();
+        assertThat(scanClasspathForAnnotation).hasSize(2);
+        assertThat(scanClasspathForAnnotation).containsOnly(Bean1.class, Bean3.class);
     }
     
     @Test
-    public void classpathscanner_should_retrieve_type_with_annotation_name ()
+    public void classpathscanner_should_retrieve_type_with_annotation_name()
     {
-        underTest.scanClasspathForAnnotationRegex(".*ScanMarkerSample",cb);
-        underTest.doClasspathScan();
-        Collection<Class<?>> scanClasspathForAnnotation =cb.scanResult ;
+        Collection<Class<?>> scanClasspathForAnnotation = underTest.scanTypesAnnotatedBy(".*ScanMarkerSample");
         
         assertThat(scanClasspathForAnnotation).isNotNull();
         assertThat(scanClasspathForAnnotation).hasSize(3);
@@ -114,51 +64,41 @@ public abstract class ClasspathScannerTestBase
     @Test
     public void classpathscanner_should_retrieve_properties_tst ()
     {
-//        underTest.setAdditionalClasspath( ClasspathHelper.forPackage("") );
-        underTest.scanClasspathForResource("tst-.*\\.properties" , cbr);
-        underTest.doClasspathScan();
-        Collection<String> scanClasspathForAnnotation = cbr.scanResult;
-         
+        Collection<String> scanClasspathForAnnotation = underTest.scanResources("tst-.*\\.properties");
+
         assertThat(scanClasspathForAnnotation).isNotNull();
         assertThat(scanClasspathForAnnotation).hasSize(2);
-	    assertThat(scanClasspathForAnnotation).containsOnly("META-INF/properties/tst-one.properties" , "META-INF/properties/tst-two.properties");
+        assertThat(scanClasspathForAnnotation).containsOnly("META-INF/properties/tst-one.properties", "META-INF/properties/tst-two.properties");
     }
     
     @Test
     public void classpathscanner_should_retrieve_subtype ()
     {
-        underTest.scanClasspathForAnnotation( KernelModule.class ,cb);
-        underTest.doClasspathScan();
-        Collection<Class<? >> scanClasspathSubType = cb.scanResult;
-        
+        Collection<Class<?>> scanClasspathSubType = underTest.scanTypesAnnotatedBy(KernelModule.class);
+
         assertThat(scanClasspathSubType).isNotNull();
         assertThat(scanClasspathSubType).hasSize(3);
-        assertThat(scanClasspathSubType).containsOnly( MyModule1.class , Module7.class , MyModule4.class );
+        assertThat(scanClasspathSubType).containsOnly(MyModule1.class, Module7.class, MyModule4.class);
     }
     
     
     @Test
     public void classpathscanner_should_ignore_Ignore_classtype_based ()
     {
-        underTest.scanClasspathForAnnotation(ScanMarkerSample2.class,cb);
-        underTest.doClasspathScan();
-        Collection<Class<?>> scanClasspathForAnnotation = cb.scanResult;
-        
+        Collection<Class<?>> scanClasspathForAnnotation = underTest.scanTypesAnnotatedBy(ScanMarkerSample2.class);
+
         assertThat(scanClasspathForAnnotation).isNotNull();
         assertThat(scanClasspathForAnnotation).hasSize(1);
-        assertThat(scanClasspathForAnnotation).containsOnly(Bean2.class );
+        assertThat(scanClasspathForAnnotation).containsOnly(Bean2.class);
     }
 
     @Test
     public void classpathscanner_should_ignore_Ignore_classnamed_based ()
     {
-        underTest.scanClasspathForAnnotationRegex(".*MarkerSample2",cb);
-        underTest.doClasspathScan();
-        Collection<Class<?>> scanClasspathForAnnotation = cb.scanResult;
-        
+        Collection<Class<?>> scanClasspathForAnnotation = underTest.scanTypesAnnotatedBy(".*MarkerSample2");
+
         assertThat(scanClasspathForAnnotation).isNotNull();
         assertThat(scanClasspathForAnnotation).hasSize(1);
-        assertThat(scanClasspathForAnnotation).containsOnly(Bean2.class );
+        assertThat(scanClasspathForAnnotation).containsOnly(Bean2.class);
     }
-	
 }

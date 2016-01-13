@@ -9,49 +9,18 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Tests the facet registry.
- *
- * @author pierre.thirouin@ext.mpsa.com (Pierre Thirouin)
- */
-public class FacetRegistryTest {
-
-    @Facet
-    private static interface Facet1 {
-    }
-
-    private static class OneFacetPlugin extends AbstractPlugin implements Facet1 {
-        @Override
-        public String name() {
-            return "plugin-with-trait";
-        }
-    }
-
-    @Facet
-    private static interface Facet2 {
-    }
-
-    private static class TwoFacetPlugin extends AbstractPlugin implements Facet1, Facet2 {
-        @Override
-        public String name() {
-            return "plugin-with-trait2";
-        }
-    }
-
+public class FacetRegistryTest
+{
     @Test
-    public void scanner_support_null_plugin_list() {
-        FacetRegistry registry = new FacetRegistry(null);
-        Assertions.assertThat(registry.getFacet(null)).isNull();
-    }
-
-    @Test
-    public void get_null_is_accepted() {
+    public void get_null_is_accepted()
+    {
         FacetRegistry registry = new FacetRegistry(new ArrayList<Plugin>());
         Assertions.assertThat(registry.getFacet(null)).isNull();
     }
 
     @Test
-    public void scan_a_plugin_facet() {
+    public void scan_a_plugin_facet()
+    {
         List<Plugin> plugins = new ArrayList<Plugin>();
         OneFacetPlugin oneFacetPlugin = new OneFacetPlugin();
         plugins.add(oneFacetPlugin);
@@ -63,7 +32,8 @@ public class FacetRegistryTest {
     }
 
     @Test
-    public void scan_multiple_facet_in_a_plugin() {
+    public void scan_multiple_facet_in_a_plugin()
+    {
         List<Plugin> plugins = new ArrayList<Plugin>();
         TwoFacetPlugin twoFacetPlugin = new TwoFacetPlugin();
         plugins.add(twoFacetPlugin);
@@ -79,7 +49,8 @@ public class FacetRegistryTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void getFacet_fails_for_multiple_facet_implementation() {
+    public void getFacet_fails_for_multiple_facet_implementation()
+    {
         List<Plugin> plugins = new ArrayList<Plugin>();
         OneFacetPlugin oneFacetPlugin = new OneFacetPlugin();
         TwoFacetPlugin twoFacetPlugin = new TwoFacetPlugin();
@@ -91,7 +62,8 @@ public class FacetRegistryTest {
     }
 
     @Test
-    public void getFacets_never_return_null() {
+    public void getFacets_never_return_null()
+    {
         List<Plugin> plugins = new ArrayList<Plugin>();
         OneFacetPlugin oneFacetPlugin = new OneFacetPlugin();
         plugins.add(oneFacetPlugin);
@@ -104,7 +76,8 @@ public class FacetRegistryTest {
     }
 
     @Test
-    public void get_multiple_facet_implementations() {
+    public void get_multiple_facet_implementations()
+    {
         List<Plugin> plugins = new ArrayList<Plugin>();
         OneFacetPlugin oneFacetPlugin = new OneFacetPlugin();
         TwoFacetPlugin twoFacetPlugin = new TwoFacetPlugin();
@@ -127,15 +100,9 @@ public class FacetRegistryTest {
         Assertions.assertThat(facet2s).hasSize(1);
     }
 
-    private static class LegacyPlugin extends AbstractPlugin {
-        @Override
-        public String name() {
-            return "legacy-plugin";
-        }
-    }
-
     @Test
-    public void get_plugin_implementation() {
+    public void get_plugin_implementation()
+    {
         List<Plugin> plugins = new ArrayList<Plugin>();
         LegacyPlugin legacyPlugin = new LegacyPlugin();
         plugins.add(legacyPlugin);
@@ -150,12 +117,50 @@ public class FacetRegistryTest {
     }
 
     @Test
-    public void get_missing_plugin_implementations() {
+    public void get_missing_plugin_implementations()
+    {
         List<Plugin> plugins = new ArrayList<Plugin>();
 
         FacetRegistry registry = new FacetRegistry(plugins);
         List<LegacyPlugin> legacyPlugins = registry.getFacets(LegacyPlugin.class);
 
         Assertions.assertThat(legacyPlugins).hasSize(0);
+    }
+
+    @Facet
+    private interface Facet1
+    {
+    }
+
+    @Facet
+    private interface Facet2
+    {
+    }
+
+    private static class OneFacetPlugin extends AbstractPlugin implements Facet1
+    {
+        @Override
+        public String name()
+        {
+            return "plugin-with-trait";
+        }
+    }
+
+    private static class TwoFacetPlugin extends AbstractPlugin implements Facet1, Facet2
+    {
+        @Override
+        public String name()
+        {
+            return "plugin-with-trait2";
+        }
+    }
+
+    private static class LegacyPlugin extends AbstractPlugin
+    {
+        @Override
+        public String name()
+        {
+            return "legacy-plugin";
+        }
     }
 }

@@ -42,5 +42,6 @@ public interface Round
      * @return true if it's the first round, false otherwise.
      */
     public boolean isFirst();
-    
+
+    boolean isMax();
 }

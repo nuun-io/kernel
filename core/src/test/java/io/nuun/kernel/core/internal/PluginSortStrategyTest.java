@@ -27,8 +27,8 @@ public class PluginSortStrategyTest {
 
         List<Plugin> plugins = Lists.<Plugin>newArrayList(plugin4, plugin2, plugin3, plugin1);
         FacetRegistry facetRegistry = new FacetRegistry(plugins);
-        PluginSortStrategy strategy = new PluginSortStrategy(facetRegistry);
-        List<Plugin> orderedPlugins = strategy.sortPlugins(plugins);
+        PluginSortStrategy strategy = new PluginSortStrategy(facetRegistry, plugins);
+        List<Plugin> orderedPlugins = strategy.sortPlugins();
 
         // Assert the old order
         assertThat(plugins).containsSequence(plugin4, plugin2, plugin3, plugin1);

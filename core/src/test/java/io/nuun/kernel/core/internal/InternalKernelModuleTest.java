@@ -16,6 +16,7 @@
  */
 package io.nuun.kernel.core.internal;
 
+import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.core.internal.concerns.ConcernTest;
 import io.nuun.kernel.core.internal.concerns.sample.BugPlugin;
 import io.nuun.kernel.core.internal.concerns.sample.CachePlugin;
@@ -29,22 +30,22 @@ import java.util.HashMap;
 
 public class InternalKernelModuleTest
 {
-
-	private KernelGuiceModuleInternal underTest;
+    private KernelGuiceModuleInternal underTest;
 
     @Before
     public void init()
     {
-        underTest = new KernelGuiceModuleInternal(new InitContextInternal("nuun-", new HashMap<String, String>()));
+        RequestHandler requestHandler = new RequestHandler(new HashMap<String, String>(), ClasspathScanMode.NOMINAL);
+        underTest = new KernelGuiceModuleInternal(requestHandler);
     }
 
     @Test
-    public void computeOrder_should_works ()
+    public void computeOrder_should_works()
     {
-    	Assertions.assertThat(underTest.computeOrder(SecurityPlugin.Module.class)).isEqualTo(12884901888L);
-    	Assertions.assertThat(underTest.computeOrder(LogPlugin.Module.class)).isEqualTo(-4294967296L);
-    	Assertions.assertThat(underTest.computeOrder(CachePlugin.Module.class)).isEqualTo(12884901886L);
-    	Assertions.assertThat(underTest.computeOrder(ConcernTest.Module.class)).isEqualTo(0);
-    	Assertions.assertThat(underTest.computeOrder(BugPlugin.Module.class)).isEqualTo(15032385535L);
+        Assertions.assertThat(underTest.computeOrder(SecurityPlugin.Module.class)).isEqualTo(12884901888L);
+        Assertions.assertThat(underTest.computeOrder(LogPlugin.Module.class)).isEqualTo(-4294967296L);
+        Assertions.assertThat(underTest.computeOrder(CachePlugin.Module.class)).isEqualTo(12884901886L);
+        Assertions.assertThat(underTest.computeOrder(ConcernTest.Module.class)).isEqualTo(0);
+        Assertions.assertThat(underTest.computeOrder(BugPlugin.Module.class)).isEqualTo(15032385535L);
     }
 }
