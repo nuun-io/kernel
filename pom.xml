@@ -91,6 +91,12 @@
       <version>1.4</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jmockit</groupId>
+      <artifactId>jmockit</artifactId>
+      <version>1.17</version>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
