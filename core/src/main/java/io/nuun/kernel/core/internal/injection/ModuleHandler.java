@@ -1,4 +1,4 @@
-package io.nuun.kernel.core.internal;
+package io.nuun.kernel.core.internal.injection;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Module;
@@ -6,15 +6,14 @@ import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.di.ModuleValidation;
 import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.core.internal.KernelConfigurationInternal;
+import io.nuun.kernel.core.internal.RequestHandler;
 import io.nuun.kernel.spi.DependencyInjectionProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-/**
- * @author Pierre THIROUIN (pierre.thirouin@ext.inetpsa.com)
- */
 public class ModuleHandler
 {
     private final KernelConfigurationInternal kernelConfig;

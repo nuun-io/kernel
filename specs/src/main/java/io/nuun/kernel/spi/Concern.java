@@ -16,30 +16,43 @@
  */
 package io.nuun.kernel.spi;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * @author epo.jemba{@literal @}kametic.com
- *
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({
-    ElementType.ANNOTATION_TYPE
-})
+@Target({ElementType.ANNOTATION_TYPE})
 public @interface Concern
 {
 
     int order() default 0;
+
     String name();
+
     Priority priority() default Priority.NORMAL;
-    public enum Priority
+
+    enum Priority
     {
-        LOWEST , LOWER , LOW , NORMAL , HIGH , HIGHER , HIGHEST
+        LOWEST(-(3L << 32)),
+        LOWER(-(2L << 32)),
+        LOW(-(1L << 32)),
+        NORMAL(0),
+        HIGH(1L << 32),
+        HIGHER(2L << 32),
+        HIGHEST(3L << 32);
+
+        private long value;
+
+        Priority(long value)
+        {
+            this.value = value;
+        }
+
+        public long value() {
+            return value;
+        }
     }
-    
+
 }

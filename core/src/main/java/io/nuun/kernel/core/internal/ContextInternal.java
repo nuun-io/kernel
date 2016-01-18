@@ -19,6 +19,7 @@ package io.nuun.kernel.core.internal;
 import com.google.inject.Injector;
 import io.nuun.kernel.api.di.ObjectGraph;
 import io.nuun.kernel.api.plugin.context.Context;
+import io.nuun.kernel.core.internal.injection.ObjectGraphEmbedded;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -28,7 +29,7 @@ import javax.inject.Singleton;
  * 
  */
 @Singleton
-class ContextInternal implements Context
+public class ContextInternal implements Context
 {
 
     public final Injector mainInjector;

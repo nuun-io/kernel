@@ -22,6 +22,8 @@ import io.nuun.kernel.core.internal.concerns.sample.BugPlugin;
 import io.nuun.kernel.core.internal.concerns.sample.CachePlugin;
 import io.nuun.kernel.core.internal.concerns.sample.LogPlugin;
 import io.nuun.kernel.core.internal.concerns.sample.SecurityPlugin;
+import io.nuun.kernel.core.internal.injection.ClassInstaller;
+import io.nuun.kernel.core.internal.injection.KernelGuiceModuleInternal;
 import org.fest.assertions.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,10 +44,10 @@ public class InternalKernelModuleTest
     @Test
     public void computeOrder_should_works()
     {
-        Assertions.assertThat(underTest.computeOrder(SecurityPlugin.Module.class)).isEqualTo(12884901888L);
-        Assertions.assertThat(underTest.computeOrder(LogPlugin.Module.class)).isEqualTo(-4294967296L);
-        Assertions.assertThat(underTest.computeOrder(CachePlugin.Module.class)).isEqualTo(12884901886L);
-        Assertions.assertThat(underTest.computeOrder(ConcernTest.Module.class)).isEqualTo(0);
-        Assertions.assertThat(underTest.computeOrder(BugPlugin.Module.class)).isEqualTo(15032385535L);
+        Assertions.assertThat(new ClassInstaller(SecurityPlugin.Module.class).order()).isEqualTo(12884901888L);
+        Assertions.assertThat(new ClassInstaller(LogPlugin.Module.class).order()).isEqualTo(-4294967296L);
+        Assertions.assertThat(new ClassInstaller(CachePlugin.Module.class).order()).isEqualTo(12884901886L);
+        Assertions.assertThat(new ClassInstaller(ConcernTest.Module.class).order()).isEqualTo(0);
+        Assertions.assertThat(new ClassInstaller(BugPlugin.Module.class).order()).isEqualTo(15032385535L);
     }
 }

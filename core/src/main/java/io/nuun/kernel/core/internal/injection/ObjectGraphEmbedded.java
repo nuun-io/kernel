@@ -1,9 +1,9 @@
-package io.nuun.kernel.core.internal;
+package io.nuun.kernel.core.internal.injection;
 
 import com.google.inject.Injector;
 import io.nuun.kernel.api.di.ObjectGraph;
 
-class ObjectGraphEmbedded implements ObjectGraph
+public class ObjectGraphEmbedded implements ObjectGraph
 {
 
     private Object injector;
