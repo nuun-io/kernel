@@ -24,7 +24,7 @@ import io.nuun.kernel.api.plugin.context.Context;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.*;
 import io.nuun.kernel.api.plugin.request.builders.BindingRequestBuilderMain;
-import io.nuun.kernel.core.internal.ModuleEmbedded;
+import io.nuun.kernel.core.internal.injection.ModuleEmbedded;
 import io.nuun.kernel.spi.DependencyInjectionProvider;
 import org.kametic.specifications.*;
 import org.kametic.specifications.reflect.ClassMethodsAnnotatedWith;

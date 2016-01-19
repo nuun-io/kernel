@@ -16,6 +16,8 @@
  */
 package io.nuun.kernel.core.internal.concerns;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.config.KernelConfiguration;
 import io.nuun.kernel.core.AbstractPlugin;
@@ -23,17 +25,13 @@ import io.nuun.kernel.core.NuunCore;
 import io.nuun.kernel.core.internal.concerns.sample.CachePlugin;
 import io.nuun.kernel.core.internal.concerns.sample.LogPlugin;
 import io.nuun.kernel.core.internal.concerns.sample.SecurityPlugin;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.fest.assertions.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Injector;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConcernTest
 {

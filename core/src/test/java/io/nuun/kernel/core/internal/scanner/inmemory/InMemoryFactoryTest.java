@@ -16,14 +16,14 @@
  */
 package io.nuun.kernel.core.internal.scanner.inmemory;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  *

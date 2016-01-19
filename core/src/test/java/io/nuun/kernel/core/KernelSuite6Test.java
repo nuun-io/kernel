@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import static io.nuun.kernel.core.NuunCore.createKernel;
 import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KernelSuite6Test
 {

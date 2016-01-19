@@ -16,11 +16,8 @@
  */
 package io.nuun.kernel.core.internal.scanner.inmemory;
 
-
-
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
-
-import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * @author epo.jemba{@literal @}kametic.com
@@ -33,20 +30,20 @@ public class InMemoryClasspathBuilderTest
         InMemoryMultiThreadClasspath.INSTANCE.reset();
         ClasspathBuilder builder = new ClasspathBuilder()
         {
-            
+
             @Override
             public void configure()
             {
-                addDirectory("zerzerze"); // 1
-                   addResource("zerezrez", null);
+                addDirectory("zerzerze");
+                addResource("zerezrez", null);
                 addJar("epo.jar");
-                   addClass(String.class);
+                addClass(String.class);
             }
         };
-        
+
         builder.configure();
-        
-        assertThat(InMemoryMultiThreadClasspath.INSTANCE.entries()).hasSize(2);
+
+        Assertions.assertThat(InMemoryMultiThreadClasspath.INSTANCE.entries()).hasSize(2);
     }
 
 }

@@ -16,14 +16,12 @@
  */
 package io.nuun.kernel.core.internal.concerns.sample;
 
-import io.nuun.kernel.core.AbstractPlugin;
-
-import java.util.List;
-
-import org.aopalliance.intercept.MethodInterceptor;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.matcher.Matchers;
+import io.nuun.kernel.core.AbstractPlugin;
+import org.aopalliance.intercept.MethodInterceptor;
+
+import java.util.List;
 
 public class LogPlugin extends AbstractPlugin
 {
@@ -42,29 +40,29 @@ public class LogPlugin extends AbstractPlugin
         return "log";
     }
     
+    @Override
+    public Object nativeUnitModule()
+    {
+        return new Module(name() , list);
+    }
+
     @LogConcern
     public static class Module extends AbstractModule
     {
         private String name;
-		private List<String> list2;
+        private List<String> list2;
 
-		public Module(String name , List<String> list) {
-			this.name = name;
-			list2 = list;
-		}
-    	
-    	@Override
+        public Module(String name , List<String> list) {
+            this.name = name;
+            list2 = list;
+        }
+
+        @Override
         protected void configure()
         {
             MethodInterceptor interceptor = new ConcernInterceptor( list2, name);
             bindInterceptor(Matchers.any(), Matchers.any(), interceptor );
         }
-    }
-    
-    @Override
-    public Object nativeUnitModule()
-    {
-        return new Module(name() , list);
     }
 
 }

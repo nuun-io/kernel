@@ -9,17 +9,20 @@ import org.junit.Test;
 import java.util.Collection;
 import java.util.List;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 /**
  * Tests the plugin sort according to their dependencies.
  *
  * @author Pierre Thirouin
  */
-public class PluginSortStrategyTest {
+public class PluginSortStrategyTest
+{
 
     @Test
-    public void test_sort_plugins_with_dependencies() {
+    public void test_sort_plugins_with_dependencies()
+    {
         Plugin1 plugin1 = new Plugin1(); // declare P2 as dependent
         Plugin2 plugin2 = new Plugin2();
         Plugin3 plugin3 = new Plugin3(); // declare P2 as required and declare P4 as dependent
@@ -36,63 +39,79 @@ public class PluginSortStrategyTest {
         assertThat(orderedPlugins).containsSequence(plugin1, plugin2, plugin3, plugin4);
     }
 
-    private static class Plugin1 extends TestPlugin {
+    @Facet
+    private static interface Facet1
+    {
+    }
 
-        public Plugin1() {
+    private static class Plugin1 extends TestPlugin
+    {
+
+        public Plugin1()
+        {
             index = 1;
         }
 
         @Override
-        public Collection<Class<?>> dependentPlugins() {
+        public Collection<Class<?>> dependentPlugins()
+        {
             return Lists.<Class<?>>newArrayList(Facet1.class);
         }
     }
 
-    @Facet
-    private static interface Facet1 { }
+    private static class Plugin2 extends TestPlugin implements Facet1
+    {
 
-    private static class Plugin2 extends TestPlugin implements Facet1 {
-
-        public Plugin2() {
+        public Plugin2()
+        {
             index = 2;
         }
     }
 
-    private static class Plugin3 extends TestPlugin {
+    private static class Plugin3 extends TestPlugin
+    {
 
-        public Plugin3() {
+        public Plugin3()
+        {
             index = 3;
         }
 
         @Override
-        public Collection<Class<?>> dependentPlugins() {
+        public Collection<Class<?>> dependentPlugins()
+        {
             return Lists.<Class<?>>newArrayList(Plugin4.class);
         }
 
         @Override
-        public Collection<Class<?>> requiredPlugins() {
+        public Collection<Class<?>> requiredPlugins()
+        {
             return Lists.<Class<?>>newArrayList(Facet1.class);
         }
     }
 
-    private static class Plugin4 extends TestPlugin {
+    private static class Plugin4 extends TestPlugin
+    {
 
-        public Plugin4() {
+        public Plugin4()
+        {
             index = 4;
         }
     }
 
-    private static class TestPlugin extends AbstractPlugin {
+    private static class TestPlugin extends AbstractPlugin
+    {
 
         protected int index;
 
         @Override
-        public String name() {
+        public String name()
+        {
             return "P" + index;
         }
 
         @Override
-        public String toString() {
+        public String toString()
+        {
             return name();
         }
     }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 /**
- * 
+ *
  */
 package io.nuun.kernel.core.pluginsit.dummy23;
 
@@ -30,14 +30,13 @@ import io.nuun.kernel.core.AbstractPlugin;
 import java.util.Collection;
 import java.util.Map;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Epo Jemba
  */
 public class DummyPlugin3 extends AbstractPlugin
 {
-
     private String resourcesRegex1 = ".*.json";
     private String resourcesRegex2 = ".*-applicationContext-.*.xml";
 
@@ -57,25 +56,25 @@ public class DummyPlugin3 extends AbstractPlugin
     public InitState init(InitContext initContext)
     {
         Map<String, Collection<String>> mapResourcesByRegex = initContext.mapResourcesByRegex();
-        
-        assertThat( mapResourcesByRegex.get(resourcesRegex1) ).isNotNull();
-        assertThat( mapResourcesByRegex.get(resourcesRegex1) ).hasSize(1);
-        assertThat( mapResourcesByRegex.get(resourcesRegex1) ).contains("io/nuun/kernel/core/internal/resource-to-reach.json");
-        
-        assertThat( mapResourcesByRegex.get(resourcesRegex2) ).isNotNull();
-        assertThat( mapResourcesByRegex.get(resourcesRegex2) ).hasSize(2); // TODO FIX THE CASE OF THE properties
-        assertThat( mapResourcesByRegex.get(resourcesRegex2) ).contains("internal/sample1-applicationContext-business.xml");
-        assertThat( mapResourcesByRegex.get(resourcesRegex2) ).contains("internal/sample2-applicationContext-persistence.xml");
+
+        assertThat(mapResourcesByRegex.get(resourcesRegex1)).isNotNull();
+        assertThat(mapResourcesByRegex.get(resourcesRegex1)).hasSize(1);
+        assertThat(mapResourcesByRegex.get(resourcesRegex1)).contains("io/nuun/kernel/core/internal/resource-to-reach.json");
+
+        assertThat(mapResourcesByRegex.get(resourcesRegex2)).isNotNull();
+        assertThat(mapResourcesByRegex.get(resourcesRegex2)).hasSize(2); // TODO FIX THE CASE OF THE properties
+        assertThat(mapResourcesByRegex.get(resourcesRegex2)).contains("internal/sample1-applicationContext-business.xml");
+        assertThat(mapResourcesByRegex.get(resourcesRegex2)).contains("internal/sample2-applicationContext-persistence.xml");
 
         return InitState.INITIALIZED;
     }
-    
+
     @Override
     public Object nativeUnitModule()
     {
         return new AbstractModule()
         {
-            
+
             @Override
             protected void configure()
             {

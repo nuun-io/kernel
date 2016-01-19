@@ -27,7 +27,7 @@ import org.junit.Test;
 
 import static io.nuun.kernel.core.NuunCore.createKernel;
 import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KernelSuite7Test
 {
@@ -37,17 +37,17 @@ public class KernelSuite7Test
     @Test
     public void dependee_plugins_that_misses_should_be_source_of_error()
     {
-        
+
         underTest = createKernel(
 
                 newKernelConfiguration()
-                  .withoutSpiPluginsLoader()
-                  .plugins(
-                          new DummyPlugin7_A(),
-                          new DummyPlugin7_B()
-                  )
-                );
-        
+                        .withoutSpiPluginsLoader()
+                        .plugins(
+                                new DummyPlugin7_A(),
+                                new DummyPlugin7_B()
+                        )
+        );
+
         underTest.init();
         underTest.start();
 
@@ -62,12 +62,12 @@ public class KernelSuite7Test
         underTest = createKernel(
 
                 newKernelConfiguration()
-                  .withoutSpiPluginsLoader()
-                  .plugins(
-                          new DummyPlugin7_A(),
-                          new DummyPlugin7_B()
-                  )
-                );
+                        .withoutSpiPluginsLoader()
+                        .plugins(
+                                new DummyPlugin7_A(),
+                                new DummyPlugin7_B()
+                        )
+        );
         underTest.init();
         underTest.start();
 

@@ -24,10 +24,9 @@ import org.junit.Test;
 
 import java.util.Collection;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- *
  * @author epo.jemba{@literal @}kametic.com
  */
 public abstract class ClasspathScannerTestBase

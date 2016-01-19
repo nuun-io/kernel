@@ -12,6 +12,7 @@ import io.nuun.kernel.api.plugin.request.BindingRequest;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.nuun.kernel.api.plugin.request.RequestType;
 import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.core.internal.injection.ModuleEmbedded;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner;
 import io.nuun.kernel.core.internal.scanner.ClasspathScannerFactory;
 import io.nuun.kernel.core.internal.scanner.disk.ClasspathStrategy;

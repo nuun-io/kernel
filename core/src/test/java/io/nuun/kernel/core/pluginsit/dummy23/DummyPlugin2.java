@@ -26,7 +26,7 @@ import io.nuun.kernel.core.AbstractPlugin;
 
 import java.util.Collection;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Epo Jemba

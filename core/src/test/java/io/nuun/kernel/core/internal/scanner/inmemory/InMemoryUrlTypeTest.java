@@ -26,59 +26,59 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.regex.Pattern.matches;
-import static org.fest.assertions.Assertions.assertThat;
-import static org.fest.util.Arrays.array;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.util.Arrays.array;
 
 /**
  * @author epo.jemba{@literal @}kametic.com
  */
-public class InMemoryUrlTypeTest {
+public class InMemoryUrlTypeTest
+{
+    private InMemoryUrlType underTest;
+    private InMemoryFactory factory;
 
-	private InMemoryUrlType underTest;
-	private InMemoryFactory factory;
-	
-	@Before
-	public void init ()
-	{
-		List<? extends  InMemoryFile<?>> fs = Lists.newArrayList();
-		
-		Map<String,List<? extends InMemoryFile<?>>> m = Maps.newHashMap();
-		
-		m.put("zobd", fs);
-		
-		underTest = new InMemoryUrlType();
-		factory = new InMemoryFactory();
-	}
-	
-	@Test
-	public void testMatches() throws Exception
-	{
-		URL inMemo1 = factory.createInMemoryResource("toto.txt");
-		
-		assertThat(underTest.matches(inMemo1)).isTrue();
-	}
+    @Before
+    public void init()
+    {
+        List<? extends InMemoryFile<?>> fs = Lists.newArrayList();
 
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testRegex()
-	{
-		String pattern = "(/[a-zA-Z0-9\\-_\\.]+)+";
+        Map<String, List<? extends InMemoryFile<?>>> m = Maps.newHashMap();
 
-		Object[][] data = array(
-				array("/zerze/efrez/ferzr/zerrerre", true),
-				array("/zerze/efrez/ferzr/zerrerre.txt", true),
-				array("zerzerze/zerzer/rez4re/erzre5z.txd", false),
-				array("/zerzer-zrzerze/zerzere_zerzer55ze", true),
-				array("/zerzer-zrzerze/zerzere_zerze/", false),
-				array("/zeorzeiorize", true)
-				);
-		for (Object[] array : data)
-		{
-			String toTest = (String) array[0];
-			Boolean assertion = (Boolean) array[1];
-			assertThat(matches(pattern, toTest)).isEqualTo(assertion)
-					.as("Check that " + toTest + " is " + assertion);
-		}
-	}
+        m.put("zobd", fs);
+
+        underTest = new InMemoryUrlType();
+        factory = new InMemoryFactory();
+    }
+
+    @Test
+    public void testMatches() throws Exception
+    {
+        URL inMemo1 = factory.createInMemoryResource("toto.txt");
+
+        assertThat(underTest.matches(inMemo1)).isTrue();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testRegex()
+    {
+        String pattern = "(/[a-zA-Z0-9\\-_\\.]+)+";
+
+        Object[][] data = array(
+                array("/zerze/efrez/ferzr/zerrerre", true),
+                array("/zerze/efrez/ferzr/zerrerre.txt", true),
+                array("zerzerze/zerzer/rez4re/erzre5z.txd", false),
+                array("/zerzer-zrzerze/zerzere_zerzer55ze", true),
+                array("/zerzer-zrzerze/zerzere_zerze/", false),
+                array("/zeorzeiorize", true)
+        );
+        for (Object[] array : data)
+        {
+            String toTest = (String) array[0];
+            Boolean assertion = (Boolean) array[1];
+            assertThat(matches(pattern, toTest)).isEqualTo(assertion)
+                    .as("Check that " + toTest + " is " + assertion);
+        }
+    }
 
 }
