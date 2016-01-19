@@ -21,7 +21,7 @@ import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.core.pluginsit.extension.DummyExtensionPlugin;
 import io.nuun.kernel.core.pluginsit.extension.MyKernelExtension;
 import io.nuun.kernel.spi.KernelExtension;
-import org.fest.assertions.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 

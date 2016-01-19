@@ -24,7 +24,7 @@ import io.nuun.kernel.core.internal.concerns.sample.LogPlugin;
 import io.nuun.kernel.core.internal.concerns.sample.SecurityPlugin;
 import io.nuun.kernel.core.internal.injection.ClassInstaller;
 import io.nuun.kernel.core.internal.injection.KernelGuiceModuleInternal;
-import org.fest.assertions.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 

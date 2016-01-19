@@ -28,7 +28,7 @@ import java.util.concurrent.CountDownLatch;
 
 import static io.nuun.kernel.core.NuunCore.createKernel;
 import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 public class KernelMulticoreTest
@@ -39,16 +39,17 @@ public class KernelMulticoreTest
     public void dependee_plugins_that_misses_should_be_source_of_error() throws InterruptedException
     {
         startLatch = new CountDownLatch(1);
-        for (int threadNo = 0; threadNo < 3; threadNo++) {
+        for (int threadNo = 0; threadNo < 3; threadNo++)
+        {
             Thread t = new KernelHolder();
             t.start();
-          }
-          // give the threads chance to start up; we could perform
-          // initialisation code here as well.
-          Thread.sleep(200);
-          startLatch.countDown();
+        }
+        // give the threads chance to start up; we could perform
+        // initialisation code here as well.
+        Thread.sleep(200);
+        startLatch.countDown();
     }
-    
+
     static class KernelHolder extends Thread
     {
 
@@ -73,11 +74,11 @@ public class KernelMulticoreTest
                                 .addPlugin(plugin4)
                                 .addPlugin(DummyPlugin5.class)
                 );
-                
+
                 assertThat(underTest.name()).startsWith(Kernel.KERNEL_PREFIX_NAME);
 
                 underTest.init();
-                
+
                 assertThat(underTest.isInitialized()).isTrue();
 
                 underTest.start();
@@ -85,8 +86,7 @@ public class KernelMulticoreTest
                 assertThat(underTest.isStarted()).isTrue();
 
                 underTest.stop();
-            }
-            catch (InterruptedException e)
+            } catch (InterruptedException e)
             {
                 fail(e.getMessage());
             }

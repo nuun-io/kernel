@@ -16,7 +16,7 @@
  */
 package io.nuun.kernel.core.pluginsit.dummy5;
 
-import static org.fest.assertions.Assertions.assertThat;
+import com.google.inject.Scopes;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.BindingRequest;
@@ -26,7 +26,7 @@ import io.nuun.kernel.core.AbstractPlugin;
 import java.util.Collection;
 import java.util.Map;
 
-import com.google.inject.Scopes;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DummyPlugin5 extends AbstractPlugin
 {
