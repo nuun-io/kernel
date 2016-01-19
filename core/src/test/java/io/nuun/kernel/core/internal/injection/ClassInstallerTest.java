@@ -1,14 +1,9 @@
 package io.nuun.kernel.core.internal.injection;
 
-import com.google.inject.Binder;
 import com.google.inject.Scopes;
 import io.nuun.kernel.spi.Concern;
-import mockit.Expectations;
-import mockit.Mocked;
-import mockit.integration.junit4.JMockit;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -19,7 +14,6 @@ import static io.nuun.kernel.spi.Concern.Priority.HIGHER;
 import static io.nuun.kernel.spi.Concern.Priority.LOWER;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(JMockit.class)
 public class ClassInstallerTest
 {
 
@@ -31,24 +25,6 @@ public class ClassInstallerTest
     {
         greaterInstaller = new ClassInstaller(ClassToBind.class, Scopes.SINGLETON);
         lowerInstaller = new ClassInstaller(ClassToBind2.class);
-    }
-
-    @Test
-    public void testBindClassWithScope(@Mocked final Binder binder) throws Exception
-    {
-        new Expectations() {{
-           binder.bind(ClassToBind.class).in(Scopes.SINGLETON);
-        }};
-        greaterInstaller.install(binder);
-    }
-
-    @Test
-    public void testBindClass(@Mocked final Binder binder) throws Exception
-    {
-        new Expectations() {{
-            binder.bind(ClassToBind2.class);
-        }};
-        lowerInstaller.install(binder);
     }
 
     @Test
