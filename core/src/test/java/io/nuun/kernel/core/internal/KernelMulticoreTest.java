@@ -22,9 +22,11 @@ import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin2;
 import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin3;
 import io.nuun.kernel.core.pluginsit.dummy4.DummyPlugin4;
 import io.nuun.kernel.core.pluginsit.dummy5.DummyPlugin5;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.nuun.kernel.core.NuunCore.createKernel;
 import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
@@ -33,13 +35,16 @@ import static org.junit.Assert.fail;
 
 public class KernelMulticoreTest
 {
-    private static CountDownLatch startLatch;
+    private static final int KERNEL_NUMBER = 3;
+    private static CountDownLatch startLatch = new CountDownLatch(1);
+    private static CountDownLatch stopLatch = new CountDownLatch(KERNEL_NUMBER);
+    private static AtomicInteger failureCount = new AtomicInteger(0);
 
     @Test
     public void dependee_plugins_that_misses_should_be_source_of_error() throws InterruptedException
     {
         startLatch = new CountDownLatch(1);
-        for (int threadNo = 0; threadNo < 3; threadNo++)
+        for (int threadNo = 0; threadNo < KERNEL_NUMBER; threadNo++)
         {
             Thread t = new KernelHolder();
             t.start();
@@ -48,6 +53,8 @@ public class KernelMulticoreTest
         // initialisation code here as well.
         Thread.sleep(200);
         startLatch.countDown();
+        stopLatch.await();
+        Assertions.assertThat(failureCount.get()).isEqualTo(0);
     }
 
     static class KernelHolder extends Thread
@@ -69,6 +76,7 @@ public class KernelMulticoreTest
                                         DummyPlugin.ALIAS_DUMMY_PLUGIN1, "WAZAAAA",
                                         DummyPlugin.NUUN_ROOT_ALIAS, "internal," + KernelCoreIT.class.getPackage().getName()
                                 )
+                                .addPlugin(DummyPlugin.class)
                                 .addPlugin(DummyPlugin3.class)
                                 .addPlugin(DummyPlugin2.class)
                                 .addPlugin(plugin4)
@@ -86,9 +94,17 @@ public class KernelMulticoreTest
                 assertThat(underTest.isStarted()).isTrue();
 
                 underTest.stop();
-            } catch (InterruptedException e)
+            } catch (Exception e)
             {
-                fail(e.getMessage());
+                failureCount.incrementAndGet();
+                Assertions.fail(e.getMessage());
+            } catch (AssertionError e)
+            {
+                failureCount.incrementAndGet();
+                throw e;
+            } finally
+            {
+                stopLatch.countDown();
             }
         }
     }
