@@ -73,7 +73,7 @@ public final class KernelCore implements Kernel
         this.name = KERNEL_PREFIX_NAME + kernelIndex.getAndIncrement();
         this.logger = LoggerFactory.getLogger(KernelCore.class.getName() + ' ' + name());
         this.kernelConfig = kernelConfigurationInternal;
-        this.requestHandler = new RequestHandler(kernelConfig.kernelParams(), kernelConfig.getClasspathScanMode());
+        this.requestHandler = new RequestHandler(kernelConfig.kernelParams().toMap(), kernelConfig.getClasspathScanMode());
         this.moduleHandler = new ModuleHandler(kernelConfig);
     }
 
@@ -85,6 +85,7 @@ public final class KernelCore implements Kernel
             throw new KernelException("Kernel is already initialized");
         }
         preparePlugins();
+        validateMandatoryParams();
         fetchPackageRootsFromConfiguration();
         extensionManager = new ExtensionManager(pluginRegistry.getPlugins(), Thread.currentThread().getContextClassLoader());
         extensionManager.initializing();
@@ -102,12 +103,10 @@ public final class KernelCore implements Kernel
 
         round = new RoundInternal();
         DependenciesSpecification dependenciesSpecification = new DependenciesSpecification(facetRegistry);
-        MandatoryParamsSpecification mandatoryParamsSpecification = new MandatoryParamsSpecification();
         for (Plugin plugin : pluginRegistry.getPlugins())
         {
             plugin.provideRound(round);
             dependenciesSpecification.isSatisfyBy(plugin);
-            mandatoryParamsSpecification.isSatisfiedBy(plugin, kernelConfig.kernelParams());
             addAliasesToKernelParams(plugin);
             fetchGlobalParametersFrom(plugin);
             addPackageRootsToRequestHandler(plugin.pluginPackageRoot());
@@ -149,10 +148,10 @@ public final class KernelCore implements Kernel
     {
         for (Entry<String, String> entry : plugin.kernelParametersAliases().entrySet())
         {
-            String keyToAlias = entry.getKey();
-            String alias = entry.getValue();
+            String alias = entry.getKey();
+            String keyToAlias = entry.getValue();
             logger.info("Adding alias parameter \"{}\" to key \"{}\".", keyToAlias, alias);
-            kernelConfig.kernelParams().putAlias(keyToAlias, alias);
+            kernelConfig.kernelParams().putAlias(alias, keyToAlias);
         }
     }
 
@@ -211,6 +210,13 @@ public final class KernelCore implements Kernel
         }
     }
 
+    private void validateMandatoryParams() {
+        MandatoryParamsSpecification mandatoryParamsSpecification = new MandatoryParamsSpecification();
+        for (Plugin plugin : pluginRegistry.getPlugins()) {
+            mandatoryParamsSpecification.isSatisfiedBy(plugin, kernelConfig.kernelParams());
+        }
+    }
+
     private void executeInitializationRounds()
     {
         logger.info("Initializing");
@@ -236,7 +242,7 @@ public final class KernelCore implements Kernel
         for (Plugin plugin : plugins)
         {
             logger.info(" * {} plugin", plugin.name());
-            InitContext initContext = new InitContextInternal(kernelConfig.kernelParams(), requestHandler, round, dependencyProvider, plugin.getClass());
+            InitContext initContext = new InitContextInternal(kernelConfig.kernelParams().toMap(), requestHandler, round, dependencyProvider, plugin.getClass());
             if (plugin.init(initContext) != InitState.INITIALIZED)
             {
                 nonInitializedPlugins.add(plugin);

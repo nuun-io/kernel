@@ -1,73 +1,86 @@
 package io.nuun.kernel.core.internal;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import io.nuun.kernel.core.KernelException;
+
+import java.util.*;
 
 /**
- * 
- * 
  * @author epo.jemba{@literal @}kametic.com
  */
-public class AliasMap extends HashMap<String, String>
+public class AliasMap
 {
-    private static final long serialVersionUID = 1L;
-    Map<String, String>       aliases          = new HashMap<String, String>();
+    private Map<String, String> aliases = new HashMap<String, String>();
+    private Map<String, String> params = new HashMap<String, String>();
 
     /**
-     * @param key
-     *            the key to alias.
-     * @param alias
-     *            the alias to give to the key.
-     * @return
+     * @param key   the key to alias.
+     * @param alias the alias to give to the key.
+     * @return the previous alias corresponding the key
      */
-    public String putAlias(String key, String alias)
+    public String putAlias(String alias, String key)
     {
-        if (super.containsKey(alias))
+        if (aliases.containsKey(key))
         {
-            throw new IllegalArgumentException("alias " + alias + " already exists in map.");
+            throw new IllegalArgumentException("The key \"" + key + "\" to alias is already present in the kernel parameters.");
         }
-        return aliases.put(alias, key);
+        return aliases.put(key, alias);
     }
 
-    @Override
-    public String get(Object key)
+    public String get(String key)
     {
-        String keyAlias = aliases.get(key);
-        if (keyAlias == null)
+        List<String> cache = new ArrayList<String>();
+        return getWithAlias(key, cache);
+    }
+
+    private String getWithAlias(String key, List<String> cache)
+    {
+        if (cache.contains(key))
         {
-            return super.get(key);
+            throw new KernelException("Cycle detected in kernel parameter aliases.");
         }
-        else
+        cache.add(key);
+        String alias = aliases.get(key);
+        if (alias == null)
         {
-            return super.get(keyAlias);
+            return params.get(key);
+        } else
+        {
+            return getWithAlias(alias, cache);
         }
     }
 
-    public boolean containsAllKeys(Collection<String> computedMandatoryParams)
+    public String put(String key, String value)
     {
-        HashSet<String> allKeys = new HashSet<String>();
-        allKeys.addAll(keySet());
-        allKeys.addAll(aliases.values());
+        return params.put(key, value);
+    }
 
-        Collection<String> trans = new HashSet<String>();
-        for (String s : computedMandatoryParams)
+    public Map<String, String> toMap()
+    {
+        Map<String, String> map = new HashMap<String, String>(params);
+        for (Map.Entry<String, String> entry : aliases.entrySet())
         {
-            String string = aliases.get(s);
-            if (string != null)
+            String alias = entry.getKey();
+            String paramKey = entry.getValue();
+            map.put(alias, get(paramKey));
+        }
+        return Collections.unmodifiableMap(map);
+    }
+
+    public boolean containsAllKeys(Collection<String> keys)
+    {
+        for (String key : keys)
+        {
+            if (!containsKey(key))
             {
-                trans.add(string);
+                return false;
             }
         }
-
-        return allKeys.containsAll(trans);
+        return true;
     }
 
-    @Override
-    public boolean containsKey(Object key)
+    public boolean containsKey(String key)
     {
-        return aliases.containsKey(key) ? true : super.containsKey(key);
+        return aliases.containsKey(key) || params.containsKey(key);
     }
 
 }
