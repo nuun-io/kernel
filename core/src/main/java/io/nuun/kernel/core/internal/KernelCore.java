@@ -51,6 +51,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public final class KernelCore implements Kernel
 {
+    private static final String DEFAULT_ROOT_PACKAGE = "io.nuun.kernel";
     private static AtomicInteger kernelIndex = new AtomicInteger();
 
     private final Logger logger;
@@ -74,6 +75,7 @@ public final class KernelCore implements Kernel
         this.logger = LoggerFactory.getLogger(KernelCore.class.getName() + ' ' + name());
         this.kernelConfig = kernelConfigurationInternal;
         this.requestHandler = new RequestHandler(kernelConfig.kernelParams(), kernelConfig.getClasspathScanMode());
+        this.requestHandler.addPackageRoot(DEFAULT_ROOT_PACKAGE);
         this.moduleHandler = new ModuleHandler(kernelConfig);
     }
 
