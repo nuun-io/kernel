@@ -35,6 +35,26 @@ import static java.util.Collections.unmodifiableMap;
  */
 public class RequestHandler extends ScanResults
 {
+    private static final String SCAN_WHOLE_CLASSPATH_WARN_MESSAGE = "\n================================ WARNING ================================\n" +
+            "   You're actually scanning the WHOLE classpath , this can be time consuming.\n" +
+            "   Please update your application configuration, to narrow the scan to your application.\n" +
+            "\n" +
+            " 1) You can update /nuun.conf in the classpath with the following content\n" +
+            "\n" +
+            "          rootPackage = com.acme1, com.acme2\n" +
+            "\n" +
+            "   where com.acme1 and com.acme2 are your root packages.\n" +
+            "\n" +
+            " 2) You can programmatically use KernelConfiguration.rootPackage(\"com.acme1\" , \"com.acme2\")\n" +
+            "\n" +
+            "   Same as above\n" +
+            "\n" +
+            " 3) You can programmatically use KernelConfiguration.param(\"scan.warn.disable\" , \"true\")\n" +
+            "\n" +
+            "   This will disable the warning. It implies, you know what you are doing.\n" +
+            "\n" +
+            "========================================================================";
+
     private final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private final List<String> propertiesPrefix = new ArrayList<String>();
@@ -201,6 +221,9 @@ public class RequestHandler extends ScanResults
 
     private void initScanner()
     {
+        if (packageRoots.isEmpty()) {
+            logger.warn(SCAN_WHOLE_CLASSPATH_WARN_MESSAGE);
+        }
         String[] packageRootArray = new String[packageRoots.size()];
         packageRoots.toArray(packageRootArray);
 
@@ -417,7 +440,7 @@ public class RequestHandler extends ScanResults
         propertiesPrefix.add(prefix);
     }
 
-    public void addPackageRoot(String root)
+    public void addRootPackage(String root)
     {
         packageRoots.add(root);
     }

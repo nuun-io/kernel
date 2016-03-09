@@ -191,6 +191,11 @@ public final class KernelCore implements Kernel
 
     private void fetchPackageRootsFromConfiguration()
     {
+        for (String rootPackage : kernelConfig.getRootPackages())
+        {
+            requestHandler.addRootPackage(rootPackage);
+        }
+
         if (kernelConfig.kernelParams().containsKey(NUUN_ROOT_PACKAGE))
         {
             String rootPackages = kernelConfig.kernelParams().get(NUUN_ROOT_PACKAGE);
@@ -205,7 +210,7 @@ public final class KernelCore implements Kernel
             for (String pack : pluginPackageRoots.split(","))
             {
                 logger.info("Adding {} as package root", pack);
-                requestHandler.addPackageRoot(pack.trim());
+                requestHandler.addRootPackage(pack.trim());
             }
         }
     }

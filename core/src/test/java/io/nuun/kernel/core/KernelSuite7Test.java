@@ -41,6 +41,7 @@ public class KernelSuite7Test
         underTest = createKernel(
 
                 newKernelConfiguration()
+                        .rootPackages("io.nuun.kernel")
                         .withoutSpiPluginsLoader()
                         .plugins(
                                 new DummyPlugin7_A(),
@@ -62,6 +63,7 @@ public class KernelSuite7Test
         underTest = createKernel(
 
                 newKernelConfiguration()
+                        .rootPackages("io.nuun.kernel")
                         .withoutSpiPluginsLoader()
                         .plugins(
                                 new DummyPlugin7_A(),

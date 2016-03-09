@@ -37,6 +37,7 @@ public class KernelSuite6Test
         try
         {
             underTest = createKernel(newKernelConfiguration()
+                    .rootPackages("io.nuun.kernel")
                     .withoutSpiPluginsLoader()
                     .plugins(new DummyPlugin6_A(), new DummyPlugin6_B(), new DummyPlugin6_D()));
             underTest.init();
@@ -56,6 +57,7 @@ public class KernelSuite6Test
         DummyPlugin6_D pluginD = new DummyPlugin6_D();
 
         underTest = createKernel(newKernelConfiguration()
+                .rootPackages("io.nuun.kernel")
                 .withoutSpiPluginsLoader()
                 .plugins(pluginA, pluginB, pluginC, pluginD));
 

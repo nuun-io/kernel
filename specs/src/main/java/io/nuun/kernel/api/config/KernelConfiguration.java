@@ -26,6 +26,14 @@ public interface KernelConfiguration
 {
 
     /**
+     * Sets the root packages. By default if no root package is set the scanner will scan all the classpath.
+     *
+     * @param rootPackages the list of packages to scan
+     * @return itself
+     */
+    KernelConfiguration rootPackages(String... rootPackages);
+
+    /**
      * Sets a key/value parameter.
      *
      * @param key the key

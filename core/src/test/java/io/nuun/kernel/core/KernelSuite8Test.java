@@ -52,6 +52,7 @@ public class KernelSuite8Test
         Kernel underTest = createKernel(
 
                 newKernelConfiguration()
+                        .rootPackages("io.nuun.kernel")
                         .classpathScanMode(ClasspathScanMode.IN_MEMORY)
                         .withoutSpiPluginsLoader()
                         .plugins(new DummyPlugin5())

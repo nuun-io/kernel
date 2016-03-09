@@ -43,6 +43,14 @@ public class KernelConfigurationInternal implements KernelConfiguration
     private boolean isPluginScanEnabled = true;
     private Object containerContext;
     private DependencyInjectionMode dependencyInjectionMode = DependencyInjectionMode.PRODUCTION;
+    private List<String> rootPackages = new ArrayList<String>();
+
+    @Override
+    public KernelConfiguration rootPackages(String... rootPackages)
+    {
+        this.rootPackages.addAll(Arrays.asList(rootPackages));
+        return this;
+    }
 
     @Override
     public KernelConfiguration param(String key, String value)
@@ -54,7 +62,8 @@ public class KernelConfigurationInternal implements KernelConfiguration
     @Override
     public KernelConfiguration params(String... paramEntries)
     {
-        if (isNotEvenNumber(paramEntries.length)) {
+        if (isNotEvenNumber(paramEntries.length))
+        {
             throw new IllegalArgumentException("An even number of parameters was expected but found: "
                     + Arrays.toString(paramEntries));
         }
@@ -67,18 +76,21 @@ public class KernelConfigurationInternal implements KernelConfiguration
         return this;
     }
 
-    public boolean isNotEvenNumber(int number) {
+    public boolean isNotEvenNumber(int number)
+    {
         return number % 2 != 0;
     }
 
-    private void addParamKeyValue(Iterator<String> it) {
+    private void addParamKeyValue(Iterator<String> it)
+    {
         String key = it.next();
         String value = it.next();
         logger.debug("Adding {} = {} as param to kernel", key, value);
         kernelParamsAndAlias.put(key, value);
     }
 
-    public AliasMap kernelParams() {
+    public AliasMap kernelParams()
+    {
         return kernelParamsAndAlias;
     }
 
@@ -89,14 +101,17 @@ public class KernelConfigurationInternal implements KernelConfiguration
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public KernelConfiguration addPlugin(Class<? extends Plugin> pluginsClass) {
+    public KernelConfiguration addPlugin(Class<? extends Plugin> pluginsClass)
+    {
         Collections.addAll(this.pluginsClass, pluginsClass);
         return this;
     }
 
     @Override
-    public KernelConfiguration plugins(Class<? extends Plugin>... pluginsClasses) {
+    public KernelConfiguration plugins(Class<? extends Plugin>... pluginsClasses)
+    {
         Collections.addAll(this.pluginsClass, pluginsClasses);
         return this;
     }
@@ -153,31 +168,43 @@ public class KernelConfigurationInternal implements KernelConfiguration
         return this;
     }
 
-    public Object getContainerContext() {
+    public List<String> getRootPackages()
+    {
+        return rootPackages;
+    }
+
+    public Object getContainerContext()
+    {
         return containerContext;
     }
 
-    public List<Class<? extends Plugin>> getPluginClasses() {
+    public List<Class<? extends Plugin>> getPluginClasses()
+    {
         return pluginsClass;
     }
 
-    public Plugin[] getPlugins() {
+    public Plugin[] getPlugins()
+    {
         return plugins;
     }
 
-    public boolean isPluginScanEnabled() {
+    public boolean isPluginScanEnabled()
+    {
         return isPluginScanEnabled;
     }
 
-    public DependencyInjectionMode getDependencyInjectionMode() {
+    public DependencyInjectionMode getDependencyInjectionMode()
+    {
         return dependencyInjectionMode;
     }
 
-    public ClasspathScanMode getClasspathScanMode() {
+    public ClasspathScanMode getClasspathScanMode()
+    {
         return classpathScanMode;
     }
 
-    public List<ModuleValidation> getValidations() {
+    public List<ModuleValidation> getValidations()
+    {
         return validations;
     }
 }
