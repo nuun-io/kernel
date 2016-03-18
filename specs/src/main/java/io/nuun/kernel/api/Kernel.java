@@ -30,9 +30,6 @@ import java.util.Map;
 public interface Kernel
 {
     String NUUN_PROPERTIES_PREFIX = "nuun-";
-    String NUUN_ROOT_PACKAGE = "nuun.root.package";
-    String NUUN_NUM_CP_PATH = "nuun.num.classpath.path";
-    String NUUN_CP_PATH_PREFIX = "nuun.classpath.path.prefix-";
     String NUUN_CP_STRATEGY_NAME = "nuun.classpath.strategy.name";
     String NUUN_CP_STRATEGY_ADD = "nuun.classpath.strategy.additional";
     String KERNEL_PREFIX_NAME = "Kernel-";

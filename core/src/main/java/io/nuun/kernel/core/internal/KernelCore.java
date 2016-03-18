@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2014 Kametic <epo.jemba@kametic.com>
+ * Copyright (C) 2013-2016 Kametic <epo.jemba@kametic.com>
  *
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * or any later version
@@ -25,6 +25,7 @@ import com.google.inject.util.Modules;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.DependencyInjectionMode;
+import io.nuun.kernel.api.config.KernelOptions;
 import io.nuun.kernel.api.di.GlobalModule;
 import io.nuun.kernel.api.di.ObjectGraph;
 import io.nuun.kernel.api.di.UnitModule;
@@ -196,10 +197,15 @@ public final class KernelCore implements Kernel
             requestHandler.addRootPackage(rootPackage);
         }
 
-        if (kernelConfig.kernelParams().containsKey(NUUN_ROOT_PACKAGE))
+        if (kernelConfig.kernelParams().containsKey("nuun.root.package"))
         {
-            String rootPackages = kernelConfig.kernelParams().get(NUUN_ROOT_PACKAGE);
+            String rootPackages = kernelConfig.kernelParams().get("nuun.root.package");
             addPackageRootsToRequestHandler(rootPackages);
+        }
+
+        for (String rootPackage : kernelConfig.options().get(KernelOptions.ROOT_PACKAGES))
+        {
+            requestHandler.addRootPackage(rootPackage);
         }
     }
 

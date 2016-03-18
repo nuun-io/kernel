@@ -1,13 +1,13 @@
 /**
- * Copyright (C) 2014 Kametic <epo.jemba@kametic.com>
- *
+ * Copyright (C) 2013-2016 Kametic <epo.jemba@kametic.com>
+ * <p/>
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * or any later version
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p/>
  * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,9 +18,7 @@ package io.nuun.kernel.core.internal;
 
 import com.google.common.collect.ObjectArrays;
 import io.nuun.kernel.api.Plugin;
-import io.nuun.kernel.api.config.ClasspathScanMode;
-import io.nuun.kernel.api.config.DependencyInjectionMode;
-import io.nuun.kernel.api.config.KernelConfiguration;
+import io.nuun.kernel.api.config.*;
 import io.nuun.kernel.api.di.ModuleValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,11 +37,23 @@ public class KernelConfigurationInternal implements KernelConfiguration
     private List<Class<? extends Plugin>> pluginsClass = new ArrayList<Class<? extends Plugin>>();
     private Plugin[] plugins = new Plugin[0];
     private List<ModuleValidation> validations = new ArrayList<ModuleValidation>();
-    private ClasspathScanMode classpathScanMode = ClasspathScanMode.NOMINAL;
-    private boolean isPluginScanEnabled = true;
     private Object containerContext;
-    private DependencyInjectionMode dependencyInjectionMode = DependencyInjectionMode.PRODUCTION;
     private List<String> rootPackages = new ArrayList<String>();
+
+    private KernelOptions options = new KernelOptions();
+
+    @Override
+    public <T> KernelConfiguration option(KernelOption<T> option, T value)
+    {
+        options.set(option, value);
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public KernelOptions options()
+    {
+        return options;
+    }
 
     @Override
     public KernelConfiguration rootPackages(String... rootPackages)
@@ -133,28 +143,28 @@ public class KernelConfigurationInternal implements KernelConfiguration
     @Override
     public KernelConfiguration withoutSpiPluginsLoader()
     {
-        isPluginScanEnabled = false;
+        this.options.set(KernelOptions.SCAN_PLUGIN, false);
         return this;
     }
 
     @Override
     public KernelConfiguration withSpiPluginsLoader()
     {
-        isPluginScanEnabled = true;
+        this.options.set(KernelOptions.SCAN_PLUGIN, true);
         return this;
     }
 
     @Override
     public KernelConfiguration dependencyInjectionMode(DependencyInjectionMode dependencyInjectionMode)
     {
-        this.dependencyInjectionMode = dependencyInjectionMode;
+        this.options.set(KernelOptions.DEPENDENCY_INJECTION_MODE, dependencyInjectionMode);
         return this;
     }
 
     @Override
     public KernelConfiguration classpathScanMode(ClasspathScanMode classpathScanMode)
     {
-        this.classpathScanMode = classpathScanMode;
+        this.options.set(KernelOptions.CLASSPATH_SCAN_MODE, classpathScanMode);
         return this;
     }
 
@@ -190,17 +200,17 @@ public class KernelConfigurationInternal implements KernelConfiguration
 
     public boolean isPluginScanEnabled()
     {
-        return isPluginScanEnabled;
+        return options.get(KernelOptions.SCAN_PLUGIN);
     }
 
     public DependencyInjectionMode getDependencyInjectionMode()
     {
-        return dependencyInjectionMode;
+        return options.get(KernelOptions.DEPENDENCY_INJECTION_MODE);
     }
 
     public ClasspathScanMode getClasspathScanMode()
     {
-        return classpathScanMode;
+        return options.get(KernelOptions.CLASSPATH_SCAN_MODE);
     }
 
     public List<ModuleValidation> getValidations()

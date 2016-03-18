@@ -21,7 +21,6 @@ package io.nuun.kernel.core.pluginsit.dummy1;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Module;
-import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.Context;
 import io.nuun.kernel.api.plugin.context.InitContext;
@@ -89,7 +88,7 @@ public class DummyPlugin extends AbstractPlugin
         assertThat(param).isNotEmpty();
         assertThat(param).isEqualTo("WAZAAAA");
 
-        String param2 = initContext.kernelParam(Kernel.NUUN_ROOT_PACKAGE);
+        String param2 = initContext.kernelParam("nuun.root.package");
         assertThat(param2).isNotNull();
         assertThat(param2).isEqualTo("internal," + KernelCoreIT.class.getPackage().getName());
 
@@ -170,7 +169,7 @@ public class DummyPlugin extends AbstractPlugin
     public Map<String, String> kernelParametersAliases()
     {
         Map<String, String> m = new HashMap<String, String>();
-        m.put(NUUN_ROOT_ALIAS, Kernel.NUUN_ROOT_PACKAGE);
+        m.put(NUUN_ROOT_ALIAS, "nuun.root.package");
         m.put(ALIAS_DUMMY_PLUGIN1, "dummy.plugin1");
         return m;
     }

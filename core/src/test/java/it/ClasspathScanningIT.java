@@ -1,7 +1,9 @@
 package it;
 
+import com.google.common.collect.Lists;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.config.KernelConfiguration;
+import io.nuun.kernel.api.config.KernelOptions;
 import io.nuun.kernel.core.NuunCore;
 import it.fixture.scan.ClassToScan1;
 import it.fixture.scan.ClassToScan2;
@@ -23,8 +25,8 @@ public class ClasspathScanningIT {
     @Test
     public void test_class_scan_and_ignored_policy() {
         KernelConfiguration kernelConfig = NuunCore.newKernelConfiguration()
-                .withoutSpiPluginsLoader()
-                .param(Kernel.NUUN_ROOT_PACKAGE, "it.fixture.scan")
+                .option(KernelOptions.SCAN_PLUGIN, false)
+                .option(KernelOptions.ROOT_PACKAGES, Lists.newArrayList("it.fixture.scan"))
                 .addPlugin(ScanningPlugin.class);
 
         Kernel kernel = NuunCore.createKernel(kernelConfig);
