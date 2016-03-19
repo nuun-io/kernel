@@ -10,7 +10,7 @@
 
     <groupId>io.nuun</groupId>
     <artifactId>kernel</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.M7-SNAPSHOT</version>
 
     <modules>
         <module>core</module>
