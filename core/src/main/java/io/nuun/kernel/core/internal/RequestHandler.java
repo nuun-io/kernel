@@ -7,6 +7,7 @@ import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.annotations.KernelModule;
 import io.nuun.kernel.api.config.ClasspathScanMode;
+import io.nuun.kernel.api.config.KernelOptions;
 import io.nuun.kernel.api.inmemory.Classpath;
 import io.nuun.kernel.api.plugin.request.BindingRequest;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
@@ -28,6 +29,7 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.*;
 
+import static io.nuun.kernel.api.config.KernelOptions.*;
 import static java.util.Collections.unmodifiableMap;
 
 /**
@@ -84,17 +86,16 @@ public class RequestHandler extends ScanResults
     private Set<URL> additionalClasspathScan;
     private ClasspathStrategy classpathStrategy;
     private ClasspathScanner classpathScanner;
-    private ClasspathScanMode classpathScanMode;
+    private KernelOptions options;
 
-    public RequestHandler(Map<String, String> kernelParams, ClasspathScanMode classpathScanMode)
+    public RequestHandler(Map<String, String> kernelParams, KernelOptions options)
     {
-        this.classpathScanMode = classpathScanMode;
-
         setClasspathStrategy(kernelParams);
 
-        packageRoots = new LinkedList<String>();
-        propertiesPrefix.add(Kernel.NUUN_PROPERTIES_PREFIX);
-        additionalClasspathScan = new HashSet<URL>();
+        this.packageRoots = new LinkedList<String>();
+        this.propertiesPrefix.add(Kernel.NUUN_PROPERTIES_PREFIX);
+        this.additionalClasspathScan = new HashSet<URL>();
+        this.options = options;
     }
 
     private void setClasspathStrategy(Map<String, String> kernelParams)
@@ -221,20 +222,26 @@ public class RequestHandler extends ScanResults
 
     private void initScanner()
     {
-        if (packageRoots.isEmpty()) {
-            logger.warn(SCAN_WHOLE_CLASSPATH_WARN_MESSAGE);
-        }
+        printWarnWhenScanningAllClasspath();
+
         String[] packageRootArray = new String[packageRoots.size()];
         packageRoots.toArray(packageRootArray);
 
         ClasspathScannerFactory classpathScannerFactory = new ClasspathScannerFactory();
-        if (classpathScanMode == ClasspathScanMode.NOMINAL)
+        if (options.get(CLASSPATH_SCAN_MODE) == ClasspathScanMode.NOMINAL)
         {
             classpathScanner = classpathScannerFactory.create(classpathStrategy, additionalClasspathScan, packageRootArray);
-        } else if (classpathScanMode == ClasspathScanMode.IN_MEMORY)
+        } else if (options.get(CLASSPATH_SCAN_MODE) == ClasspathScanMode.IN_MEMORY)
         {
             Classpath classpath = InMemoryMultiThreadClasspath.INSTANCE;
             classpathScanner = classpathScannerFactory.createInMemory(classpath, packageRootArray);
+        }
+    }
+
+    private void printWarnWhenScanningAllClasspath()
+    {
+        if (packageRoots.isEmpty() && options.get(PRINT_SCAN_WARN)) {
+            logger.warn(SCAN_WHOLE_CLASSPATH_WARN_MESSAGE);
         }
     }
 

@@ -1,11 +1,11 @@
 package it;
 
-import io.nuun.kernel.api.Kernel;
-import io.nuun.kernel.api.config.KernelConfiguration;
 import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.core.NuunCore;
 import it.fixture.dependencies.*;
 import org.junit.Test;
+
+import static io.nuun.kernel.core.internal.Fixture.config;
+import static io.nuun.kernel.core.internal.Fixture.initKernel;
 
 /**
  * Tests dependencies between plugins.
@@ -19,13 +19,9 @@ public class PluginDependencyIT {
      */
     @Test
     public void test_dependent_plugin() {
-        KernelConfiguration kernelConfig = NuunCore.newKernelConfiguration()
-                .withoutSpiPluginsLoader()
+        initKernel(config()
                 .addPlugin(WithDependentDepsPlugin.class)
-                .addPlugin(DependentPlugin1.class);
-
-        Kernel kernel = NuunCore.createKernel(kernelConfig);
-        kernel.init();
+                .addPlugin(DependentPlugin1.class));
     }
 
     /**
@@ -33,12 +29,7 @@ public class PluginDependencyIT {
      */
     @Test(expected = KernelException.class)
     public void test_dependent_plugin_with_missing_dependency() {
-        KernelConfiguration kernelConfig = NuunCore.newKernelConfiguration()
-                .withoutSpiPluginsLoader()
-                .addPlugin(WithDependentDepsPlugin.class);
-
-        Kernel kernel = NuunCore.createKernel(kernelConfig);
-        kernel.init();
+        initKernel(config().addPlugin(WithDependentDepsPlugin.class));
     }
 
     /**
@@ -46,13 +37,9 @@ public class PluginDependencyIT {
      */
     @Test
     public void test_required_plugin() {
-        KernelConfiguration kernelConfig = NuunCore.newKernelConfiguration()
-                .withoutSpiPluginsLoader()
+        initKernel(config()
                 .addPlugin(WithRequiredDepsPlugin.class)
-                .addPlugin(RequiredPlugin1.class);
-
-        Kernel kernel = NuunCore.createKernel(kernelConfig);
-        kernel.init();
+                .addPlugin(RequiredPlugin1.class));
     }
 
     /**
@@ -60,12 +47,7 @@ public class PluginDependencyIT {
      */
     @Test(expected = KernelException.class)
     public void test_required_plugin_with_missing_dependency() {
-        KernelConfiguration kernelConfig = NuunCore.newKernelConfiguration()
-                .withoutSpiPluginsLoader()
-                .addPlugin(WithRequiredDepsPlugin.class);
-
-        Kernel kernel = NuunCore.createKernel(kernelConfig);
-        kernel.init();
+        initKernel(config().addPlugin(WithRequiredDepsPlugin.class));
     }
 
     /**
@@ -73,12 +55,8 @@ public class PluginDependencyIT {
      */
     @Test
     public void test_required_facet() {
-        KernelConfiguration kernelConfig = NuunCore.newKernelConfiguration()
-                .withoutSpiPluginsLoader()
+        initKernel(config()
                 .addPlugin(Facet1Plugin.class)
-                .addPlugin(WithRequiredFacetPlugin.class);
-
-        Kernel kernel = NuunCore.createKernel(kernelConfig);
-        kernel.init();
+                .addPlugin(WithRequiredFacetPlugin.class));
     }
 }

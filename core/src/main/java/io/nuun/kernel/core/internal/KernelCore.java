@@ -68,13 +68,15 @@ public final class KernelCore implements Kernel
     private RoundInternal round;
     private ExtensionManager extensionManager;
     private DependencyProvider dependencyProvider;
+    private KernelOptions options;
 
     KernelCore(KernelConfigurationInternal kernelConfigurationInternal)
     {
         this.name = KERNEL_PREFIX_NAME + kernelIndex.getAndIncrement();
         this.logger = LoggerFactory.getLogger(KernelCore.class.getName() + ' ' + name());
         this.kernelConfig = kernelConfigurationInternal;
-        this.requestHandler = new RequestHandler(kernelConfig.kernelParams().toMap(), kernelConfig.getClasspathScanMode());
+        this.options = kernelConfigurationInternal.options();
+        this.requestHandler = new RequestHandler(kernelConfig.kernelParams().toMap(), options);
         this.moduleHandler = new ModuleHandler(kernelConfig);
     }
 
@@ -119,7 +121,7 @@ public final class KernelCore implements Kernel
     private void addPluginsToTheRegistry()
     {
         registerPluginsFromKernelConfiguration();
-        if (kernelConfig.isPluginScanEnabled())
+        if (options.get(KernelOptions.SCAN_PLUGIN))
         {
             registerPluginsFromScan();
         }
@@ -192,18 +194,13 @@ public final class KernelCore implements Kernel
 
     private void fetchPackageRootsFromConfiguration()
     {
-        for (String rootPackage : kernelConfig.getRootPackages())
-        {
-            requestHandler.addRootPackage(rootPackage);
-        }
-
         if (kernelConfig.kernelParams().containsKey("nuun.root.package"))
         {
             String rootPackages = kernelConfig.kernelParams().get("nuun.root.package");
             addPackageRootsToRequestHandler(rootPackages);
         }
 
-        for (String rootPackage : kernelConfig.options().get(KernelOptions.ROOT_PACKAGES))
+        for (String rootPackage : options.get(KernelOptions.ROOT_PACKAGES))
         {
             requestHandler.addRootPackage(rootPackage);
         }
@@ -293,7 +290,7 @@ public final class KernelCore implements Kernel
 
     private void createMainInjector()
     {
-        Stage stage = convertInjectionModeToGuiceStage(kernelConfig.getDependencyInjectionMode());
+        Stage stage = convertInjectionModeToGuiceStage(options.get(KernelOptions.DEPENDENCY_INJECTION_MODE));
         mainInjector = Guice.createInjector(stage, mainModule);
     }
 

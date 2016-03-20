@@ -38,7 +38,6 @@ public class KernelConfigurationInternal implements KernelConfiguration
     private Plugin[] plugins = new Plugin[0];
     private List<ModuleValidation> validations = new ArrayList<ModuleValidation>();
     private Object containerContext;
-    private List<String> rootPackages = new ArrayList<String>();
 
     private KernelOptions options = new KernelOptions();
 
@@ -58,7 +57,7 @@ public class KernelConfigurationInternal implements KernelConfiguration
     @Override
     public KernelConfiguration rootPackages(String... rootPackages)
     {
-        this.rootPackages.addAll(Arrays.asList(rootPackages));
+        this.options.get(KernelOptions.ROOT_PACKAGES).addAll(Arrays.asList(rootPackages));
         return this;
     }
 
@@ -66,6 +65,9 @@ public class KernelConfigurationInternal implements KernelConfiguration
     public KernelConfiguration param(String key, String value)
     {
         kernelParamsAndAlias.put(key, value);
+        if (key.equals("nuun.root.package")) {
+            options.get(KernelOptions.ROOT_PACKAGES).add(value);
+        }
         return this;
     }
 
@@ -96,7 +98,7 @@ public class KernelConfigurationInternal implements KernelConfiguration
         String key = it.next();
         String value = it.next();
         logger.debug("Adding {} = {} as param to kernel", key, value);
-        kernelParamsAndAlias.put(key, value);
+        param(key, value);
     }
 
     public AliasMap kernelParams()
@@ -178,11 +180,6 @@ public class KernelConfigurationInternal implements KernelConfiguration
         return this;
     }
 
-    public List<String> getRootPackages()
-    {
-        return rootPackages;
-    }
-
     public Object getContainerContext()
     {
         return containerContext;
@@ -196,21 +193,6 @@ public class KernelConfigurationInternal implements KernelConfiguration
     public Plugin[] getPlugins()
     {
         return plugins;
-    }
-
-    public boolean isPluginScanEnabled()
-    {
-        return options.get(KernelOptions.SCAN_PLUGIN);
-    }
-
-    public DependencyInjectionMode getDependencyInjectionMode()
-    {
-        return options.get(KernelOptions.DEPENDENCY_INJECTION_MODE);
-    }
-
-    public ClasspathScanMode getClasspathScanMode()
-    {
-        return options.get(KernelOptions.CLASSPATH_SCAN_MODE);
     }
 
     public List<ModuleValidation> getValidations()

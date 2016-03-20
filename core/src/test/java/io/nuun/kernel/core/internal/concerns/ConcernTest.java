@@ -16,14 +16,11 @@
  */
 package io.nuun.kernel.core.internal.concerns;
 
-import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import io.nuun.kernel.api.Kernel;
-import io.nuun.kernel.api.config.KernelConfiguration;
-import io.nuun.kernel.api.config.KernelOptions;
 import io.nuun.kernel.core.AbstractPlugin;
-import io.nuun.kernel.core.NuunCore;
+import io.nuun.kernel.core.internal.Fixture;
 import io.nuun.kernel.core.internal.concerns.sample.CachePlugin;
 import io.nuun.kernel.core.internal.concerns.sample.LogPlugin;
 import io.nuun.kernel.core.internal.concerns.sample.SecurityPlugin;
@@ -45,16 +42,14 @@ public class ConcernTest
     public static void init()
     {
         list = new ArrayList<String>();
-
-        KernelConfiguration newKernelConfiguration = NuunCore.newKernelConfiguration();
-        newKernelConfiguration
-                .option(KernelOptions.SCAN_PLUGIN, false)
-                .option(KernelOptions.ROOT_PACKAGES, Lists.newArrayList("io.nuun.kernel"))
-                .plugins(new InternalPlugin(), new CachePlugin(list), new LogPlugin(list), new SecurityPlugin(list));
-
-        underTest = NuunCore.createKernel(newKernelConfiguration);
-        underTest.init();
-        underTest.start();
+        underTest = Fixture.startKernel(Fixture.config()
+                .plugins(
+                        new InternalPlugin(),
+                        new CachePlugin(list),
+                        new LogPlugin(list),
+                        new SecurityPlugin(list)
+                )
+        );
     }
 
     static class MyObj
