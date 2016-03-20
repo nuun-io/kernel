@@ -76,8 +76,8 @@ public abstract class ClasspathScannerTestBase
         Collection<Class<?>> scanClasspathSubType = underTest.scanTypesAnnotatedBy(KernelModule.class);
 
         assertThat(scanClasspathSubType).isNotNull();
-        assertThat(scanClasspathSubType).hasSize(3);
-        assertThat(scanClasspathSubType).containsOnly(MyModule1.class, Module7.class, MyModule4.class);
+        assertThat(scanClasspathSubType).hasSize(2);
+        assertThat(scanClasspathSubType).containsOnly(MyModule1.class, MyModule4.class);
     }
     
     

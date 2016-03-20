@@ -6,9 +6,7 @@ import com.google.inject.Scopes;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.annotations.KernelModule;
-import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.api.config.KernelOptions;
-import io.nuun.kernel.api.inmemory.Classpath;
 import io.nuun.kernel.api.plugin.request.BindingRequest;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.nuun.kernel.api.plugin.request.RequestType;
@@ -17,7 +15,6 @@ import io.nuun.kernel.core.internal.injection.ModuleEmbedded;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner;
 import io.nuun.kernel.core.internal.scanner.ClasspathScannerFactory;
 import io.nuun.kernel.core.internal.scanner.disk.ClasspathStrategy;
-import io.nuun.kernel.core.internal.scanner.inmemory.InMemoryMultiThreadClasspath;
 import io.nuun.kernel.core.internal.utils.NuunReflectionUtils;
 import org.kametic.specifications.Specification;
 import org.kametic.specifications.reflect.DescendantOfSpecification;
@@ -29,7 +26,8 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.*;
 
-import static io.nuun.kernel.api.config.KernelOptions.*;
+import static io.nuun.kernel.api.config.KernelOptions.CLASSPATH_SCAN_MODE;
+import static io.nuun.kernel.api.config.KernelOptions.PRINT_SCAN_WARN;
 import static java.util.Collections.unmodifiableMap;
 
 /**
@@ -223,24 +221,14 @@ public class RequestHandler extends ScanResults
     private void initScanner()
     {
         printWarnWhenScanningAllClasspath();
-
-        String[] packageRootArray = new String[packageRoots.size()];
-        packageRoots.toArray(packageRootArray);
-
-        ClasspathScannerFactory classpathScannerFactory = new ClasspathScannerFactory();
-        if (options.get(CLASSPATH_SCAN_MODE) == ClasspathScanMode.NOMINAL)
-        {
-            classpathScanner = classpathScannerFactory.create(classpathStrategy, additionalClasspathScan, packageRootArray);
-        } else if (options.get(CLASSPATH_SCAN_MODE) == ClasspathScanMode.IN_MEMORY)
-        {
-            Classpath classpath = InMemoryMultiThreadClasspath.INSTANCE;
-            classpathScanner = classpathScannerFactory.createInMemory(classpath, packageRootArray);
-        }
+        ClasspathScannerFactory classpathScannerFactory = new ClasspathScannerFactory(options.get(CLASSPATH_SCAN_MODE));
+        classpathScanner = classpathScannerFactory.create(classpathStrategy, additionalClasspathScan, packageRoots);
     }
 
     private void printWarnWhenScanningAllClasspath()
     {
-        if (packageRoots.isEmpty() && options.get(PRINT_SCAN_WARN)) {
+        if (packageRoots.isEmpty() && options.get(PRINT_SCAN_WARN))
+        {
             logger.warn(SCAN_WHOLE_CLASSPATH_WARN_MESSAGE);
         }
     }
