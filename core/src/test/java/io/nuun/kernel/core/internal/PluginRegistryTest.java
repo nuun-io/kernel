@@ -3,6 +3,7 @@ package io.nuun.kernel.core.internal;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.core.AbstractPlugin;
 import io.nuun.kernel.core.KernelException;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -83,6 +84,7 @@ public class PluginRegistryTest
         try
         {
             underTest.add(MyPlugin2.class);
+            Assertions.failBecauseExceptionWasNotThrown(KernelException.class);
         } catch (KernelException e)
         {
             assertThat(e).hasMessage(String.format("Plugin %s can not be instantiated", MyPlugin2.class));

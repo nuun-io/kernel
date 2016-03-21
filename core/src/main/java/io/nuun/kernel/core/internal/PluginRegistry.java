@@ -17,21 +17,25 @@ import static io.nuun.kernel.core.internal.utils.NuunReflectionUtils.instantiate
  */
 class PluginRegistry
 {
-    public static final String NAME_UNIQUENESS_ERROR = "The kernel contains two plugins with the same name (%s): %s, %s";
-    public static final String TYPE_UNIQUENESS_ERROR = "The kernel contains two plugins of type ";
-    public static final String NAME_VALIDATION_ERROR = "The plugin %s doesn't have a correct name. It should not be null or empty.";
+    private static final String NAME_UNIQUENESS_ERROR = "The kernel contains two plugins with the same name (%s): %s, %s";
+    private static final String TYPE_UNIQUENESS_ERROR = "The kernel contains two plugins of type ";
+    private static final String NAME_VALIDATION_ERROR = "The plugin %s doesn't have a correct name. It should not be null or empty.";
 
     private final Map<Class<? extends Plugin>, Plugin> pluginsByClass = new HashMap<Class<? extends Plugin>, Plugin>();
     private final Map<String, Plugin> pluginsByName = new HashMap<String, Plugin>();
 
     void add(Class<? extends Plugin> pluginClass)
     {
-        Plugin plugin = instantiateSilently(pluginClass);
-        if (plugin == null)
+        try
+        {
+            add(pluginClass.newInstance());
+        } catch (InstantiationException e)
+        {
+            throw new KernelException("Plugin %s can not be instantiated", pluginClass);
+        } catch (IllegalAccessException e)
         {
             throw new KernelException("Plugin %s can not be instantiated", pluginClass);
         }
-        add(plugin);
     }
 
     /**
