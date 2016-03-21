@@ -118,7 +118,16 @@ public interface Plugin
      * 
      * @return the package roots
      */
+    @Deprecated
     String pluginPackageRoot();
+
+    /**
+     * The root package(s) use to filter the classpath scanning. It is possible
+     * to specify multiple root packages by separating them by a comma.
+     *
+     * @return the package roots
+     */
+    String rootPackages();
 
     /**
      * Return an object that will contains the dependency injection definitions. Mostly a Guice module but

@@ -228,6 +228,12 @@ public abstract class AbstractPlugin implements Plugin
     }
 
     @Override
+    public String rootPackages()
+    {
+        return "";
+    }
+
+    @Override
     public UnitModule unitModule()
     {
         return nativeUnitModule() != null ?  new ModuleEmbedded(nativeUnitModule()) : null;

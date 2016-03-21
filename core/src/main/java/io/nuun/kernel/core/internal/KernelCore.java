@@ -113,6 +113,7 @@ public final class KernelCore implements Kernel
             addAliasesToKernelParams(plugin);
             fetchGlobalParametersFrom(plugin);
             addPackageRootsToRequestHandler(plugin.pluginPackageRoot());
+            addPackageRootsToRequestHandler(plugin.rootPackages());
         }
 
         sortPlugins(facetRegistry);
