@@ -1,3 +1,21 @@
+<!--
+
+    This file is part of Nuun IO Kernel.
+
+    Nuun IO Kernel is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Nuun IO Kernel is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with Nuun IO Kernel.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -50,6 +68,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
+
+        <license-check.skip>false</license-check.skip>
+        <license-check.fail>true</license-check.fail>
+        <license-header-check.skip>false</license-header-check.skip>
+        <mycila.license-maven-plugin.version>2.10</mycila.license-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -145,6 +168,32 @@
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>3.1.0</version>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>${mycila.license-maven-plugin.version}</version>
+                <configuration>
+                    <header>com/mycila/maven/plugin/license/templates/LGPL-3.txt</header>
+                    <strictCheck>true</strictCheck>
+                    <keywords>
+                        <keyword>Copyright</keyword>
+                    </keywords>
+                    <useDefaultExcludes>true</useDefaultExcludes>
+                    <excludes>
+                        <exclude>LICENSE</exclude>
+                        <exclude>**/*.md</exclude>
+                    </excludes>
+                    <skip>${license-header-check.skip}</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>check-license-header</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
