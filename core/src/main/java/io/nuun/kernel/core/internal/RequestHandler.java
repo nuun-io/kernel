@@ -6,8 +6,7 @@ import com.google.inject.Scopes;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.annotations.KernelModule;
-import io.nuun.kernel.api.config.ClasspathScanMode;
-import io.nuun.kernel.api.inmemory.Classpath;
+import io.nuun.kernel.api.config.KernelOptions;
 import io.nuun.kernel.api.plugin.request.BindingRequest;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.nuun.kernel.api.plugin.request.RequestType;
@@ -16,7 +15,6 @@ import io.nuun.kernel.core.internal.injection.ModuleEmbedded;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner;
 import io.nuun.kernel.core.internal.scanner.ClasspathScannerFactory;
 import io.nuun.kernel.core.internal.scanner.disk.ClasspathStrategy;
-import io.nuun.kernel.core.internal.scanner.inmemory.InMemoryMultiThreadClasspath;
 import io.nuun.kernel.core.internal.utils.NuunReflectionUtils;
 import org.kametic.specifications.Specification;
 import org.kametic.specifications.reflect.DescendantOfSpecification;
@@ -28,6 +26,8 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.*;
 
+import static io.nuun.kernel.api.config.KernelOptions.CLASSPATH_SCAN_MODE;
+import static io.nuun.kernel.api.config.KernelOptions.PRINT_SCAN_WARN;
 import static java.util.Collections.unmodifiableMap;
 
 /**
@@ -35,6 +35,26 @@ import static java.util.Collections.unmodifiableMap;
  */
 public class RequestHandler extends ScanResults
 {
+    private static final String SCAN_WHOLE_CLASSPATH_WARN_MESSAGE = "\n================================ WARNING ================================\n" +
+            "   You're actually scanning the WHOLE classpath , this can be time consuming.\n" +
+            "   Please update your application configuration, to narrow the scan to your application.\n" +
+            "\n" +
+            " 1) You can update /nuun.conf in the classpath with the following content\n" +
+            "\n" +
+            "          rootPackage = com.acme1, com.acme2\n" +
+            "\n" +
+            "   where com.acme1 and com.acme2 are your root packages.\n" +
+            "\n" +
+            " 2) You can programmatically use KernelConfiguration.rootPackage(\"com.acme1\" , \"com.acme2\")\n" +
+            "\n" +
+            "   Same as above\n" +
+            "\n" +
+            " 3) You can programmatically use KernelConfiguration.param(\"scan.warn.disable\" , \"true\")\n" +
+            "\n" +
+            "   This will disable the warning. It implies, you know what you are doing.\n" +
+            "\n" +
+            "========================================================================";
+
     private final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private final List<String> propertiesPrefix = new ArrayList<String>();
@@ -64,17 +84,16 @@ public class RequestHandler extends ScanResults
     private Set<URL> additionalClasspathScan;
     private ClasspathStrategy classpathStrategy;
     private ClasspathScanner classpathScanner;
-    private ClasspathScanMode classpathScanMode;
+    private KernelOptions options;
 
-    public RequestHandler(Map<String, String> kernelParams, ClasspathScanMode classpathScanMode)
+    public RequestHandler(Map<String, String> kernelParams, KernelOptions options)
     {
-        this.classpathScanMode = classpathScanMode;
-
         setClasspathStrategy(kernelParams);
 
-        packageRoots = new LinkedList<String>();
-        propertiesPrefix.add(Kernel.NUUN_PROPERTIES_PREFIX);
-        additionalClasspathScan = new HashSet<URL>();
+        this.packageRoots = new LinkedList<String>();
+        this.propertiesPrefix.add(Kernel.NUUN_PROPERTIES_PREFIX);
+        this.additionalClasspathScan = new HashSet<URL>();
+        this.options = options;
     }
 
     private void setClasspathStrategy(Map<String, String> kernelParams)
@@ -201,17 +220,16 @@ public class RequestHandler extends ScanResults
 
     private void initScanner()
     {
-        String[] packageRootArray = new String[packageRoots.size()];
-        packageRoots.toArray(packageRootArray);
+        printWarnWhenScanningAllClasspath();
+        ClasspathScannerFactory classpathScannerFactory = new ClasspathScannerFactory(options.get(CLASSPATH_SCAN_MODE));
+        classpathScanner = classpathScannerFactory.create(classpathStrategy, additionalClasspathScan, packageRoots);
+    }
 
-        ClasspathScannerFactory classpathScannerFactory = new ClasspathScannerFactory();
-        if (classpathScanMode == ClasspathScanMode.NOMINAL)
+    private void printWarnWhenScanningAllClasspath()
+    {
+        if (packageRoots.isEmpty() && options.get(PRINT_SCAN_WARN))
         {
-            classpathScanner = classpathScannerFactory.create(classpathStrategy, additionalClasspathScan, packageRootArray);
-        } else if (classpathScanMode == ClasspathScanMode.IN_MEMORY)
-        {
-            Classpath classpath = InMemoryMultiThreadClasspath.INSTANCE;
-            classpathScanner = classpathScannerFactory.createInMemory(classpath, packageRootArray);
+            logger.warn(SCAN_WHOLE_CLASSPATH_WARN_MESSAGE);
         }
     }
 
@@ -417,7 +435,7 @@ public class RequestHandler extends ScanResults
         propertiesPrefix.add(prefix);
     }
 
-    public void addPackageRoot(String root)
+    public void addRootPackage(String root)
     {
         packageRoots.add(root);
     }

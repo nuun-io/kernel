@@ -16,7 +16,7 @@
  */
 package io.nuun.kernel.core.internal;
 
-import io.nuun.kernel.api.config.ClasspathScanMode;
+import io.nuun.kernel.api.config.KernelOptions;
 import io.nuun.kernel.core.internal.concerns.ConcernTest;
 import io.nuun.kernel.core.internal.concerns.sample.BugPlugin;
 import io.nuun.kernel.core.internal.concerns.sample.CachePlugin;
@@ -24,11 +24,12 @@ import io.nuun.kernel.core.internal.concerns.sample.LogPlugin;
 import io.nuun.kernel.core.internal.concerns.sample.SecurityPlugin;
 import io.nuun.kernel.core.internal.injection.ClassInstaller;
 import io.nuun.kernel.core.internal.injection.KernelGuiceModuleInternal;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class InternalKernelModuleTest
 {
@@ -37,17 +38,17 @@ public class InternalKernelModuleTest
     @Before
     public void init()
     {
-        RequestHandler requestHandler = new RequestHandler(new HashMap<String, String>(), ClasspathScanMode.NOMINAL);
+        RequestHandler requestHandler = new RequestHandler(new HashMap<String, String>(), new KernelOptions());
         underTest = new KernelGuiceModuleInternal(requestHandler);
     }
 
     @Test
     public void computeOrder_should_works()
     {
-        Assertions.assertThat(new ClassInstaller(SecurityPlugin.Module.class).order()).isEqualTo(12884901888L);
-        Assertions.assertThat(new ClassInstaller(LogPlugin.Module.class).order()).isEqualTo(-4294967296L);
-        Assertions.assertThat(new ClassInstaller(CachePlugin.Module.class).order()).isEqualTo(12884901886L);
-        Assertions.assertThat(new ClassInstaller(ConcernTest.Module.class).order()).isEqualTo(0);
-        Assertions.assertThat(new ClassInstaller(BugPlugin.Module.class).order()).isEqualTo(15032385535L);
+        assertThat(new ClassInstaller(SecurityPlugin.Module.class).order()).isEqualTo(12884901888L);
+        assertThat(new ClassInstaller(LogPlugin.Module.class).order()).isEqualTo(-4294967296L);
+        assertThat(new ClassInstaller(CachePlugin.Module.class).order()).isEqualTo(12884901886L);
+        assertThat(new ClassInstaller(ConcernTest.Module.class).order()).isEqualTo(0);
+        assertThat(new ClassInstaller(BugPlugin.Module.class).order()).isEqualTo(15032385535L);
     }
 }

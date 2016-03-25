@@ -1,13 +1,13 @@
 /**
- * Copyright (C) 2014 Kametic <epo.jemba@kametic.com>
- *
+ * Copyright (C) 2013-2016 Kametic <epo.jemba@kametic.com>
+ * <p/>
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * or any later version
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p/>
  * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,9 +18,7 @@ package io.nuun.kernel.core.internal;
 
 import com.google.common.collect.ObjectArrays;
 import io.nuun.kernel.api.Plugin;
-import io.nuun.kernel.api.config.ClasspathScanMode;
-import io.nuun.kernel.api.config.DependencyInjectionMode;
-import io.nuun.kernel.api.config.KernelConfiguration;
+import io.nuun.kernel.api.config.*;
 import io.nuun.kernel.api.di.ModuleValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,22 +37,45 @@ public class KernelConfigurationInternal implements KernelConfiguration
     private List<Class<? extends Plugin>> pluginsClass = new ArrayList<Class<? extends Plugin>>();
     private Plugin[] plugins = new Plugin[0];
     private List<ModuleValidation> validations = new ArrayList<ModuleValidation>();
-    private ClasspathScanMode classpathScanMode = ClasspathScanMode.NOMINAL;
-    private boolean isPluginScanEnabled = true;
     private Object containerContext;
-    private DependencyInjectionMode dependencyInjectionMode = DependencyInjectionMode.PRODUCTION;
+
+    private KernelOptions options = new KernelOptions();
+
+    @Override
+    public <T> KernelConfiguration option(KernelOption<T> option, T value)
+    {
+        options.set(option, value);
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public KernelOptions options()
+    {
+        return options;
+    }
+
+    @Override
+    public KernelConfiguration rootPackages(String... rootPackages)
+    {
+        this.options.get(KernelOptions.ROOT_PACKAGES).addAll(Arrays.asList(rootPackages));
+        return this;
+    }
 
     @Override
     public KernelConfiguration param(String key, String value)
     {
         kernelParamsAndAlias.put(key, value);
+        if (key.equals("nuun.root.package")) {
+            options.get(KernelOptions.ROOT_PACKAGES).add(value);
+        }
         return this;
     }
 
     @Override
     public KernelConfiguration params(String... paramEntries)
     {
-        if (isNotEvenNumber(paramEntries.length)) {
+        if (isNotEvenNumber(paramEntries.length))
+        {
             throw new IllegalArgumentException("An even number of parameters was expected but found: "
                     + Arrays.toString(paramEntries));
         }
@@ -67,18 +88,21 @@ public class KernelConfigurationInternal implements KernelConfiguration
         return this;
     }
 
-    public boolean isNotEvenNumber(int number) {
+    public boolean isNotEvenNumber(int number)
+    {
         return number % 2 != 0;
     }
 
-    private void addParamKeyValue(Iterator<String> it) {
+    private void addParamKeyValue(Iterator<String> it)
+    {
         String key = it.next();
         String value = it.next();
         logger.debug("Adding {} = {} as param to kernel", key, value);
-        kernelParamsAndAlias.put(key, value);
+        param(key, value);
     }
 
-    public AliasMap kernelParams() {
+    public AliasMap kernelParams()
+    {
         return kernelParamsAndAlias;
     }
 
@@ -89,14 +113,17 @@ public class KernelConfigurationInternal implements KernelConfiguration
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public KernelConfiguration addPlugin(Class<? extends Plugin> pluginsClass) {
+    public KernelConfiguration addPlugin(Class<? extends Plugin> pluginsClass)
+    {
         Collections.addAll(this.pluginsClass, pluginsClass);
         return this;
     }
 
     @Override
-    public KernelConfiguration plugins(Class<? extends Plugin>... pluginsClasses) {
+    public KernelConfiguration plugins(Class<? extends Plugin>... pluginsClasses)
+    {
         Collections.addAll(this.pluginsClass, pluginsClasses);
         return this;
     }
@@ -118,28 +145,28 @@ public class KernelConfigurationInternal implements KernelConfiguration
     @Override
     public KernelConfiguration withoutSpiPluginsLoader()
     {
-        isPluginScanEnabled = false;
+        this.options.set(KernelOptions.SCAN_PLUGIN, false);
         return this;
     }
 
     @Override
     public KernelConfiguration withSpiPluginsLoader()
     {
-        isPluginScanEnabled = true;
+        this.options.set(KernelOptions.SCAN_PLUGIN, true);
         return this;
     }
 
     @Override
     public KernelConfiguration dependencyInjectionMode(DependencyInjectionMode dependencyInjectionMode)
     {
-        this.dependencyInjectionMode = dependencyInjectionMode;
+        this.options.set(KernelOptions.DEPENDENCY_INJECTION_MODE, dependencyInjectionMode);
         return this;
     }
 
     @Override
     public KernelConfiguration classpathScanMode(ClasspathScanMode classpathScanMode)
     {
-        this.classpathScanMode = classpathScanMode;
+        this.options.set(KernelOptions.CLASSPATH_SCAN_MODE, classpathScanMode);
         return this;
     }
 
@@ -153,31 +180,23 @@ public class KernelConfigurationInternal implements KernelConfiguration
         return this;
     }
 
-    public Object getContainerContext() {
+    public Object getContainerContext()
+    {
         return containerContext;
     }
 
-    public List<Class<? extends Plugin>> getPluginClasses() {
+    public List<Class<? extends Plugin>> getPluginClasses()
+    {
         return pluginsClass;
     }
 
-    public Plugin[] getPlugins() {
+    public Plugin[] getPlugins()
+    {
         return plugins;
     }
 
-    public boolean isPluginScanEnabled() {
-        return isPluginScanEnabled;
-    }
-
-    public DependencyInjectionMode getDependencyInjectionMode() {
-        return dependencyInjectionMode;
-    }
-
-    public ClasspathScanMode getClasspathScanMode() {
-        return classpathScanMode;
-    }
-
-    public List<ModuleValidation> getValidations() {
+    public List<ModuleValidation> getValidations()
+    {
         return validations;
     }
 }

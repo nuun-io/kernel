@@ -16,39 +16,53 @@
  */
 package io.nuun.kernel.core.internal.scanner;
 
+import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.api.inmemory.Classpath;
 import io.nuun.kernel.core.internal.scanner.disk.ClasspathScannerDisk;
 import io.nuun.kernel.core.internal.scanner.disk.ClasspathStrategy;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathScannerInMemory;
+import io.nuun.kernel.core.internal.scanner.inmemory.InMemoryMultiThreadClasspath;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Set;
 
 
 public class ClasspathScannerFactory
 {
-    public ClasspathScanner create(ClasspathStrategy classpathStrategy, Set<URL> additionalClasspath, String... packageRoot)
+    private ClasspathScanMode classpathScanMode;
+
+    public ClasspathScannerFactory(ClasspathScanMode classpathScanMode)
+    {
+        this.classpathScanMode = classpathScanMode;
+    }
+
+    public ClasspathScanner create(ClasspathStrategy classpathStrategy, Set<URL> additionalClasspath, List<String> packageRoots) {
+        String[] packageRootArray = new String[packageRoots.size()];
+        packageRoots.toArray(packageRootArray);
+
+        switch (classpathScanMode)
+        {
+            case NOMINAL:
+                return createNominal(classpathStrategy, additionalClasspath, packageRootArray);
+            case IN_MEMORY:
+                return createInMemory(packageRootArray);
+            default:
+                throw new UnsupportedOperationException();
+        }
+    }
+
+    private ClasspathScanner createNominal(ClasspathStrategy classpathStrategy, Set<URL> additionalClasspath, String... packageRoot)
     {
         ClasspathScannerDisk classpathScannerDisk = new ClasspathScannerDisk(classpathStrategy, packageRoot);
         classpathScannerDisk.setAdditionalClasspath(additionalClasspath);
         return classpathScannerDisk;
     }
 
-    public ClasspathScanner createInMemory(Classpath classpath, String... packageRoot)
+    private ClasspathScanner createInMemory(String... packageRoot)
     {
+        Classpath classpath = InMemoryMultiThreadClasspath.INSTANCE;
         return new ClasspathScannerInMemory(classpath, packageRoot);
-    }
-
-    @Deprecated
-    public ClasspathScanner create(ClasspathStrategy classpathStrategy, String... packageRoot)
-    {
-        return new ClasspathScannerDisk(classpathStrategy, packageRoot);
-    }
-
-    @Deprecated
-    public ClasspathScanner create(ClasspathStrategy classpathStrategy, boolean reachAbstractClass, String packageRoot, String... packageRoots)
-    {
-        return new ClasspathScannerDisk(classpathStrategy, reachAbstractClass, packageRoot, packageRoots);
     }
 
 }

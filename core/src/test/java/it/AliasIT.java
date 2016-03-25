@@ -1,12 +1,11 @@
 package it;
 
 import io.nuun.kernel.api.Kernel;
-import io.nuun.kernel.api.config.KernelConfiguration;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.KernelParamsRequest;
 import io.nuun.kernel.core.AbstractPlugin;
-import io.nuun.kernel.core.NuunCore;
+import io.nuun.kernel.core.internal.Fixture;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
@@ -22,16 +21,12 @@ public class AliasIT
     @Test
     public void testAliases() throws Exception
     {
-        KernelConfiguration kernelConfig = NuunCore.newKernelConfiguration()
-                .withoutSpiPluginsLoader()
+        Kernel kernel = Fixture.startKernel(Fixture.config()
                 .param("alias1", "val1")
                 .param("alias2", "val2")
                 .addPlugin(AliasProviderPlugin.class)
-                .addPlugin(AliasUserPlugin.class);
-
-        Kernel kernel = NuunCore.createKernel(kernelConfig);
-        kernel.init();
-        kernel.start();
+                .addPlugin(AliasUserPlugin.class)
+        );
 
         AliasProviderPlugin aliasProvider = (AliasProviderPlugin) kernel.plugins().get("alias-provider");
         Assertions.assertThat(aliasProvider.param1).isEqualTo("val1");

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2014 Kametic <epo.jemba@kametic.com>
+ * Copyright (C) 2013-2016 Kametic <epo.jemba@kametic.com>
  *
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * or any later version
@@ -25,6 +25,7 @@ import com.google.inject.util.Modules;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.DependencyInjectionMode;
+import io.nuun.kernel.api.config.KernelOptions;
 import io.nuun.kernel.api.di.GlobalModule;
 import io.nuun.kernel.api.di.ObjectGraph;
 import io.nuun.kernel.api.di.UnitModule;
@@ -67,13 +68,15 @@ public final class KernelCore implements Kernel
     private RoundInternal round;
     private ExtensionManager extensionManager;
     private DependencyProvider dependencyProvider;
+    private KernelOptions options;
 
     KernelCore(KernelConfigurationInternal kernelConfigurationInternal)
     {
         this.name = KERNEL_PREFIX_NAME + kernelIndex.getAndIncrement();
         this.logger = LoggerFactory.getLogger(KernelCore.class.getName() + ' ' + name());
         this.kernelConfig = kernelConfigurationInternal;
-        this.requestHandler = new RequestHandler(kernelConfig.kernelParams().toMap(), kernelConfig.getClasspathScanMode());
+        this.options = kernelConfigurationInternal.options();
+        this.requestHandler = new RequestHandler(kernelConfig.kernelParams().toMap(), options);
         this.moduleHandler = new ModuleHandler(kernelConfig);
     }
 
@@ -110,6 +113,7 @@ public final class KernelCore implements Kernel
             addAliasesToKernelParams(plugin);
             fetchGlobalParametersFrom(plugin);
             addPackageRootsToRequestHandler(plugin.pluginPackageRoot());
+            addPackageRootsToRequestHandler(plugin.rootPackages());
         }
 
         sortPlugins(facetRegistry);
@@ -118,7 +122,7 @@ public final class KernelCore implements Kernel
     private void addPluginsToTheRegistry()
     {
         registerPluginsFromKernelConfiguration();
-        if (kernelConfig.isPluginScanEnabled())
+        if (options.get(KernelOptions.SCAN_PLUGIN))
         {
             registerPluginsFromScan();
         }
@@ -191,10 +195,15 @@ public final class KernelCore implements Kernel
 
     private void fetchPackageRootsFromConfiguration()
     {
-        if (kernelConfig.kernelParams().containsKey(NUUN_ROOT_PACKAGE))
+        if (kernelConfig.kernelParams().containsKey("nuun.root.package"))
         {
-            String rootPackages = kernelConfig.kernelParams().get(NUUN_ROOT_PACKAGE);
+            String rootPackages = kernelConfig.kernelParams().get("nuun.root.package");
             addPackageRootsToRequestHandler(rootPackages);
+        }
+
+        for (String rootPackage : options.get(KernelOptions.ROOT_PACKAGES))
+        {
+            requestHandler.addRootPackage(rootPackage);
         }
     }
 
@@ -205,7 +214,7 @@ public final class KernelCore implements Kernel
             for (String pack : pluginPackageRoots.split(","))
             {
                 logger.info("Adding {} as package root", pack);
-                requestHandler.addPackageRoot(pack.trim());
+                requestHandler.addRootPackage(pack.trim());
             }
         }
     }
@@ -282,7 +291,7 @@ public final class KernelCore implements Kernel
 
     private void createMainInjector()
     {
-        Stage stage = convertInjectionModeToGuiceStage(kernelConfig.getDependencyInjectionMode());
+        Stage stage = convertInjectionModeToGuiceStage(options.get(KernelOptions.DEPENDENCY_INJECTION_MODE));
         mainInjector = Guice.createInjector(stage, mainModule);
     }
 

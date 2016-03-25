@@ -48,29 +48,21 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
 
     public ClasspathScannerDisk(ClasspathStrategy classpathStrategy, String... packageRoots)
     {
-        this(classpathStrategy, true, null, packageRoots);
+        this(classpathStrategy, true, packageRoots);
     }
 
-    public ClasspathScannerDisk(ClasspathStrategy classpathStrategy, boolean reachAbstractClass, String packageRoot, String... packageRoots)
+    public ClasspathScannerDisk(ClasspathStrategy classpathStrategy, boolean reachAbstractClass, String... packageRoots)
     {
         super(reachAbstractClass);
         this.packageRoots = new LinkedList<String>();
-
-        if (packageRoot != null)
-        {
-            this.packageRoots.add(packageRoot);
-        }
-
         Collections.addAll(this.packageRoots, packageRoots);
-
         this.classpathStrategy = classpathStrategy;
-
         initializeReflections();
     }
 
     protected void initializeReflections()
     {
-        ConfigurationBuilder configurationBuilder = configurationBuilder().addUrls(computeUrls()).setScanners(getScanners());
+        ConfigurationBuilder configurationBuilder = configurationBuilder().addUrls(findClasspathUrls()).setScanners(getScanners());
         reflections = new Reflections(configurationBuilder);
     }
 
@@ -89,7 +81,7 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
         return cb;
     }
 
-    private Set<URL> computeUrls()
+    private Set<URL> findClasspathUrls()
     {
         if (urls == null)
         {
