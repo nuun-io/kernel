@@ -16,11 +16,12 @@
  */
 package io.nuun.kernel.core.internal.scanner;
 
+import org.kametic.specifications.Specification;
+
 import java.lang.annotation.Annotation;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Set;
-
-import org.kametic.specifications.Specification;
 
 public interface ClasspathScanner
 {
@@ -41,4 +42,6 @@ public interface ClasspathScanner
     Collection<Class<?>> scanSubTypesOf(String typeRegex);
 
     Set<String> scanResources(String pattern);
+
+    Set<URL> getUrls();
 }

@@ -24,8 +24,9 @@ import io.nuun.kernel.core.NuunCore;
 import it.fixture.scan.ClassToScan1;
 import it.fixture.scan.ClassToScan2;
 import it.fixture.scan.ScanningPlugin;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * This class tests the features associated with the scan done by Reflections.
@@ -45,13 +46,17 @@ public class ClasspathScanningIT {
                 .option(KernelOptions.ROOT_PACKAGES, Lists.newArrayList("it.fixture.scan"))
                 .addPlugin(ScanningPlugin.class);
 
-        Kernel kernel = NuunCore.createKernel(kernelConfig);
+        Kernel kernel =  NuunCore.createKernel(kernelConfig);
+        assertThat(kernel.scannedURLs()).isNotNull();
+        assertThat(kernel.scannedURLs()).isEmpty();
         kernel.init();
 
-        Assertions.assertThat(kernel.plugins()).hasSize(1);
-        Assertions.assertThat(kernel.plugins().get(ScanningPlugin.NAME)).isInstanceOf(ScanningPlugin.class);
+        assertThat(kernel.plugins()).hasSize(1);
+        assertThat(kernel.plugins().get(ScanningPlugin.NAME)).isInstanceOf(ScanningPlugin.class);
         ScanningPlugin scanningPlugin = (ScanningPlugin) kernel.plugins().get(ScanningPlugin.NAME);
-        Assertions.assertThat(scanningPlugin.getScannedClasses()).hasSize(2);
-        Assertions.assertThat(scanningPlugin.getScannedClasses()).containsOnly(ClassToScan1.class, ClassToScan2.class);
+        assertThat(scanningPlugin.getScannedClasses()).hasSize(2);
+        assertThat(scanningPlugin.getScannedClasses()).containsOnly(ClassToScan1.class, ClassToScan2.class);
+
+        assertThat(kernel.scannedURLs()).isNotEmpty();
     }
 }

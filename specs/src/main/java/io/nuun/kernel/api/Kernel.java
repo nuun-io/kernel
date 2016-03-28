@@ -20,7 +20,9 @@ import io.nuun.kernel.api.di.GlobalModule;
 import io.nuun.kernel.api.di.ObjectGraph;
 import io.nuun.kernel.api.di.UnitModule;
 
+import java.net.URL;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The Kernel is the main component of the I.O.C. technical stack.
@@ -127,6 +129,8 @@ public interface Kernel
      * @return the global binding definition provider for all the application.
      */
     GlobalModule globalModule();
+
+    Set<URL> scannedURLs();
 
     /**
      * Tell the kernel to start. Then the kernel will create the ObjectGraph of the application. The ObjectGraph will wrap the actual Guice injector.

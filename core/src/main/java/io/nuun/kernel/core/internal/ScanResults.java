@@ -23,6 +23,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.kametic.specifications.Specification;
 
 import java.lang.annotation.Annotation;
+import java.net.URL;
 import java.util.*;
 
 import static java.util.Collections.*;
@@ -44,6 +45,7 @@ public class ScanResults
     private final Map<String, Collection<String>> propertyFilesByPrefix = new HashMap<String, Collection<String>>();
     private final Map<String, Collection<String>> resourcesByRegex = new HashMap<String, Collection<String>>();
     private final Collection<String> propertyFiles = new HashSet<String>();
+    private final Set<URL> urls = new HashSet<URL>();
 
     protected static class Key
     {
@@ -137,6 +139,15 @@ public class ScanResults
     public Collection<String> getPropertyFiles()
     {
         return unmodifiableCollection(propertyFiles);
+    }
+
+    public Set<URL> getUrls()
+    {
+        return urls;
+    }
+
+    public void addUrls(Set<URL> urls) {
+        this.urls.addAll(urls);
     }
 
     public void addClassesToBind(Collection<Class<?>> classesToBind) {
