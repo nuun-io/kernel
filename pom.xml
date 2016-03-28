@@ -195,6 +195,26 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-distribution-javadoc</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>aggregate</goal>
+                            <goal>javadoc</goal>
+                        </goals>
+                        <configuration>
+                            <doctitle>Nuun Kernel ${project.version}</doctitle>
+                            <detectOfflineLinks>false</detectOfflineLinks>
+                            <includeDependencySources>false</includeDependencySources>
+                            <includeTransitiveDependencySources>false</includeTransitiveDependencySources>
+                            <excludePackageNames>*.internal.*</excludePackageNames>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
