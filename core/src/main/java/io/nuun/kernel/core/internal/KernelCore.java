@@ -39,6 +39,7 @@ import io.nuun.kernel.core.internal.injection.ModuleEmbedded;
 import io.nuun.kernel.core.internal.injection.ModuleHandler;
 import io.nuun.kernel.core.internal.injection.ObjectGraphEmbedded;
 import io.nuun.kernel.spi.DependencyInjectionProvider;
+import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,6 +77,9 @@ public final class KernelCore implements Kernel
         this.logger = LoggerFactory.getLogger(KernelCore.class.getName() + ' ' + name());
         this.kernelConfig = kernelConfigurationInternal;
         this.options = kernelConfigurationInternal.options();
+        if (!options.get(KernelOptions.ENABLE_REFLECTION_LOGGER)) {
+            Reflections.log = null;
+        }
         this.requestHandler = new RequestHandler(kernelConfig.kernelParams().toMap(), options);
         this.moduleHandler = new ModuleHandler(kernelConfig);
     }
