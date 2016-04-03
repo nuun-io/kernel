@@ -15,19 +15,20 @@
  * along with Nuun IO Kernel Core.  If not, see <http://www.gnu.org/licenses/>.
  */
 package io.nuun.kernel.core.internal.scanner.sample;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import javax.inject.Scope;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.inject.Scope;
- 
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 @Scope
 @Documented
 @Retention(RUNTIME)
-@Target({METHOD  })
-public @interface DummyMethod {
- 
+@Target({METHOD})
+public @interface DummyMethod
+{
+
 }

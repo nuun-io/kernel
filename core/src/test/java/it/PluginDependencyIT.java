@@ -28,13 +28,15 @@ import static io.nuun.kernel.core.internal.Fixture.initKernel;
  *
  * @author pierre.thirouin@ext.mpsa.com (Pierre Thirouin)
  */
-public class PluginDependencyIT {
+public class PluginDependencyIT
+{
 
     /**
      * WithDependentDepsPlugin throws an exception if DependentPlugin1 is initialized before it.
      */
     @Test
-    public void test_dependent_plugin() {
+    public void test_dependent_plugin()
+    {
         initKernel(config()
                 .addPlugin(WithDependentDepsPlugin.class)
                 .addPlugin(DependentPlugin1.class));
@@ -44,7 +46,8 @@ public class PluginDependencyIT {
      * The kernel should throws an exception if the dependent plugin is not present.
      */
     @Test(expected = KernelException.class)
-    public void test_dependent_plugin_with_missing_dependency() {
+    public void test_dependent_plugin_with_missing_dependency()
+    {
         initKernel(config().addPlugin(WithDependentDepsPlugin.class));
     }
 
@@ -52,7 +55,8 @@ public class PluginDependencyIT {
      * WithRequiredDepsPlugin throws an exception if RequiredPlugin1 is initialized after it.
      */
     @Test
-    public void test_required_plugin() {
+    public void test_required_plugin()
+    {
         initKernel(config()
                 .addPlugin(WithRequiredDepsPlugin.class)
                 .addPlugin(RequiredPlugin1.class));
@@ -62,7 +66,8 @@ public class PluginDependencyIT {
      * The kernel should throws an exception if the required plugin is not present.
      */
     @Test(expected = KernelException.class)
-    public void test_required_plugin_with_missing_dependency() {
+    public void test_required_plugin_with_missing_dependency()
+    {
         initKernel(config().addPlugin(WithRequiredDepsPlugin.class));
     }
 
@@ -70,7 +75,8 @@ public class PluginDependencyIT {
      * WithDependentDepsPlugin throws an exception if DependentPlugin1 is initialized before it.
      */
     @Test
-    public void test_required_facet() {
+    public void test_required_facet()
+    {
         initKernel(config()
                 .addPlugin(Facet1Plugin.class)
                 .addPlugin(WithRequiredFacetPlugin.class));

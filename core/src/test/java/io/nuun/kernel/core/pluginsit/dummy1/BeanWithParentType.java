@@ -14,27 +14,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Nuun IO Kernel Core.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * 
- */
 package io.nuun.kernel.core.pluginsit.dummy1;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 
-
 /**
  * @author Epo Jemba
- *
  */
 public class BeanWithParentType implements DummyMarker
 {
-    @Inject @Named("custom.name2")
+    @Inject
+    @Named("custom.name2")
     String name;
-    
+
     public String name()
     {
-        return "I am " + name; 
+        return "I am " + name;
     }
 }

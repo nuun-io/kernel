@@ -29,13 +29,15 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author pierre.thirouin@ext.mpsa.com (Pierre Thirouin)
  */
-public class PluginDiscoveryIT {
+public class PluginDiscoveryIT
+{
 
     /**
      * Tests if the plugins defined in META-INF/services were registered.
      */
     @Test
-    public void test_plugin_discovery() {
+    public void test_plugin_discovery()
+    {
         Kernel kernel = Fixture.initKernel(Fixture.configWithScan());
 
         assertThat(kernel.plugins()).hasSize(2);

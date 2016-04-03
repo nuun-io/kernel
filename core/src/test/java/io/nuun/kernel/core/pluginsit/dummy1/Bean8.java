@@ -14,19 +14,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Nuun IO Kernel Core.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * 
- */
 package io.nuun.kernel.core.pluginsit.dummy1;
 
 import io.nuun.kernel.api.annotations.Ignore;
 import io.nuun.kernel.spi.configuration.NuunProperty;
 
 
-
 /**
  * @author Epo Jemba
- *
  */
 @MarkerSample4
 @Ignore

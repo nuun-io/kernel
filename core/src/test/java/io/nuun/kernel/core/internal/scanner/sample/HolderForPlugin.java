@@ -33,8 +33,8 @@ public class HolderForPlugin
     public DummyService dummyService;
 
     @Inject
-    public Bean6        bean6;
-    
+    public Bean6 bean6;
+
     @Inject
-    public Bean9        bean9;
+    public Bean9 bean9;
 }

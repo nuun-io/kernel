@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A 2 rounds plugin
- * 
+ *
  * @author ejemba
  */
 public class DummyPlugin6_B extends AbstractPlugin
@@ -39,7 +39,7 @@ public class DummyPlugin6_B extends AbstractPlugin
     public DummyPlugin6_B()
     {
     }
-    
+
     @Override
     public String name()
     {
@@ -52,13 +52,12 @@ public class DummyPlugin6_B extends AbstractPlugin
         if (round.isFirst())
         {
             return Lists.<Class<?>>newArrayList(DummyPlugin6_D.class, DummyPlugin6_C.class);
-        }
-        else
+        } else
         {
             return super.dependentPlugins();
         }
     }
-    
+
     @Override
     public Collection<BindingRequest> bindingRequests()
     {
@@ -68,7 +67,7 @@ public class DummyPlugin6_B extends AbstractPlugin
         }
         return super.bindingRequests();
     }
-    
+
     @Override
     public Collection<ClasspathScanRequest> classpathScanRequests()
     {
@@ -76,7 +75,7 @@ public class DummyPlugin6_B extends AbstractPlugin
         {
             return classpathScanRequestBuilder().annotationType(Marker6.class).build();
         }
-        
+
         return super.classpathScanRequests();
     }
 
@@ -90,8 +89,7 @@ public class DummyPlugin6_B extends AbstractPlugin
             if (round.isFirst())
             {
                 assertThat(dependentPlugins).hasSize(2);
-            }
-            else
+            } else
             {
                 assertThat(dependentPlugins).hasSize(0);
             }
@@ -100,8 +98,7 @@ public class DummyPlugin6_B extends AbstractPlugin
             {
                 Collection<Class<?>> collection = initContext.scannedClassesByAnnotationClass().get(Marker6.class);
                 assertThat(collection).hasSize(2);
-            }
-            else
+            } else
             {
                 Collection<Class<?>> collection = initContext.scannedClassesByAnnotationClass().get(Marker6.class);
                 assertThat(collection).isNullOrEmpty();
@@ -109,19 +106,18 @@ public class DummyPlugin6_B extends AbstractPlugin
 
             for (Object plugin : dependentPlugins)
             {
-                if (DummyPlugin6_D.class.isAssignableFrom(plugin.getClass())) 
+                if (DummyPlugin6_D.class.isAssignableFrom(plugin.getClass()))
                 {
                     DummyPlugin6_D.class.cast(plugin).setInternal(true);
                 }
-                if (DummyPlugin6_C.class.isAssignableFrom(plugin.getClass())) 
+                if (DummyPlugin6_C.class.isAssignableFrom(plugin.getClass()))
                 {
                     DummyPlugin6_C.class.cast(plugin).setInternal(true);
                 }
             }
-        
+
             return InitState.NON_INITIALIZED;
-        } 
-        else 
+        } else
         {
             return InitState.INITIALIZED;
         }
@@ -132,5 +128,5 @@ public class DummyPlugin6_B extends AbstractPlugin
     {
         return "B";
     }
-    
+
 }

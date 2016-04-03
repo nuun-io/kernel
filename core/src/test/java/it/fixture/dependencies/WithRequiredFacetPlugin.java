@@ -27,39 +27,47 @@ import java.util.List;
 /**
  * @author pierre.thirouin@ext.mpsa.com (Pierre Thirouin)
  */
-public class WithRequiredFacetPlugin extends AbstractPlugin {
+public class WithRequiredFacetPlugin extends AbstractPlugin
+{
 
     public static final String NAME = "with-required-deps";
 
     @Override
-    public String name() {
+    public String name()
+    {
         return NAME;
     }
 
 
     @Override
-    public InitState init(InitContext initContext) {
+    public InitState init(InitContext initContext)
+    {
 
         Facet1 facet1 = initContext.dependency(Facet1.class);
 
-        if (!facet1.isInitialized()) {
+        if (!facet1.isInitialized())
+        {
             throw new IllegalStateException("Facet1 should be initialized before WithRequiredFacetPlugin");
         }
 
         List<?> dependencies = initContext.dependencies();
-        if (dependencies.size() != 1) {
+        if (dependencies.size() != 1)
+        {
             throw new IllegalStateException("WithRequiredFacetPlugin should have only one dependency");
         }
 
         List<Facet1> facet1s = initContext.dependencies(Facet1.class);
-        if (facet1s.size() != 1) {
+        if (facet1s.size() != 1)
+        {
             throw new IllegalStateException("WithRequiredFacetPlugin should have only one dependency");
         }
 
         return InitState.INITIALIZED;
     }
+
     @Override
-    public Collection<Class<?>> requiredPlugins() {
+    public Collection<Class<?>> requiredPlugins()
+    {
         return Lists.<Class<?>>newArrayList(Facet1.class);
     }
 }

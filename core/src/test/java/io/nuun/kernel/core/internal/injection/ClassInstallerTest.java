@@ -44,35 +44,39 @@ public class ClassInstallerTest
     }
 
     @Test
-    public void testInstallerOrder() {
+    public void testInstallerOrder()
+    {
         assertThat(greaterInstaller.order()).isEqualTo(HIGHER.value() + 20);
         assertThat(lowerInstaller.order()).isEqualTo(LOWER.value() - 20);
     }
 
     @Test
-    public void testComparison() {
+    public void testComparison()
+    {
         assertThat(greaterInstaller).isGreaterThan(lowerInstaller);
     }
 
-    @Concern(name="higher" , priority= HIGHER, order = 20)
+    @Concern(name = "higher", priority = HIGHER, order = 20)
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ ElementType.TYPE})
+    @Target({ElementType.TYPE})
     public @interface HigherConcern
     {
     }
 
     @HigherConcern
-    static class ClassToBind {
+    static class ClassToBind
+    {
     }
 
-    @Concern(name="lower" , priority= LOWER, order = -20)
+    @Concern(name = "lower", priority = LOWER, order = -20)
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ ElementType.TYPE})
+    @Target({ElementType.TYPE})
     public @interface LowerConcern
     {
     }
 
     @LowerConcern
-    static class ClassToBind2 {
+    static class ClassToBind2
+    {
     }
 }

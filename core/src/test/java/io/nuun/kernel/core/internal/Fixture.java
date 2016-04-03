@@ -24,25 +24,29 @@ import io.nuun.kernel.core.NuunCore;
 
 public class Fixture
 {
-    public static KernelConfiguration config() {
+    public static KernelConfiguration config()
+    {
         return NuunCore.newKernelConfiguration()
                 .option(KernelOptions.ROOT_PACKAGES, Lists.newArrayList("io.nuun.kernel"))
                 .option(KernelOptions.SCAN_PLUGIN, false);
     }
 
-    public static KernelConfiguration configWithScan() {
+    public static KernelConfiguration configWithScan()
+    {
         return NuunCore.newKernelConfiguration()
                 .option(KernelOptions.ROOT_PACKAGES, Lists.newArrayList("io.nuun.kernel"));
     }
 
-    public static Kernel startKernel(KernelConfiguration kernelConfiguration) {
+    public static Kernel startKernel(KernelConfiguration kernelConfiguration)
+    {
         Kernel kernel = NuunCore.createKernel(kernelConfiguration);
         kernel.init();
         kernel.start();
         return kernel;
     }
 
-    public static Kernel initKernel(KernelConfiguration kernelConfiguration) {
+    public static Kernel initKernel(KernelConfiguration kernelConfiguration)
+    {
         Kernel kernel = NuunCore.createKernel(kernelConfiguration);
         kernel.init();
         return kernel;

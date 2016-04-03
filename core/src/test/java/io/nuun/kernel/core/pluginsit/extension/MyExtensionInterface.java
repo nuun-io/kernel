@@ -20,5 +20,6 @@ package io.nuun.kernel.core.pluginsit.extension;
  * @author Pierre Thirouin <pierre.thirouin@ext.mpsa.com>
  *         05/01/2015
  */
-public interface MyExtensionInterface {
+public interface MyExtensionInterface
+{
 }

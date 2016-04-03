@@ -16,9 +16,8 @@
  */
 package io.nuun.kernel.core.internal.scanner.sample;
 
-import io.nuun.kernel.api.annotations.KernelModule;
-
 import com.google.inject.AbstractModule;
+import io.nuun.kernel.api.annotations.KernelModule;
 
 @Ignore
 @KernelModule
@@ -28,7 +27,7 @@ public class MyModule2 extends AbstractModule
     @Override
     protected void configure()
     {
-        
+
     }
 
 }

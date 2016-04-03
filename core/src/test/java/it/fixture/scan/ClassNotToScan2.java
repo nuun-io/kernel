@@ -21,5 +21,6 @@ package it.fixture.scan;
  */
 @ToScan
 @CustomIgnore
-public class ClassNotToScan2 {
+public class ClassNotToScan2
+{
 }

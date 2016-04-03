@@ -24,37 +24,44 @@ import java.util.Collection;
  * @author Pierre Thirouin <pierre.thirouin@ext.mpsa.com>
  *         05/01/2015
  */
-public class MyKernelExtension implements KernelExtension<MyExtensionInterface> {
+public class MyKernelExtension implements KernelExtension<MyExtensionInterface>
+{
 
     public int count = 0;
 
     @Override
-    public void initializing(Collection<MyExtensionInterface> extensions) {
+    public void initializing(Collection<MyExtensionInterface> extensions)
+    {
         count += 1;
     }
 
     @Override
-    public void initialized(Collection<MyExtensionInterface> extensions) {
+    public void initialized(Collection<MyExtensionInterface> extensions)
+    {
         count += 10;
     }
 
     @Override
-    public void starting(Collection<MyExtensionInterface> extensions) {
+    public void starting(Collection<MyExtensionInterface> extensions)
+    {
         count += 100;
     }
 
     @Override
-    public void started(Collection<MyExtensionInterface> extensions) {
+    public void started(Collection<MyExtensionInterface> extensions)
+    {
         count += 1000;
     }
 
     @Override
-    public void stopping(Collection<MyExtensionInterface> extensions) {
+    public void stopping(Collection<MyExtensionInterface> extensions)
+    {
         count += 10000;
     }
 
     @Override
-    public void stopped(Collection<MyExtensionInterface> extensions) {
+    public void stopped(Collection<MyExtensionInterface> extensions)
+    {
         count += 100000;
     }
 }

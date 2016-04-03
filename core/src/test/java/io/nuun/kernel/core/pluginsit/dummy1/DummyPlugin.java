@@ -14,9 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Nuun IO Kernel Core.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * 
- */
 package io.nuun.kernel.core.pluginsit.dummy1;
 
 import com.google.common.collect.Lists;
@@ -44,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class DummyPlugin extends AbstractPlugin
 {
-    public  static final String ALIAS_DUMMY_PLUGIN1 = "alias.dummy.plugin1";
+    public static final String ALIAS_DUMMY_PLUGIN1 = "alias.dummy.plugin1";
 
     public static final String NUUN_ROOT_ALIAS = "nuunrootalias";
     public static final String NAME = "dummyPlugin";
@@ -72,7 +69,7 @@ public class DummyPlugin extends AbstractPlugin
     @Override
     public String pluginPackageRoot()
     {
-        return  DummyPlugin.class.getPackage().getName();
+        return DummyPlugin.class.getPackage().getName();
     }
 
     @Override

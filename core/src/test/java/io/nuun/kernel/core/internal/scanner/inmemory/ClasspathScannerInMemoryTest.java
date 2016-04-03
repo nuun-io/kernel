@@ -22,7 +22,6 @@ import io.nuun.kernel.api.inmemory.ClasspathJar;
 import io.nuun.kernel.core.internal.scanner.AbstractClasspathScanner;
 import io.nuun.kernel.core.internal.scanner.ClasspathScannerTestBase;
 import io.nuun.kernel.core.internal.scanner.sample.*;
-import io.nuun.kernel.core.pluginsit.dummy7.Module7;
 
 import static io.nuun.kernel.api.inmemory.ClasspathResource.res;
 

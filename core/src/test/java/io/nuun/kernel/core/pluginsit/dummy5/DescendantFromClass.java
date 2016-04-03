@@ -18,5 +18,5 @@ package io.nuun.kernel.core.pluginsit.dummy5;
 
 public class DescendantFromClass extends ParentClass
 {
-    
+
 }

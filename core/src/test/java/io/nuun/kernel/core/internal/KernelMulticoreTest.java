@@ -31,7 +31,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static io.nuun.kernel.core.NuunCore.createKernel;
 import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
 
 public class KernelMulticoreTest
 {

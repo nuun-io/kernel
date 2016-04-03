@@ -14,9 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Nuun IO Kernel Core.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * 
- */
 package io.nuun.kernel.core.pluginsit.dummy1;
 
 import javax.inject.Inject;
@@ -24,27 +21,25 @@ import javax.inject.Inject;
 
 /**
  * @author Epo Jemba
- *
  */
 @MarkerSample4
 public class Bean6
 {
-    
+
     @Inject
     @MarkerSample3
     private DummyService service;
-    
-    public Bean6( )
+
+    public Bean6()
     {
     }
-    
-    public String sayHi ()
+
+    public String sayHi()
     {
         if (service != null)
         {
             return service.dummy();
-        }
-        else
+        } else
         {
             return "no service";
         }

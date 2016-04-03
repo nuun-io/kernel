@@ -18,7 +18,6 @@ package io.nuun.kernel.core.internal.scanner;
 
 import io.nuun.kernel.api.annotations.KernelModule;
 import io.nuun.kernel.core.internal.scanner.sample.*;
-import io.nuun.kernel.core.pluginsit.dummy7.Module7;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,15 +30,16 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public abstract class ClasspathScannerTestBase
 {
-	protected AbstractClasspathScanner underTest;
-	    
-	@Before
-	public void init() {
-		underTest = createUnderTest();
-	}
-	
-	protected abstract AbstractClasspathScanner createUnderTest ();
-	  
+    protected AbstractClasspathScanner underTest;
+
+    @Before
+    public void init()
+    {
+        underTest = createUnderTest();
+    }
+
+    protected abstract AbstractClasspathScanner createUnderTest();
+
     @Test
     public void classpathscanner_should_retrieve_type_with_annotation()
     {
@@ -49,19 +49,19 @@ public abstract class ClasspathScannerTestBase
         assertThat(scanClasspathForAnnotation).hasSize(2);
         assertThat(scanClasspathForAnnotation).containsOnly(Bean1.class, Bean3.class);
     }
-    
+
     @Test
     public void classpathscanner_should_retrieve_type_with_annotation_name()
     {
         Collection<Class<?>> scanClasspathForAnnotation = underTest.scanTypesAnnotatedBy(".*ScanMarkerSample");
-        
+
         assertThat(scanClasspathForAnnotation).isNotNull();
         assertThat(scanClasspathForAnnotation).hasSize(3);
-        assertThat(scanClasspathForAnnotation).containsOnly(Bean1.class , Bean3.class, Bean6.class);
+        assertThat(scanClasspathForAnnotation).containsOnly(Bean1.class, Bean3.class, Bean6.class);
     }
 
     @Test
-    public void classpathscanner_should_retrieve_properties_tst ()
+    public void classpathscanner_should_retrieve_properties_tst()
     {
         Collection<String> scanClasspathForAnnotation = underTest.scanResources("tst-.*\\.properties");
 
@@ -69,9 +69,9 @@ public abstract class ClasspathScannerTestBase
         assertThat(scanClasspathForAnnotation).hasSize(2);
         assertThat(scanClasspathForAnnotation).containsOnly("META-INF/properties/tst-one.properties", "META-INF/properties/tst-two.properties");
     }
-    
+
     @Test
-    public void classpathscanner_should_retrieve_subtype ()
+    public void classpathscanner_should_retrieve_subtype()
     {
         Collection<Class<?>> scanClasspathSubType = underTest.scanTypesAnnotatedBy(KernelModule.class);
 
@@ -79,10 +79,10 @@ public abstract class ClasspathScannerTestBase
         assertThat(scanClasspathSubType).hasSize(2);
         assertThat(scanClasspathSubType).containsOnly(MyModule1.class, MyModule4.class);
     }
-    
-    
+
+
     @Test
-    public void classpathscanner_should_ignore_Ignore_classtype_based ()
+    public void classpathscanner_should_ignore_Ignore_classtype_based()
     {
         Collection<Class<?>> scanClasspathForAnnotation = underTest.scanTypesAnnotatedBy(ScanMarkerSample2.class);
 
@@ -92,7 +92,7 @@ public abstract class ClasspathScannerTestBase
     }
 
     @Test
-    public void classpathscanner_should_ignore_Ignore_classnamed_based ()
+    public void classpathscanner_should_ignore_Ignore_classnamed_based()
     {
         Collection<Class<?>> scanClasspathForAnnotation = underTest.scanTypesAnnotatedBy(".*MarkerSample2");
 

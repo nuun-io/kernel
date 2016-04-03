@@ -23,5 +23,6 @@ import io.nuun.kernel.api.annotations.Ignore;
  */
 @ToScan
 @Ignore
-public class ClassNotToScan1 {
+public class ClassNotToScan1
+{
 }

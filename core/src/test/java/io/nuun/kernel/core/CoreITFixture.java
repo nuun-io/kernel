@@ -28,148 +28,173 @@ import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 /**
  * @author epo.jemba{@literal @}kametic.com
  */
-public class CoreITFixture extends AbstractFixture<Kernel> {
+public class CoreITFixture extends AbstractFixture<Kernel>
+{
 
-	private Kernel kernel = null;
+    private Kernel kernel = null;
 
-	private String[] kernelParams = new String[0];
-	private Module[] modules = new Module[0];
-	private Plugin[] plugins = new Plugin[0];
+    private String[] kernelParams = new String[0];
+    private Module[] modules = new Module[0];
+    private Plugin[] plugins = new Plugin[0];
     boolean spiActivated = true;
 
-	public CoreITFixture() {
-	}
+    public CoreITFixture()
+    {
+    }
 
-	@Override
-	protected Kernel createUnitUnderTest() {
-        
-		if (kernel == null) {
-			
-			KernelConfiguration configuration = newKernelConfiguration()
-					.params(kernelParams)
-					.withoutSpiPluginsLoader()
-					.plugins(plugins)
-					.plugins(createInternalPluginFromModules());
-			
-	        kernel = createKernel(configuration);
-	        
-	        if(!spiActivated) {
+    @Override
+    protected Kernel createUnitUnderTest()
+    {
+
+        if (kernel == null)
+        {
+
+            KernelConfiguration configuration = newKernelConfiguration()
+                    .params(kernelParams)
+                    .withoutSpiPluginsLoader()
+                    .plugins(plugins)
+                    .plugins(createInternalPluginFromModules());
+
+            kernel = createKernel(configuration);
+
+            if (!spiActivated)
+            {
                 configuration.withoutSpiPluginsLoader();
             }
-			///////////////
-			
-			kernel.init();
-			kernel.start();
-		}
+            ///////////////
 
-		return kernel;
-	}
+            kernel.init();
+            kernel.start();
+        }
 
-	static class InternalModule extends AbstractModule {
-		private Module[] internalModules;
+        return kernel;
+    }
 
-		public InternalModule(Module[] modules) {
-			internalModules = modules;
-		}
+    static class InternalModule extends AbstractModule
+    {
+        private Module[] internalModules;
 
-		@Override
-		protected void configure() {
-			if (internalModules != null) {
-				for (Module m : internalModules) {
-					install(m);
-				}
-			}
-		}
-	}
+        public InternalModule(Module[] modules)
+        {
+            internalModules = modules;
+        }
 
-	public static class InternalPlugin extends AbstractPlugin {
-		private Module module;
+        @Override
+        protected void configure()
+        {
+            if (internalModules != null)
+            {
+                for (Module m : internalModules)
+                {
+                    install(m);
+                }
+            }
+        }
+    }
 
-		public InternalPlugin(Module module) {
-			this.module = module;
-		}
+    public static class InternalPlugin extends AbstractPlugin
+    {
+        private Module module;
 
-		@Override
-		public String name() {
-			return "fixture-internal-plugin";
-		}
+        public InternalPlugin(Module module)
+        {
+            this.module = module;
+        }
 
-		@Override
-		public Object nativeUnitModule() {
-			return module;
-		}
-	}
+        @Override
+        public String name()
+        {
+            return "fixture-internal-plugin";
+        }
 
-	private Plugin[] createInternalPluginFromModules() {
-		Plugin [] plugins = new Plugin[1];
-		
-		if (modules != null && modules.length > 0) {
-			InternalPlugin plugin = new InternalPlugin(new InternalModule(modules));
-			plugins[0] = plugin;
-			
-			return plugins;
-		}
-		
-		return new Plugin[0];
-	}
+        @Override
+        public Object nativeUnitModule()
+        {
+            return module;
+        }
+    }
 
-	@Override
-	protected void after() {
-		kernel.stop();
-		super.after();
-	}
+    private Plugin[] createInternalPluginFromModules()
+    {
+        Plugin[] plugins = new Plugin[1];
 
-	public static Builder createCoreFixture() {
-		return new Builder();
-	}
+        if (modules != null && modules.length > 0)
+        {
+            InternalPlugin plugin = new InternalPlugin(new InternalModule(modules));
+            plugins[0] = plugin;
 
-	public static class Builder {
-		private String[] params = new String[0];
-		private Module[] modules = new Module[0];
-		private Plugin[] plugins = new Plugin[0];
-		boolean spiActivated = true;
+            return plugins;
+        }
 
-		
-		public Builder withoutSpi()
-		{
-		    spiActivated = false;
-		    return this;
-		}
-		
-		public Builder withPlugins(Plugin... plugins)
-		{
-		    this.plugins = plugins;
-		    return this;
-		}
-		
-		public Builder withKernelParameters(String... params) {
-			this.params = params;
-			return this;
-		}
+        return new Plugin[0];
+    }
 
-		public Builder withModule(Module... modules) {
-			this.modules = modules;
-			return this;
-		}
+    @Override
+    protected void after()
+    {
+        kernel.stop();
+        super.after();
+    }
 
-		public CoreITFixture build() {
-			CoreITFixture cf = new CoreITFixture();
-			
-			if (params != null) {
-				cf.kernelParams = params;
-			}
-			
-			if (modules != null) {
-				cf.modules = modules;
-			}
-			
-			if (plugins != null) {
-				cf.plugins = plugins;
-			}
-			
-			cf.spiActivated = spiActivated;
+    public static Builder createCoreFixture()
+    {
+        return new Builder();
+    }
 
-			return cf;
-		}
-	}
+    public static class Builder
+    {
+        private String[] params = new String[0];
+        private Module[] modules = new Module[0];
+        private Plugin[] plugins = new Plugin[0];
+        boolean spiActivated = true;
+
+
+        public Builder withoutSpi()
+        {
+            spiActivated = false;
+            return this;
+        }
+
+        public Builder withPlugins(Plugin... plugins)
+        {
+            this.plugins = plugins;
+            return this;
+        }
+
+        public Builder withKernelParameters(String... params)
+        {
+            this.params = params;
+            return this;
+        }
+
+        public Builder withModule(Module... modules)
+        {
+            this.modules = modules;
+            return this;
+        }
+
+        public CoreITFixture build()
+        {
+            CoreITFixture cf = new CoreITFixture();
+
+            if (params != null)
+            {
+                cf.kernelParams = params;
+            }
+
+            if (modules != null)
+            {
+                cf.modules = modules;
+            }
+
+            if (plugins != null)
+            {
+                cf.plugins = plugins;
+            }
+
+            cf.spiActivated = spiActivated;
+
+            return cf;
+        }
+    }
 }

@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 
 @YMetaMarkerSample
 @Retention(RetentionPolicy.RUNTIME)
-@Target({  ElementType.TYPE})
+@Target({ElementType.TYPE})
 public @interface YMarkerSample6
 {
 

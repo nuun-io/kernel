@@ -14,9 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Nuun IO Kernel Core.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * 
- */
 package io.nuun.kernel.core.pluginsit.dummy1;
 
 import javax.inject.Inject;
@@ -25,15 +22,15 @@ import javax.inject.Named;
 
 /**
  * @author Epo Jemba
- *
  */
 public class BeanWithCustomSuffix
 {
-    @Inject @Named("custom.name")
+    @Inject
+    @Named("custom.name")
     String name;
-    
+
     public String name()
     {
-        return "I am " + name; 
+        return "I am " + name;
     }
 }

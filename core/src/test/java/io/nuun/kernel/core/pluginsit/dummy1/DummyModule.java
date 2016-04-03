@@ -14,9 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Nuun IO Kernel Core.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * 
- */
 package io.nuun.kernel.core.pluginsit.dummy1;
 
 import com.google.inject.AbstractModule;
@@ -47,13 +44,12 @@ public class DummyModule extends AbstractModule
         Provider ofNull = Providers.of(null);
         for (Class<?> klass : classes)
         {
-            if (klass.getAnnotation(Nullable.class)== null )
+            if (klass.getAnnotation(Nullable.class) == null)
             {
                 bind(klass);
-            }
-            else
+            } else
             {
-                bind(klass).toProvider( ofNull);
+                bind(klass).toProvider(ofNull);
             }
         }
     }
