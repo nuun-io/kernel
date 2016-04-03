@@ -25,7 +25,6 @@ import io.nuun.kernel.api.plugin.request.BindingRequest;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.nuun.kernel.api.plugin.request.KernelParamsRequest;
 import io.nuun.kernel.core.AbstractPlugin;
-import io.nuun.kernel.core.internal.KernelCoreIT;
 import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin2;
 
 import java.lang.annotation.Annotation;
@@ -84,10 +83,6 @@ public class DummyPlugin extends AbstractPlugin
         String param = initContext.kernelParam("dummy.plugin1");
         assertThat(param).isNotEmpty();
         assertThat(param).isEqualTo("WAZAAAA");
-
-        String param2 = initContext.kernelParam("nuun.root.package");
-        assertThat(param2).isNotNull();
-        assertThat(param2).isEqualTo("internal," + KernelCoreIT.class.getPackage().getName());
 
         Map<Class<? extends Annotation>, Collection<Class<?>>> scannedClassesByAnnotationClass = initContext.scannedClassesByAnnotationClass();
 
