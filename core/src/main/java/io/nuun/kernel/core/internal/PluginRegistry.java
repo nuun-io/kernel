@@ -23,8 +23,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.nuun.kernel.core.internal.utils.NuunReflectionUtils.instantiateSilently;
-
 /**
  * This registry holds all the plugin contained by the kernel.
  * It validates the added plugins and provides accessor methods.

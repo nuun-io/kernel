@@ -18,6 +18,7 @@ package io.nuun.kernel.core.internal.utils;
 
 
 import com.google.common.collect.Lists;
+import io.nuun.kernel.api.plugin.PluginException;
 import org.reflections.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,15 +34,14 @@ public class NuunReflectionUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(NuunReflectionUtils.class);
 
     @SuppressWarnings("unchecked")
-    public static <T> T instantiateSilently(Class<?> aClass) {
+    public static <T> T instantiateOrFail(Class<?> aClass) {
         try {
             return (T) aClass.newInstance();
         } catch (InstantiationException e) {
-            LOGGER.error("Error when instantiating class " + aClass, e);
+            throw new PluginException(e);
         } catch (IllegalAccessException e) {
-            LOGGER.error("Error when instantiating class " + aClass, e);
+            throw new PluginException(e);
         }
-        return null;
     }
 
     public static Class<?> forNameSilent(String candidate) {
