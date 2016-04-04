@@ -414,4 +414,10 @@ public final class KernelCore implements Kernel
     {
         return this.pluginRegistry.getPluginsByName();
     }
+
+    @Override
+    public Set<URL> scannedURLs()
+    {
+        return requestHandler.getUrls();
+    }
 }

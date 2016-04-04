@@ -20,14 +20,13 @@ import io.nuun.kernel.api.inmemory.Classpath;
 import io.nuun.kernel.api.inmemory.ClasspathAbstractContainer;
 import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.core.internal.scanner.disk.ClasspathScannerDisk;
+import org.reflections.Reflections;
+import org.reflections.util.ConfigurationBuilder;
 
 import java.net.MalformedURLException;
-import java.util.Iterator;
-
-import org.reflections.Reflections;
-import org.reflections.scanners.Scanner;
-import org.reflections.util.ConfigurationBuilder;
-import org.reflections.vfs.Vfs;
+import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author epo.jemba{@literal @}kametic.com
@@ -35,6 +34,7 @@ import org.reflections.vfs.Vfs;
 public class ClasspathScannerInMemory extends ClasspathScannerDisk
 {
     private final Classpath classpath;
+    private final Set<URL> urls = new HashSet<URL>();
 
     public ClasspathScannerInMemory(Classpath classpath, String... packageRoot)
     {
@@ -62,7 +62,14 @@ public class ClasspathScannerInMemory extends ClasspathScannerDisk
                 throw new KernelException("Malformed URL Exception", e);
             }
         }
+        urls.addAll(configurationBuilder.getUrls());
         reflections = new Reflections(configurationBuilder);
+    }
+
+    @Override
+    public Set<URL> getUrls()
+    {
+        return urls;
     }
 
     @Override

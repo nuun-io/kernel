@@ -62,7 +62,9 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
 
     protected void initializeReflections()
     {
-        ConfigurationBuilder configurationBuilder = configurationBuilder().addUrls(findClasspathUrls()).setScanners(getScanners());
+        ConfigurationBuilder configurationBuilder = configurationBuilder()
+                .addUrls(findClasspathUrls()).setScanners(getScanners());
+
         reflections = new Reflections(configurationBuilder);
     }
 
@@ -114,6 +116,11 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
         urls.addAll(ClasspathHelper.forManifest(urls));
 
         return urls;
+    }
+
+    public Set<URL> getUrls()
+    {
+        return Collections.unmodifiableSet(urls);
     }
 
     @Override

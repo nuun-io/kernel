@@ -239,6 +239,7 @@ public class RequestHandler extends ScanResults
         printWarnWhenScanningAllClasspath();
         ClasspathScannerFactory classpathScannerFactory = new ClasspathScannerFactory(options.get(CLASSPATH_SCAN_MODE));
         classpathScanner = classpathScannerFactory.create(classpathStrategy, additionalClasspathScan, packageRoots);
+        addUrls(classpathScanner.getUrls());
     }
 
     private void printWarnWhenScanningAllClasspath()
