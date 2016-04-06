@@ -29,13 +29,15 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author pierre.thirouin@ext.mpsa.com (Pierre Thirouin)
  */
-public class MainInjectorIT {
+public class MainInjectorIT
+{
 
     /**
      * Tests that the interface bound by the two plugins are really bound.
      */
     @Test
-    public void test_main_injector() {
+    public void test_main_injector()
+    {
         Kernel kernel = Fixture.startKernel(Fixture.config()
                 .addPlugin(InjectionPlugin1.class)
                 .addPlugin(InjectionPlugin2.class));

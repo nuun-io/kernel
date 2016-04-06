@@ -16,12 +16,11 @@
  */
 package io.nuun.kernel.core.pluginsit.dummy7;
 
-import io.nuun.kernel.api.annotations.KernelModule;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
+import io.nuun.kernel.api.annotations.KernelModule;
 
-@KernelModule(overriding=true)
+@KernelModule(overriding = true)
 public class Module7 extends AbstractModule
 {
 

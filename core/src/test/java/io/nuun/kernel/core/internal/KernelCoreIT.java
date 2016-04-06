@@ -15,7 +15,20 @@
  * along with Nuun IO Kernel Core.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * 
+ * This file is part of Nuun IO Kernel Core.
+ *
+ * Nuun IO Kernel Core is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Nuun IO Kernel Core is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Nuun IO Kernel Core.  If not, see <http://www.gnu.org/licenses/>.
  */
 package io.nuun.kernel.core.internal;
 
@@ -58,7 +71,7 @@ import static org.junit.Assert.fail;
 public class KernelCoreIT
 {
     private static Logger logger = LoggerFactory.getLogger(KernelCoreIT.class);
-    
+
     private static Kernel underTest;
     private static DummyPlugin4 plugin4;
 
@@ -75,15 +88,14 @@ public class KernelCoreIT
             underTest = createKernelWithPlugins(DummyPlugin.class);
             underTest.init();
             fail("Should Get a KernelException for dependency problem");
-        }
-        catch (KernelException ke)
+        } catch (KernelException ke)
         {
             underTest = createKernelWithPlugins(DummyPlugin.class, DummyPlugin2.class);
-            try {
+            try
+            {
                 underTest.init();
                 fail("Should get a KernelException for dependency problem");
-            }
-            catch (KernelException ke2)
+            } catch (KernelException ke2)
             {
                 underTest = createKernelWithPlugins(DummyPlugin.class, DummyPlugin2.class,
                         DummyPlugin3.class, DummyPlugin4.class, DummyPlugin5.class);
@@ -94,13 +106,15 @@ public class KernelCoreIT
         underTest.start();
     }
 
-    public static Kernel createKernelWithPlugins(Class<?>... plugins) {
+    public static Kernel createKernelWithPlugins(Class<?>... plugins)
+    {
         KernelConfiguration configuration = NuunCore.newKernelConfiguration()
                 .withoutSpiPluginsLoader()
                 .param(DummyPlugin.ALIAS_DUMMY_PLUGIN1, "WAZAAAA")
                 .param(DummyPlugin.NUUN_ROOT_ALIAS, "internal," + KernelCoreIT.class.getPackage().getName());
 
-        for (Class<?> plugin : plugins) {
+        for (Class<?> plugin : plugins)
+        {
             //noinspection unchecked
             configuration.addPlugin((Class<? extends Plugin>) plugin);
         }
@@ -115,7 +129,7 @@ public class KernelCoreIT
             return invocation.proceed();
         }
     }
-    
+
     @Before
     public void before()
     {
@@ -128,7 +142,7 @@ public class KernelCoreIT
                 bind(HolderForContext.class);
                 bind(HolderForPrefixWithName.class);
                 bind(HolderForBeanWithParentType.class);
-                
+
                 bindInterceptor(Matchers.any(), Matchers.annotatedWith(DummyMethod.class), new DummyInterceptor());
             }
         };
@@ -178,75 +192,75 @@ public class KernelCoreIT
     }
 
     @Test
-    public void binding_by_specification_should_work ()
+    public void binding_by_specification_should_work()
     {
-        assertThat( injector.getInstance(Pojo2.class) ).isNotNull();
+        assertThat(injector.getInstance(Pojo2.class)).isNotNull();
         // we check for the scope
         assertThat(injector.getInstance(Pojo2.class)).isEqualTo(injector.getInstance(Pojo2.class));
-        
+
         try
         {
-            assertThat( injector.getInstance(Pojo1.class) ).isNull();
+            assertThat(injector.getInstance(Pojo1.class)).isNull();
             fail("Pojo1 should not be injector");
         } catch (ConfigurationException ce)
         {
             String nl = System.getProperty("line.separator");
-            assertThat(ce.getMessage()).isEqualTo("Guice configuration errors:"+nl
-                    +nl
-                    +"1) Explicit bindings are required and io.nuun.kernel.core.pluginsit.dummy4.Pojo1 is not explicitly bound."+nl
-                    + "  while locating io.nuun.kernel.core.pluginsit.dummy4.Pojo1"+nl
-                    +nl
-                    +"1 error"
-                    );
+            assertThat(ce.getMessage()).isEqualTo("Guice configuration errors:" + nl
+                    + nl
+                    + "1) Explicit bindings are required and io.nuun.kernel.core.pluginsit.dummy4.Pojo1 is not explicitly bound." + nl
+                    + "  while locating io.nuun.kernel.core.pluginsit.dummy4.Pojo1" + nl
+                    + nl
+                    + "1 error"
+            );
         }
     }
 
     @Test
-    public void binding_by_meta_annotation_should_work ()
+    public void binding_by_meta_annotation_should_work()
     {
         ToFind tofind = injector.getInstance(ToFind.class);
-        assertThat( tofind).isNotNull ();
+        assertThat(tofind).isNotNull();
         // singleton
-        assertThat( tofind).isEqualTo(injector.getInstance(ToFind.class));
+        assertThat(tofind).isEqualTo(injector.getInstance(ToFind.class));
     }
 
     @Test
-    public void binding_by_meta_annotation_regex_should_work ()
+    public void binding_by_meta_annotation_regex_should_work()
     {
         ToFind2 toFind = injector.getInstance(ToFind2.class);
-        assertThat(toFind).isNotNull ();
+        assertThat(toFind).isNotNull();
         // singleton
         assertThat(toFind).isEqualTo(injector.getInstance(ToFind2.class));
     }
-    
+
     @Test
-    public void binding_by_ancestor_should_work ()
+    public void binding_by_ancestor_should_work()
     {
         ParentClass instance = injector.getInstance(ParentClass.class);
         DescendantFromClass instance2 = injector.getInstance(DescendantFromClass.class);
-        assertThat( instance).isNotNull ();
-        assertThat( instance2).isNotNull ();
+        assertThat(instance).isNotNull();
+        assertThat(instance2).isNotNull();
         // scope SINGLETON has been registered
-        assertThat( instance).isEqualTo(injector.getInstance(ParentClass.class));
-        assertThat( instance2).isEqualTo(injector.getInstance(DescendantFromClass.class));
+        assertThat(instance).isEqualTo(injector.getInstance(ParentClass.class));
+        assertThat(instance2).isEqualTo(injector.getInstance(DescendantFromClass.class));
 
         try
         {
-            assertThat( injector.getInstance(Pojo1.class) ).isNull();
+            assertThat(injector.getInstance(Pojo1.class)).isNull();
             fail("Pojo1 should not be injector");
         } catch (ConfigurationException ce)
         {
-        	String nl = System.getProperty("line.separator");
-        	assertThat(ce.getMessage()).isEqualTo("Guice configuration errors:"+nl
-                +nl
-                +"1) Explicit bindings are required and io.nuun.kernel.core.pluginsit.dummy4.Pojo1 is not explicitly bound."+nl
-                + "  while locating io.nuun.kernel.core.pluginsit.dummy4.Pojo1"+nl
-                +nl
-                +"1 error"
-             );
+            String nl = System.getProperty("line.separator");
+            assertThat(ce.getMessage()).isEqualTo("Guice configuration errors:" + nl
+                    + nl
+                    + "1) Explicit bindings are required and io.nuun.kernel.core.pluginsit.dummy4.Pojo1 is not explicitly bound." + nl
+                    + "  while locating io.nuun.kernel.core.pluginsit.dummy4.Pojo1" + nl
+                    + nl
+                    + "1 error"
+            );
         }
     }
-    
+
     @Test
     public void bean_should_be_bind_by_name()
     {
@@ -279,141 +293,209 @@ public class KernelCoreIT
     @Test
     public void plugin_sort_algorithm() throws Exception
     {
-    	ArrayList<Plugin> plugins = new ArrayList<Plugin>() , plugins2;
+        ArrayList<Plugin> plugins = new ArrayList<Plugin>(), plugins2;
 
-    	p1 e1 = new p1();
-		plugins.add(e1);
-    	p2 e2 = new p2();
-		plugins.add(e2); // -> 13
-    	p3 e3 = new p3();
-		plugins.add(e3);
-    	p4 e4 = new p4();
-		plugins.add(e4);
-    	p5 e5 = new p5();
-		plugins.add(e5);
-    	p6 e6 = new p6();
-		plugins.add(e6);
-    	p7 e7 = new p7();
-		plugins.add(e7); // -> 11
-    	p8 e8 = new p8();
-		plugins.add(e8);
-    	p9 e9 = new p9();
-		plugins.add(e9);
-    	p10 e10 = new p10();
-		plugins.add(e10);
-    	p11 e11 = new p11();
-		plugins.add(e11);
-    	p12 e12 = new p12();
-		plugins.add(e12); // -> 6
-    	p13 e13 = new p13();
-		plugins.add(e13); // -> 11
-    	
-    	plugins2 = Whitebox.invokeMethod(underTest, "sortPlugins", plugins);
+        p1 e1 = new p1();
+        plugins.add(e1);
+        p2 e2 = new p2();
+        plugins.add(e2); // -> 13
+        p3 e3 = new p3();
+        plugins.add(e3);
+        p4 e4 = new p4();
+        plugins.add(e4);
+        p5 e5 = new p5();
+        plugins.add(e5);
+        p6 e6 = new p6();
+        plugins.add(e6);
+        p7 e7 = new p7();
+        plugins.add(e7); // -> 11
+        p8 e8 = new p8();
+        plugins.add(e8);
+        p9 e9 = new p9();
+        plugins.add(e9);
+        p10 e10 = new p10();
+        plugins.add(e10);
+        p11 e11 = new p11();
+        plugins.add(e11);
+        p12 e12 = new p12();
+        plugins.add(e12); // -> 6
+        p13 e13 = new p13();
+        plugins.add(e13); // -> 11
 
-    	assertThat(plugins2).isNotNull();
-    	assertThat(plugins2).containsOnly ( e1 , e2 , e3 , e4, e5, e6, e7, e8, e9, e10, e11, e12, e13 );
-    	assertThat(plugins2).containsSequence ( e11 , e13 , e6 , e12  , e10  );
+        plugins2 = Whitebox.invokeMethod(underTest, "sortPlugins", plugins);
+
+        assertThat(plugins2).isNotNull();
+        assertThat(plugins2).containsOnly(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13);
+        assertThat(plugins2).containsSequence(e11, e13, e6, e12, e10);
 
     }
 
-    
-    static abstract class AbstractTestPlugin extends AbstractPlugin{
-    	public Collection<Class<?>> dep(Class<?> klazz)
-    	{
+
+    static abstract class AbstractTestPlugin extends AbstractPlugin
+    {
+        public Collection<Class<?>> dep(Class<?> klazz)
+        {
             return Lists.<Class<?>>newArrayList(klazz);
-    	}
+        }
     }
-    
+
     static class p1 extends AbstractTestPlugin
     {
-    	@Override
-		public String name() {return this.getClass().getName(); }
+        @Override
+        public String name()
+        {
+            return this.getClass().getName();
+        }
     }
+
     static class p2 extends AbstractTestPlugin
     {
-    	@Override
-		public String name() {return this.getClass().getName(); }
-    	@Override
-		public Collection<Class<?>> requiredPlugins() {return dep(p13.class); }
+        @Override
+        public String name()
+        {
+            return this.getClass().getName();
+        }
+
+        @Override
+        public Collection<Class<?>> requiredPlugins()
+        {
+            return dep(p13.class);
+        }
     }
+
     static class p3 extends AbstractTestPlugin
     {
-    	@Override
-		public String name() {return this.getClass().getName(); }
+        @Override
+        public String name()
+        {
+            return this.getClass().getName();
+        }
     }
+
     static class p4 extends AbstractTestPlugin
     {
-    	@Override
-		public String name() {return this.getClass().getName(); }
+        @Override
+        public String name()
+        {
+            return this.getClass().getName();
+        }
     }
+
     static class p5 extends AbstractTestPlugin
     {
-    	@Override
-		public String name() {return this.getClass().getName(); }
+        @Override
+        public String name()
+        {
+            return this.getClass().getName();
+        }
     }
+
     static class p6 extends AbstractTestPlugin
     {
-    	@Override
-		public String name() {return this.getClass().getName(); }
+        @Override
+        public String name()
+        {
+            return this.getClass().getName();
+        }
     }
+
     static class p7 extends AbstractTestPlugin
     {
-    	@Override
-		public String name() {return this.getClass().getName(); }
-    	@Override
-		public Collection<Class<?>> requiredPlugins() {return dep(p11.class); }
+        @Override
+        public String name()
+        {
+            return this.getClass().getName();
+        }
+
+        @Override
+        public Collection<Class<?>> requiredPlugins()
+        {
+            return dep(p11.class);
+        }
     }
+
     static class p8 extends AbstractTestPlugin
     {
-    	@Override
-		public String name() {return this.getClass().getName(); }
+        @Override
+        public String name()
+        {
+            return this.getClass().getName();
+        }
     }
+
     static class p9 extends AbstractTestPlugin
     {
-    	@Override
-		public String name() {return this.getClass().getName(); }
+        @Override
+        public String name()
+        {
+            return this.getClass().getName();
+        }
     }
+
     static class p10 extends AbstractTestPlugin
     {
-    	@Override
-		public String name() {return this.getClass().getName(); }
+        @Override
+        public String name()
+        {
+            return this.getClass().getName();
+        }
     }
+
     static class p11 extends AbstractTestPlugin
     {
-    	@Override
-		public String name() {return this.getClass().getName(); }
+        @Override
+        public String name()
+        {
+            return this.getClass().getName();
+        }
     }
+
     static class p12 extends AbstractTestPlugin
     {
-    	@Override
-		public String name() {return this.getClass().getName(); }
-    	@Override
-		public Collection<Class<?>> requiredPlugins() {return dep(p6.class); }
+        @Override
+        public String name()
+        {
+            return this.getClass().getName();
+        }
+
+        @Override
+        public Collection<Class<?>> requiredPlugins()
+        {
+            return dep(p6.class);
+        }
     }
+
     static class p13 extends AbstractTestPlugin
     {
-    	@Override
-		public String name() {return this.getClass().getName(); }
-    	@Override
-		public Collection<Class<?>> requiredPlugins() {return dep(p11.class); }
+        @Override
+        public String name()
+        {
+            return this.getClass().getName();
+        }
+
+        @Override
+        public Collection<Class<?>> requiredPlugins()
+        {
+            return dep(p11.class);
+        }
     }
-    
+
     @Test
     public void AliasMap_should_work()
     {
         AliasMap map = new AliasMap();
         map.putAlias("realkey1", "alias1");
         map.putAlias("realkey2", "alias2");
-        
+
         Object object1 = new Object();
         Object object2 = new Object();
-        
+
         map.put("realkey1", object1.toString());
         map.put("realkey2", object2.toString());
-        
+
         assertThat(map.get("alias1")).isEqualTo(object1.toString());
         assertThat(map.get("alias2")).isEqualTo(object2.toString());
-        
+
         assertThat(map.containsKey("alias1")).isTrue();
         assertThat(map.containsKey("alias2")).isTrue();
     }

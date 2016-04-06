@@ -17,7 +17,6 @@
 package io.nuun.kernel.core.pluginsit.dummy4;
 
 
-
 public interface Interface1
 {
 

@@ -14,26 +14,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Nuun IO Kernel Core.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * 
- */
 package io.nuun.kernel.core.pluginsit.dummy1;
 
 
 /**
  * @author Epo Jemba
- *
  */
 public class DummyServiceInternal implements DummyService
 {
-   
+
     /**
-     * 
+     *
      */
     public DummyServiceInternal()
     {
     }
-    
+
     /* (non-Javadoc)
      * @see org.nuunframework.kernel.plugin.DummyService#dummy()
      */

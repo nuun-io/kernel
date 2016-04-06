@@ -22,10 +22,12 @@ import io.nuun.kernel.core.AbstractPlugin;
  * @author Pierre Thirouin <pierre.thirouin@ext.mpsa.com>
  *         05/01/2015
  */
-public class DummyExtensionPlugin extends AbstractPlugin implements MyExtensionInterface {
+public class DummyExtensionPlugin extends AbstractPlugin implements MyExtensionInterface
+{
 
     @Override
-    public String name() {
+    public String name()
+    {
         return "dummy-extension-plugin";
     }
 }

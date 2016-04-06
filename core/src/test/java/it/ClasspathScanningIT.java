@@ -33,14 +33,16 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author pierre.thirouin@ext.mpsa.com (Pierre Thirouin)
  */
-public class ClasspathScanningIT {
+public class ClasspathScanningIT
+{
 
     /**
      * Tests if the plugin ScanningPlugin is able to scan classes using specification.
      * All the classes annotated or meta annotation with {@code Ignore} should be ignored.
      */
     @Test
-    public void test_class_scan_and_ignored_policy() {
+    public void test_class_scan_and_ignored_policy()
+    {
         KernelConfiguration kernelConfig = NuunCore.newKernelConfiguration()
                 .option(KernelOptions.SCAN_PLUGIN, false)
                 .option(KernelOptions.ROOT_PACKAGES, Lists.newArrayList("it.fixture.scan"))

@@ -26,26 +26,32 @@ import java.util.Collection;
 /**
  * @author pierre.thirouin@ext.mpsa.com (Pierre Thirouin)
  */
-public class WithDependentDepsPlugin extends AbstractPlugin {
+public class WithDependentDepsPlugin extends AbstractPlugin
+{
 
     public static final String NAME = "with-dependent-deps";
 
     @Override
-    public String name() {
+    public String name()
+    {
         return NAME;
     }
 
     @Override
-    public InitState init(InitContext initContext) {
+    public InitState init(InitContext initContext)
+    {
         boolean isInitialized = false;
 
-        for (Object plugin : initContext.pluginsRequired()) {
-            if (plugin instanceof DependentPlugin1){
+        for (Object plugin : initContext.pluginsRequired())
+        {
+            if (plugin instanceof DependentPlugin1)
+            {
                 isInitialized = ((DependentPlugin1) plugin).isInitialized();
             }
         }
 
-        if (isInitialized) {
+        if (isInitialized)
+        {
             throw new IllegalStateException("DependentPlugin1 should not be initialized before WithDependentDepsPlugin");
         }
 
@@ -53,7 +59,8 @@ public class WithDependentDepsPlugin extends AbstractPlugin {
     }
 
     @Override
-    public Collection<Class<?>> dependentPlugins() {
+    public Collection<Class<?>> dependentPlugins()
+    {
         return Lists.<Class<?>>newArrayList(DependentPlugin1.class);
     }
 }

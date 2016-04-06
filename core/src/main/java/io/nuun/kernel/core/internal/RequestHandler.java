@@ -31,7 +31,6 @@ import io.nuun.kernel.core.internal.injection.ModuleEmbedded;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner;
 import io.nuun.kernel.core.internal.scanner.ClasspathScannerFactory;
 import io.nuun.kernel.core.internal.scanner.disk.ClasspathStrategy;
-import io.nuun.kernel.core.internal.utils.NuunReflectionUtils;
 import org.kametic.specifications.Specification;
 import org.kametic.specifications.reflect.DescendantOfSpecification;
 import org.slf4j.Logger;
@@ -44,6 +43,7 @@ import java.util.*;
 
 import static io.nuun.kernel.api.config.KernelOptions.CLASSPATH_SCAN_MODE;
 import static io.nuun.kernel.api.config.KernelOptions.PRINT_SCAN_WARN;
+import static io.nuun.kernel.core.internal.utils.NuunReflectionUtils.instantiateOrFail;
 import static java.util.Collections.unmodifiableMap;
 
 /**
@@ -255,33 +255,32 @@ public class RequestHandler extends ScanResults
     {
         Collection<Class<? extends Module>> scanResult = (Collection) classpathScanner.scanTypesAnnotatedBy(KernelModule.class);
 
-        for (Class<? extends Module> aClass : scanResult)
+        for (Class<? extends Module> moduleClass : scanResult)
         {
-            if (isNotAbstract(aClass))
+            if (isNotAbstract(moduleClass))
             {
-                final Object module = NuunReflectionUtils.instantiateSilently(aClass);
-                ModuleEmbedded moduleEmbedded = module != null ? new ModuleEmbedded(module) : null;
+                ModuleEmbedded module = new ModuleEmbedded(instantiateOrFail(moduleClass));
 
-                if (isOverridingModule(aClass))
+                if (isOverridingModule(moduleClass))
                 {
-                    addChildOverridingModule(moduleEmbedded);
+                    addChildOverridingModule(module);
                 } else
                 {
-                    addChildModule(moduleEmbedded);
+                    addChildModule(module);
                 }
             }
         }
+    }
+
+    private boolean isNotAbstract(Class<?> aClass)
+    {
+        return !Modifier.isAbstract(aClass.getModifiers());
     }
 
     private boolean isOverridingModule(Class<? extends Module> aClass)
     {
         KernelModule annotation = aClass.getAnnotation(KernelModule.class);
         return annotation != null && annotation.overriding();
-    }
-
-    private boolean isNotAbstract(Class<?> aClass)
-    {
-        return !Modifier.isAbstract(aClass.getModifiers());
     }
 
     private void scanClasses()

@@ -33,53 +33,72 @@ import java.util.List;
 /**
  * @author pierre.thirouin@ext.mpsa.com (Pierre Thirouin)
  */
-public class DependencyProviderTest {
+public class DependencyProviderTest
+{
 
     @Facet
-    private static interface Facet1 {}
+    private static interface Facet1
+    {
+    }
 
     @Facet
-    private static interface Facet2 {}
+    private static interface Facet2
+    {
+    }
 
-    private static class RequiredPlugin1 extends AbstractPlugin implements Facet1 {
+    private static class RequiredPlugin1 extends AbstractPlugin implements Facet1
+    {
         @Override
-        public String name() {
+        public String name()
+        {
             return "required-plugin1";
         }
     }
-    private static class RequiredPlugin2 extends AbstractPlugin implements Facet1 {
+
+    private static class RequiredPlugin2 extends AbstractPlugin implements Facet1
+    {
         @Override
-        public String name() {
+        public String name()
+        {
             return "required-plugin2";
         }
     }
 
-    private static class DependentPlugin extends AbstractPlugin {
+    private static class DependentPlugin extends AbstractPlugin
+    {
         @Override
-        public String name() {
+        public String name()
+        {
             return "dependent-plugin";
         }
     }
 
-    private static class WithDepsPlugin extends AbstractPlugin {
+    private static class WithDepsPlugin extends AbstractPlugin
+    {
         @Override
-        public String name() {
+        public String name()
+        {
             return "with-deps-plugin";
         }
 
         @Override
-        public Collection<Class<?>> requiredPlugins() {
+        public Collection<Class<?>> requiredPlugins()
+        {
             return Lists.<Class<?>>newArrayList(Facet1.class, Facet2.class);
         }
+
         @Override
-        public Collection<Class<?>> dependentPlugins() {
+        public Collection<Class<?>> dependentPlugins()
+        {
             return Lists.<Class<?>>newArrayList(DependentPlugin.class);
         }
     }
 
-    private static class NoDepsPlugin extends AbstractPlugin {
+    private static class NoDepsPlugin extends AbstractPlugin
+    {
         @Override
-        public String name() {
+        public String name()
+        {
             return "no-deps-plugin";
         }
     }
@@ -91,7 +110,8 @@ public class DependencyProviderTest {
     private DependentPlugin dependentPlugin;
 
     @Before
-    public void setup() {
+    public void setup()
+    {
         FacetRegistry facetRegistry = Mockito.mock(FacetRegistry.class);
 
         List<Facet1> requiredPlugins = new ArrayList<Facet1>();
@@ -117,13 +137,15 @@ public class DependencyProviderTest {
     }
 
     @Test
-    public void test_provide_dependencies_never_null() {
+    public void test_provide_dependencies_never_null()
+    {
         List<Plugin> dependencies = underTest.getRequiredPluginsOf(NoDepsPlugin.class);
         Assertions.assertThat(dependencies).isNotNull();
     }
 
     @Test
-    public void test_provide_required_dependencies() {
+    public void test_provide_required_dependencies()
+    {
         List<Plugin> dependencies = underTest.getRequiredPluginsOf(WithDepsPlugin.class);
 
         Assertions.assertThat(dependencies).hasSize(2);
@@ -131,13 +153,15 @@ public class DependencyProviderTest {
     }
 
     @Test
-    public void test_provide_missing_dependent_dependencies() {
+    public void test_provide_missing_dependent_dependencies()
+    {
         List<Plugin> dependencies = underTest.getDependentPluginsOf(NoDepsPlugin.class);
         Assertions.assertThat(dependencies).isNotNull();
     }
 
     @Test
-    public void test_provide_dependent_dependencies() {
+    public void test_provide_dependent_dependencies()
+    {
         List<Plugin> dependencies = underTest.getDependentPluginsOf(WithDepsPlugin.class);
 
         Assertions.assertThat(dependencies).hasSize(1);
@@ -145,7 +169,8 @@ public class DependencyProviderTest {
     }
 
     @Test
-    public void test_provide_all_dependencies() {
+    public void test_provide_all_dependencies()
+    {
         List<Plugin> dependencies = underTest.getDependenciesOf(WithDepsPlugin.class);
 
         Assertions.assertThat(dependencies).hasSize(3);
@@ -153,18 +178,21 @@ public class DependencyProviderTest {
     }
 
     @Test
-    public void test_provide_facet_dependencies_never_return_null() {
+    public void test_provide_facet_dependencies_never_return_null()
+    {
         List<Facet2> dependencies = underTest.getFacets(WithDepsPlugin.class, Facet2.class);
         Assertions.assertThat(dependencies).isNotNull();
     }
 
     @Test(expected = KernelException.class)
-    public void test_provide_facet_not_required_dependency() {
+    public void test_provide_facet_not_required_dependency()
+    {
         underTest.getFacets(NoDepsPlugin.class, Facet1.class);
     }
 
     @Test
-    public void test_provide_facet_dependencies() {
+    public void test_provide_facet_dependencies()
+    {
         List<Facet1> dependencies = underTest.getFacets(WithDepsPlugin.class, Facet1.class);
 
         Assertions.assertThat(dependencies).hasSize(2);

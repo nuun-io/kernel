@@ -17,7 +17,7 @@
 package io.nuun.kernel.core.internal.scanner.sample;
 
 
-public class HolderChild 
+public class HolderChild
 {
 
 }

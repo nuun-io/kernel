@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 
 @io.nuun.kernel.api.annotations.Ignore
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE})
+@Target({ElementType.TYPE})
 public @interface Ignore
 {
 

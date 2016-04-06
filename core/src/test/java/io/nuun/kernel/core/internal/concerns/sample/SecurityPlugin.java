@@ -16,54 +16,54 @@
  */
 package io.nuun.kernel.core.internal.concerns.sample;
 
-import io.nuun.kernel.core.AbstractPlugin;
-
-import java.util.List;
-
-import org.aopalliance.intercept.MethodInterceptor;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.matcher.Matchers;
+import io.nuun.kernel.core.AbstractPlugin;
+import org.aopalliance.intercept.MethodInterceptor;
+
+import java.util.List;
 
 public class SecurityPlugin extends AbstractPlugin
 {
 
-    
+
     private List<String> list;
 
     public SecurityPlugin(List<String> list)
     {
         this.list = list;
     }
-    
+
     @Override
     public String name()
     {
         return "security";
     }
-    
+
     @SecurityConcern
     public static class Module extends AbstractModule
     {
-    	private List<String> list;
-		private String name;
-    	
-		public Module(String name , List<String> list) {
-			this.name = name;
-			this.list = list;
-		}
+        private List<String> list;
+        private String name;
+
+        public Module(String name, List<String> list)
+        {
+            this.name = name;
+            this.list = list;
+        }
+
         @Override
         protected void configure()
         {
-            MethodInterceptor interceptor = new ConcernInterceptor( list , name);
-            bindInterceptor(Matchers.any(), Matchers.any(), interceptor );
+            MethodInterceptor interceptor = new ConcernInterceptor(list, name);
+            bindInterceptor(Matchers.any(), Matchers.any(), interceptor);
         }
     }
-    
+
     @Override
     public Object nativeUnitModule()
     {
-        return new Module(name() , list);
+        return new Module(name(), list);
     }
 
 }

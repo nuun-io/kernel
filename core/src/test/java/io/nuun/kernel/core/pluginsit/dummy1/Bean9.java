@@ -14,9 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Nuun IO Kernel Core.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * 
- */
 package io.nuun.kernel.core.pluginsit.dummy1;
 
 import javax.inject.Inject;
@@ -25,11 +22,11 @@ import javax.inject.Named;
 
 /**
  * @author Epo Jemba
- *
  */
 @MarkerSample3
 public class Bean9
 {
-    @Inject @Named("value1") 
+    @Inject
+    @Named("value1")
     public String value;
 }

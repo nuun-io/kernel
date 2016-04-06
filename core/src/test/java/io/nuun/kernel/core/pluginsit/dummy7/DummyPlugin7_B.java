@@ -16,16 +16,14 @@
  */
 package io.nuun.kernel.core.pluginsit.dummy7;
 
-import io.nuun.kernel.core.AbstractPlugin;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
+import io.nuun.kernel.core.AbstractPlugin;
+
 /**
- * 
  * A 2 rounds plugin
- * 
- * @author ejemba
  *
+ * @author ejemba
  */
 public class DummyPlugin7_B extends AbstractPlugin
 {
@@ -33,27 +31,27 @@ public class DummyPlugin7_B extends AbstractPlugin
     public DummyPlugin7_B()
     {
     }
-    
+
     @Override
     public String name()
     {
         return "dummy-plugin-7-B";
     }
 
-    
+
     @Override
     public String pluginPackageRoot()
     {
         return DummyPlugin7_B.class.getPackage().getName();
     }
-    
-    
+
+
     @Override
     public Object nativeOverridingUnitModule()
     {
         return new AbstractModule()
         {
-            
+
             @Override
             protected void configure()
             {
@@ -61,5 +59,5 @@ public class DummyPlugin7_B extends AbstractPlugin
             }
         };
     }
-    
+
 }

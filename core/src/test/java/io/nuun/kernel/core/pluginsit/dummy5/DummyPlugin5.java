@@ -43,11 +43,11 @@ public class DummyPlugin5 extends AbstractPlugin
     {
         return "dummuyPlugin5";
     }
-    
+
     @Override
     public Collection<BindingRequest> bindingRequests()
     {
-        
+
         return bindingRequestsBuilder() //
                 .descendentTypeOf(GrandParentClass.class).withScope(Scopes.SINGLETON) //
                 .metaAnnotationType(MetaMarkerSample.class).withScope(Scopes.SINGLETON) //
@@ -55,32 +55,32 @@ public class DummyPlugin5 extends AbstractPlugin
 //                .descendentTypeOf(GrandParentInterface.class) //
                 .build();
     }
-    
+
     @Override
     public Collection<ClasspathScanRequest> classpathScanRequests()
     {
-        
+
         return classpathScanRequestBuilder()
                 .descendentTypeOf(GrandParentClass.class) //
                 .descendentTypeOf(GrandParentInterface.class) //
                 .build();
     }
-    
-    
+
+
     @Override
     public InitState init(InitContext initContext)
     {
         Map<Class<?>, Collection<Class<?>>> scannedSubTypesByAncestorClass = initContext.scannedSubTypesByAncestorClass();
-        
+
         collection = scannedSubTypesByAncestorClass.get(GrandParentClass.class);
-        
+
         assertThat(collection).isNotEmpty();
         assertThat(collection).hasSize(2);
-        assertThat(collection).containsOnly(DescendantFromClass.class , ParentClass.class);
+        assertThat(collection).containsOnly(DescendantFromClass.class, ParentClass.class);
         return InitState.INITIALIZED;
     }
-    
-    
+
+
     @Override
     public String pluginPackageRoot()
     {

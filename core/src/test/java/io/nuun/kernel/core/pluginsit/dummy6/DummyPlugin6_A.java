@@ -26,7 +26,7 @@ public class DummyPlugin6_A extends AbstractPlugin
     {
         return "dummy-6-A";
     }
-    
+
     @Override
     public String toString()
     {

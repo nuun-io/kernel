@@ -26,24 +26,24 @@ import java.util.List;
 public class LogPlugin extends AbstractPlugin
 {
 
-    
+
     private List<String> list;
 
     public LogPlugin(List<String> list)
     {
         this.list = list;
     }
-    
+
     @Override
     public String name()
     {
         return "log";
     }
-    
+
     @Override
     public Object nativeUnitModule()
     {
-        return new Module(name() , list);
+        return new Module(name(), list);
     }
 
     @LogConcern
@@ -52,7 +52,8 @@ public class LogPlugin extends AbstractPlugin
         private String name;
         private List<String> list2;
 
-        public Module(String name , List<String> list) {
+        public Module(String name, List<String> list)
+        {
             this.name = name;
             list2 = list;
         }
@@ -60,8 +61,8 @@ public class LogPlugin extends AbstractPlugin
         @Override
         protected void configure()
         {
-            MethodInterceptor interceptor = new ConcernInterceptor( list2, name);
-            bindInterceptor(Matchers.any(), Matchers.any(), interceptor );
+            MethodInterceptor interceptor = new ConcernInterceptor(list2, name);
+            bindInterceptor(Matchers.any(), Matchers.any(), interceptor);
         }
     }
 

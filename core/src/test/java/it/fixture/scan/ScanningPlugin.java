@@ -27,7 +27,8 @@ import java.util.Collection;
 /**
  * @author pierre.thirouin@ext.mpsa.com (Pierre Thirouin)
  */
-public class ScanningPlugin extends AbstractPlugin {
+public class ScanningPlugin extends AbstractPlugin
+{
 
     public static final String NAME = "scanning";
 
@@ -36,22 +37,26 @@ public class ScanningPlugin extends AbstractPlugin {
     private Collection<Class<?>> scannedClasses;
 
     @Override
-    public String name() {
+    public String name()
+    {
         return NAME;
     }
 
     @Override
-    public Collection<ClasspathScanRequest> classpathScanRequests() {
+    public Collection<ClasspathScanRequest> classpathScanRequests()
+    {
         return classpathScanRequestBuilder().specification(TO_SCAN_SPEC).build();
     }
 
     @Override
-    public InitState init(InitContext initContext) {
+    public InitState init(InitContext initContext)
+    {
         scannedClasses = initContext.scannedTypesBySpecification().get(TO_SCAN_SPEC);
         return InitState.INITIALIZED;
     }
 
-    public Collection<Class<?>> getScannedClasses() {
+    public Collection<Class<?>> getScannedClasses()
+    {
         return scannedClasses;
     }
 }

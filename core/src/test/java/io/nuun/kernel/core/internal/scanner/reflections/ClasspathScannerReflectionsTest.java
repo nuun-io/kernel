@@ -25,10 +25,11 @@ import io.nuun.kernel.core.internal.scanner.sample.MyModule2;
 
 public class ClasspathScannerReflectionsTest extends ClasspathScannerTestBase
 {
-    
+
     @Override
-    protected AbstractClasspathScanner createUnderTest() {
-    	return new ClasspathScannerDisk(new ClasspathStrategy(), true, "META-INF.properties", MyModule2.class.getPackage().getName());
+    protected AbstractClasspathScanner createUnderTest()
+    {
+        return new ClasspathScannerDisk(new ClasspathStrategy(), true, "META-INF.properties", MyModule2.class.getPackage().getName());
     }
- 
+
 }

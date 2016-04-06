@@ -45,13 +45,15 @@ public class ModuleInstallerTest
     }
 
     @Test
-    public void testInstallerOrder() {
+    public void testInstallerOrder()
+    {
         assertThat(greaterInstaller.order()).isEqualTo(HIGH.value() + 20);
         assertThat(lowerInstaller.order()).isEqualTo(0);
     }
 
     @Test
-    public void testComparison() {
+    public void testComparison()
+    {
         assertThat(greaterInstaller).isGreaterThan(lowerInstaller);
     }
 
@@ -65,9 +67,9 @@ public class ModuleInstallerTest
         }
     }
 
-    @Concern(name="high" , priority= HIGH, order = 20)
+    @Concern(name = "high", priority = HIGH, order = 20)
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ ElementType.TYPE})
+    @Target({ElementType.TYPE})
     public @interface HighConcern
     {
     }
