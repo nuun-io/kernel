@@ -21,6 +21,7 @@ import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.config.KernelConfiguration;
 import io.nuun.kernel.api.config.KernelOptions;
 import io.nuun.kernel.core.NuunCore;
+import it.fixture.scan.AdditionalClasspathPlugin;
 import it.fixture.scan.ClassToScan1;
 import it.fixture.scan.ClassToScan2;
 import it.fixture.scan.ScanningPlugin;
@@ -48,7 +49,7 @@ public class ClasspathScanningIT
                 .option(KernelOptions.ROOT_PACKAGES, Lists.newArrayList("it.fixture.scan"))
                 .addPlugin(ScanningPlugin.class);
 
-        Kernel kernel =  NuunCore.createKernel(kernelConfig);
+        Kernel kernel = NuunCore.createKernel(kernelConfig);
         assertThat(kernel.scannedURLs()).isNotNull();
         assertThat(kernel.scannedURLs()).isEmpty();
         kernel.init();
@@ -60,5 +61,25 @@ public class ClasspathScanningIT
         assertThat(scanningPlugin.getScannedClasses()).containsOnly(ClassToScan1.class, ClassToScan2.class);
 
         assertThat(kernel.scannedURLs()).isNotEmpty();
+    }
+
+    /**
+     * Tests if the plugin AdditionalClasspathPlugin is able to provide additional URLs to be scanned.
+     */
+    @Test
+    public void test_additional_classpath() {
+        KernelConfiguration kernelConfig = NuunCore.newKernelConfiguration()
+                .option(KernelOptions.SCAN_PLUGIN, false)
+                .option(KernelOptions.ROOT_PACKAGES, Lists.newArrayList("it.fixture.scan"))
+                .addPlugin(AdditionalClasspathPlugin.class);
+
+        Kernel kernel = NuunCore.createKernel(kernelConfig);
+        assertThat(kernel.scannedURLs()).isNotNull();
+        assertThat(kernel.scannedURLs()).isEmpty();
+        kernel.init();
+
+        assertThat(kernel.plugins()).hasSize(1);
+        assertThat(kernel.plugins().get(AdditionalClasspathPlugin.NAME)).isInstanceOf(AdditionalClasspathPlugin.class);
+        assertThat(kernel.scannedURLs()).contains(AdditionalClasspathPlugin.URL);
     }
 }

@@ -54,9 +54,7 @@ public class ClasspathScannerFactory
 
     private ClasspathScanner createNominal(ClasspathStrategy classpathStrategy, Set<URL> additionalClasspath, String... packageRoot)
     {
-        ClasspathScannerDisk classpathScannerDisk = new ClasspathScannerDisk(classpathStrategy, packageRoot);
-        classpathScannerDisk.setAdditionalClasspath(additionalClasspath);
-        return classpathScannerDisk;
+        return new ClasspathScannerDisk(classpathStrategy, additionalClasspath, packageRoot);
     }
 
     private ClasspathScanner createInMemory(String... packageRoot)

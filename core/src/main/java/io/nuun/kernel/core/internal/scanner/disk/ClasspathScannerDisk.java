@@ -23,15 +23,24 @@ import io.nuun.kernel.core.internal.utils.AssertUtils;
 import org.kametic.specifications.Specification;
 import org.reflections.Reflections;
 import org.reflections.Store;
-import org.reflections.scanners.*;
+import org.reflections.scanners.ResourcesScanner;
 import org.reflections.scanners.Scanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
+import org.reflections.scanners.TypeElementsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
 import java.lang.annotation.Annotation;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static io.nuun.kernel.core.internal.utils.NuunReflectionUtils.forNameSilent;
@@ -42,21 +51,22 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
 {
     private final List<String> packageRoots;
     private final ClasspathStrategy classpathStrategy;
-    private Set<URL> additionalClasspath;
+    private final Set<URL> additionalClasspath;
     private Set<URL> urls;
     protected Reflections reflections;
 
-    public ClasspathScannerDisk(ClasspathStrategy classpathStrategy, String... packageRoots)
+    public ClasspathScannerDisk(ClasspathStrategy classpathStrategy, Set<URL> additionalClasspath, String... packageRoots)
     {
-        this(classpathStrategy, true, packageRoots);
+        this(classpathStrategy, true, additionalClasspath, packageRoots);
     }
 
-    public ClasspathScannerDisk(ClasspathStrategy classpathStrategy, boolean reachAbstractClass, String... packageRoots)
+    public ClasspathScannerDisk(ClasspathStrategy classpathStrategy, boolean reachAbstractClass, Set<URL> additionalClasspath, String... packageRoots)
     {
         super(reachAbstractClass);
         this.packageRoots = new LinkedList<String>();
         Collections.addAll(this.packageRoots, packageRoots);
         this.classpathStrategy = classpathStrategy;
+        this.additionalClasspath = additionalClasspath;
         initializeReflections();
     }
 
@@ -272,12 +282,6 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
                 new TypeAnnotationsScanner(),
                 new ResourcesScanner()
         };
-    }
-
-    public void setAdditionalClasspath(Set<URL> additionalClasspath)
-    {
-        // FIXME don't work anymore too late
-        this.additionalClasspath = additionalClasspath;
     }
 
     private TypeElementsScanner buildTypeElementsScanner()

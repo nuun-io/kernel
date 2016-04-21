@@ -38,7 +38,7 @@ public class ClasspathScannerInMemory extends ClasspathScannerDisk
 
     public ClasspathScannerInMemory(Classpath classpath, String... packageRoot)
     {
-        super(null, packageRoot);
+        super(null, null, packageRoot);
         this.classpath = classpath;
         actualInitReflections();
     }
