@@ -182,7 +182,10 @@
                     <useDefaultExcludes>true</useDefaultExcludes>
                     <excludes>
                         <exclude>LICENSE</exclude>
+                        <exclude>NOTICE</exclude>
                         <exclude>**/*.md</exclude>
+                        <!-- Maven release plugin alters the license header of poms which leads to a failing check during release:prepare -->
+                        <exclude>**/pom.xml</exclude>
                     </excludes>
                     <skip>${license-header-check.skip}</skip>
                 </configuration>
