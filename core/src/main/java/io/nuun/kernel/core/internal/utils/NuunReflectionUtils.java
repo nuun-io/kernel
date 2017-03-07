@@ -37,9 +37,7 @@ public class NuunReflectionUtils {
     public static <T> T instantiateOrFail(Class<?> aClass) {
         try {
             return (T) aClass.newInstance();
-        } catch (InstantiationException e) {
-            throw new PluginException(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new PluginException(e);
         }
     }

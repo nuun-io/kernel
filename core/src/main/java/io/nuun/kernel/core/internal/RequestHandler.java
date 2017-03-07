@@ -31,15 +31,21 @@ import io.nuun.kernel.core.internal.injection.ModuleEmbedded;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner;
 import io.nuun.kernel.core.internal.scanner.ClasspathScannerFactory;
 import io.nuun.kernel.core.internal.scanner.disk.ClasspathStrategy;
-import org.kametic.specifications.Specification;
-import org.kametic.specifications.reflect.DescendantOfSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
 
 import static io.nuun.kernel.api.config.KernelOptions.CLASSPATH_SCAN_MODE;
 import static io.nuun.kernel.api.config.KernelOptions.PRINT_SCAN_WARN;
@@ -73,27 +79,26 @@ public class RequestHandler extends ScanResults
 
     private final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-    private final List<String> propertiesPrefix = new ArrayList<String>();
-    private final List<Class<?>> parentTypesClassesToScan = new ArrayList<Class<?>>();
-    private final List<Class<?>> ancestorTypesClassesToScan = new ArrayList<Class<?>>();
-    private final List<Specification<Class<?>>> specificationsToScan = new ArrayList<Specification<Class<?>>>();
-    private final List<String> typesRegexToScan = new ArrayList<String>();
-    private final List<String> resourcesRegexToScan = new ArrayList<String>();
-    private final List<String> parentTypesRegexToScan = new ArrayList<String>();
-    private final List<Class<? extends Annotation>> annotationTypesToScan = new ArrayList<Class<? extends Annotation>>();
-    private final List<String> annotationRegexToScan = new ArrayList<String>();
+    private final List<String> propertiesPrefix = new ArrayList<>();
+    private final List<Class<?>> parentTypesClassesToScan = new ArrayList<>();
+    private final List<Class<?>> ancestorTypesClassesToScan = new ArrayList<>();
+    private final List<Predicate<Class<?>>> predicatesToScan = new ArrayList<>();
+    private final List<String> typesRegexToScan = new ArrayList<>();
+    private final List<String> resourcesRegexToScan = new ArrayList<>();
+    private final List<String> parentTypesRegexToScan = new ArrayList<>();
+    private final List<Class<? extends Annotation>> annotationTypesToScan = new ArrayList<>();
+    private final List<String> annotationRegexToScan = new ArrayList<>();
 
-    private final List<Class<?>> parentTypesClassesToBind = new ArrayList<Class<?>>();
-    private final List<Class<?>> ancestorTypesClassesToBind = new ArrayList<Class<?>>();
-    private final List<Specification<Class<?>>> specificationsToBind = new ArrayList<Specification<Class<?>>>();
-    private final List<String> parentTypesRegexToBind = new ArrayList<String>();
-    private final List<Class<? extends Annotation>> annotationTypesToBind = new ArrayList<Class<? extends Annotation>>();
-    private final List<Class<? extends Annotation>> metaAnnotationTypesToBind = new ArrayList<Class<? extends Annotation>>();
-    private final List<String> annotationRegexToBind = new ArrayList<String>();
-    private final List<String> metaAnnotationRegexToBind = new ArrayList<String>();
+    private final List<Class<?>> parentTypesClassesToBind = new ArrayList<>();
+    private final List<Predicate<Class<?>>> predicatesToBind = new ArrayList<>();
+    private final List<String> parentTypesRegexToBind = new ArrayList<>();
+    private final List<Class<? extends Annotation>> annotationTypesToBind = new ArrayList<>();
+    private final List<Class<? extends Annotation>> metaAnnotationTypesToBind = new ArrayList<>();
+    private final List<String> annotationRegexToBind = new ArrayList<>();
+    private final List<String> metaAnnotationRegexToBind = new ArrayList<>();
 
-    private final Map<Class<?>, Object> classesWithScopes = new HashMap<Class<?>, Object>();
-    private final Map<Key, Object> mapOfScopes = new HashMap<Key, Object>();
+    private final Map<Class<?>, Object> classesWithScopes = new HashMap<>();
+    private final Map<Key, Object> mapOfScopes = new HashMap<>();
 
     private final List<String> packageRoots;
 
@@ -106,9 +111,9 @@ public class RequestHandler extends ScanResults
     {
         setClasspathStrategy(kernelParams);
 
-        this.packageRoots = new LinkedList<String>();
+        this.packageRoots = new LinkedList<>();
         this.propertiesPrefix.add(Kernel.NUUN_PROPERTIES_PREFIX);
-        this.additionalClasspathScan = new HashSet<URL>();
+        this.additionalClasspathScan = new HashSet<>();
         this.options = options;
     }
 
@@ -158,9 +163,6 @@ public class RequestHandler extends ScanResults
                     case SUBTYPE_OF_BY_CLASS:
                         addParentTypeClassToScan((Class<?>) request.objectRequested);
                         break;
-                    case SUBTYPE_OF_BY_TYPE_DEEP:
-                        addAncestorTypeClassToScan((Class<?>) request.objectRequested);
-                        break;
                     case SUBTYPE_OF_BY_REGEX_MATCH:
                         addParentTypeRegexesToScan((String) request.objectRequested);
                         break;
@@ -170,8 +172,8 @@ public class RequestHandler extends ScanResults
                     case TYPE_OF_BY_REGEX_MATCH:
                         addTypeRegexesToScan((String) request.objectRequested);
                         break;
-                    case VIA_SPECIFICATION:
-                        addSpecificationToScan(request.specification);
+                    case CLASS_PREDICATE:
+                        addPredicateToScan(request.classPredicate);
                         break;
                     default:
                         logger.warn("{} is not a ClasspathScanRequestType a o_O", request.requestType);
@@ -206,14 +208,11 @@ public class RequestHandler extends ScanResults
                     case SUBTYPE_OF_BY_CLASS:
                         addParentTypeClassToBind((Class<?>) request.requestedObject, request.requestedScope);
                         break;
-                    case SUBTYPE_OF_BY_TYPE_DEEP:
-                        addAncestorTypeClassToBind((Class<?>) request.requestedObject, request.requestedScope);
-                        break;
                     case SUBTYPE_OF_BY_REGEX_MATCH:
                         addTypeRegexesToBind((String) request.requestedObject, request.requestedScope);
                         break;
-                    case VIA_SPECIFICATION:
-                        addSpecificationToBind(request.specification, request.requestedScope);
+                    case CLASS_PREDICATE:
+                        addPredicateToBind(request.predicate, request.requestedScope);
                         break;
                     default:
                         logger.warn("{} is not a BindingRequestType o_O !", request.requestType);
@@ -290,11 +289,6 @@ public class RequestHandler extends ScanResults
             super.addSubtypes(parentType, classpathScanner.scanSubTypesOf(parentType));
         }
 
-        for (final Class<?> parentType : ancestorTypesClassesToScan)
-        {
-            super.addAncestorTypes(parentType, classpathScanner.scanTypes(new DescendantOfSpecification(parentType)));
-        }
-
         for (final String typeName : parentTypesRegexToScan)
         {
             super.addSubTypesByName(typeName, classpathScanner.scanSubTypesOf(typeName));
@@ -305,9 +299,9 @@ public class RequestHandler extends ScanResults
             super.addTypesByName(typeName, classpathScanner.scanTypes(typeName));
         }
 
-        for (final Specification<Class<?>> spec : specificationsToScan)
+        for (final Predicate<Class<?>> spec : predicatesToScan)
         {
-            super.addTypesBySpecification(spec, classpathScanner.scanTypes(spec));
+            super.addTypesByPredicate(spec, classpathScanner.scanTypes(spec));
         }
 
         for (final Class<? extends Annotation> annotationType : annotationTypesToScan)
@@ -332,14 +326,6 @@ public class RequestHandler extends ScanResults
             addClassesToBind(scanResult);
         }
 
-        for (final Class<?> ancestorType : ancestorTypesClassesToBind)
-        {
-            final Collection<Class<?>> scanResult = classpathScanner.scanTypes(new DescendantOfSpecification(ancestorType));
-            RequestType requestType = RequestType.SUBTYPE_OF_BY_TYPE_DEEP;
-            addScopeToClasses(scanResult, scope(requestType, ancestorType), classesWithScopes);
-            addClassesToBind(scanResult);
-        }
-
         // TODO vérifier si ok parent types vs type. si ok changer de nom
         for (final String typeName : parentTypesRegexToBind)
         {
@@ -349,11 +335,11 @@ public class RequestHandler extends ScanResults
             addClassesToBind(scanResult);
         }
 
-        for (final Specification<Class<?>> spec : specificationsToBind)
+        for (final Predicate<Class<?>> classPredicate : predicatesToBind)
         {
-            final Collection<Class<?>> scanResult = classpathScanner.scanTypes(spec);
-            RequestType requestType = RequestType.VIA_SPECIFICATION;
-            addScopeToClasses(scanResult, scope(requestType, spec), classesWithScopes);
+            final Collection<Class<?>> scanResult = classpathScanner.scanTypes(classPredicate);
+            RequestType requestType = RequestType.CLASS_PREDICATE;
+            addScopeToClasses(scanResult, scope(requestType, classPredicate), classesWithScopes);
             addClassesToBind(scanResult);
         }
 
@@ -482,20 +468,14 @@ public class RequestHandler extends ScanResults
         parentTypesClassesToBind.add(type);
     }
 
-    public void addAncestorTypeClassToBind(Class<?> type, Object scope)
-    {
-        updateScope(key(RequestType.SUBTYPE_OF_BY_TYPE_DEEP, type), scope);
-        ancestorTypesClassesToBind.add(type);
-    }
-
     public void addTypeRegexesToScan(String type)
     {
         typesRegexToScan.add(type);
     }
 
-    public void addSpecificationToScan(Specification<Class<?>> specification)
+    public void addPredicateToScan(Predicate<Class<?>> classPredicate)
     {
-        specificationsToScan.add(specification);
+        predicatesToScan.add(classPredicate);
     }
 
     public void addParentTypeRegexesToScan(String type)
@@ -520,10 +500,10 @@ public class RequestHandler extends ScanResults
         }
     }
 
-    public void addSpecificationToBind(Specification<Class<?>> specification, Object scope)
+    public void addPredicateToBind(Predicate<Class<?>> classPredicate, Object scope)
     {
-        specificationsToBind.add(specification);
-        updateScope(key(RequestType.VIA_SPECIFICATION, specification), scope);
+        predicatesToBind.add(classPredicate);
+        updateScope(key(RequestType.CLASS_PREDICATE, classPredicate), scope);
     }
 
     public void addAnnotationTypesToScan(Class<? extends Annotation> types)

@@ -38,7 +38,7 @@ public class InternalKernelModuleTest
     @Before
     public void init()
     {
-        RequestHandler requestHandler = new RequestHandler(new HashMap<String, String>(), new KernelOptions());
+        RequestHandler requestHandler = new RequestHandler(new HashMap<>(), new KernelOptions());
         underTest = new KernelGuiceModuleInternal(requestHandler);
     }
 

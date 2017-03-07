@@ -38,7 +38,7 @@ public class ExtensionManagerIT
     @Before
     public void setup()
     {
-        List<Plugin> plugins = new ArrayList<Plugin>();
+        List<Plugin> plugins = new ArrayList<>();
         plugins.add(new DummyExtensionPlugin());
         underTest = new ExtensionManager(plugins, Thread.currentThread().getContextClassLoader());
     }

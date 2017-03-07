@@ -23,12 +23,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-class DependenciesSpecification
+class DependenciesAsserter
 {
 
     private final FacetRegistry facetRegistry;
 
-    DependenciesSpecification(FacetRegistry facetRegistry)
+    DependenciesAsserter(FacetRegistry facetRegistry)
     {
         this.facetRegistry = facetRegistry;
     }
@@ -39,9 +39,9 @@ class DependenciesSpecification
      *
      * @param plugin the plugin to check
      */
-    void isSatisfyBy(final Plugin plugin)
+    void assertDependencies(final Plugin plugin)
     {
-        Collection<Class<?>> expectedDependencies = new ArrayList<Class<?>>();
+        Collection<Class<?>> expectedDependencies = new ArrayList<>();
 
         Collection<Class<?>> requiredPlugins = plugin.requiredPlugins();
         if (requiredPlugins != null)

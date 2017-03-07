@@ -40,7 +40,7 @@ public class DummyPlugin2 extends AbstractPlugin
     @Override
     public Collection<Class<?>> requiredPlugins()
     {
-        return Lists.<Class<?>>newArrayList(DummyPlugin3.class);
+        return Lists.newArrayList(DummyPlugin3.class);
     }
 
     @Override

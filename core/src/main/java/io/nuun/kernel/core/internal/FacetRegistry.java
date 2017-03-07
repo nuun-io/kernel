@@ -32,7 +32,7 @@ import java.util.*;
 class FacetRegistry
 {
     private final ListMultimap<Class<?>, Plugin> pluginsByFacet = ArrayListMultimap.create();
-    private final Map<Class<?>, Plugin> pluginsByClass = new HashMap<Class<?>, Plugin>();
+    private final Map<Class<?>, Plugin> pluginsByClass = new HashMap<>();
 
     /**
      * Constructs a facet registry.
@@ -106,7 +106,7 @@ class FacetRegistry
     {
         if (facet != null && Plugin.class.isAssignableFrom(facet))
         {
-            List<T> ts = new ArrayList<T>();
+            List<T> ts = new ArrayList<>();
             Plugin plugin = pluginsByClass.get(facet);
             if (plugin != null)
             {

@@ -19,10 +19,12 @@ package io.nuun.kernel.core.internal;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.plugin.context.InitContext;
-import org.kametic.specifications.Specification;
 
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 
 public class InitContextInternal implements InitContext
 {
@@ -67,12 +69,6 @@ public class InitContextInternal implements InitContext
     }
 
     @Override
-    public Map<Class<?>, Collection<Class<?>>> scannedSubTypesByAncestorClass()
-    {
-        return requestHandler.scannedSubTypesByAncestorClass();
-    }
-
-    @Override
     public Map<String, Collection<Class<?>>> scannedSubTypesByParentRegex()
     {
         return requestHandler.scannedSubTypesByParentRegex();
@@ -85,9 +81,9 @@ public class InitContextInternal implements InitContext
     }
 
     @Override
-    public Map<Specification, Collection<Class<?>>> scannedTypesBySpecification()
+    public Map<Predicate<Class<?>>, Collection<Class<?>>> scannedTypesByPredicate()
     {
-        return requestHandler.scannedTypesBySpecification();
+        return requestHandler.scannedTypesByPredicate();
     }
 
     @Override

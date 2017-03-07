@@ -84,13 +84,13 @@ public class DependencyProviderTest
         @Override
         public Collection<Class<?>> requiredPlugins()
         {
-            return Lists.<Class<?>>newArrayList(Facet1.class, Facet2.class);
+            return Lists.newArrayList(Facet1.class, Facet2.class);
         }
 
         @Override
         public Collection<Class<?>> dependentPlugins()
         {
-            return Lists.<Class<?>>newArrayList(DependentPlugin.class);
+            return Lists.newArrayList(DependentPlugin.class);
         }
     }
 
@@ -114,13 +114,13 @@ public class DependencyProviderTest
     {
         FacetRegistry facetRegistry = Mockito.mock(FacetRegistry.class);
 
-        List<Facet1> requiredPlugins = new ArrayList<Facet1>();
+        List<Facet1> requiredPlugins = new ArrayList<>();
         requiredPlugin1 = new RequiredPlugin1();
         requiredPlugin2 = new RequiredPlugin2();
         requiredPlugins.add(requiredPlugin1);
         requiredPlugins.add(requiredPlugin2);
 
-        List<DependentPlugin> dependentPlugins = new ArrayList<DependentPlugin>();
+        List<DependentPlugin> dependentPlugins = new ArrayList<>();
         dependentPlugin = new DependentPlugin();
         dependentPlugins.add(dependentPlugin);
 

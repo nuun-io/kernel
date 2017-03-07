@@ -50,7 +50,7 @@ public class MetadataAdapterInMemory implements MetadataAdapter<Class<?>, Field,
 
 	@Override
 	public List<String> getInterfacesNames(Class<?> cls) {
-		List<String> itfNames = new ArrayList<String>();
+		List<String> itfNames = new ArrayList<>();
 		
 		for (Class<?> c : cls.getInterfaces()) {
 			itfNames.add(c.getName());
@@ -60,7 +60,7 @@ public class MetadataAdapterInMemory implements MetadataAdapter<Class<?>, Field,
 
 	@Override
 	public List<Field> getFields(Class<?> cls) {
-		List<Field> fl = new ArrayList<Field>();
+		List<Field> fl = new ArrayList<>();
 		
 		for (Field f : cls.getDeclaredFields()) {
 			fl.add(f);
@@ -71,7 +71,7 @@ public class MetadataAdapterInMemory implements MetadataAdapter<Class<?>, Field,
 
 	@Override
 	public List<Method> getMethods(Class<?> cls) {
-		List<Method> fm = new ArrayList<Method>();
+		List<Method> fm = new ArrayList<>();
 		
 		for (Method f : cls.getDeclaredMethods()) {
 			fm.add(f);
@@ -88,7 +88,7 @@ public class MetadataAdapterInMemory implements MetadataAdapter<Class<?>, Field,
 
 	@Override
 	public List<String> getParameterNames(Method method) {
-		List<String> parNames = new ArrayList<String>();
+		List<String> parNames = new ArrayList<>();
 		int i = 0;
 		for (@SuppressWarnings("unused") Class<?> c : method.getParameterTypes()) {
 			parNames.add("" + i);
@@ -100,7 +100,7 @@ public class MetadataAdapterInMemory implements MetadataAdapter<Class<?>, Field,
 
 	@Override
 	public List<String> getClassAnnotationNames(Class<?> aClass) {
-		List<String> fm = new ArrayList<String>();
+		List<String> fm = new ArrayList<>();
 		
 		for (Annotation anno : aClass.getAnnotations()) {
 			fm.add(anno.annotationType().getName());
@@ -112,7 +112,7 @@ public class MetadataAdapterInMemory implements MetadataAdapter<Class<?>, Field,
 	@Override
 	public List<String> getFieldAnnotationNames(Field field) {
 		
-		List<String> fm = new ArrayList<String>();
+		List<String> fm = new ArrayList<>();
 		
 		for (Annotation anno : field.getAnnotations()) {
 			fm.add(anno.annotationType().getName());
@@ -123,7 +123,7 @@ public class MetadataAdapterInMemory implements MetadataAdapter<Class<?>, Field,
 
 	@Override
 	public List<String> getMethodAnnotationNames(Method method) {
-		List<String> fm = new ArrayList<String>();
+		List<String> fm = new ArrayList<>();
 		
 		for (Annotation anno : method.getAnnotations()) {
 			fm.add(anno.annotationType().getName());
@@ -135,7 +135,7 @@ public class MetadataAdapterInMemory implements MetadataAdapter<Class<?>, Field,
 	@Override
 	public List<String> getParameterAnnotationNames(Method method, int parameterIndex) {
 		
-		List<String> fm = new ArrayList<String>();
+		List<String> fm = new ArrayList<>();
 		
 		if (parameterIndex  < method.getParameterAnnotations().length ) {
 			for (Annotation anno : method.getAnnotations()) {

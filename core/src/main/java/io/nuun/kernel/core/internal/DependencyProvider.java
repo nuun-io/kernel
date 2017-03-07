@@ -58,7 +58,7 @@ class DependencyProvider {
 
     private List<Plugin> getDependenciesOf(Class<? extends Plugin> pluginClass, DependencyType dependencyType) {
         Plugin plugin = pluginRegistry.get(pluginClass);
-        List<Plugin> dependencies = new ArrayList<Plugin>();
+        List<Plugin> dependencies = new ArrayList<>();
         if (plugin != null) {
             for (Class<?> requiredClass : getDependencyClasses(plugin, dependencyType)) {
                 //noinspection unchecked
@@ -69,7 +69,7 @@ class DependencyProvider {
     }
 
     private Collection<Class<?>> getDependencyClasses(Plugin plugin, DependencyType dependencyType) {
-        Collection<Class<?>> requiredClasses = new ArrayList<Class<?>>();
+        Collection<Class<?>> requiredClasses = new ArrayList<>();
         if (dependencyType == DependencyType.REQUIRED) {
             requiredClasses = plugin.requiredPlugins();
         } else if (dependencyType == DependencyType.DEPENDENT) {

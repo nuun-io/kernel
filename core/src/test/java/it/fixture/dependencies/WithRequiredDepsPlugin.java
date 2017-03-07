@@ -61,7 +61,7 @@ public class WithRequiredDepsPlugin extends AbstractPlugin
     @Override
     public Collection<Class<?>> requiredPlugins()
     {
-        return Lists.<Class<?>>newArrayList(RequiredPlugin1.class);
+        return Lists.newArrayList(RequiredPlugin1.class);
     }
 
 }

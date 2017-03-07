@@ -21,10 +21,12 @@ import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.BindingRequest;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
+import io.nuun.kernel.api.predicates.ClassDescendantOf;
 import io.nuun.kernel.core.AbstractPlugin;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,6 +34,7 @@ public class DummyPlugin5 extends AbstractPlugin
 {
 
     public Collection<Class<?>> collection;
+    private final ClassDescendantOf descendantOfGrandParentClass = new ClassDescendantOf(GrandParentClass.class);
 
 
     public DummyPlugin5()
@@ -47,9 +50,8 @@ public class DummyPlugin5 extends AbstractPlugin
     @Override
     public Collection<BindingRequest> bindingRequests()
     {
-
         return bindingRequestsBuilder() //
-                .descendentTypeOf(GrandParentClass.class).withScope(Scopes.SINGLETON) //
+                .predicate(descendantOfGrandParentClass).withScope(Scopes.SINGLETON) //
                 .metaAnnotationType(MetaMarkerSample.class).withScope(Scopes.SINGLETON) //
                 .metaAnnotationRegex(".*YMetaMarker.*").withScope(Scopes.SINGLETON)
 //                .descendentTypeOf(GrandParentInterface.class) //
@@ -61,8 +63,8 @@ public class DummyPlugin5 extends AbstractPlugin
     {
 
         return classpathScanRequestBuilder()
-                .descendentTypeOf(GrandParentClass.class) //
-                .descendentTypeOf(GrandParentInterface.class) //
+                .predicate(descendantOfGrandParentClass) //
+                .predicate(new ClassDescendantOf(GrandParentInterface.class)) //
                 .build();
     }
 
@@ -70,9 +72,9 @@ public class DummyPlugin5 extends AbstractPlugin
     @Override
     public InitState init(InitContext initContext)
     {
-        Map<Class<?>, Collection<Class<?>>> scannedSubTypesByAncestorClass = initContext.scannedSubTypesByAncestorClass();
+        Map<Predicate<Class<?>>, Collection<Class<?>>> scannedSubTypesByPredicate = initContext.scannedTypesByPredicate();
 
-        collection = scannedSubTypesByAncestorClass.get(GrandParentClass.class);
+        collection = scannedSubTypesByPredicate.get(descendantOfGrandParentClass);
 
         assertThat(collection).isNotEmpty();
         assertThat(collection).hasSize(2);

@@ -21,18 +21,20 @@ import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.BindingRequest;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
+import io.nuun.kernel.api.predicates.ClassAnnotatedWith;
+import io.nuun.kernel.api.predicates.ClassImplements;
 import io.nuun.kernel.core.AbstractPlugin;
-import org.kametic.specifications.Specification;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DummyPlugin4 extends AbstractPlugin
 {
     public Collection<Class<?>> collection;
-    private Specification<Class<?>> specification;
+    private Predicate<Class<?>> predicate;
 
     public DummyPlugin4()
     {
@@ -48,24 +50,24 @@ public class DummyPlugin4 extends AbstractPlugin
     @SuppressWarnings("unchecked")
     public Collection<BindingRequest> bindingRequests()
     {
-        Specification<Class<?>> specification = and(classAnnotatedWith(MarkerSample5.class), classImplements(Interface2.class));
+        Predicate<Class<?>> predicate = new ClassAnnotatedWith(MarkerSample5.class).and(new ClassImplements(Interface2.class));
 
-        assertThat(specification.isSatisfiedBy(Pojo1.class)).isFalse();
-        assertThat(specification.isSatisfiedBy(Pojo2.class)).isTrue();
+        assertThat(predicate.test(Pojo1.class)).isFalse();
+        assertThat(predicate.test(Pojo2.class)).isTrue();
 
-        return bindingRequestsBuilder().specification(specification).withScope(Scopes.SINGLETON).build();
+        return bindingRequestsBuilder().predicate(predicate).withScope(Scopes.SINGLETON).build();
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Collection<ClasspathScanRequest> classpathScanRequests()
     {
-        specification = and(classAnnotatedWith(MarkerSample5.class), classImplements(Interface1.class));
+        predicate = new ClassAnnotatedWith(MarkerSample5.class).and(new ClassImplements(Interface1.class));
 
-        assertThat(specification.isSatisfiedBy(Pojo1.class)).isTrue();
-        assertThat(specification.isSatisfiedBy(Pojo2.class)).isFalse();
+        assertThat(predicate.test(Pojo1.class)).isTrue();
+        assertThat(predicate.test(Pojo2.class)).isFalse();
 
-        return classpathScanRequestBuilder().specification(specification).build();
+        return classpathScanRequestBuilder().predicate(predicate).build();
     }
 
 
@@ -73,9 +75,9 @@ public class DummyPlugin4 extends AbstractPlugin
     @Override
     public InitState init(InitContext initContext)
     {
-        Map<Specification, Collection<Class<?>>> scannedTypesBySpecification = initContext.scannedTypesBySpecification();
+        Map<Predicate<Class<?>>, Collection<Class<?>>> scannedTypesByPredicate = initContext.scannedTypesByPredicate();
 
-        collection = scannedTypesBySpecification.get(specification);
+        collection = scannedTypesByPredicate.get(predicate);
 
         assertThat(collection).isNotEmpty();
         assertThat(collection).hasSize(1);

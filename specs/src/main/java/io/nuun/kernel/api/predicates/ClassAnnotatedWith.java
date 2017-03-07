@@ -14,38 +14,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Nuun IO Kernel Specs.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.nuun.kernel.api.config;
+package io.nuun.kernel.api.predicates;
 
+import java.lang.annotation.Annotation;
+import java.util.function.Predicate;
 
-public class KernelOption<T>
+/**
+ * Strictly descendant of a candidate class.
+ * 
+ * @author ejemba
+ */
+public class ClassAnnotatedWith implements Predicate<Class<?>>
 {
-    private String name;
-    private T value;
 
-    public KernelOption(String name) {
-        this.name = name;
+    private Class<? extends Annotation> annotationClass;
+
+    public ClassAnnotatedWith(Class<? extends Annotation> annotationClass)
+    {
+        this.annotationClass = annotationClass;
     }
-
-    public KernelOption(String name, T value) {
-        this.name = name;
-        this.value = value;
-    }
-
-    public KernelOption(KernelOption<T> option, T value) {
-        this.name = option.name;
-        this.value = value == null ? option.getValue() : value;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public T getValue() {
-        return value;
-    }
-
+    
     @Override
-    public String toString() {
-        return name + ": " + value;
+    public boolean test(Class<?> candidate)
+    {
+        return candidate != null &&  candidate.isAnnotationPresent(annotationClass);
     }
+
 }

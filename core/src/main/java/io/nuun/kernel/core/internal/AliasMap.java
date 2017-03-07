@@ -25,8 +25,8 @@ import java.util.*;
  */
 public class AliasMap
 {
-    private Map<String, String> aliases = new HashMap<String, String>();
-    private Map<String, String> params = new HashMap<String, String>();
+    private Map<String, String> aliases = new HashMap<>();
+    private Map<String, String> params = new HashMap<>();
 
     /**
      * @param key   the key to alias.
@@ -44,7 +44,7 @@ public class AliasMap
 
     public String get(String key)
     {
-        List<String> cache = new ArrayList<String>();
+        List<String> cache = new ArrayList<>();
         return getWithAlias(key, cache);
     }
 
@@ -72,7 +72,7 @@ public class AliasMap
 
     public Map<String, String> toMap()
     {
-        Map<String, String> map = new HashMap<String, String>(params);
+        Map<String, String> map = new HashMap<>(params);
         for (Map.Entry<String, String> entry : aliases.entrySet())
         {
             String alias = entry.getKey();

@@ -30,14 +30,14 @@ public class FacetRegistryTest
     @Test
     public void get_null_is_accepted()
     {
-        FacetRegistry registry = new FacetRegistry(new ArrayList<Plugin>());
-        Assertions.assertThat(registry.getFacet(null)).isNull();
+        FacetRegistry registry = new FacetRegistry(new ArrayList<>());
+        Assertions.assertThat((Object)registry.getFacet(null)).isNull();
     }
 
     @Test
     public void scan_a_plugin_facet()
     {
-        List<Plugin> plugins = new ArrayList<Plugin>();
+        List<Plugin> plugins = new ArrayList<>();
         OneFacetPlugin oneFacetPlugin = new OneFacetPlugin();
         plugins.add(oneFacetPlugin);
 
@@ -50,7 +50,7 @@ public class FacetRegistryTest
     @Test
     public void scan_multiple_facet_in_a_plugin()
     {
-        List<Plugin> plugins = new ArrayList<Plugin>();
+        List<Plugin> plugins = new ArrayList<>();
         TwoFacetPlugin twoFacetPlugin = new TwoFacetPlugin();
         plugins.add(twoFacetPlugin);
 
@@ -67,7 +67,7 @@ public class FacetRegistryTest
     @Test(expected = IllegalStateException.class)
     public void getFacet_fails_for_multiple_facet_implementation()
     {
-        List<Plugin> plugins = new ArrayList<Plugin>();
+        List<Plugin> plugins = new ArrayList<>();
         OneFacetPlugin oneFacetPlugin = new OneFacetPlugin();
         TwoFacetPlugin twoFacetPlugin = new TwoFacetPlugin();
         plugins.add(oneFacetPlugin);
@@ -80,7 +80,7 @@ public class FacetRegistryTest
     @Test
     public void getFacets_never_return_null()
     {
-        List<Plugin> plugins = new ArrayList<Plugin>();
+        List<Plugin> plugins = new ArrayList<>();
         OneFacetPlugin oneFacetPlugin = new OneFacetPlugin();
         plugins.add(oneFacetPlugin);
 
@@ -94,7 +94,7 @@ public class FacetRegistryTest
     @Test
     public void get_multiple_facet_implementations()
     {
-        List<Plugin> plugins = new ArrayList<Plugin>();
+        List<Plugin> plugins = new ArrayList<>();
         OneFacetPlugin oneFacetPlugin = new OneFacetPlugin();
         TwoFacetPlugin twoFacetPlugin = new TwoFacetPlugin();
         plugins.add(oneFacetPlugin);
@@ -119,7 +119,7 @@ public class FacetRegistryTest
     @Test
     public void get_plugin_implementation()
     {
-        List<Plugin> plugins = new ArrayList<Plugin>();
+        List<Plugin> plugins = new ArrayList<>();
         LegacyPlugin legacyPlugin = new LegacyPlugin();
         plugins.add(legacyPlugin);
 
@@ -135,7 +135,7 @@ public class FacetRegistryTest
     @Test
     public void get_missing_plugin_implementations()
     {
-        List<Plugin> plugins = new ArrayList<Plugin>();
+        List<Plugin> plugins = new ArrayList<>();
 
         FacetRegistry registry = new FacetRegistry(plugins);
         List<LegacyPlugin> legacyPlugins = registry.getFacets(LegacyPlugin.class);

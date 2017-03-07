@@ -38,7 +38,7 @@ public class ClasspathScanningIT
 {
 
     /**
-     * Tests if the plugin ScanningPlugin is able to scan classes using specification.
+     * Tests if the plugin ScanningPlugin is able to scan classes using predicates.
      * All the classes annotated or meta annotation with {@code Ignore} should be ignored.
      */
     @Test

@@ -38,7 +38,7 @@ public enum InMemoryMultiThreadClasspath implements Classpath {
 	{
 		@Override
 		protected java.util.Map<String , ClasspathAbstractContainer<?>> initialValue() {
-			return new HashMap<String , ClasspathAbstractContainer<?>>();
+			return new HashMap<>();
 		}
 	};
 

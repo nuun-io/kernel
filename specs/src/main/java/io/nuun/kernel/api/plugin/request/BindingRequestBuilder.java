@@ -25,8 +25,7 @@ import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-
-import org.kametic.specifications.Specification;
+import java.util.function.Predicate;
 
 /**
  * @author Epo Jemba
@@ -38,13 +37,13 @@ public class BindingRequestBuilder implements BindingRequestBuilderOptionsBuildM
     
     public BindingRequestBuilder()
     {
-        requests = new HashSet<BindingRequest>();
+        requests = new HashSet<>();
     }
 
     @Override
-    public BindingRequestBuilderOptionsBuildMain specification(Specification<Class<?>> specification)
+    public BindingRequestBuilderOptionsBuildMain predicate(Predicate<Class<?>> classPredicate)
     {
-        requests.add(currentBindingRequest = new BindingRequest(RequestType.VIA_SPECIFICATION, null,specification));
+        requests.add(currentBindingRequest = new BindingRequest(RequestType.CLASS_PREDICATE, null, classPredicate));
         return this;
     }
 
@@ -80,13 +79,6 @@ public class BindingRequestBuilder implements BindingRequestBuilderOptionsBuildM
     {
         requests.add(currentBindingRequest = new BindingRequest(RequestType.SUBTYPE_OF_BY_CLASS, parentTypeRequested));
         
-        return this;
-    }
-
-    @Override
-    public BindingRequestBuilderOptionsBuildMain descendentTypeOf(Class<?> ancestorTypeRequested)
-    {
-        requests.add(currentBindingRequest = new BindingRequest(RequestType.SUBTYPE_OF_BY_TYPE_DEEP, ancestorTypeRequested));
         return this;
     }
 
