@@ -38,7 +38,7 @@ public class KernelParamsRequestBuilder implements Builder<Collection<KernelPara
      */
     public KernelParamsRequestBuilder()
     {
-        requests = new HashSet<KernelParamsRequest>();
+        requests = new HashSet<>();
     }
     
     

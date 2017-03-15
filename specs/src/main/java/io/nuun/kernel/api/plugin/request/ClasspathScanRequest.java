@@ -19,8 +19,7 @@
  */
 package io.nuun.kernel.api.plugin.request;
 
-import org.kametic.specifications.Specification;
-
+import java.util.function.Predicate;
 
 /**
  * @author Epo Jemba
@@ -31,18 +30,18 @@ public class ClasspathScanRequest
 
     public final RequestType requestType;
     public final Object objectRequested;
-    public final Specification<Class<?>> specification;
+    public final Predicate<Class<?>> classPredicate;
 
     public ClasspathScanRequest(RequestType requestType , Object keyRequested)
     {
         this.requestType = requestType;
         this.objectRequested = keyRequested;
-        this.specification = null;
+        this.classPredicate = null;
     }
-    public ClasspathScanRequest(Specification<Class<?>> specification)
+    public ClasspathScanRequest(Predicate<Class<?>> classPredicate)
     {
-        this.specification = specification;
-        this.requestType = RequestType.VIA_SPECIFICATION;
+        this.classPredicate = classPredicate;
+        this.requestType = RequestType.CLASS_PREDICATE;
         this.objectRequested = null;
     }
     

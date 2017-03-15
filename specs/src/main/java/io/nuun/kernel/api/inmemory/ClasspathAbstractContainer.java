@@ -31,7 +31,7 @@ public abstract class ClasspathAbstractContainer< S extends ClasspathAbstractCon
 
 	protected S myself;
 	protected String name;
-	protected List<ClasspathAbstractElement<?>> entries = new ArrayList<ClasspathAbstractElement<?>>();
+	protected List<ClasspathAbstractElement<?>> entries = new ArrayList<>();
 
 	
 	public ClasspathAbstractContainer(String name)

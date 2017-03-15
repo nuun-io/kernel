@@ -18,34 +18,40 @@ package io.nuun.kernel.core.internal;
 
 import io.nuun.kernel.api.di.UnitModule;
 import io.nuun.kernel.api.plugin.request.RequestType;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.kametic.specifications.Specification;
 
 import java.lang.annotation.Annotation;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Predicate;
 
-import static java.util.Collections.*;
+import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 
 public class ScanResults
 {
 
-    private final List<UnitModule> childModules = new ArrayList<UnitModule>();
-    private final List<UnitModule> childOverridingModules = new ArrayList<UnitModule>();
+    private final List<UnitModule> childModules = new ArrayList<>();
+    private final List<UnitModule> childOverridingModules = new ArrayList<>();
 
-    private final Set<Class<?>> classesToBind = new HashSet<Class<?>>();
-    private final Map<Class<?>, Collection<Class<?>>> mapSubTypes = new HashMap<Class<?>, Collection<Class<?>>>();
-    private final Map<Class<?>, Collection<Class<?>>> mapAncestorTypes = new HashMap<Class<?>, Collection<Class<?>>>();
-    private final Map<String, Collection<Class<?>>> mapSubTypesByName = new HashMap<String, Collection<Class<?>>>();
-    private final Map<String, Collection<Class<?>>> mapTypesByName = new HashMap<String, Collection<Class<?>>>();
-    private final Map<Specification, Collection<Class<?>>> mapTypesBySpecification = new HashMap<Specification, Collection<Class<?>>>();
-    private final Map<Class<? extends Annotation>, Collection<Class<?>>> mapAnnotationTypes = new HashMap<Class<? extends Annotation>, Collection<Class<?>>>();
-    private final Map<String, Collection<Class<?>>> mapAnnotationTypesByName = new HashMap<String, Collection<Class<?>>>();
-    private final Map<String, Collection<String>> propertyFilesByPrefix = new HashMap<String, Collection<String>>();
-    private final Map<String, Collection<String>> resourcesByRegex = new HashMap<String, Collection<String>>();
-    private final Collection<String> propertyFiles = new HashSet<String>();
-    private final Set<URL> urls = new HashSet<URL>();
+    private final Set<Class<?>> classesToBind = new HashSet<>();
+    private final Map<Class<?>, Collection<Class<?>>> mapSubTypes = new HashMap<>();
+    private final Map<String, Collection<Class<?>>> mapSubTypesByName = new HashMap<>();
+    private final Map<String, Collection<Class<?>>> mapTypesByName = new HashMap<>();
+    private final Map<Predicate<Class<?>>, Collection<Class<?>>> mapTypesByPredicate = new HashMap<>();
+    private final Map<Class<? extends Annotation>, Collection<Class<?>>> mapAnnotationTypes = new HashMap<>();
+    private final Map<String, Collection<Class<?>>> mapAnnotationTypesByName = new HashMap<>();
+    private final Map<String, Collection<String>> propertyFilesByPrefix = new HashMap<>();
+    private final Map<String, Collection<String>> resourcesByRegex = new HashMap<>();
+    private final Collection<String> propertyFiles = new HashSet<>();
+    private final Set<URL> urls = new HashSet<>();
 
     protected static class Key
     {
@@ -59,31 +65,23 @@ public class ScanResults
         }
 
         @Override
-        public boolean equals(Object obj)
-        {
-            if (obj instanceof Key)
-            {
-                Key key = (Key) obj;
-                return new EqualsBuilder().append(type, key.type).append(this.key, key.key).isEquals();
-            }
-            return false;
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Key key1 = (Key) o;
+            return type == key1.type &&
+                    Objects.equals(key, key1.key);
         }
 
         @Override
-        public int hashCode()
-        {
-            return new HashCodeBuilder().append(type).append(key).toHashCode();
+        public int hashCode() {
+            return Objects.hash(type, key);
         }
     }
 
     public Map<Class<?>, Collection<Class<?>>> scannedSubTypesByParentClass()
     {
         return unmodifiableMap(mapSubTypes);
-    }
-
-    public Map<Class<?>, Collection<Class<?>>> scannedSubTypesByAncestorClass()
-    {
-        return unmodifiableMap(mapAncestorTypes);
     }
 
     public Map<String, Collection<Class<?>>> scannedSubTypesByParentRegex()
@@ -96,9 +94,9 @@ public class ScanResults
         return unmodifiableMap(mapTypesByName);
     }
 
-    public Map<Specification, Collection<Class<?>>> scannedTypesBySpecification()
+    public Map<Predicate<Class<?>>, Collection<Class<?>>> scannedTypesByPredicate()
     {
-        return unmodifiableMap(mapTypesBySpecification);
+        return unmodifiableMap(mapTypesByPredicate);
     }
 
     public Map<Class<? extends Annotation>, Collection<Class<?>>> scannedClassesByAnnotationClass()
@@ -168,10 +166,6 @@ public class ScanResults
         mapSubTypes.put(parentType, subtypes);
     }
 
-    public void addAncestorTypes(Class<?> parentType, Collection<Class<?>> subtypes) {
-        mapAncestorTypes.put(parentType, subtypes);
-    }
-
     public void addSubTypesByName(String typeName, Collection<Class<?>> subtypes) {
         mapSubTypesByName.put(typeName, subtypes);
     }
@@ -180,8 +174,8 @@ public class ScanResults
         mapTypesByName.put(typeName, subtypes);
     }
 
-    public void addTypesBySpecification(Specification<?> specification, Collection<Class<?>> subtypes) {
-        mapTypesBySpecification.put(specification, subtypes);
+    public void addTypesByPredicate(Predicate<Class<?>> classPredicate, Collection<Class<?>> subtypes) {
+        mapTypesByPredicate.put(classPredicate, subtypes);
     }
 
     public void addAnnotationTypes(Class<? extends Annotation> annotationClass, Collection<Class<?>> subtypes) {

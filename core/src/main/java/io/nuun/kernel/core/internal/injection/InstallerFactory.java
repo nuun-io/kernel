@@ -33,7 +33,7 @@ public class InstallerFactory
     }
 
     List<Installer> createFromUnitModules(Collection<UnitModule> unitModules) {
-        List<Installer> installers = new ArrayList<Installer>();
+        List<Installer> installers = new ArrayList<>();
         for (UnitModule unitModule : unitModules)
         {
             installers.add(new UnitModuleInstaller(unitModule));
@@ -42,7 +42,7 @@ public class InstallerFactory
     }
 
     List<Installer> createFromClasses(Collection<Class<?>> classes) {
-        List<Installer> installerList = new ArrayList<Installer>();
+        List<Installer> installerList = new ArrayList<>();
         for (Class<?> aClass : classes)
         {
             installerList.add(new ClassInstaller(aClass, classesWithScopes.get(aClass)));

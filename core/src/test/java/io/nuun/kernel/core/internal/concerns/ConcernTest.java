@@ -41,7 +41,7 @@ public class ConcernTest
     @BeforeClass
     public static void init()
     {
-        list = new ArrayList<String>();
+        list = new ArrayList<>();
         underTest = Fixture.startKernel(Fixture.config()
                 .plugins(
                         new InternalPlugin(),

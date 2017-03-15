@@ -1,3 +1,9 @@
+# Version 1.0.M10 (???)
+
+* [chg] The specs module is now without any dependency.
+* [brk] Class specifications have been replaced by class predicates.
+* [brk] Java 8 is now required.
+
 # Version 1.0.M8 (???)
 
 * [new] Kernel options are centralized in `KernelOptions`

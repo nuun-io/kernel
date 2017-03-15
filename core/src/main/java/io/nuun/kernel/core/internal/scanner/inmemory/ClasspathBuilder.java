@@ -37,7 +37,7 @@ public abstract class ClasspathBuilder
 
     public ClasspathBuilder()
     {
-        entries = new HashMap<String, ClasspathAbstractContainer<?>>();
+        entries = new HashMap<>();
     }
 
     protected void addJar(String name)

@@ -68,6 +68,6 @@ public class WithRequiredFacetPlugin extends AbstractPlugin
     @Override
     public Collection<Class<?>> requiredPlugins()
     {
-        return Lists.<Class<?>>newArrayList(Facet1.class);
+        return Lists.newArrayList(Facet1.class);
     }
 }

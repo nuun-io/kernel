@@ -66,8 +66,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
 
         <license-check.skip>false</license-check.skip>
         <license-check.fail>true</license-check.fail>
@@ -76,12 +76,6 @@
     </properties>
 
     <dependencies>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.16</version>
-        </dependency>
 
         <!-- ========================================================== -->
         <!-- ============== UNIT TEST DEPENDENCIES ==================== -->

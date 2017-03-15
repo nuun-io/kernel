@@ -44,7 +44,7 @@ public class PluginSortStrategyTest
         Plugin3 plugin3 = new Plugin3(); // declare P2 as required and declare P4 as dependent
         Plugin4 plugin4 = new Plugin4();
 
-        List<Plugin> plugins = Lists.<Plugin>newArrayList(plugin4, plugin2, plugin3, plugin1);
+        List<Plugin> plugins = Lists.newArrayList(plugin4, plugin2, plugin3, plugin1);
         FacetRegistry facetRegistry = new FacetRegistry(plugins);
         PluginSortStrategy strategy = new PluginSortStrategy(facetRegistry, plugins);
         List<Plugin> orderedPlugins = strategy.sortPlugins();
@@ -71,7 +71,7 @@ public class PluginSortStrategyTest
         @Override
         public Collection<Class<?>> dependentPlugins()
         {
-            return Lists.<Class<?>>newArrayList(Facet1.class);
+            return Lists.newArrayList(Facet1.class);
         }
     }
 
@@ -95,13 +95,13 @@ public class PluginSortStrategyTest
         @Override
         public Collection<Class<?>> dependentPlugins()
         {
-            return Lists.<Class<?>>newArrayList(Plugin4.class);
+            return Lists.newArrayList(Plugin4.class);
         }
 
         @Override
         public Collection<Class<?>> requiredPlugins()
         {
-            return Lists.<Class<?>>newArrayList(Facet1.class);
+            return Lists.newArrayList(Facet1.class);
         }
     }
 

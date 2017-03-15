@@ -24,9 +24,9 @@ import io.nuun.kernel.core.KernelException;
 import java.util.Collection;
 import java.util.HashSet;
 
-public class MandatoryParamsSpecification
+class MandatoryParamsAsserter
 {
-    public void isSatisfiedBy(Plugin plugin, AliasMap kernelParams) {
+    void assertMandatoryParams(Plugin plugin, AliasMap kernelParams) {
         Collection<KernelParamsRequest> requestedParams = plugin.kernelParamsRequests();
         Collection<String> mandatoryParams = filterMandatoryParams(requestedParams);
 
@@ -37,7 +37,7 @@ public class MandatoryParamsSpecification
 
     private Collection<String> filterMandatoryParams(Collection<KernelParamsRequest> kernelParamsRequests)
     {
-        Collection<String> computedMandatoryParams = new HashSet<String>();
+        Collection<String> computedMandatoryParams = new HashSet<>();
         for (KernelParamsRequest kernelParamsRequest : kernelParamsRequests) {
             if (kernelParamsRequest.requestType == KernelParamsRequestType.MANDATORY) {
                 computedMandatoryParams.add(kernelParamsRequest.keyRequested);

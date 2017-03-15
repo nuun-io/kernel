@@ -34,7 +34,7 @@ import java.util.Set;
 public class ClasspathScannerInMemory extends ClasspathScannerDisk
 {
     private final Classpath classpath;
-    private final Set<URL> urls = new HashSet<URL>();
+    private final Set<URL> urls = new HashSet<>();
 
     public ClasspathScannerInMemory(Classpath classpath, String... packageRoot)
     {

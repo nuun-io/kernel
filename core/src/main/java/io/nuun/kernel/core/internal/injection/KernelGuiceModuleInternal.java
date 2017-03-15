@@ -69,7 +69,7 @@ public class KernelGuiceModuleInternal extends AbstractModule
 
     private List<Installer> getComparableConcerns()
     {
-        List<Installer> installers = new ArrayList<Installer>();
+        List<Installer> installers = new ArrayList<>();
         InstallerFactory installerFactory = new InstallerFactory(requestHandler.getClassesWithScopes());
         if (!overriding)
         {

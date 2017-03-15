@@ -35,8 +35,8 @@ class PluginRegistry
     private static final String TYPE_UNIQUENESS_ERROR = "The kernel contains two plugins of type ";
     private static final String NAME_VALIDATION_ERROR = "The plugin %s doesn't have a correct name. It should not be null or empty.";
 
-    private final Map<Class<? extends Plugin>, Plugin> pluginsByClass = new HashMap<Class<? extends Plugin>, Plugin>();
-    private final Map<String, Plugin> pluginsByName = new HashMap<String, Plugin>();
+    private final Map<Class<? extends Plugin>, Plugin> pluginsByClass = new HashMap<>();
+    private final Map<String, Plugin> pluginsByName = new HashMap<>();
 
     void add(Class<? extends Plugin> pluginClass)
     {

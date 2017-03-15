@@ -51,7 +51,7 @@ public class DummyPlugin6_B extends AbstractPlugin
     {
         if (round.isFirst())
         {
-            return Lists.<Class<?>>newArrayList(DummyPlugin6_D.class, DummyPlugin6_C.class);
+            return Lists.newArrayList(DummyPlugin6_D.class, DummyPlugin6_C.class);
         } else
         {
             return super.dependentPlugins();

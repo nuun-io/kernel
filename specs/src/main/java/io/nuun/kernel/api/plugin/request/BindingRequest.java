@@ -16,8 +16,7 @@
  */
 package io.nuun.kernel.api.plugin.request;
 
-import org.kametic.specifications.Specification;
-
+import java.util.function.Predicate;
 
 /**
  * @author Epo Jemba
@@ -27,7 +26,7 @@ public class BindingRequest {
 
     public final RequestType requestType;
     public final Object requestedObject;
-    public final Specification<Class<?>> specification;
+    public final Predicate<Class<?>> predicate;
     public Object requestedScope;
     public Object requestedConstraint;
 
@@ -35,15 +34,15 @@ public class BindingRequest {
         this(requestType, keyRequested, null, null);
     }
 
-    public BindingRequest(RequestType requestType, Object requestedScope, Specification<Class<?>> specification) {
-        this(requestType, null, requestedScope, specification);
+    public BindingRequest(RequestType requestType, Object requestedScope, Predicate<Class<?>> predicate) {
+        this(requestType, null, requestedScope, predicate);
     }
 
-    public BindingRequest(RequestType requestType, Object keyRequested, Object requestedScope, Specification<Class<?>> specification) {
+    public BindingRequest(RequestType requestType, Object keyRequested, Object requestedScope, Predicate<Class<?>> classPredicate) {
         this.requestType = requestType;
         this.requestedObject = keyRequested;
         this.requestedScope = requestedScope;
-        this.specification = specification;
+        this.predicate = classPredicate;
     }
 
 }

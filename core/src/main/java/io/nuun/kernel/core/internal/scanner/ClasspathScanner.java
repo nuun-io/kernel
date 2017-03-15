@@ -16,18 +16,17 @@
  */
 package io.nuun.kernel.core.internal.scanner;
 
-import org.kametic.specifications.Specification;
-
 import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public interface ClasspathScanner
 {
     Collection<Class<?>> scanTypes(String typeRegex);
 
-    Collection<Class<?>> scanTypes(Specification<Class<?>> specification);
+    Collection<Class<?>> scanTypes(Predicate<Class<?>> classPredicate);
 
     Collection<Class<?>> scanTypesAnnotatedBy(Class<? extends Annotation> annotationType);
 

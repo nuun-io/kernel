@@ -109,11 +109,11 @@ public final class KernelCore implements Kernel
         dependencyProvider = new DependencyProvider(pluginRegistry, facetRegistry);
 
         round = new RoundInternal();
-        DependenciesSpecification dependenciesSpecification = new DependenciesSpecification(facetRegistry);
+        DependenciesAsserter dependenciesAsserter = new DependenciesAsserter(facetRegistry);
         for (Plugin plugin : pluginRegistry.getPlugins())
         {
             plugin.provideRound(round);
-            dependenciesSpecification.isSatisfyBy(plugin);
+            dependenciesAsserter.assertDependencies(plugin);
             addAliasesToKernelParams(plugin);
             fetchGlobalParametersFrom(plugin);
             addPackageRootsToRequestHandler(plugin.pluginPackageRoot());
@@ -191,7 +191,7 @@ public final class KernelCore implements Kernel
 
     private void sortPlugins(FacetRegistry facetRegistry)
     {
-        ArrayList<Plugin> unOrderedPlugins = new ArrayList<Plugin>(pluginRegistry.getPlugins());
+        ArrayList<Plugin> unOrderedPlugins = new ArrayList<>(pluginRegistry.getPlugins());
         logger.trace("unordered plugins: ({}) {}", unOrderedPlugins.size(), unOrderedPlugins);
         orderedPlugins = new PluginSortStrategy(facetRegistry, unOrderedPlugins).sortPlugins();
         logger.trace("ordered plugins: ({}) {}", orderedPlugins.size(), orderedPlugins);
@@ -224,9 +224,9 @@ public final class KernelCore implements Kernel
     }
 
     private void validateMandatoryParams() {
-        MandatoryParamsSpecification mandatoryParamsSpecification = new MandatoryParamsSpecification();
+        MandatoryParamsAsserter mandatoryParamsAsserter = new MandatoryParamsAsserter();
         for (Plugin plugin : pluginRegistry.getPlugins()) {
-            mandatoryParamsSpecification.isSatisfiedBy(plugin, kernelConfig.kernelParams());
+            mandatoryParamsAsserter.assertMandatoryParams(plugin, kernelConfig.kernelParams());
         }
     }
 
@@ -251,7 +251,7 @@ public final class KernelCore implements Kernel
 
     private List<Plugin> callPluginsInitMethod(final List<Plugin> plugins, int round)
     {
-        List<Plugin> nonInitializedPlugins = new ArrayList<Plugin>();
+        List<Plugin> nonInitializedPlugins = new ArrayList<>();
         for (Plugin plugin : plugins)
         {
             logger.info(" * {} plugin", plugin.name());

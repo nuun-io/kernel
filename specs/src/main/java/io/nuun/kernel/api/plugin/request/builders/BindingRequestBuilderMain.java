@@ -17,19 +17,17 @@
 package io.nuun.kernel.api.plugin.request.builders;
 
 import java.lang.annotation.Annotation;
-
-import org.kametic.specifications.Specification;
+import java.util.function.Predicate;
 
 public  interface BindingRequestBuilderMain 
 {
-    public BindingRequestBuilderOptionsBuildMain specification(Specification<Class<?>> specification);
-    public BindingRequestBuilderOptionsBuildMain annotationType(Class<? extends Annotation> annotationTypeRequested);
-    public BindingRequestBuilderOptionsBuildMain annotationRegex(String annotationRegex);
-    public BindingRequestBuilderOptionsBuildMain subtypeOf(Class<?> parentTypeRequested);
-    public BindingRequestBuilderOptionsBuildMain descendentTypeOf(Class<?> ancestorTypeRequested);
-    public BindingRequestBuilderOptionsBuildMain subtypeOfRegex(String parentTypeRegex);
-    public BindingRequestBuilderOptionsBuildMain metaAnnotationType(Class<? extends Annotation> metaAnnotationTypeRequested);
-    public BindingRequestBuilderOptionsBuildMain metaAnnotationRegex(String metaAnnotationRegex);
 
-    
+    BindingRequestBuilderOptionsBuildMain predicate(Predicate<Class<?>> classPredicate);
+    BindingRequestBuilderOptionsBuildMain annotationType(Class<? extends Annotation> annotationTypeRequested);
+    BindingRequestBuilderOptionsBuildMain annotationRegex(String annotationRegex);
+    BindingRequestBuilderOptionsBuildMain subtypeOf(Class<?> parentTypeRequested);
+    BindingRequestBuilderOptionsBuildMain subtypeOfRegex(String parentTypeRegex);
+    BindingRequestBuilderOptionsBuildMain metaAnnotationType(Class<? extends Annotation> metaAnnotationTypeRequested);
+    BindingRequestBuilderOptionsBuildMain metaAnnotationRegex(String metaAnnotationRegex);
+
 }

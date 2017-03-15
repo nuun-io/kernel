@@ -37,10 +37,6 @@ public enum RequestType
      * Request classes based on type of direct parent class
      */
     SUBTYPE_OF_BY_REGEX_MATCH,
-    /**
-     * Request classes based on type of ancestor class
-     */
-    SUBTYPE_OF_BY_TYPE_DEEP,
-    VIA_SPECIFICATION,
+    CLASS_PREDICATE,
     RESOURCES_REGEX_MATCH
 }
