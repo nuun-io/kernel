@@ -18,3 +18,7 @@ hs_err_pid*
 # Intellij IDEA
 *.iml
 .idea/
+.meghanada
+
+# VSCode
+.vscode/

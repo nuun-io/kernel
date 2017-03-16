@@ -25,7 +25,7 @@
         <version>9</version>
     </parent>
 
-    <groupId>io.nuun</groupId>
+    <groupId>io.nuun.kernel</groupId>
     <artifactId>kernel</artifactId>
     <version>1.0.M10-SNAPSHOT</version>
 
@@ -66,8 +66,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
 
         <license-check.skip>false</license-check.skip>
         <license-check.fail>true</license-check.fail>

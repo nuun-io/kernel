@@ -20,7 +20,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>io.nuun</groupId>
+		<groupId>io.nuun.kernel</groupId>
 		<artifactId>kernel</artifactId>
 		<version>1.0.M10-SNAPSHOT</version>
 	</parent>

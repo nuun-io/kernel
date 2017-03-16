@@ -16,6 +16,7 @@
  */
 package io.nuun.kernel.api.di;
 /**
+ * UnitModule is the configuration unit provided by one 
  * 
  * @author epo.jemba{@literal @}kametic.com
  *
