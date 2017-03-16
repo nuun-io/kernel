@@ -48,13 +48,16 @@
 	<url>http://nuun.io/kernel/core</url>
 
 	<dependencies>
-
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.16</version>
+		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>kernel-specs</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
@@ -80,5 +83,4 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
-
 </project>

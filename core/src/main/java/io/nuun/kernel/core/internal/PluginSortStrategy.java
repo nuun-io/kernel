@@ -68,7 +68,7 @@ class PluginSortStrategy {
             throw new KernelException("Error when sorting plugins: either a Cycle in dependencies or another cause.");
         }
 
-        ArrayList<Plugin> sorted = new ArrayList<Plugin>();
+        ArrayList<Plugin> sorted = new ArrayList<>();
         for (Character label : topologicalSort) {
             sorted.add(vertices.getPlugin(label));
         }
@@ -92,7 +92,7 @@ class PluginSortStrategy {
     }
 
     private List<Class<?>> getCompleteDependencies(Class<?> declaredDependency) {
-        final List<Class<?>> dependencies = new ArrayList<Class<?>>();
+        final List<Class<?>> dependencies = new ArrayList<>();
         if (!Plugin.class.isAssignableFrom(declaredDependency)) {
             List<?> facets = facetRegistry.getFacets(declaredDependency);
             // TODO remove the need for this loop. Add a getFacetClasses in the FacetRegistry.
@@ -106,9 +106,9 @@ class PluginSortStrategy {
     }
 
     private static class Vertices {
-        Map<Integer, Plugin> pluginsByIndex = new HashMap<Integer, Plugin>();
-        Map<Character, Plugin> pluginsByLabel = new HashMap<Character, Plugin>();
-        Map<Class<?>, Integer> indexByPluginClasses = new HashMap<Class<?>, Integer>();
+        Map<Integer, Plugin> pluginsByIndex = new HashMap<>();
+        Map<Character, Plugin> pluginsByLabel = new HashMap<>();
+        Map<Class<?>, Integer> indexByPluginClasses = new HashMap<>();
 
         public void addVertex(char label, int index, Plugin plugin) {
             pluginsByLabel.put(label, plugin);

@@ -34,9 +34,9 @@ public class KernelConfigurationInternal implements KernelConfiguration
     private final Logger logger = LoggerFactory.getLogger(KernelConfiguration.class);
     private final AliasMap kernelParamsAndAlias = new AliasMap();
 
-    private List<Class<? extends Plugin>> pluginsClass = new ArrayList<Class<? extends Plugin>>();
+    private List<Class<? extends Plugin>> pluginsClass = new ArrayList<>();
     private Plugin[] plugins = new Plugin[0];
-    private List<ModuleValidation> validations = new ArrayList<ModuleValidation>();
+    private List<ModuleValidation> validations = new ArrayList<>();
     private Object containerContext;
 
     private KernelOptions options = new KernelOptions();

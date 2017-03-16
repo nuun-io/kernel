@@ -80,7 +80,7 @@ public class InMemoryUrlType implements UrlType
 
 			// TODO ne renvoyer que l'entry de l'url donné en paramêtre
 			
-			List<File> files = new ArrayList<Vfs.File>();
+			List<File> files = new ArrayList<>();
 		    
 			for ( ClasspathAbstractElement<?> entry : classpath.entry(path).entries() )
 			{

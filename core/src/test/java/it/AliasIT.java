@@ -73,7 +73,7 @@ public class AliasIT
         @Override
         public Map<String, String> kernelParametersAliases()
         {
-            Map<String, String> aliases = new HashMap<String, String>();
+            Map<String, String> aliases = new HashMap<>();
             aliases.put("alias1", "param1");
             aliases.put("alias2", "param2");
             return aliases;

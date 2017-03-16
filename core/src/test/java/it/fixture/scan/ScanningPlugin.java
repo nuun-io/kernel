@@ -19,10 +19,11 @@ package it.fixture.scan;
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
+import io.nuun.kernel.api.predicates.ClassAnnotatedWith;
 import io.nuun.kernel.core.AbstractPlugin;
-import org.kametic.specifications.Specification;
 
 import java.util.Collection;
+import java.util.function.Predicate;
 
 /**
  * @author pierre.thirouin@ext.mpsa.com (Pierre Thirouin)
@@ -32,7 +33,7 @@ public class ScanningPlugin extends AbstractPlugin
 
     public static final String NAME = "scanning";
 
-    public final Specification<Class<?>> TO_SCAN_SPEC = classAnnotatedWith(ToScan.class);
+    public final Predicate<Class<?>> TO_SCAN_PREDICATE = new ClassAnnotatedWith(ToScan.class);
 
     private Collection<Class<?>> scannedClasses;
 
@@ -45,13 +46,13 @@ public class ScanningPlugin extends AbstractPlugin
     @Override
     public Collection<ClasspathScanRequest> classpathScanRequests()
     {
-        return classpathScanRequestBuilder().specification(TO_SCAN_SPEC).build();
+        return classpathScanRequestBuilder().predicate(TO_SCAN_PREDICATE).build();
     }
 
     @Override
     public InitState init(InitContext initContext)
     {
-        scannedClasses = initContext.scannedTypesBySpecification().get(TO_SCAN_SPEC);
+        scannedClasses = initContext.scannedTypesByPredicate().get(TO_SCAN_PREDICATE);
         return InitState.INITIALIZED;
     }
 

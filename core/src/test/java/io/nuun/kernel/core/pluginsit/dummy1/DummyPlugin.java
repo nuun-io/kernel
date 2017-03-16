@@ -105,7 +105,7 @@ public class DummyPlugin extends AbstractPlugin
         Map<String, Collection<Class<?>>> scannedTypesByRegex = initContext.scannedTypesByRegex();
         Collection<Class<?>> cParent3 = scannedTypesByRegex.get(".*WithCustomSuffix");
 
-        Collection<Class<?>> classes = new HashSet<Class<?>>();
+        Collection<Class<?>> classes = new HashSet<>();
         classes.addAll(cParent3);
         classes.addAll(cParent2);
         classes.addAll(cParent1);
@@ -147,7 +147,7 @@ public class DummyPlugin extends AbstractPlugin
     @Override
     public Collection<Class<?>> requiredPlugins()
     {
-        return Lists.<Class<?>>newArrayList(DummyPlugin2.class);
+        return Lists.newArrayList(DummyPlugin2.class);
     }
 
     @Override
@@ -160,7 +160,7 @@ public class DummyPlugin extends AbstractPlugin
     @Override
     public Map<String, String> kernelParametersAliases()
     {
-        Map<String, String> m = new HashMap<String, String>();
+        Map<String, String> m = new HashMap<>();
         m.put(NUUN_ROOT_ALIAS, "nuun.root.package");
         m.put(ALIAS_DUMMY_PLUGIN1, "dummy.plugin1");
         return m;

@@ -23,18 +23,18 @@ import java.util.Map;
 
 public class KernelOptions
 {
-    public static final KernelOption<List<String>> ROOT_PACKAGES = new KernelOption<List<String>>("root.packages");
-    public static final KernelOption<Boolean> PRINT_SCAN_WARN = new KernelOption<Boolean>("scan.warn.disable");
-    public static final KernelOption<Boolean> ENABLE_REFLECTION_LOGGER = new KernelOption<Boolean>("reflection.logger.disable");
-    public static final KernelOption<Boolean> SCAN_PLUGIN = new KernelOption<Boolean>("plugin.scan.disable");
-    public static final KernelOption<ClasspathScanMode> CLASSPATH_SCAN_MODE = new KernelOption<ClasspathScanMode>("classpath.scan.mode");
-    public static final KernelOption<DependencyInjectionMode> DEPENDENCY_INJECTION_MODE = new KernelOption<DependencyInjectionMode>("dependency.injection.mode");
+    public static final KernelOption<List<String>> ROOT_PACKAGES = new KernelOption<>("root.packages");
+    public static final KernelOption<Boolean> PRINT_SCAN_WARN = new KernelOption<>("scan.warn.disable");
+    public static final KernelOption<Boolean> ENABLE_REFLECTION_LOGGER = new KernelOption<>("reflection.logger.disable");
+    public static final KernelOption<Boolean> SCAN_PLUGIN = new KernelOption<>("plugin.scan.disable");
+    public static final KernelOption<ClasspathScanMode> CLASSPATH_SCAN_MODE = new KernelOption<>("classpath.scan.mode");
+    public static final KernelOption<DependencyInjectionMode> DEPENDENCY_INJECTION_MODE = new KernelOption<>("dependency.injection.mode");
 
-    private final Map<String, Object> options = new HashMap<String, Object>();
+    private final Map<String, Object> options = new HashMap<>();
 
     public KernelOptions()
     {
-        set(ROOT_PACKAGES, new ArrayList<String>());
+        set(ROOT_PACKAGES, new ArrayList<>());
         set(PRINT_SCAN_WARN, true);
         set(ENABLE_REFLECTION_LOGGER, false);
         set(SCAN_PLUGIN, true);

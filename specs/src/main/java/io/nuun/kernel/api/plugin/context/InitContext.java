@@ -17,12 +17,12 @@
 package io.nuun.kernel.api.plugin.context;
 
 import io.nuun.kernel.api.di.UnitModule;
-import org.kametic.specifications.Specification;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * The holder class containing all the data available at the {@code init} step.
@@ -32,8 +32,6 @@ import java.util.Map;
 public interface InitContext
 {
     Map<Class<?>, Collection<Class<?>>> scannedSubTypesByParentClass();
-
-    Map<Class<?>, Collection<Class<?>>> scannedSubTypesByAncestorClass();
 
     Map<String, Collection<Class<?>>> scannedSubTypesByParentRegex();
 
@@ -59,7 +57,7 @@ public interface InitContext
 
     Map<String, Collection<String>> mapResourcesByRegex();
 
-    Map<Specification, Collection<Class<?>>> scannedTypesBySpecification();
+    Map<Predicate<Class<?>>, Collection<Class<?>>> scannedTypesByPredicate();
 
     /**
      * Returns plugin instances required by the current plugin.

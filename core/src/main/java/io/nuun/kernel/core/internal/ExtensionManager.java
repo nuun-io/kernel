@@ -55,7 +55,7 @@ public class ExtensionManager
     {
 
         ServiceLoader<KernelExtension> kernelExtensionLoader = ServiceLoader.load(KernelExtension.class, contextClassLoader);
-        Map<Class<?>, KernelExtension<?>> extensionMapping = new HashMap<Class<?>, KernelExtension<?>>();
+        Map<Class<?>, KernelExtension<?>> extensionMapping = new HashMap<>();
         for (KernelExtension<?> kernelExtension : kernelExtensionLoader)
         {
             Class<?> extensionInterface = TypeToken.of(kernelExtension.getClass()).resolveType(KernelExtension.class.getTypeParameters()[0]).getRawType();

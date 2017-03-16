@@ -183,7 +183,7 @@ public class KernelCoreIT
     }
 
     @Test
-    public void classpath_scan_by_specification_should_work()
+    public void classpath_scan_by_predicate_should_work()
     {
         assertThat(plugin4.collection).isNotNull();
         assertThat(plugin4.collection).isNotEmpty();
@@ -192,7 +192,7 @@ public class KernelCoreIT
     }
 
     @Test
-    public void binding_by_specification_should_work()
+    public void binding_by_predicate_should_work()
     {
         assertThat(injector.getInstance(Pojo2.class)).isNotNull();
         // we check for the scope
@@ -293,7 +293,7 @@ public class KernelCoreIT
     @Test
     public void plugin_sort_algorithm() throws Exception
     {
-        ArrayList<Plugin> plugins = new ArrayList<Plugin>(), plugins2;
+        ArrayList<Plugin> plugins = new ArrayList<>(), plugins2;
 
         p1 e1 = new p1();
         plugins.add(e1);
@@ -335,7 +335,7 @@ public class KernelCoreIT
     {
         public Collection<Class<?>> dep(Class<?> klazz)
         {
-            return Lists.<Class<?>>newArrayList(klazz);
+            return Lists.newArrayList(klazz);
         }
     }
 

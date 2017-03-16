@@ -23,8 +23,7 @@ import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-
-import org.kametic.specifications.Specification;
+import java.util.function.Predicate;
 
 
 /**
@@ -41,14 +40,14 @@ public class ClasspathScanRequestBuilder implements Builder<Collection<Classpath
      */
     public ClasspathScanRequestBuilder()
     {
-        requests = new HashSet<ClasspathScanRequest>();
+        requests = new HashSet<>();
     }
     
     
-    public ClasspathScanRequestBuilder specification(Specification<Class<?>> specification)
+    public ClasspathScanRequestBuilder predicate(Predicate<Class<?>> classPredicate)
     {
         
-        requests.add(new ClasspathScanRequest(specification));
+        requests.add(new ClasspathScanRequest(classPredicate));
         
         return this;
     }
@@ -78,13 +77,6 @@ public class ClasspathScanRequestBuilder implements Builder<Collection<Classpath
     }
     
 
-    public ClasspathScanRequestBuilder descendentTypeOf(Class<?> parentTypeRequested)
-    {
-
-        requests.add(new ClasspathScanRequest(RequestType.SUBTYPE_OF_BY_TYPE_DEEP, parentTypeRequested));
-        return this;
-    }
-    
     public ClasspathScanRequestBuilder subtypeOfRegex(String parentTypeRegex)
     {
         

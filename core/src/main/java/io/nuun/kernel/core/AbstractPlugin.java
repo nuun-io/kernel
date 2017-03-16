@@ -22,28 +22,28 @@ import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.Round;
 import io.nuun.kernel.api.plugin.context.Context;
 import io.nuun.kernel.api.plugin.context.InitContext;
-import io.nuun.kernel.api.plugin.request.*;
+import io.nuun.kernel.api.plugin.request.BindingRequest;
+import io.nuun.kernel.api.plugin.request.BindingRequestBuilder;
+import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
+import io.nuun.kernel.api.plugin.request.ClasspathScanRequestBuilder;
+import io.nuun.kernel.api.plugin.request.KernelParamsRequest;
+import io.nuun.kernel.api.plugin.request.KernelParamsRequestBuilder;
 import io.nuun.kernel.api.plugin.request.builders.BindingRequestBuilderMain;
 import io.nuun.kernel.core.internal.injection.ModuleEmbedded;
 import io.nuun.kernel.spi.DependencyInjectionProvider;
-import org.kametic.specifications.*;
-import org.kametic.specifications.reflect.ClassMethodsAnnotatedWith;
-import org.kametic.specifications.reflect.DescendantOfSpecification;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.net.URL;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Epo Jemba
  */
 public abstract class AbstractPlugin implements Plugin
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPlugin.class);
-
     protected Context context = null;
     protected Object containerContext = null;
     protected Round round;
@@ -82,96 +82,6 @@ public abstract class AbstractPlugin implements Plugin
     protected BindingRequestBuilderMain bindingRequestsBuilder()
     {
         return new BindingRequestBuilder();
-    }
-
-    // ============================= PLUGIN Utilities Helpers =============================
-
-    protected Specification<Class<?>> or(Specification<Class<?>>... participants)
-    {
-        return new OrSpecification<Class<?>>(participants);
-    }
-
-    protected Specification<Class<?>> and(Specification<Class<?>>... participants)
-    {
-        return new AndSpecification<Class<?>>(participants);
-    }
-
-    protected Specification<Class<?>> not(Specification<Class<?>> participant)
-    {
-        return new NotSpecification<Class<?>>(participant);
-    }
-
-    protected Specification<Class<?>> descendantOf(Class<?> ancestor)
-    {
-        return new DescendantOfSpecification(ancestor);
-    }
-    
-    protected Specification<Class<?>> classMethodsAnnotatedWith(final Class<? extends Annotation> annotationClass)
-    {
-    	return new ClassMethodsAnnotatedWith(annotationClass);
-    }
-
-    protected Specification<Class<?>> fieldAnnotatedWith(final Class<? extends Annotation> annotationClass)
-    {
-    	return new AbstractSpecification<Class<?>> ()
-    	{
-    		@Override
-    		public boolean isSatisfiedBy(Class<?> candidate) {
-    			if (candidate != null)
-    			{
-    			    try
-                    {
-    			        for (Field field : candidate.getDeclaredFields())
-    			        {
-    			            if (field.isAnnotationPresent(annotationClass))
-    			            {
-    			                return true;
-    			            }
-    			        }
-                    }
-                    catch (Throwable throwable)
-                    {
-                        LOGGER.debug("fieldAnnotatedWith : " + candidate + " missing " + throwable);
-                    }
-    			}
-    			return false;
-    		}
-    	};
-    }
-
-    protected Specification<Class<?>> classAnnotatedWith(final Class<? extends Annotation> klass)
-    {
-        return new AbstractSpecification<Class<?>>()
-        {
-            @Override
-            public boolean isSatisfiedBy(Class<?> candidate)
-            {
-                return candidate != null && candidate.getAnnotation(klass) != null;
-            }
-        };
-    }
-
-    // TODO replace this implementation by the one in ClassMethodsAnnotatedWithSpecification
-    protected Specification<Class<?>> classImplements(final Class<?> klass)
-    {
-        return new AbstractSpecification<Class<?>>()
-        {
-            @Override
-            public boolean isSatisfiedBy(Class<?> candidate)
-            {
-                if (candidate != null && klass.isInterface())
-                {
-                    for (Class<?> i : candidate.getInterfaces())
-                    {
-                        if (i.equals(klass))
-                        {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-        };
     }
 
     // * ============================= PLUGIN info and requests * ============================= //
@@ -295,7 +205,7 @@ public abstract class AbstractPlugin implements Plugin
     @Override
     public Map<String, String> kernelParametersAliases()
     {
-        return new HashMap<String, String>();
+        return new HashMap<>();
     }
     
     protected UnitModule unitModule(Object module)

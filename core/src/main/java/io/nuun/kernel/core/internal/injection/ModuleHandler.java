@@ -33,7 +33,7 @@ import java.util.Map;
 public class ModuleHandler
 {
     private final KernelConfigurationInternal kernelConfig;
-    private final Collection<DependencyInjectionProvider> dependencyInjectionProviders = new ArrayList<DependencyInjectionProvider>();
+    private final Collection<DependencyInjectionProvider> dependencyInjectionProviders = new ArrayList<>();
 
     private final Map<Class<? extends Plugin>, UnitModule> unitModules = Maps.newConcurrentMap();
     private final Map<Class<? extends Plugin>, UnitModule> overridingUnitModules = Maps.newConcurrentMap();

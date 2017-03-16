@@ -20,7 +20,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import io.nuun.kernel.core.internal.scanner.AbstractClasspathScanner;
 import io.nuun.kernel.core.internal.utils.AssertUtils;
-import org.kametic.specifications.Specification;
 import org.reflections.Reflections;
 import org.reflections.Store;
 import org.reflections.scanners.ResourcesScanner;
@@ -41,6 +40,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static io.nuun.kernel.core.internal.utils.NuunReflectionUtils.forNameSilent;
@@ -63,7 +63,7 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
     public ClasspathScannerDisk(ClasspathStrategy classpathStrategy, boolean reachAbstractClass, Set<URL> additionalClasspath, String... packageRoots)
     {
         super(reachAbstractClass);
-        this.packageRoots = new LinkedList<String>();
+        this.packageRoots = new LinkedList<>();
         Collections.addAll(this.packageRoots, packageRoots);
         this.classpathStrategy = classpathStrategy;
         this.additionalClasspath = additionalClasspath;
@@ -97,7 +97,7 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
     {
         if (urls == null)
         {
-            urls = new HashSet<URL>();
+            urls = new HashSet<>();
 
             switch (classpathStrategy.getStrategy())
             {
@@ -134,17 +134,17 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
     }
 
     @Override
-    public Collection<Class<?>> scanTypes(final Specification<Class<?>> specification)
+    public Collection<Class<?>> scanTypes(final Predicate<Class<?>> predicate)
     {
         Store store = reflections.getStore();
         Multimap<String, String> multimap = store.get(TypeElementsScanner.class.getSimpleName());
         Collection<String> types = multimap.keySet();
 
-        // Filter via specification
-        Collection<Class<?>> filteredTypes = new HashSet<Class<?>>();
+        // Filter via predicate
+        Collection<Class<?>> filteredTypes = new HashSet<>();
         for (Class<?> candidate : forNames(types))
         {
-            if (specification.isSatisfiedBy(candidate))
+            if (predicate.test(candidate))
             {
                 filteredTypes.add(candidate);
             }
@@ -163,7 +163,7 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
     {
         Store store = reflections.getStore();
         Multimap<String, String> multimap = store.get(TypeElementsScanner.class.getSimpleName());
-        Collection<String> collectionOfString = new HashSet<String>();
+        Collection<String> collectionOfString = new HashSet<>();
         for (String loopKey : multimap.keySet())
         {
             if (loopKey.matches(typeRegex))
@@ -182,7 +182,7 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
 
         Multimap<String, String> multimap = store.get(TypeAnnotationsScanner.class.getSimpleName());
 
-        List<String> key = new ArrayList<String>();
+        List<String> key = new ArrayList<>();
         for (String loopKey : multimap.keySet())
         {
             if (loopKey.matches(annotationTypeRegex))
@@ -191,7 +191,7 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
             }
         }
 
-        Collection<Class<?>> typesAnnotatedWith = new HashSet<Class<?>>();
+        Collection<Class<?>> typesAnnotatedWith = new HashSet<>();
 
         for (String k : key)
         {
@@ -247,7 +247,7 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
         Store store = reflections.getStore();
         Multimap<String, String> multimap = store.get(TypeElementsScanner.class.getSimpleName());
 
-        Collection<String> types = new HashSet<String>();
+        Collection<String> types = new HashSet<>();
 
         for (String loopKey : multimap.keySet())
         {
@@ -258,7 +258,7 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
         }
 
         // Then find subclasses of types
-        Collection<Class<?>> finalClasses = new HashSet<Class<?>>();
+        Collection<Class<?>> finalClasses = new HashSet<>();
         for (Class<?> subType : forNames(types))
         {
             finalClasses.addAll(postTreatment((Collection) reflections.getSubTypesOf(subType)));

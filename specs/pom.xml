@@ -16,8 +16,9 @@
     along with Nuun IO Kernel Specs.  If not, see <http://www.gnu.org/licenses />.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>io.nuun.kernel</groupId>
@@ -25,49 +26,27 @@
 		<version>1.0.M10-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>kernel-specs</artifactId>
-	<packaging>jar</packaging>
+    <artifactId>kernel-specs</artifactId>
+    <packaging>jar</packaging>
 
-	<name>Nuun IO Kernel Specs</name>
+    <name>Nuun IO Kernel Specs</name>
 
-	<description>
-    This is the specs part of the Nuun IO Kernel. API and SPI.
-    Use this project for your specs oriented projects.
+    <description>
+        This is the specs part of the Nuun IO Kernel. API and SPI.
+        Use this project for your specs oriented projects.
 
-    See kernel parent description.
-        
-  </description>
+        See kernel parent description.
 
-	<inceptionYear>2012</inceptionYear>
+    </description>
 
-	<licenses>
-		<license>
-			<name>LGPL 3.0</name>
-			<url>http://www.gnu.org/copyleft/lesser.html</url>
-		</license>
-	</licenses>
+    <inceptionYear>2012</inceptionYear>
 
-	<url>http://nuun.io/kernel/specs</url>
+    <licenses>
+        <license>
+            <name>LGPL 3.0</name>
+            <url>http://www.gnu.org/copyleft/lesser.html</url>
+        </license>
+    </licenses>
 
-	<dependencies>
-
-		<dependency>
-			<groupId>org.kametic</groupId>
-			<artifactId>specifications</artifactId>
-			<version>1.0.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
-			<version>1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-			<version>2.0.1</version>
-		</dependency>
-	</dependencies>
-
+    <url>http://nuun.io/kernel/specs</url>
 </project>
