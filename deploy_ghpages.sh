@@ -18,7 +18,8 @@
 
 
 (
-	cd doc/target/site/apidocs
+    mvn javadoc:aggregate
+	cd target/site/apidocs
 	git init
 	git config user.name "Travis-CI"
 	git config user.email "travis@seedstack.org"
