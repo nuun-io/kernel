@@ -31,11 +31,11 @@
 	<name>Nuun IO Kernel Tests</name>
 
 	<description>
-    This is the tests part of the Nuun IO Kernel. 
+    This is the tests part of the Nuun IO Kernel.
     Use this project when you want to make unit test and integration tests from your plugins.
 
     See kernel parent description.
-        
+
   </description>
 
 	<inceptionYear>2014</inceptionYear>
@@ -48,6 +48,12 @@
 	</licenses>
 
 	<url>http://nuun.io/kernel/tests</url>
+
+        <properties>
+          <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+          <maven.compiler.source>1.8</maven.compiler.source>
+          <maven.compiler.target>1.8</maven.compiler.target>
+        </properties>
 
 	<dependencies>
 
@@ -63,20 +69,20 @@
 			<version>4.11</version>
 			<optional>true</optional>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>1.0.0</version>
 			<optional>true</optional>
 		</dependency>
-		
+
        <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>1.3.0</version>
             <optional>true</optional>
-        </dependency>		
+        </dependency>
 
 	</dependencies>
 

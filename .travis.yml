@@ -9,10 +9,16 @@ cache:
 notifications:
   irc: "chat.freenode.net#nuun-dev"
 
-script: mvn -B -q verify jacoco:report
-
 after_success:
   - mvn -q coveralls:report -DrepoToken=$COVERALLS_TOKEN
-  - echo "<settings><servers><server><id>sonatype-nexus-snapshots</id><username>\${env.SONATYPE_USER}</username><password>\${env.SONATYPE_PASS}</password></server></servers></settings>" > ~/settings.xml
-  - "[[ $TRAVIS_PULL_REQUEST == \"false\" && $TRAVIS_BRANCH == \"master\" ]] && mvn deploy --settings ~/settings.xml"
-  - "[[ $TRAVIS_PULL_REQUEST == \"false\" && $TRAVIS_BRANCH == \"master\" ]] && chmod +x deploy_ghpages.sh && ./deploy_ghpages.sh"
+  - echo "<settings><servers><server><id>bintray</id><username>\${env.BINTRAY_USER}</username><password>\${env.BINTRAY_KEY}</password></server></servers></settings>" > ~/.m2/settings.xml
+  - if [[ $TRAVIS_PULL_REQUEST = false ]] && [[ $TRAVIS_BRANCH = master || $TRAVIS_BRANCH = dev-* ]] || [[ $TRAVIS_TAG = v* ]]; then GOAL=deploy; else GOAL=install; fi
+  - if [[ $TRAVIS_TAG = v* ]]; then ADDITIONAL_PROFILES=release; mvn -q -U org.seedstack:seedstack-maven-plugin:release; else ADDITIONAL_PROFILES=snapshots; fi
+
+script: mvn -q -U -T 2 -Pbuild-number,bintray,javadoc,$ADDITIONAL_PROFILES $GOAL jacoco:report
+
+#  - echo "<settings><servers><server><id>sonatype-nexus-snapshots</id><username>\${env.SONATYPE_USER}</username><password>\${env.SONATYPE_PASS}</password></server></servers></settings>" > ~/settings.xml
+#  - "[[ $TRAVIS_PULL_REQUEST == \"false\" && $TRAVIS_BRANCH == \"master\" ]] && mvn deploy --settings ~/settings.xml"
+#  - "[[ $TRAVIS_PULL_REQUEST == \"false\" && $TRAVIS_BRANCH == \"master\" ]] && chmod +x deploy_ghpages.sh && ./deploy_ghpages.sh"
+
+  

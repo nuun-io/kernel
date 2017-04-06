@@ -79,6 +79,9 @@
         <bintray.repo>nuun-io</bintray.repo>
         <bintray.package>kernel</bintray.package>
 
+        <buildnumber-maven-plugin.version>1.4</buildnumber-maven-plugin.version>
+        <maven-jar-plugin.version>2.6</maven-jar-plugin.version>
+        
     </properties>
 
     <dependencies>
@@ -337,6 +340,41 @@
                 </repository>
             </distributionManagement>
         </profile>
+
+        <profile>
+            <id>snapshots</id>
+            <repositories>
+                <repository>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <id>ojo-libs-snapshot</id>
+                    <name>ojo-snapshots</name>
+                    <url>https://oss.jfrog.org/artifactory/libs-snapshot</url>
+                </repository>
+            </repositories>
+        </profile>
+
+        <profile>
+            <id>bintray</id>
+            <repositories>
+                <repository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <id>bintray</id>
+                    <name>bintray</name>
+                    <url>http://dl.bintray.com/kametic/jars</url>
+                </repository>
+            </repositories>
+        </profile>
+        
 </profiles>
 
     
