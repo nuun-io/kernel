@@ -14,6 +14,7 @@ install:
   - if [[ $TRAVIS_PULL_REQUEST = false ]] && [[ $TRAVIS_BRANCH = master || $TRAVIS_BRANCH = dev-* ]] || [[ $TRAVIS_TAG = v* ]]; then GOAL=deploy; else GOAL=install; fi
   - if [[ $TRAVIS_TAG = v* ]]; then ADDITIONAL_PROFILES=release; mvn -q -U org.seedstack:seedstack-maven-plugin:release; else ADDITIONAL_PROFILES=snapshots; fi
   - echo $GOAL
+  - echo $ADDITIONAL_PROFILES
 
 script: mvn -q -U -T 2 -Pbuild-number,bintray,javadoc,$ADDITIONAL_PROFILES $GOAL jacoco:report
 
