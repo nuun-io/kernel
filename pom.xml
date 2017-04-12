@@ -72,7 +72,7 @@
         <bintray.org>kametic</bintray.org>
         <bintray.repo>nuun-io</bintray.repo>
         <bintray.package>kernel</bintray.package>
-
+        
         <buildnumber-maven-plugin.version>1.4</buildnumber-maven-plugin.version>
         <maven-jar-plugin.version>2.6</maven-jar-plugin.version>
 
@@ -372,14 +372,13 @@
     </profiles>
 
 
-
     <distributionManagement>
       <snapshotRepository>
-        <id>oss-jfrog-artifactory</id>
+        <id>snapshots</id>
         <name>oss-jfrog-artifactory-snapshots</name>
         <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
       </snapshotRepository>
     </distributionManagement>
+    
 
-
-</project>
+ </project>
