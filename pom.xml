@@ -345,9 +345,9 @@
                     <releases>
                         <enabled>false</enabled>
                     </releases>
-                    <id>ojo-libs-snapshot</id>
+                    <id>snapshot</id>
                     <name>ojo-snapshots</name>
-                    <url>https://oss.jfrog.org/artifactory/libs-snapshot</url>
+                    <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
                 </repository>
             </repositories>
         </profile>
