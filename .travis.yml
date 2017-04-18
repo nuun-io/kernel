@@ -16,10 +16,10 @@ install:
   - echo $GOAL
   - echo $ADDITIONAL_PROFILES
 
-script: mvn -q -U -T 2 -Pbuild-number,bintray,javadoc,$ADDITIONAL_PROFILES $GOAL jacoco:report
+script: mvn -U -T 2 -Pbuild-number,bintray,$ADDITIONAL_PROFILES $GOAL jacoco:report
 
 after_success:
-  - mvn -q coveralls:report -DrepoToken=$COVERALLS_TOKEN
+  - mvn coveralls:report -DrepoToken=$COVERALLS_TOKEN
 
 #  - echo "<settings><servers><server><id>sonatype-nexus-snapshots</id><username>\${env.SONATYPE_USER}</username><password>\${env.SONATYPE_PASS}</password></server></servers></settings>" > ~/settings.xml
 #  - "[[ $TRAVIS_PULL_REQUEST == \"false\" && $TRAVIS_BRANCH == \"master\" ]] && mvn deploy --settings ~/settings.xml"
