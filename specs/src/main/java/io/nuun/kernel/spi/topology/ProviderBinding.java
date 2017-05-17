@@ -16,14 +16,24 @@
  */
 package io.nuun.kernel.spi.topology;
 
-import java.lang.reflect.Member;
-import java.util.Optional;
+import java.lang.annotation.Annotation;
 
-public interface TopologyDefinition
+public class ProviderBinding extends Binding
 {
-    Optional<InstanceBinding> instanceBinding(Member candidate);
 
-    Optional<LinkedBinding> linkedBinding(Member candidate);
+    public ProviderBinding(Class key, Class qualifier, Object instance)
+    {
+        super(key, qualifier, instance);
+    }
 
-    Optional<ProviderBinding> providerBinding(Member candidate);
+    public ProviderBinding(Class key, Annotation qualifier, Object injected) 
+    {
+        super(key, qualifier, injected);
+    }
+
+    public ProviderBinding(Class key, Object instance)
+    {
+        super(key, instance);
+    }
+
 }

@@ -4,6 +4,7 @@ import static java.util.Arrays.stream;
 import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.spi.topology.InstanceBinding;
 import io.nuun.kernel.spi.topology.LinkedBinding;
+import io.nuun.kernel.spi.topology.ProviderBinding;
 import io.nuun.kernel.spi.topology.TopologyDefinition;
 
 import java.lang.annotation.Annotation;
@@ -24,6 +25,37 @@ public class TopologyDefinitionCore implements TopologyDefinition
 {
 
     private Logger logger = LoggerFactory.getLogger(TopologyDefinitionCore.class);
+
+    @Override
+    public Optional<ProviderBinding> providerBinding(Member candidate)
+    {
+
+        if (Method.class.equals(candidate.getClass()) && candidate.getName().startsWith("provides"))
+        {
+            Method m = (Method) candidate;
+
+            if (m.getParameterCount() == 1)
+            {
+                Class<?> key = m.getParameterTypes()[0];
+                Class<?> provided = m.getReturnType();
+
+                assertProviderOf(key, provided);
+
+                Optional<Annotation> qualifier = qualifier(m.getParameterAnnotations()[0]);
+                if (!qualifier.isPresent())
+                {
+                    return Optional.of(new ProviderBinding(key, provided));
+                }
+                else
+                {
+                    return Optional.of(new ProviderBinding(key, qualifier.get(), provided));
+                }
+
+            }
+        }
+
+        return Optional.empty();
+    }
 
     @Override
     public Optional<LinkedBinding> linkedBinding(Member candidate)
@@ -76,7 +108,7 @@ public class TopologyDefinitionCore implements TopologyDefinition
 
             if (qualifier.isPresent())
             {
-                return Optional.of(new InstanceBinding(f.getType(), qualifier.get().annotationType(), instance));
+                return Optional.of(new InstanceBinding(f.getType(), qualifier.get(), instance));
             }
             else
             {

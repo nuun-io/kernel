@@ -1,15 +1,15 @@
 package io.nuun.kernel.core.internal.topology;
 
+import io.nuun.kernel.spi.topology.Binding;
+import io.nuun.kernel.spi.topology.InstanceBinding;
+import io.nuun.kernel.spi.topology.LinkedBinding;
+
 import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.AbstractModule;
-
-import io.nuun.kernel.spi.topology.Binding;
-import io.nuun.kernel.spi.topology.InstanceBinding;
-import io.nuun.kernel.spi.topology.LinkedBinding;
 
 public class TopologyModule extends AbstractModule
 {
@@ -34,14 +34,19 @@ public class TopologyModule extends AbstractModule
         if (InstanceBinding.class.getSimpleName().equals(binding.name()))
         {
             InstanceBinding ib = (InstanceBinding) binding;
-            if (ib.qualifierClass == null)
-            {
-                this.binder().bind(ib.key).toInstance(ib.injected);
-            }
-            else
+            if (ib.qualifierClass != null)
             {
                 this.binder().bind(ib.key).annotatedWith(ib.qualifierClass).toInstance(ib.injected);
             }
+            else if (ib.qualifierAnno != null)
+            {
+                this.binder().bind(ib.key).annotatedWith(ib.qualifierAnno).toInstance(ib.injected);
+            }
+            else if (ib.qualifierClass == null)
+            {
+                this.binder().bind(ib.key).toInstance(ib.injected);
+            }
+
         }
         else if (LinkedBinding.class.getSimpleName().equals(binding.name()))
         {

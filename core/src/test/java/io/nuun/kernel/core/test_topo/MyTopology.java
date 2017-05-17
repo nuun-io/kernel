@@ -1,10 +1,5 @@
 package io.nuun.kernel.core.test_topo;
 
-import java.lang.reflect.Method;
-import java.util.function.Predicate;
-
-import javax.inject.Named;
-
 import io.nuun.kernel.api.annotations.Topology;
 import io.nuun.kernel.core.test_topo.sample.MyLogger;
 import io.nuun.kernel.core.test_topo.sample.MyLoggerFieldInjector;
@@ -17,7 +12,10 @@ import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2;
 import io.nuun.kernel.core.test_topo.sample.Server;
 import io.nuun.kernel.core.test_topo.sample.Serveur;
 
+import java.lang.reflect.Method;
+import java.util.function.Predicate;
 
+import com.google.inject.name.Named;
 
 @Topology
 public interface MyTopology
@@ -28,9 +26,9 @@ public interface MyTopology
 
     @Serveur
     String  url       = "http://localhost.local";
-    
+
     @Named("main")
-    String context = "cli";
+    String  context   = "cli";
 
     Integer theAnswer = 42;
 

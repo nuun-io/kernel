@@ -45,9 +45,8 @@ public class KernelSuite9Test
     {
         underTest = createKernel(
 
-        newKernelConfiguration()
-           .rootPackages("io.nuun.kernel.core.test_topo") //
-           .withoutSpiPluginsLoader().plugins(new TopologyPlugin()));
+        newKernelConfiguration().rootPackages("io.nuun.kernel.core.test_topo") //
+                .withoutSpiPluginsLoader().plugins(new TopologyPlugin()));
 
         underTest.init();
         underTest.start();
@@ -57,6 +56,7 @@ public class KernelSuite9Test
     public void topoly_should_work_with_instance_binding()
     {
         Injector injector = underTest.objectGraph().as(Injector.class);
+
         //
         Integer theAnswer = injector.getInstance(Key.get(Integer.class));
 
@@ -72,6 +72,11 @@ public class KernelSuite9Test
         String url = injector.getInstance(Key.get(String.class, Serveur.class));
         assertThat(url).isNotNull();
         assertThat(url).isEqualTo("http://localhost.local");
+
+        //
+        String context = injector.getInstance(Key.get(String.class, Names.named("main")));
+        assertThat(context).isNotNull();
+        assertThat(context).isEqualTo("cli");
     }
 
     @Test
