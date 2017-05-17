@@ -16,27 +16,35 @@
  */
 package io.nuun.kernel.spi.topology;
 
-public abstract class Binding<E>
-{
+import java.lang.annotation.Annotation;
 
-    public final Class  key;
-    public final Class  qualifier;
+@SuppressWarnings("rawtypes")
+public abstract class Binding {
+
+    public final Class key;
+    public final Class qualifierClass;
+    public final Annotation qualifierAnno;
     public final Object injected;
 
-    public Binding(Class key, Class qualifier, Object injected)
-    {
+    public Binding(Class key, Class qualifier, Object injected) {
         this.key = key;
-        this.qualifier = qualifier;
+        this.qualifierClass = qualifier;
+        this.qualifierAnno = null;
         this.injected = injected;
     }
 
-    public Binding(Class key, Object injected)
-    {
-        this(key, null, injected);
+    public Binding(Class key, Annotation qualifier, Object injected) {
+        this.key = key;
+        this.qualifierAnno = qualifier;
+        this.qualifierClass = null;
+        this.injected = injected;
     }
 
-    public String name()
-    {
+    public Binding(Class key, Object injected) {
+        this(key, (Annotation) null, injected);
+    }
+
+    public String name() {
         return this.getClass().getSimpleName();
     }
 }

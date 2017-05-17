@@ -46,7 +46,7 @@ public class TopologyDefinitionCore implements TopologyDefinition
                 }
                 else
                 {
-                    return Optional.of(new LinkedBinding(key, qualifier.get().annotationType(), provided));
+                    return Optional.of(new LinkedBinding(key, qualifier.get(), provided));
                 }
 
             }
