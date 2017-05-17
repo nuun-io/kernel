@@ -16,39 +16,22 @@
  */
 package io.nuun.kernel.core;
 
-import io.nuun.kernel.api.Kernel;
+import io.nuun.kernel.api.annotations.EntryPoint;
 
-public class NuunRunner
+import org.junit.Test;
+
+public class KernelSuiteATest
 {
 
-    public static NuunRunnerDsl entrypoint(Class<?> entrypointClass)
+    @EntryPoint(packageScan="io.nuun.kernel.core.test_topo")
+    static class App {
+        
+    }
+    
+    @Test
+    public void testEntrypoint()
     {
-        return new NuunRunnerDsl(entrypointClass);
+        NuunRunner.entrypoint(App.class).execute(new String[]{"--option1" , "value1"});
     }
 
-    public static class NuunRunnerDsl
-    {
-
-        private Class<?> entrypointClass;
-
-        public NuunRunnerDsl(Class<?> entrypointClass)
-        {
-            this.entrypointClass = entrypointClass;
-        }
-
-        public void execute(String[] args)
-        {
-            Kernel kernel = NuunCore.createKernel(NuunCore.newKernelConfiguration().containerContext(args));
-            
-            kernel.init();
-            
-            kernel.start();
-            
-            kernel.stop();
-            
-        }
-    }
 }
-
-/* 
-*/

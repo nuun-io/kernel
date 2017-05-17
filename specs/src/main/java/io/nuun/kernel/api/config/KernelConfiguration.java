@@ -78,7 +78,7 @@ public interface KernelConfiguration
     /**
      * Specifies a plugin to be used by the Nuun kernel.
      *
-     * @param plugins the plugin instance
+     * @param plugins the plugin injected
      * @return itself
      */
     KernelConfiguration addPlugin(Plugin plugins);

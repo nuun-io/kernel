@@ -94,10 +94,10 @@ class PluginRegistry
     }
 
     /**
-     * Returns the plugin instance corresponding to the given class.
+     * Returns the plugin injected corresponding to the given class.
      *
      * @param pluginClass the plugin class
-     * @return the plugin instance
+     * @return the plugin injected
      */
     Plugin get(Class<? extends Plugin> pluginClass)
     {
@@ -105,10 +105,10 @@ class PluginRegistry
     }
 
     /**
-     * Returns the plugin instance corresponding to the given name.
+     * Returns the plugin injected corresponding to the given name.
      *
      * @param name the plugin name
-     * @return the plugin instance
+     * @return the plugin injected
      */
     Plugin get(String name)
     {
