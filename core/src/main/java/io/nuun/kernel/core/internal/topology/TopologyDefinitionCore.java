@@ -1,11 +1,6 @@
 package io.nuun.kernel.core.internal.topology;
 
 import static java.util.Arrays.stream;
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.spi.topology.InstanceBinding;
-import io.nuun.kernel.spi.topology.LinkedBinding;
-import io.nuun.kernel.spi.topology.ProviderBinding;
-import io.nuun.kernel.spi.topology.TopologyDefinition;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
@@ -14,6 +9,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
+import javax.inject.Provider;
 import javax.inject.Qualifier;
 
 import org.slf4j.Logger;
@@ -21,10 +17,17 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.BindingAnnotation;
 
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.spi.topology.InstanceBinding;
+import io.nuun.kernel.spi.topology.LinkedBinding;
+import io.nuun.kernel.spi.topology.ProviderBinding;
+import io.nuun.kernel.spi.topology.TopologyDefinition;
+import net.jodah.typetools.TypeResolver;
+
 public class TopologyDefinitionCore implements TopologyDefinition
 {
 
-    private Logger logger = LoggerFactory.getLogger(TopologyDefinitionCore.class);
+    private final Logger logger = LoggerFactory.getLogger(TopologyDefinitionCore.class);
 
     @Override
     public Optional<ProviderBinding> providerBinding(Member candidate)
@@ -55,6 +58,38 @@ public class TopologyDefinitionCore implements TopologyDefinition
         }
 
         return Optional.empty();
+    }
+
+    private void assertProviderOf(Class<?> key, Class<?> provider) 
+    {
+        Boolean jsr;
+        Boolean google;
+        
+        if (  provider.equals(Provider.class)  ||  provider.equals(com.google.inject.Provider.class)  || 
+                  ( jsr =   (! Provider.class.isAssignableFrom(provider)))  ||  ( google = ( ! com.google.inject.Provider.class.isAssignableFrom(provider) ))) 
+        {
+            throw new KernelException("Class {} should be a subclass of JSR330 or Guice Provider.", provider.getName());
+        }
+        
+        /*
+         Class<?> subType = ProxyUtils.cleanProxy(getClass());
+         producedClass = (Class<DO>) TypeResolver.resolveRawArguments(TypeResolver.resolveGenericType(BaseFactory.class, subType), subType)[0];          
+         */
+
+        Class<?> providerClass = null;
+        if (jsr) {
+            providerClass = Provider.class;
+        }
+        if (google) {
+            providerClass = com.google.inject.Provider.class;
+        }
+        
+        
+        TypeResolver.resolveRawArgument(TypeResolver.resolveGenericType( providerClass, provider), provider)[0];
+        
+        
+        
+        
     }
 
     @Override
