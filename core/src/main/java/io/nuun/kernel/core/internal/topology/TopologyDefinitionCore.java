@@ -69,6 +69,7 @@ public class TopologyDefinitionCore implements TopologyDefinition
              ((! jsr)  &&   ( ! google  ))  ) 
         {
             throw new KernelException("Class %s should be a subclass of JSR330 or Guice Provider.", providerChild.getName());
+
         }
         
         /*
@@ -84,10 +85,8 @@ public class TopologyDefinitionCore implements TopologyDefinition
             providerClass = com.google.inject.Provider.class;
         }
         
+
         Class<?> providee = TypeResolver.resolveRawArguments(TypeResolver.resolveGenericType( providerClass, providerChild), providerChild)[0];
-        
-        
-        
         
     }
 
