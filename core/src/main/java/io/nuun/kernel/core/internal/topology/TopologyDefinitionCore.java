@@ -71,11 +71,6 @@ public class TopologyDefinitionCore implements TopologyDefinition
             throw new KernelException("Class %s should be a subclass of JSR330 or Guice Provider.", providerChild.getName());
 
         }
-        
-        /*
-         Class<?> subType = ProxyUtils.cleanProxy(getClass());
-         producedClass = (Class<DO>) TypeResolver.resolveRawArguments(TypeResolver.resolveGenericType(BaseFactory.class, subType), subType)[0];          
-         */
 
         Class<?> providerClass = null;
         if (jsr) {
@@ -86,8 +81,11 @@ public class TopologyDefinitionCore implements TopologyDefinition
         }
         
 
-        Class<?> providee = TypeResolver.resolveRawArguments(TypeResolver.resolveGenericType( providerClass, providerChild), providerChild)[0];
+        Class<?> provided = TypeResolver.resolveRawArguments(TypeResolver.resolveGenericType( providerClass, providerChild), providerChild)[0];
         
+        if ( ! key.equals(provided)) {
+            throw new KernelException("Parameter key %s should be a equals to Provider<T> type parameter which is %s.", key.getName(), provided.getName());
+        }
     }
 
     @Override
@@ -141,28 +139,22 @@ public class TopologyDefinitionCore implements TopologyDefinition
 
             if (qualifier.isPresent())
             {
-                return Optional.of(new InstanceBinding(f.getType(), qualifier.get(), instance));
+                return Optional.of(new InstanceBinding(key, qualifier.get(), instance));
             }
             else
             {
-                return Optional.of(new InstanceBinding(f.getType(), instance));
+                return Optional.of(new InstanceBinding(key, instance));
             }
         }
 
         return Optional.empty();
     }
 
-    @SuppressWarnings({
-            "unchecked", "rawtypes"
-    })
+
     private Optional<Annotation> qualifier(AccessibleObject m)
     {
 
-        return qualifier(m.getAnnotations());
-        // return stream(m.getAnnotations()).filter(
-        // a -> a.annotationType().isAnnotationPresent(Qualifier.class) ||
-        // a.annotationType().isAnnotationPresent(BindingAnnotation.class)).findFirst();
-
+        return qualifier(m.getAnnotations());    
     }
 
     private Optional<Annotation> qualifier(Annotation[] annotations)
@@ -175,10 +167,7 @@ public class TopologyDefinitionCore implements TopologyDefinition
     {
         try
         {
-            // System.out.println( MyAppTopology.class.getField(f.getName()).get(null) ) ;
-
             return f.get(null);
-
         }
         catch (Exception e)
         {

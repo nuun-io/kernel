@@ -19,13 +19,6 @@ package io.nuun.kernel.core;
 import static io.nuun.kernel.core.NuunCore.createKernel;
 import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
-import io.nuun.kernel.api.Kernel;
-import io.nuun.kernel.core.internal.topology.TopologyPlugin;
-import io.nuun.kernel.core.test_topo.sample.MyService;
-import io.nuun.kernel.core.test_topo.sample.MyServiceImpl;
-import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2;
-import io.nuun.kernel.core.test_topo.sample.Server;
-import io.nuun.kernel.core.test_topo.sample.Serveur;
 
 import org.junit.After;
 import org.junit.Before;
@@ -34,6 +27,15 @@ import org.junit.Test;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
+
+import io.nuun.kernel.api.Kernel;
+import io.nuun.kernel.core.internal.topology.TopologyPlugin;
+import io.nuun.kernel.core.test_topo.sample.MyService;
+import io.nuun.kernel.core.test_topo.sample.MyService2;
+import io.nuun.kernel.core.test_topo.sample.MyServiceImpl;
+import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2;
+import io.nuun.kernel.core.test_topo.sample.Server;
+import io.nuun.kernel.core.test_topo.sample.Serveur;
 
 public class KernelSuite9Test
 {
@@ -52,6 +54,18 @@ public class KernelSuite9Test
         underTest.start();
     }
 
+    
+    @Test
+    public void topoly_should_work_with_provider_binding()
+    {
+        Injector injector = underTest.objectGraph().as(Injector.class);
+        
+        Object instance = injector.getInstance(Key.get(MyService2.class));
+        assertThat(instance).isNotNull();
+        assertThat(instance).isInstanceOf(MyServiceImpl2.class);
+    }
+    
+    
     @Test
     public void topoly_should_work_with_instance_binding()
     {

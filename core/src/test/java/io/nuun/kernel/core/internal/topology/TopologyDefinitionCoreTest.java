@@ -1,12 +1,13 @@
 package io.nuun.kernel.core.internal.topology;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import javax.inject.Provider;
 
+import org.assertj.core.api.Fail;
 import org.junit.Before;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
+
+import io.nuun.kernel.core.KernelException;
 
 
 
@@ -15,7 +16,8 @@ public class TopologyDefinitionCoreTest {
     TopologyDefinitionCore underTest;
     
     
-    static class MyProvider implements Provider<String> {
+    static class Jsr330Provider implements Provider<String> 
+    {
 
         @Override
         public String get() {
@@ -24,6 +26,13 @@ public class TopologyDefinitionCoreTest {
         
     }
     
+    static class GoogleProvider implements com.google.inject.Provider<Long>
+    {
+        @Override
+        public Long get() {
+            return 42l;
+        }
+    }
     
     @Before
     public void init() 
@@ -32,15 +41,35 @@ public class TopologyDefinitionCoreTest {
     }
     
     @Test
-    public void assertProviderOf_should_check() throws Exception 
+    public void assertProviderOf_should_check_JSR330_Provider() throws Exception 
     {
-        Object returnee = Whitebox.invokeMethod(underTest, "assertProviderOf" , Provider.class , MyProvider.class );
-        
-        assertThat(returnee).isNotNull();
-        assertThat(returnee).isInstanceOf(Class.class);
-        assertThat(returnee).isEqualTo(String.class);
-        
+        Whitebox.invokeMethod(underTest, "assertProviderOf" , Long.class , GoogleProvider.class );
+    }
+
+    @Test
+    public void assertProviderOf_should_check_Google_Provider() throws Exception 
+    {
+        Whitebox.invokeMethod(underTest, "assertProviderOf" , String.class , Jsr330Provider.class );
+    }
+
+    @Test
+    public void assertProviderOf_should_raise_error_JSR330_Provider() throws Exception 
+    {
+        try 
+        {
+            Whitebox.invokeMethod(underTest, "assertProviderOf" , String.class , GoogleProvider.class );
+            Fail.failBecauseExceptionWasNotThrown(KernelException.class);
+        } catch (KernelException kernelException) {}
         
     }
 
+    @Test
+    public void assertProviderOf_should_raise_error_Google_Provider() throws Exception 
+    {
+        try {
+            Whitebox.invokeMethod(underTest, "assertProviderOf" , Long.class , Jsr330Provider.class );
+            Fail.failBecauseExceptionWasNotThrown(KernelException.class);
+        } catch (KernelException kernelException) {}
+    }
+    
 }
