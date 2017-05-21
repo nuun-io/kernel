@@ -24,6 +24,7 @@ import io.nuun.kernel.core.AbstractPlugin;
 import io.nuun.kernel.spi.topology.Binding;
 import io.nuun.kernel.spi.topology.InstanceBinding;
 import io.nuun.kernel.spi.topology.LinkedBinding;
+import io.nuun.kernel.spi.topology.ProviderBinding;
 import io.nuun.kernel.spi.topology.TopologyDefinition;
 
 import java.lang.reflect.Member;
@@ -86,6 +87,13 @@ public class TopologyPlugin extends AbstractPlugin
         if (linkedBinding.isPresent())
         {
             bindings.add(linkedBinding.get());
+        }
+
+        // Provider Binding
+        Optional<ProviderBinding> providerBinding = topologyDefinition.providerBinding(m);
+        if (providerBinding.isPresent())
+        {
+            bindings.add(providerBinding.get());
         }
     }
 

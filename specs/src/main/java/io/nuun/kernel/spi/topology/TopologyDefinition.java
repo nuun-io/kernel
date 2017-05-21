@@ -26,4 +26,6 @@ public interface TopologyDefinition
     Optional<LinkedBinding> linkedBinding(Member candidate);
 
     Optional<ProviderBinding> providerBinding(Member candidate);
+
+    Optional<InterceptorBinding> interceptorBinding(Member candidate);
 }

@@ -23,22 +23,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * A Topology is a java interface annotated with @Topology. It is the configuration unit of your application
+ * of your application. It will describe the bindings, AOP and other configurations. Topologies can compare
+ * with spring javaconfig, but topologies are interfaces not POJO. Topologies are declaratives not
+ * imperatives, they do not need to be unit tested (who is unit testing its spring java config class anyway ;p
+ * ) We follow an easy to read convention to indicate what to bind, on what key with which qualifiers etc etc.
  * 
- * A Topology is a java interface annotated with @Topology. It is the configuration unit of your application of your application. It will describe the bindings, AOP and other configurations.
- * 
- * Topologies can compare with spring javaconfig, but topologies are interfaces not POJO.
- * 
- * Topologies are declaratives not imperatives, they do not need to be unit tested (who is unit testing its spring java config class anyway ;p )
- * 
- * We follow an easy to read convention to indicate what to bind, on what key with which qualifiers etc etc.
- *  
  * @author epo.jemba@kametic.com (Epo Jemba)
- *
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE})
+@Target({
+    ElementType.TYPE
+})
 public @interface Topology
 {
-
+    String properties() default "";
 }

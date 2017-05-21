@@ -1,23 +1,19 @@
 package io.nuun.kernel.core.test_topo;
 
 import io.nuun.kernel.api.annotations.Topology;
-import io.nuun.kernel.core.test_topo.sample.MyLogger;
-import io.nuun.kernel.core.test_topo.sample.MyLoggerFieldInjector;
 import io.nuun.kernel.core.test_topo.sample.MyMethodInterceptor;
 import io.nuun.kernel.core.test_topo.sample.MyService;
 import io.nuun.kernel.core.test_topo.sample.MyService2;
 import io.nuun.kernel.core.test_topo.sample.MyService2Provider;
+import io.nuun.kernel.core.test_topo.sample.MyService2ProviderBis;
 import io.nuun.kernel.core.test_topo.sample.MyServiceImpl;
 import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2;
 import io.nuun.kernel.core.test_topo.sample.Server;
 import io.nuun.kernel.core.test_topo.sample.Serveur;
 
-import java.lang.reflect.Method;
-import java.util.function.Predicate;
-
 import com.google.inject.name.Named;
 
-@Topology
+@Topology(properties = "topology.properties")
 public interface MyTopology
 {
     // Constants
@@ -44,11 +40,14 @@ public interface MyTopology
     // jsr330 providers
     MyService2Provider provides(MyService2 key);
 
+    // jsr330 providers duplicates
+    MyService2ProviderBis providesBis(@Server MyService2 key);
+
     // AOP via AOP Alliance
-    MyMethodInterceptor intercepts(Predicate<Class<?>> pc, Predicate<Method> pm);
+    MyMethodInterceptor intercepts(ClassePredicate pc, MethodPredicate pm);
 
     //
-    MyLoggerFieldInjector manages(MyLogger annotation);
+    // MyLoggerFieldInjector manages(MyLogger annotation);
 
     //
     // // Qualified injections
