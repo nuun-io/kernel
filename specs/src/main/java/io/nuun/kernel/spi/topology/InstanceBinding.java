@@ -18,15 +18,15 @@ package io.nuun.kernel.spi.topology;
 
 import java.lang.annotation.Annotation;
 
-public class InstanceBinding extends Binding
+public class InstanceBinding extends InjectionBinding
 {
 
     public InstanceBinding(Class key, Class qualifier, Object instance)
     {
         super(key, qualifier, instance);
     }
-    
-    public InstanceBinding(Class key, Annotation qualifier, Object injected) 
+
+    public InstanceBinding(Class key, Annotation qualifier, Object injected)
     {
         super(key, qualifier, injected);
     }

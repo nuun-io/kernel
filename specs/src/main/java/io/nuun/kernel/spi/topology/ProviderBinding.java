@@ -18,7 +18,7 @@ package io.nuun.kernel.spi.topology;
 
 import java.lang.annotation.Annotation;
 
-public class ProviderBinding extends Binding
+public class ProviderBinding extends InjectionBinding
 {
 
     public ProviderBinding(Class key, Class qualifier, Object instance)
@@ -26,7 +26,7 @@ public class ProviderBinding extends Binding
         super(key, qualifier, instance);
     }
 
-    public ProviderBinding(Class key, Annotation qualifier, Object injected) 
+    public ProviderBinding(Class key, Annotation qualifier, Object injected)
     {
         super(key, qualifier, injected);
     }

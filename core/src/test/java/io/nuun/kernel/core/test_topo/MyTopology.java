@@ -41,7 +41,7 @@ public interface MyTopology
     MyService2Provider provides(MyService2 key);
 
     // jsr330 providers duplicates
-    MyService2ProviderBis providesBis(@Server MyService2 key);
+    MyService2ProviderBis provides_bis(@Server MyService2 key);
 
     // AOP via AOP Alliance
     MyMethodInterceptor intercepts(ClassePredicate pc, MethodPredicate pm);

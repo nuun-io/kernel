@@ -1,6 +1,12 @@
 package io.nuun.kernel.core.internal.topology;
 
 import static java.util.Arrays.stream;
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.spi.topology.InstanceBinding;
+import io.nuun.kernel.spi.topology.InterceptorBinding;
+import io.nuun.kernel.spi.topology.LinkedBinding;
+import io.nuun.kernel.spi.topology.ProviderBinding;
+import io.nuun.kernel.spi.topology.TopologyDefinition;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
@@ -12,22 +18,41 @@ import java.util.Optional;
 import javax.inject.Provider;
 import javax.inject.Qualifier;
 
+import net.jodah.typetools.TypeResolver;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.BindingAnnotation;
 
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.spi.topology.InstanceBinding;
-import io.nuun.kernel.spi.topology.LinkedBinding;
-import io.nuun.kernel.spi.topology.ProviderBinding;
-import io.nuun.kernel.spi.topology.TopologyDefinition;
-import net.jodah.typetools.TypeResolver;
-
 public class TopologyDefinitionCore implements TopologyDefinition
 {
 
     private final Logger logger = LoggerFactory.getLogger(TopologyDefinitionCore.class);
+
+    @Override
+    public Optional<InterceptorBinding> interceptorBinding(Member candidate)
+    {
+
+        if (Method.class.equals(candidate.getClass()) && candidate.getName().startsWith("intercepts"))
+        {
+            Method m = (Method) candidate;
+
+            if (m.getParameterCount() == 2)
+            {
+                // assertClassPredicate
+                // assertMethodPredicate
+                // assertMethodInterceptor
+            }
+            else
+            {
+                throw new KernelException("Method %s of class %s should have only two parameters.", candidate.getName(), candidate.getDeclaringClass()
+                        .getName());
+            }
+        }
+
+        return Optional.empty();
+    }
 
     @Override
     public Optional<ProviderBinding> providerBinding(Member candidate)
@@ -55,35 +80,40 @@ public class TopologyDefinitionCore implements TopologyDefinition
                 }
 
             }
+            else
+            {
+                throw new KernelException("Method %s of class %s should have only one parameter.", candidate.getName(), candidate.getDeclaringClass().getName());
+            }
         }
 
         return Optional.empty();
     }
 
-    private void assertProviderOf(Class<?> key, Class<?> providerChild) 
+    private void assertProviderOf(Class<?> key, Class<?> providerChild)
     {
         Boolean jsr = Provider.class.isAssignableFrom(providerChild);
         Boolean google = com.google.inject.Provider.class.isAssignableFrom(providerChild);
-        
-        if (  providerChild.equals(Provider.class)  ||  providerChild.equals(com.google.inject.Provider.class)  || 
-             ((! jsr)  &&   ( ! google  ))  ) 
+
+        if (providerChild.equals(Provider.class) || providerChild.equals(com.google.inject.Provider.class) || ((!jsr) && (!google)))
         {
             throw new KernelException("Class %s should be a subclass of JSR330 or Guice Provider.", providerChild.getName());
 
         }
 
         Class<?> providerClass = null;
-        if (jsr) {
+        if (jsr)
+        {
             providerClass = Provider.class;
         }
-        if (google) {
+        if (google)
+        {
             providerClass = com.google.inject.Provider.class;
         }
-        
 
-        Class<?> provided = TypeResolver.resolveRawArguments(TypeResolver.resolveGenericType( providerClass, providerChild), providerChild)[0];
-        
-        if ( ! key.equals(provided)) {
+        Class<?> provided = TypeResolver.resolveRawArguments(TypeResolver.resolveGenericType(providerClass, providerChild), providerChild)[0];
+
+        if (!key.equals(provided))
+        {
             throw new KernelException("Parameter key %s should be a equals to Provider<T> type parameter which is %s.", key.getName(), provided.getName());
         }
     }
@@ -150,11 +180,10 @@ public class TopologyDefinitionCore implements TopologyDefinition
         return Optional.empty();
     }
 
-
     private Optional<Annotation> qualifier(AccessibleObject m)
     {
 
-        return qualifier(m.getAnnotations());    
+        return qualifier(m.getAnnotations());
     }
 
     private Optional<Annotation> qualifier(Annotation[] annotations)
