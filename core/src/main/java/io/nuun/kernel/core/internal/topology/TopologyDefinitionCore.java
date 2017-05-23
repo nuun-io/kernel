@@ -1,12 +1,6 @@
 package io.nuun.kernel.core.internal.topology;
 
 import static java.util.Arrays.stream;
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.spi.topology.InstanceBinding;
-import io.nuun.kernel.spi.topology.InterceptorBinding;
-import io.nuun.kernel.spi.topology.LinkedBinding;
-import io.nuun.kernel.spi.topology.ProviderBinding;
-import io.nuun.kernel.spi.topology.TopologyDefinition;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
@@ -18,12 +12,18 @@ import java.util.Optional;
 import javax.inject.Provider;
 import javax.inject.Qualifier;
 
-import net.jodah.typetools.TypeResolver;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.BindingAnnotation;
+
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.spi.topology.InstanceBinding;
+import io.nuun.kernel.spi.topology.InterceptorBinding;
+import io.nuun.kernel.spi.topology.LinkedBinding;
+import io.nuun.kernel.spi.topology.ProviderBinding;
+import io.nuun.kernel.spi.topology.TopologyDefinition;
+import net.jodah.typetools.TypeResolver;
 
 public class TopologyDefinitionCore implements TopologyDefinition
 {
@@ -40,7 +40,8 @@ public class TopologyDefinitionCore implements TopologyDefinition
 
             if (m.getParameterCount() == 2)
             {
-                // assertClassPredicate
+                Class<?> classPredicate =  m.getParameterTypes()[0];
+                assertPredicateOf(classPredicate, Class.class);
                 // assertMethodPredicate
                 // assertMethodInterceptor
             }
@@ -110,13 +111,22 @@ public class TopologyDefinitionCore implements TopologyDefinition
             providerClass = com.google.inject.Provider.class;
         }
 
-        Class<?> provided = TypeResolver.resolveRawArguments(TypeResolver.resolveGenericType(providerClass, providerChild), providerChild)[0];
+        int classIndex = 0;
+        
+        Class<?> provided = genericClass(providerClass,providerChild,  classIndex);
 
         if (!key.equals(provided))
         {
             throw new KernelException("Parameter key %s should be a equals to Provider<T> type parameter which is %s.", key.getName(), provided.getName());
         }
     }
+
+    public Class<?> genericClass(Class<?> parentClass, Class<?> childClass,  int childIndex) 
+    {
+        return  TypeResolver.resolveRawArguments(TypeResolver.resolveGenericType(parentClass, childClass), childClass)[childIndex];
+    }
+    
+    
 
     @Override
     public Optional<LinkedBinding> linkedBinding(Member candidate)

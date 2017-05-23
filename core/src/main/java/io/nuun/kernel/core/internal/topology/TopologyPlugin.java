@@ -17,15 +17,6 @@
 package io.nuun.kernel.core.internal.topology;
 
 import static java.util.Arrays.asList;
-import io.nuun.kernel.api.plugin.InitState;
-import io.nuun.kernel.api.plugin.context.InitContext;
-import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
-import io.nuun.kernel.core.AbstractPlugin;
-import io.nuun.kernel.spi.topology.Binding;
-import io.nuun.kernel.spi.topology.InstanceBinding;
-import io.nuun.kernel.spi.topology.LinkedBinding;
-import io.nuun.kernel.spi.topology.ProviderBinding;
-import io.nuun.kernel.spi.topology.TopologyDefinition;
 
 import java.lang.reflect.Member;
 import java.util.ArrayList;
@@ -37,6 +28,16 @@ import java.util.function.Predicate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.nuun.kernel.api.plugin.InitState;
+import io.nuun.kernel.api.plugin.context.InitContext;
+import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
+import io.nuun.kernel.core.AbstractPlugin;
+import io.nuun.kernel.spi.topology.Binding;
+import io.nuun.kernel.spi.topology.InstanceBinding;
+import io.nuun.kernel.spi.topology.LinkedBinding;
+import io.nuun.kernel.spi.topology.ProviderBinding;
+import io.nuun.kernel.spi.topology.TopologyDefinition;
 
 public class TopologyPlugin extends AbstractPlugin
 {
@@ -59,7 +60,7 @@ public class TopologyPlugin extends AbstractPlugin
     public InitState init(InitContext initContext)
     {
 
-        bindings = new ArrayList<Binding>();
+        bindings = new ArrayList<>();
 
         Map<Predicate<Class<?>>, Collection<Class<?>>> typesByPredicate = initContext.scannedTypesByPredicate();
 

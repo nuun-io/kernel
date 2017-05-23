@@ -19,7 +19,7 @@ package io.nuun.kernel.spi.topology;
 import java.lang.annotation.Annotation;
 
 @SuppressWarnings("rawtypes")
-public abstract class InjectionBinding
+public abstract class InjectionBinding extends Binding
 {
 
     public final Class      key;
@@ -46,10 +46,5 @@ public abstract class InjectionBinding
     public InjectionBinding(Class key, Object injected)
     {
         this(key, (Annotation) null, injected);
-    }
-
-    public String name()
-    {
-        return this.getClass().getSimpleName();
     }
 }
