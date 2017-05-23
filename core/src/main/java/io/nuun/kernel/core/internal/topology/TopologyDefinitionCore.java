@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.inject.Provider;
 import javax.inject.Qualifier;
@@ -40,7 +41,7 @@ public class TopologyDefinitionCore implements TopologyDefinition
 
             if (m.getParameterCount() == 2)
             {
-                Class<?> classPredicate =  m.getParameterTypes()[0];
+                Class<?> classPredicate = m.getParameterTypes()[0];
                 assertPredicateOf(classPredicate, Class.class);
                 // assertMethodPredicate
                 // assertMethodInterceptor
@@ -90,6 +91,14 @@ public class TopologyDefinitionCore implements TopologyDefinition
         return Optional.empty();
     }
 
+    private void assertPredicateOf(Class<?> xPredicate, Class<Class> class1)
+    {
+        Boolean isPredicateChild = Predicate.class.isAssignableFrom(xPredicate);
+        
+        if (! isPredicateChild ||  ) 
+        
+    }
+
     private void assertProviderOf(Class<?> key, Class<?> providerChild)
     {
         Boolean jsr = Provider.class.isAssignableFrom(providerChild);
@@ -112,8 +121,8 @@ public class TopologyDefinitionCore implements TopologyDefinition
         }
 
         int classIndex = 0;
-        
-        Class<?> provided = genericClass(providerClass,providerChild,  classIndex);
+
+        Class<?> provided = genericClass(providerClass, providerChild, classIndex);
 
         if (!key.equals(provided))
         {
@@ -121,12 +130,10 @@ public class TopologyDefinitionCore implements TopologyDefinition
         }
     }
 
-    public Class<?> genericClass(Class<?> parentClass, Class<?> childClass,  int childIndex) 
+    public Class<?> genericClass(Class<?> parentClass, Class<?> childClass, int childIndex)
     {
-        return  TypeResolver.resolveRawArguments(TypeResolver.resolveGenericType(parentClass, childClass), childClass)[childIndex];
+        return TypeResolver.resolveRawArguments(TypeResolver.resolveGenericType(parentClass, childClass), childClass)[childIndex];
     }
-    
-    
 
     @Override
     public Optional<LinkedBinding> linkedBinding(Member candidate)
