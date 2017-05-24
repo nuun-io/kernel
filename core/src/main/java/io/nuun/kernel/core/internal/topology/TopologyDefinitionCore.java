@@ -1,3 +1,19 @@
+/**
+ * This file is part of Nuun IO Kernel Core.
+ *
+ * Nuun IO Kernel Core is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Nuun IO Kernel Core is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Nuun IO Kernel Core.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package io.nuun.kernel.core.internal.topology;
 
 import static java.util.Arrays.stream;
@@ -26,7 +42,7 @@ import io.nuun.kernel.spi.topology.ProviderBinding;
 import io.nuun.kernel.spi.topology.TopologyDefinition;
 import net.jodah.typetools.TypeResolver;
 
-public class TopologyDefinitionCore implements TopologyDefinition
+class TopologyDefinitionCore implements TopologyDefinition
 {
 
     private final Logger logger = LoggerFactory.getLogger(TopologyDefinitionCore.class);
@@ -42,9 +58,12 @@ public class TopologyDefinitionCore implements TopologyDefinition
             if (m.getParameterCount() == 2)
             {
                 Class<?> classPredicate = m.getParameterTypes()[0];
-                assertPredicateOf(classPredicate, Class.class);
+                assertPredicateOf(candidate, classPredicate, Class.class);
                 // assertMethodPredicate
+                Class<?> methodPredicate = m.getParameterTypes()[1];
+                assertPredicateOf(candidate,methodPredicate, Method.class);
                 // assertMethodInterceptor
+
             }
             else
             {
@@ -91,11 +110,25 @@ public class TopologyDefinitionCore implements TopologyDefinition
         return Optional.empty();
     }
 
-    private void assertPredicateOf(Class<?> xPredicate, Class<Class> class1)
+    private void assertPredicateOf(Member context, Class<?> xPredicate, Class<?> candidateClass)
     {
         Boolean isPredicateChild = Predicate.class.isAssignableFrom(xPredicate);
         
-        if (! isPredicateChild ||  ) 
+        if ( xPredicate.equals(Predicate.class)  ) 
+        {
+            throw new KernelException("Topology (%s) : %s can not be passed as parameter to an intercepts definition. \nYou need to pass a child.", context , xPredicate.getName() );
+        }
+        
+        if (! isPredicateChild ) 
+        {
+            throw new KernelException("Topology (%s) : Class %s should be a subclass of Predicate.", xPredicate.getName());
+        }
+        
+        Class<?> actualClass = genericClass(Predicate.class, xPredicate, 0);
+        
+        if (!actualClass.equals(candidateClass)) {
+            throw new KernelException("Class %s should be a %s.", candidateClass.getName(), actualClass.getName());
+        }
         
     }
 

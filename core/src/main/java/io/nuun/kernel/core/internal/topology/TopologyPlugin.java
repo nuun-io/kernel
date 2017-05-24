@@ -16,14 +16,10 @@
  */
 package io.nuun.kernel.core.internal.topology;
 
-import static java.util.Arrays.asList;
-
-import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.slf4j.Logger;
@@ -34,9 +30,6 @@ import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.nuun.kernel.core.AbstractPlugin;
 import io.nuun.kernel.spi.topology.Binding;
-import io.nuun.kernel.spi.topology.InstanceBinding;
-import io.nuun.kernel.spi.topology.LinkedBinding;
-import io.nuun.kernel.spi.topology.ProviderBinding;
 import io.nuun.kernel.spi.topology.TopologyDefinition;
 
 public class TopologyPlugin extends AbstractPlugin
@@ -65,37 +58,12 @@ public class TopologyPlugin extends AbstractPlugin
         Map<Predicate<Class<?>>, Collection<Class<?>>> typesByPredicate = initContext.scannedTypesByPredicate();
 
         Collection<Class<?>> topologiesClasses = typesByPredicate.get(TopologyPredicate.INSTANCE);
-
-        topologiesClasses.stream().forEach(c -> asList(c.getDeclaredFields()).stream().forEach(this::treatMember));
-
-        topologiesClasses.stream().forEach(c -> asList(c.getDeclaredMethods()).stream().forEach(this::treatMember));
+        
+        TopologyAnalyzer analyzer = new TopologyAnalyzer(topologyDefinition, bindings);
+        
+        analyzer.analyze(topologiesClasses);
 
         return InitState.INITIALIZED;
-    }
-
-    private void treatMember(Member m)
-    {
-
-        // Instance Binding
-        Optional<InstanceBinding> instanceBinding = topologyDefinition.instanceBinding(m);
-        if (instanceBinding.isPresent())
-        {
-            bindings.add(instanceBinding.get());
-        }
-
-        // Linked Binding
-        Optional<LinkedBinding> linkedBinding = topologyDefinition.linkedBinding(m);
-        if (linkedBinding.isPresent())
-        {
-            bindings.add(linkedBinding.get());
-        }
-
-        // Provider Binding
-        Optional<ProviderBinding> providerBinding = topologyDefinition.providerBinding(m);
-        if (providerBinding.isPresent())
-        {
-            bindings.add(providerBinding.get());
-        }
     }
 
     @Override
