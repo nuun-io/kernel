@@ -17,6 +17,12 @@
 package io.nuun.kernel.core.internal.topology;
 
 import static java.util.Arrays.stream;
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.spi.topology.InstanceBinding;
+import io.nuun.kernel.spi.topology.InterceptorBinding;
+import io.nuun.kernel.spi.topology.LinkedBinding;
+import io.nuun.kernel.spi.topology.ProviderBinding;
+import io.nuun.kernel.spi.topology.TopologyDefinition;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
@@ -29,18 +35,13 @@ import java.util.function.Predicate;
 import javax.inject.Provider;
 import javax.inject.Qualifier;
 
+import net.jodah.typetools.TypeResolver;
+
+import org.aopalliance.intercept.MethodInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.BindingAnnotation;
-
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.spi.topology.InstanceBinding;
-import io.nuun.kernel.spi.topology.InterceptorBinding;
-import io.nuun.kernel.spi.topology.LinkedBinding;
-import io.nuun.kernel.spi.topology.ProviderBinding;
-import io.nuun.kernel.spi.topology.TopologyDefinition;
-import net.jodah.typetools.TypeResolver;
 
 class TopologyDefinitionCore implements TopologyDefinition
 {
@@ -61,8 +62,12 @@ class TopologyDefinitionCore implements TopologyDefinition
                 assertPredicateOf(candidate, classPredicate, Class.class);
                 // assertMethodPredicate
                 Class<?> methodPredicate = m.getParameterTypes()[1];
-                assertPredicateOf(candidate,methodPredicate, Method.class);
+                assertPredicateOf(candidate, methodPredicate, Method.class);
                 // assertMethodInterceptor
+                Class<?> interceptor = m.getReturnType();
+                assertInterceptor(m, interceptor);
+
+                return Optional.of(new InterceptorBinding(classPredicate, methodPredicate, interceptor));
 
             }
             else
@@ -110,26 +115,43 @@ class TopologyDefinitionCore implements TopologyDefinition
         return Optional.empty();
     }
 
+    private void assertInterceptor(Member context, Class<?> interceptor)
+    {
+        Boolean isInterceptorChild = MethodInterceptor.class.isAssignableFrom(interceptor);
+
+        if (interceptor.equals(MethodInterceptor.class))
+        {
+            throw new KernelException("Topology (%s) : \n  The return type cannot be %s", context, MethodInterceptor.class.getSimpleName());
+        }
+
+        if (!isInterceptorChild)
+        {
+            throw new KernelException("Topology (%s) : Class %s should be an implementation of.", context, interceptor.getName());
+        }
+    }
+
     private void assertPredicateOf(Member context, Class<?> xPredicate, Class<?> candidateClass)
     {
         Boolean isPredicateChild = Predicate.class.isAssignableFrom(xPredicate);
-        
-        if ( xPredicate.equals(Predicate.class)  ) 
+
+        if (xPredicate.equals(Predicate.class))
         {
-            throw new KernelException("Topology (%s) : %s can not be passed as parameter to an intercepts definition. \nYou need to pass a child.", context , xPredicate.getName() );
+            throw new KernelException(
+                    "Topology (%s) : %s can not be passed as parameter to an intercepts definition. \nYou need to pass a child.", context, xPredicate.getName());
         }
-        
-        if (! isPredicateChild ) 
+
+        if (!isPredicateChild)
         {
-            throw new KernelException("Topology (%s) : Class %s should be a subclass of Predicate.", xPredicate.getName());
+            throw new KernelException("Topology (%s) : Class %s should be an implementation of Predicate.", xPredicate.getName());
         }
-        
+
         Class<?> actualClass = genericClass(Predicate.class, xPredicate, 0);
-        
-        if (!actualClass.equals(candidateClass)) {
+
+        if (!actualClass.equals(candidateClass))
+        {
             throw new KernelException("Class %s should be a %s.", candidateClass.getName(), actualClass.getName());
         }
-        
+
     }
 
     private void assertProviderOf(Class<?> key, Class<?> providerChild)

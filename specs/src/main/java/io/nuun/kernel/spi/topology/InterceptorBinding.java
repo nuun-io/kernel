@@ -16,22 +16,17 @@
  */
 package io.nuun.kernel.spi.topology;
 
-import java.lang.reflect.Method;
-import java.util.function.Predicate;
 
 public class InterceptorBinding extends Binding
 {
-    public final Class<? extends Predicate<Class<?>>> classPredicate;
-    public final Class<? extends Predicate<Method>>   methodPredicate;
-    public final Class<?>                             methodInterceptor;
+    public final Class<?> classPredicate;
+    public final Class<?> methodPredicate;
+    public final Class<?> methodInterceptor;
 
-    public InterceptorBinding(
-            Class<? extends Predicate<Class<?>>> classPredicate,
-            Class<? extends Predicate<Method>> methodPredicate,
-            Class<?> methodInterceptor)
+    public InterceptorBinding(Class<?> classPredicate2, Class<?> methodPredicate2, Class<?> methodInterceptor)
     {
-        this.classPredicate = classPredicate;
-        this.methodPredicate = methodPredicate;
+        this.classPredicate = classPredicate2;
+        this.methodPredicate = methodPredicate2;
         this.methodInterceptor = methodInterceptor;
 
     }

@@ -16,17 +16,20 @@
  */
 package io.nuun.kernel.core.internal.topology;
 
+import io.nuun.kernel.spi.topology.Binding;
+import io.nuun.kernel.spi.topology.InstanceBinding;
+import io.nuun.kernel.spi.topology.InterceptorBinding;
+import io.nuun.kernel.spi.topology.LinkedBinding;
+import io.nuun.kernel.spi.topology.ProviderBinding;
+
 import java.util.Collection;
+import java.util.function.Predicate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.AbstractModule;
-
-import io.nuun.kernel.spi.topology.Binding;
-import io.nuun.kernel.spi.topology.InstanceBinding;
-import io.nuun.kernel.spi.topology.LinkedBinding;
-import io.nuun.kernel.spi.topology.ProviderBinding;
+import com.google.inject.matcher.AbstractMatcher;
 
 public class TopologyModule extends AbstractModule
 {
@@ -86,7 +89,7 @@ public class TopologyModule extends AbstractModule
         }
         else if (ProviderBinding.class.getSimpleName().equals(binding.name()))
         {
-            ProviderBinding pb= ProviderBinding.class.cast(binding);
+            ProviderBinding pb = ProviderBinding.class.cast(binding);
             if (pb.qualifierClass != null)
             {
                 this.binder().bind(pb.key).annotatedWith(pb.qualifierClass).toProvider((Class<?>) pb.injected);
@@ -103,5 +106,31 @@ public class TopologyModule extends AbstractModule
                 logger.trace("Bound {} to {}", pb.key.getSimpleName(), pb.injected);
             }
         }
+        else if (InterceptorBinding.class.getSimpleName().equals(binding.name()))
+        {
+            InterceptorBinding pb = InterceptorBinding.class.cast(binding);
+            this.binder().bindInterceptor(classMatcher, methodMatcher, pb.methodInterceptor);
+
+            logger.trace("Bound {} to {} and {}", pb.methodInterceptor.getName(), pb.classPredicate.getName(), pb.methodPredicate.getName());
+        }
+    }
+
+    static class PredicateMatcherAdapter<T> extends AbstractMatcher<T>
+    {
+
+        private Predicate<T> predicate;
+
+        PredicateMatcherAdapter(Predicate<T> predicate)
+        {
+            this.predicate = predicate;
+
+        }
+
+        @Override
+        public boolean matches(T candidate)
+        {
+            return this.predicate.test(candidate);
+        }
+
     }
 }

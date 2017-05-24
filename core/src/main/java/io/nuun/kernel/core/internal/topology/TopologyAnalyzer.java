@@ -17,12 +17,6 @@
 package io.nuun.kernel.core.internal.topology;
 
 import static java.util.Arrays.asList;
-
-import java.lang.reflect.Member;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-
 import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.spi.topology.Binding;
 import io.nuun.kernel.spi.topology.InstanceBinding;
@@ -31,31 +25,40 @@ import io.nuun.kernel.spi.topology.LinkedBinding;
 import io.nuun.kernel.spi.topology.ProviderBinding;
 import io.nuun.kernel.spi.topology.TopologyDefinition;
 
-class TopologyAnalyzer {
+import java.lang.reflect.Member;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
-    private List<Binding> bindings;
+class TopologyAnalyzer
+{
+
+    private List<Binding>      bindings;
     private TopologyDefinition topologyDefinition;
 
-    public TopologyAnalyzer(TopologyDefinition topologyDefinition, List<Binding> bindings) {
+    public TopologyAnalyzer(TopologyDefinition topologyDefinition, List<Binding> bindings)
+    {
         this.topologyDefinition = topologyDefinition;
         this.bindings = bindings;
     }
 
-    public void analyze(Collection<Class<?>> topologiesClasses) {
-        
+    public void analyze(Collection<Class<?>> topologiesClasses)
+    {
+
         topologiesClasses.stream().peek(this::treatUnit).forEach(c -> asList(c.getDeclaredFields()).stream().forEach(this::treatMember));
 
         topologiesClasses.stream().forEach(c -> asList(c.getDeclaredMethods()).stream().forEach(this::treatMember));
-        
+
     }
-    
+
     void treatUnit(Class<?> unit)
     {
-        if (! unit.isInterface()) {
+        if (!unit.isInterface())
+        {
             throw new KernelException("Topology : %s must be an interface to be a valid topology.", unit.getName());
         }
     }
-    
+
     void treatMember(Member m)
     {
         // Instance Binding
@@ -78,13 +81,13 @@ class TopologyAnalyzer {
         {
             bindings.add(providerBinding.get());
         }
-        
-        // Interceptor Binging
+
+        // Interceptor Binding
         Optional<InterceptorBinding> interceptorBinding = topologyDefinition.interceptorBinding(m);
-        if (interceptorBinding.isPresent()) {
+        if (interceptorBinding.isPresent())
+        {
             bindings.add(interceptorBinding.get());
         }
     }
-     
 
 }
