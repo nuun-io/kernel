@@ -16,20 +16,24 @@
  */
 package io.nuun.kernel.core.internal.topology;
 
-import io.nuun.kernel.spi.topology.Binding;
-import io.nuun.kernel.spi.topology.InstanceBinding;
-import io.nuun.kernel.spi.topology.InterceptorBinding;
-import io.nuun.kernel.spi.topology.LinkedBinding;
-import io.nuun.kernel.spi.topology.ProviderBinding;
-
+import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Predicate;
 
+import org.aopalliance.intercept.MethodInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.matcher.AbstractMatcher;
+import com.google.inject.matcher.Matcher;
+
+import io.nuun.kernel.spi.topology.Binding;
+import io.nuun.kernel.spi.topology.InstanceBinding;
+import io.nuun.kernel.spi.topology.InterceptorBinding;
+import io.nuun.kernel.spi.topology.LinkedBinding;
+import io.nuun.kernel.spi.topology.ProviderBinding;
 
 public class TopologyModule extends AbstractModule
 {
@@ -48,7 +52,7 @@ public class TopologyModule extends AbstractModule
         bindings.stream().forEach(this::configureBinding);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private void configureBinding(Binding binding)
     {
         if (InstanceBinding.class.getSimpleName().equals(binding.name()))
@@ -109,21 +113,50 @@ public class TopologyModule extends AbstractModule
         else if (InterceptorBinding.class.getSimpleName().equals(binding.name()))
         {
             InterceptorBinding pb = InterceptorBinding.class.cast(binding);
-            this.binder().bindInterceptor(classMatcher, methodMatcher, pb.methodInterceptor);
+            // Class
+            Optional<Predicate<Class>> optionalClassPredicate =  (Optional<Predicate<Class>>) newInstance(pb.classPredicate);
+            Predicate<Class> classPredicate = null; 
+            if (optionalClassPredicate.isPresent())
+            {
+                classPredicate = optionalClassPredicate.get();
+            }
+            Matcher<? super Class<?>> classMatcher = new PredicateMatcherAdapter<>(classPredicate);
+            
+            // Method
+            Optional<Predicate<Method>> optionalMethodPredicate =  (Optional<Predicate<Method>>) newInstance(pb.methodPredicate);
+            Predicate<Method> methodPredicate = null;
+            if (optionalMethodPredicate.isPresent())
+            {
+                methodPredicate = optionalMethodPredicate.get();
+            }
+            Matcher<Method> methodMatcher = new PredicateMatcherAdapter<>(methodPredicate);            
+            
+            Optional<MethodInterceptor> interceptor = newInstance((Class<MethodInterceptor>) pb.methodInterceptor);
+            if (interceptor.isPresent()) 
+            {
+                this.binder().bindInterceptor(classMatcher, methodMatcher, new MethodInterceptor[]{interceptor.get()} );
+            }
+            
 
             logger.trace("Bound {} to {} and {}", pb.methodInterceptor.getName(), pb.classPredicate.getName(), pb.methodPredicate.getName());
         }
     }
 
+    private <T> Optional<T> newInstance(Class<T> candidate) {
+        try {
+            return Optional.of((T) candidate.newInstance());
+        } catch (InstantiationException | IllegalAccessException e) {
+            return Optional.empty();
+        }        
+    }
+
     static class PredicateMatcherAdapter<T> extends AbstractMatcher<T>
     {
-
         private Predicate<T> predicate;
 
         PredicateMatcherAdapter(Predicate<T> predicate)
         {
-            this.predicate = predicate;
-
+                this.predicate = predicate;
         }
 
         @Override
