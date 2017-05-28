@@ -55,6 +55,13 @@ public class KernelSuite9Test
     }
 
     @Test
+    public void topology_should_handle_aop_via_method_interceptor()
+    {
+        Injector injector = underTest.objectGraph().as(Injector.class);
+
+    }
+
+    @Test
     public void topoly_should_work_with_provider_binding()
     {
         Injector injector = underTest.objectGraph().as(Injector.class);
