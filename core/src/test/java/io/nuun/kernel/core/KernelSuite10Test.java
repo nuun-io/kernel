@@ -38,7 +38,7 @@ public class KernelSuite10Test
     {
         underTest = createKernel(
 
-        newKernelConfiguration().rootPackages("io.nuun.kernel.core.test_topo_error1") //
+        newKernelConfiguration().rootPackages("io.nuun.kernel.core.error1_test_topo") //
                 .withoutSpiPluginsLoader().plugins(new TopologyPlugin()));
 
         underTest.init();
