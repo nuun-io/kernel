@@ -12,6 +12,11 @@ public class MyMethodInterceptor implements MethodInterceptor
     {
 
         Object o = invocation.proceed();
+        if (o instanceof String)
+        {
+
+            return "(" + o + ")";
+        }
         counter++;
         return o;
     }

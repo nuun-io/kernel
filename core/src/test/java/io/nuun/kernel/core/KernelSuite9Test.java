@@ -20,7 +20,13 @@ import static io.nuun.kernel.core.NuunCore.createKernel;
 import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
 import io.nuun.kernel.api.Kernel;
+import io.nuun.kernel.core.internal.topology.TopologyModule.PredicateMatcherAdapter;
 import io.nuun.kernel.core.internal.topology.TopologyPlugin;
+import io.nuun.kernel.core.test_topo.ClassePredicate;
+import io.nuun.kernel.core.test_topo.MethodPredicate;
+import io.nuun.kernel.core.test_topo.MyService3;
+import io.nuun.kernel.core.test_topo.MyService3Sample;
+import io.nuun.kernel.core.test_topo.sample.MyMethodInterceptor;
 import io.nuun.kernel.core.test_topo.sample.MyService;
 import io.nuun.kernel.core.test_topo.sample.MyService2;
 import io.nuun.kernel.core.test_topo.sample.MyServiceImpl;
@@ -29,18 +35,26 @@ import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2Bis;
 import io.nuun.kernel.core.test_topo.sample.Server;
 import io.nuun.kernel.core.test_topo.sample.Serveur;
 
+import java.lang.reflect.Method;
+
+import org.aopalliance.intercept.MethodInterceptor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.google.inject.matcher.Matcher;
 import com.google.inject.name.Names;
 
 public class KernelSuite9Test
 {
 
-    private Kernel underTest;
+    private Kernel   underTest;
+
+    private Injector injector;
 
     @Before
     public void initkernel()
@@ -52,19 +66,49 @@ public class KernelSuite9Test
 
         underTest.init();
         underTest.start();
+        injector = underTest.objectGraph().as(Injector.class);
     }
 
     @Test
     public void topology_should_handle_aop_via_method_interceptor()
     {
-        Injector injector = underTest.objectGraph().as(Injector.class);
+        MyService3 ms3 = injector.getInstance(MyService3.class);
+
+        assertThat(ms3.one()).isEqualTo("one");
+        assertThat(ms3.one_aop()).isEqualTo("(one)");
+    }
+
+    public void matchers_and_interceptors_fixtures_should_work()
+    {
+        Injector i2 = Guice.createInjector(new AbstractModule()
+        {
+
+            @Override
+            protected void configure()
+            {
+                bind(MyService3.class).to(MyService3Sample.class);
+
+                Matcher<? super Class<?>> classMatcher = new PredicateMatcherAdapter<Class<?>>(new ClassePredicate());
+
+                Matcher<Method> methodMatcher = new PredicateMatcherAdapter<Method>(new MethodPredicate());
+
+                bindInterceptor(classMatcher, methodMatcher, new MethodInterceptor[] {
+                    new MyMethodInterceptor()
+                });
+
+            }
+        });
+
+        MyService3 ms3 = i2.getInstance(MyService3.class);
+
+        assertThat(ms3.one()).isEqualTo("one");
+        assertThat(ms3.one_aop()).isEqualTo("(one)");
 
     }
 
     @Test
     public void topoly_should_work_with_provider_binding()
     {
-        Injector injector = underTest.objectGraph().as(Injector.class);
 
         Object instance = injector.getInstance(Key.get(MyService2.class));
         assertThat(instance).isNotNull();
@@ -78,8 +122,6 @@ public class KernelSuite9Test
     @Test
     public void topoly_should_work_with_instance_binding()
     {
-        Injector injector = underTest.objectGraph().as(Injector.class);
-
         //
         Integer theAnswer = injector.getInstance(Key.get(Integer.class));
 
@@ -105,7 +147,6 @@ public class KernelSuite9Test
     @Test
     public void topoly_should_work_with_linked_binding()
     {
-        Injector injector = underTest.objectGraph().as(Injector.class);
         // MyServiceImpl injects(MyService key);
         Object myService = injector.getInstance(Key.get(MyService.class));
 

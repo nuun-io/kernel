@@ -38,5 +38,8 @@ import java.lang.annotation.Target;
 })
 public @interface Topology
 {
-    String properties() default "";
+    /**
+     * @return an array of
+     */
+    String[] propertiesPath() default "";
 }

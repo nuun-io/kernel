@@ -8,7 +8,7 @@ public class ClassePredicate implements Predicate<Class<?>>
     @Override
     public boolean test(Class<?> arg0)
     {
-        return arg0.getSimpleName().startsWith("Sample");
+        return arg0.getSimpleName().endsWith("Sample");
     }
 
 }

@@ -13,7 +13,7 @@ import io.nuun.kernel.core.test_topo.sample.Serveur;
 
 import com.google.inject.name.Named;
 
-@Topology(properties = "topology.properties")
+@Topology(propertiesPath = "topology.properties")
 public interface MyTopology
 {
     // Constants
@@ -44,6 +44,8 @@ public interface MyTopology
     MyService2ProviderBis provides_bis(@Server MyService2 key);
 
     // AOP via AOP Alliance
+    MyService3Sample injects(MyService3 key);
+
     MyMethodInterceptor intercepts(ClassePredicate pc, MethodPredicate pm);
 
     //

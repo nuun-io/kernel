@@ -160,7 +160,7 @@ public class TopologyModule extends AbstractModule
         }
     }
 
-    private <T> Optional<T> newInstance(Class<T> candidate)
+    public static <T> Optional<T> newInstance(Class<T> candidate)
     {
         try
         {
@@ -172,11 +172,11 @@ public class TopologyModule extends AbstractModule
         }
     }
 
-    static class PredicateMatcherAdapter<T> extends AbstractMatcher<T>
+    public static class PredicateMatcherAdapter<T> extends AbstractMatcher<T>
     {
         private Predicate<T> predicate;
 
-        PredicateMatcherAdapter(Predicate<T> predicate)
+        public PredicateMatcherAdapter(Predicate<T> predicate)
         {
             this.predicate = predicate;
         }
