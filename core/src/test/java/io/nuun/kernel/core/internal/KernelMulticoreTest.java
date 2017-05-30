@@ -74,6 +74,7 @@ public class KernelMulticoreTest
                 startLatch.await();
 
                 Kernel underTest = createKernel(newKernelConfiguration()
+                        .withoutSpiPluginsLoader()
                         .rootPackages("internal", KernelCoreIT.class.getPackage().getName())
                         .param(DummyPlugin.ALIAS_DUMMY_PLUGIN1, "WAZAAAA")
                         .addPlugin(DummyPlugin.class)

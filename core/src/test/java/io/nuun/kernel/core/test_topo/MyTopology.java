@@ -13,7 +13,9 @@ import io.nuun.kernel.core.test_topo.sample.Serveur;
 
 import com.google.inject.name.Named;
 
-@Topology(propertiesPath = "topology.properties")
+@Topology(propertiesSources = {
+    "topology.properties"
+})
 public interface MyTopology
 {
     // Constants

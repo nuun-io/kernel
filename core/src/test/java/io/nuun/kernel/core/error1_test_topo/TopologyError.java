@@ -6,7 +6,7 @@ import io.nuun.kernel.core.test_topo.sample.MyMethodInterceptor;
 
 import java.util.function.Predicate;
 
-@Topology(propertiesPath = "topology.properties")
+@Topology(propertiesSources = "topology.properties")
 public interface TopologyError
 {
 

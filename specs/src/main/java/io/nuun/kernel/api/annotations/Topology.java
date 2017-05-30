@@ -39,7 +39,7 @@ import java.lang.annotation.Target;
 public @interface Topology
 {
     /**
-     * @return an array of
+     * @return an array properties source
      */
-    String[] propertiesPath() default "";
+    String[] propertiesSources() default "";
 }

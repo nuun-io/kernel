@@ -18,44 +18,35 @@ package io.nuun.kernel.core;
 
 import static io.nuun.kernel.core.NuunCore.createKernel;
 import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.google.inject.Injector;
-
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.core.internal.topology.TopologyPlugin;
+
+import org.assertj.core.api.Assertions;
+import org.junit.Test;
 
 public class KernelSuite10Test
 {
 
     private Kernel underTest;
 
-    @Before
-    public void initkernel()
+    @Test
+    public void initkernel_should_failed()
     {
         underTest = createKernel(
 
         newKernelConfiguration().rootPackages("io.nuun.kernel.core.error1_test_topo") //
                 .withoutSpiPluginsLoader().plugins(new TopologyPlugin()));
 
-        underTest.init();
-        underTest.start();
-    }
+        try
+        {
+            underTest.init();
+            Assertions.failBecauseExceptionWasNotThrown(KernelException.class);
+        }
+        catch (KernelException e)
+        {
+            Assertions.assertThat(e.getMessage()).contains("Predicate");
+        }
 
-    @Test
-    public void kernel_should_raise_error_on_bad_topology_01()
-    {
-        Injector injector = underTest.objectGraph().as(Injector.class);
-   
-    }
-
-    @After
-    public void stopKernel()
-    {
-        underTest.stop();
     }
 
 }
