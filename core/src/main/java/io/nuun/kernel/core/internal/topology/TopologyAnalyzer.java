@@ -92,7 +92,7 @@ class TopologyAnalyzer
         }
         catch (IOException e)
         {
-            logger.warn("Error when reading properties file %s", propertySource, e);
+            logger.warn("Error when reading properties file " + propertySource, e);
         }
 
     }
