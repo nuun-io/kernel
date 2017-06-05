@@ -27,6 +27,7 @@ import io.nuun.kernel.core.test_topo.MethodPredicate;
 import io.nuun.kernel.core.test_topo.MyService3;
 import io.nuun.kernel.core.test_topo.MyService3Sample;
 import io.nuun.kernel.core.test_topo.sample.MyMethodInterceptor;
+import io.nuun.kernel.core.test_topo.sample.MyObject;
 import io.nuun.kernel.core.test_topo.sample.MyService;
 import io.nuun.kernel.core.test_topo.sample.MyService2;
 import io.nuun.kernel.core.test_topo.sample.MyServiceImpl;
@@ -36,6 +37,9 @@ import io.nuun.kernel.core.test_topo.sample.Server;
 import io.nuun.kernel.core.test_topo.sample.Serveur;
 
 import java.lang.reflect.Method;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.junit.After;
@@ -67,6 +71,39 @@ public class KernelSuite9Test
         underTest.init();
         underTest.start();
         injector = underTest.objectGraph().as(Injector.class);
+    }
+
+    @Test
+    public void topology_should_handle_properties_binding()
+    {
+        HolderProp h = new HolderProp();
+
+        injector.injectMembers(h);
+
+        assertThat(h.key1).isEqualTo("value1");
+        assertThat(h.key2).isEqualTo("value2");
+        assertThat(h.key3).isEqualTo("value3");
+        assertThat(h.key4).isEqualTo("value4");
+    }
+
+    static class HolderProp
+    {
+        @Inject
+        @Named("key1")
+        String key1;
+
+        @Inject
+        @Named("key2")
+        String key2;
+
+        @Inject
+        @Named("key3")
+        String key3;
+
+        @Inject
+        @Named("key4")
+        String key4;
+
     }
 
     @Test
@@ -142,6 +179,11 @@ public class KernelSuite9Test
         String context = injector.getInstance(Key.get(String.class, Names.named("main")));
         assertThat(context).isNotNull();
         assertThat(context).isEqualTo("cli");
+
+        //
+        MyObject mo = injector.getInstance(Key.get(MyObject.class));
+        assertThat(mo).isNotNull();
+
     }
 
     @Test

@@ -41,5 +41,5 @@ public @interface Topology
     /**
      * @return an array properties source
      */
-    String[] propertiesSources() default "";
+    String[] propertySources() default "";
 }

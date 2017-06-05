@@ -78,20 +78,35 @@ public class TopologyModule extends AbstractModule
         else if (LinkedBinding.class.getSimpleName().equals(binding.name()))
         {
             LinkedBinding lb = LinkedBinding.class.cast(binding);
-            if (lb.qualifierClass != null)
+            if (lb.qualifierClass != null && lb.injected.getClass().equals(Class.class))
             {
                 this.binder().bind(lb.key).annotatedWith(lb.qualifierClass).to((Class<?>) lb.injected);
                 logger.trace("Bound {} to {} with {}", lb.key.getSimpleName(), lb.injected, lb.qualifierClass.getSimpleName());
             }
-            else if (lb.qualifierAnno != null)
+            else if (lb.qualifierClass != null && !lb.injected.getClass().equals(Class.class))
+            {
+                this.binder().bind(lb.key).annotatedWith(lb.qualifierClass).toInstance(lb.injected);
+                logger.trace("Bound {} to instance {} with {}", lb.key.getSimpleName(), lb.injected, lb.qualifierClass.getSimpleName());
+            }
+            else if (lb.qualifierAnno != null && lb.injected.getClass().equals(Class.class))
             {
                 this.binder().bind(lb.key).annotatedWith(lb.qualifierAnno).to((Class<?>) lb.injected);
                 logger.trace("Bound {} to {} with {}", lb.key.getSimpleName(), lb.injected, lb.qualifierAnno);
             }
-            else
+            else if (lb.qualifierAnno != null && !lb.injected.getClass().equals(Class.class))
+            {
+                this.binder().bind(lb.key).annotatedWith(lb.qualifierAnno).toInstance(lb.injected);
+                logger.trace("Bound {} to instance {} with {}", lb.key.getSimpleName(), lb.injected, lb.qualifierAnno);
+            }
+            else if (!lb.key.equals(lb.injected))
             {
                 this.binder().bind(lb.key).to((Class<?>) lb.injected);
                 logger.trace("Bound {} to {}", lb.key.getSimpleName(), lb.injected);
+            }
+            else
+            {
+                this.binder().bind(lb.key);
+                logger.trace("Bound {} to itself", lb.key.getSimpleName());
             }
         }
         else if (ProviderBinding.class.getSimpleName().equals(binding.name()))

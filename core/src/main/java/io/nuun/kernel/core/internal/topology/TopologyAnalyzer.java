@@ -17,6 +17,7 @@
 package io.nuun.kernel.core.internal.topology;
 
 import static java.util.Arrays.asList;
+import io.nuun.kernel.api.annotations.Topology;
 import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.spi.topology.Binding;
 import io.nuun.kernel.spi.topology.InstanceBinding;
@@ -25,16 +26,32 @@ import io.nuun.kernel.spi.topology.LinkedBinding;
 import io.nuun.kernel.spi.topology.ProviderBinding;
 import io.nuun.kernel.spi.topology.TopologyDefinition;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Member;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.name.Names;
 
 class TopologyAnalyzer
 {
+    private static final String CLASSPATH = "classpath:";
 
-    private List<Binding>      bindings;
-    private TopologyDefinition topologyDefinition;
+    private static final Logger logger    = LoggerFactory.getLogger(TopologyAnalyzer.class);
+
+    private List<Binding>       bindings;
+    private TopologyDefinition  topologyDefinition;
 
     public TopologyAnalyzer(TopologyDefinition topologyDefinition, List<Binding> bindings)
     {
@@ -57,6 +74,50 @@ class TopologyAnalyzer
         {
             throw new KernelException("Topology : %s must be an interface to be a valid topology.", unit.getName());
         }
+
+        Topology topology = unit.getAnnotation(Topology.class);
+        String[] propertySources = topology.propertySources();
+
+        Arrays.stream(propertySources).filter(Objects::nonNull).forEach(this::treatPropertySource);
+
+    }
+
+    private void treatPropertySource(String propertySource)
+    {
+        try (final InputStream stream = inputStream(propertySource))
+        {
+            Properties properties = new Properties();
+            properties.load(stream);
+            properties.forEach(this::propertyToBinding);
+        }
+        catch (IOException e)
+        {
+            logger.warn("Error when reading properties file %s", propertySource);
+            e.printStackTrace();
+        }
+
+    }
+
+    InputStream inputStream(String propertySource) throws FileNotFoundException
+    {
+        InputStream is = null;
+
+        if (propertySource.startsWith(CLASSPATH))
+        {
+            String path = propertySource.substring(CLASSPATH.length());
+            is = this.getClass().getResourceAsStream(path);
+        }
+        else
+        {
+            is = new FileInputStream(new File(propertySource));
+        }
+
+        return is;
+    }
+
+    void propertyToBinding(Object key, Object value)
+    {
+        bindings.add(new LinkedBinding(String.class, Names.named((String) key), value));
     }
 
     void treatMember(Member m)
