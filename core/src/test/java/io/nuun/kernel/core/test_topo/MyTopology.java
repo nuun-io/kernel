@@ -31,7 +31,7 @@ import io.nuun.kernel.core.test_topo.sample.Serveur;
 import com.google.inject.name.Named;
 
 @Topology(propertySources = {
-        "classpath:/topology.properties", "./src/test/resources/topology2.properties"
+        "classpath:topology.properties", "./src/test/resources/topology2.properties"
 })
 public interface MyTopology
 {

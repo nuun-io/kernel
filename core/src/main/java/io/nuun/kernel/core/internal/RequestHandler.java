@@ -16,9 +16,10 @@
  */
 package io.nuun.kernel.core.internal;
 
-import com.google.common.base.Strings;
-import com.google.inject.Module;
-import com.google.inject.Scopes;
+import static io.nuun.kernel.api.config.KernelOptions.CLASSPATH_SCAN_MODE;
+import static io.nuun.kernel.api.config.KernelOptions.PRINT_SCAN_WARN;
+import static io.nuun.kernel.core.internal.utils.NuunReflectionUtils.instantiateOrFail;
+import static java.util.Collections.unmodifiableMap;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.annotations.KernelModule;
@@ -31,8 +32,6 @@ import io.nuun.kernel.core.internal.injection.ModuleEmbedded;
 import io.nuun.kernel.core.internal.scanner.ClasspathScanner;
 import io.nuun.kernel.core.internal.scanner.ClasspathScannerFactory;
 import io.nuun.kernel.core.internal.scanner.disk.ClasspathStrategy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
@@ -47,65 +46,67 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import static io.nuun.kernel.api.config.KernelOptions.CLASSPATH_SCAN_MODE;
-import static io.nuun.kernel.api.config.KernelOptions.PRINT_SCAN_WARN;
-import static io.nuun.kernel.core.internal.utils.NuunReflectionUtils.instantiateOrFail;
-import static java.util.Collections.unmodifiableMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Strings;
+import com.google.inject.Module;
+import com.google.inject.Scopes;
 
 /**
  * @author Pierre THIROUIN (pierre.thirouin@ext.inetpsa.com)
  */
 public class RequestHandler extends ScanResults
 {
-    private static final String SCAN_WHOLE_CLASSPATH_WARN_MESSAGE = "\n================================ WARNING ================================\n" +
-            "   You're actually scanning the WHOLE classpath , this can be time consuming.\n" +
-            "   Please update your application configuration, to narrow the scan to your application.\n" +
-            "\n" +
-            " 1) You can update /nuun.conf in the classpath with the following content\n" +
-            "\n" +
-            "          rootPackage = com.acme1, com.acme2\n" +
-            "\n" +
-            "   where com.acme1 and com.acme2 are your root packages.\n" +
-            "\n" +
-            " 2) You can programmatically use KernelConfiguration.rootPackage(\"com.acme1\" , \"com.acme2\")\n" +
-            "\n" +
-            "   Same as above\n" +
-            "\n" +
-            " 3) You can programmatically use KernelConfiguration.param(\"scan.warn.disable\" , \"true\")\n" +
-            "\n" +
-            "   This will disable the warning. It implies, you know what you are doing.\n" +
-            "\n" +
-            "========================================================================";
+    private static final String                     SCAN_WHOLE_CLASSPATH_WARN_MESSAGE = "\n================================ WARNING ================================\n"
+                                                                                              + "   You're actually scanning the WHOLE classpath , this can be time consuming.\n"
+                                                                                              + "   Please update your application configuration, to narrow the scan to your application.\n"
+                                                                                              + "\n"
+                                                                                              + " 1) You can update /nuun.conf in the classpath with the following content\n"
+                                                                                              + "\n"
+                                                                                              + "          rootPackage = com.acme1, com.acme2\n"
+                                                                                              + "\n"
+                                                                                              + "   where com.acme1 and com.acme2 are your root packages.\n"
+                                                                                              + "\n"
+                                                                                              + " 2) You can programmatically use KernelConfiguration.rootPackage(\"com.acme1\" , \"com.acme2\")\n"
+                                                                                              + "\n"
+                                                                                              + "   Same as above\n"
+                                                                                              + "\n"
+                                                                                              + " 3) You can programmatically use KernelConfiguration.param(\"scan.warn.disable\" , \"true\")\n"
+                                                                                              + "\n"
+                                                                                              + "   This will disable the warning. It implies, you know what you are doing.\n"
+                                                                                              + "\n"
+                                                                                              + "========================================================================";
 
-    private final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    private final Logger                            logger                            = LoggerFactory.getLogger(RequestHandler.class);
 
-    private final List<String> propertiesPrefix = new ArrayList<>();
-    private final List<Class<?>> parentTypesClassesToScan = new ArrayList<>();
-    private final List<Class<?>> ancestorTypesClassesToScan = new ArrayList<>();
-    private final List<Predicate<Class<?>>> predicatesToScan = new ArrayList<>();
-    private final List<String> typesRegexToScan = new ArrayList<>();
-    private final List<String> resourcesRegexToScan = new ArrayList<>();
-    private final List<String> parentTypesRegexToScan = new ArrayList<>();
-    private final List<Class<? extends Annotation>> annotationTypesToScan = new ArrayList<>();
-    private final List<String> annotationRegexToScan = new ArrayList<>();
+    private final List<String>                      propertiesPrefix                  = new ArrayList<>();
+    private final List<Class<?>>                    parentTypesClassesToScan          = new ArrayList<>();
+    private final List<Class<?>>                    ancestorTypesClassesToScan        = new ArrayList<>();
+    private final List<Predicate<Class<?>>>         predicatesToScan                  = new ArrayList<>();
+    private final List<String>                      typesRegexToScan                  = new ArrayList<>();
+    private final List<String>                      resourcesRegexToScan              = new ArrayList<>();
+    private final List<String>                      parentTypesRegexToScan            = new ArrayList<>();
+    private final List<Class<? extends Annotation>> annotationTypesToScan             = new ArrayList<>();
+    private final List<String>                      annotationRegexToScan             = new ArrayList<>();
 
-    private final List<Class<?>> parentTypesClassesToBind = new ArrayList<>();
-    private final List<Predicate<Class<?>>> predicatesToBind = new ArrayList<>();
-    private final List<String> parentTypesRegexToBind = new ArrayList<>();
-    private final List<Class<? extends Annotation>> annotationTypesToBind = new ArrayList<>();
-    private final List<Class<? extends Annotation>> metaAnnotationTypesToBind = new ArrayList<>();
-    private final List<String> annotationRegexToBind = new ArrayList<>();
-    private final List<String> metaAnnotationRegexToBind = new ArrayList<>();
+    private final List<Class<?>>                    parentTypesClassesToBind          = new ArrayList<>();
+    private final List<Predicate<Class<?>>>         predicatesToBind                  = new ArrayList<>();
+    private final List<String>                      parentTypesRegexToBind            = new ArrayList<>();
+    private final List<Class<? extends Annotation>> annotationTypesToBind             = new ArrayList<>();
+    private final List<Class<? extends Annotation>> metaAnnotationTypesToBind         = new ArrayList<>();
+    private final List<String>                      annotationRegexToBind             = new ArrayList<>();
+    private final List<String>                      metaAnnotationRegexToBind         = new ArrayList<>();
 
-    private final Map<Class<?>, Object> classesWithScopes = new HashMap<>();
-    private final Map<Key, Object> mapOfScopes = new HashMap<>();
+    private final Map<Class<?>, Object>             classesWithScopes                 = new HashMap<>();
+    private final Map<Key, Object>                  mapOfScopes                       = new HashMap<>();
 
-    private final List<String> packageRoots;
+    private final List<String>                      packageRoots;
 
-    private Set<URL> additionalClasspathScan;
-    private ClasspathStrategy classpathStrategy;
-    private ClasspathScanner classpathScanner;
-    private KernelOptions options;
+    private Set<URL>                                additionalClasspathScan;
+    private ClasspathStrategy                       classpathStrategy;
+    private ClasspathScanner                        classpathScanner;
+    private KernelOptions                           options;
 
     public RequestHandler(Map<String, String> kernelParams, KernelOptions options)
     {
@@ -263,7 +264,8 @@ public class RequestHandler extends ScanResults
                 if (isOverridingModule(moduleClass))
                 {
                     addChildOverridingModule(module);
-                } else
+                }
+                else
                 {
                     addChildModule(module);
                 }
@@ -393,7 +395,8 @@ public class RequestHandler extends ScanResults
             if (!inClassesWithScopes.containsKey(aClass) && scope != null)
             {
                 inClassesWithScopes.put(aClass, scope);
-            } else
+            }
+            else
             {
                 Object insideScope = inClassesWithScopes.get(aClass);
                 if (!insideScope.equals(scope))
@@ -494,7 +497,8 @@ public class RequestHandler extends ScanResults
         if (scope != null)
         {
             mapOfScopes.put(key, scope);
-        } else
+        }
+        else
         {
             mapOfScopes.put(key, Scopes.NO_SCOPE);
         }

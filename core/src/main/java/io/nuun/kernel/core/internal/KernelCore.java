@@ -16,12 +16,6 @@
  */
 package io.nuun.kernel.core.internal;
 
-import com.google.common.base.Strings;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.google.inject.Stage;
-import com.google.inject.util.Modules;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
 import io.nuun.kernel.api.config.DependencyInjectionMode;
@@ -39,37 +33,57 @@ import io.nuun.kernel.core.internal.injection.ModuleEmbedded;
 import io.nuun.kernel.core.internal.injection.ModuleHandler;
 import io.nuun.kernel.core.internal.injection.ObjectGraphEmbedded;
 import io.nuun.kernel.spi.DependencyInjectionProvider;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
+
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URL;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.google.common.base.Strings;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.Stage;
+import com.google.inject.util.Modules;
 
 /**
  * @author Epo Jemba
  */
 public final class KernelCore implements Kernel
 {
-    private static AtomicInteger kernelIndex = new AtomicInteger();
+    private static final String               META_INF_SCAN  = "META-INF/scan";
 
-    private final Logger logger;
-    private final String name;
+    private static AtomicInteger              kernelIndex    = new AtomicInteger();
+
+    private final Logger                      logger;
+    private final String                      name;
     private final KernelConfigurationInternal kernelConfig;
-    private final ModuleHandler moduleHandler;
-    private final RequestHandler requestHandler;
-    private final PluginRegistry pluginRegistry = new PluginRegistry();
+    private final ModuleHandler               moduleHandler;
+    private final RequestHandler              requestHandler;
+    private final PluginRegistry              pluginRegistry = new PluginRegistry();
 
-    private State state = State.NOT_INITIALIZED;
-    private Injector mainInjector;
-    private Module mainModule;
-    private List<Plugin> orderedPlugins;
-    private RoundInternal round;
-    private ExtensionManager extensionManager;
-    private DependencyProvider dependencyProvider;
-    private KernelOptions options;
+    private State                             state          = State.NOT_INITIALIZED;
+    private Injector                          mainInjector;
+    private Module                            mainModule;
+    private List<Plugin>                      orderedPlugins;
+    private RoundInternal                     round;
+    private ExtensionManager                  extensionManager;
+    private DependencyProvider                dependencyProvider;
+    private KernelOptions                     options;
 
     KernelCore(KernelConfigurationInternal kernelConfigurationInternal)
     {
@@ -77,7 +91,8 @@ public final class KernelCore implements Kernel
         this.logger = LoggerFactory.getLogger(KernelCore.class.getName() + ' ' + name());
         this.kernelConfig = kernelConfigurationInternal;
         this.options = kernelConfigurationInternal.options();
-        if (!options.get(KernelOptions.ENABLE_REFLECTION_LOGGER)) {
+        if (!options.get(KernelOptions.ENABLE_REFLECTION_LOGGER))
+        {
             Reflections.log = null;
         }
         this.requestHandler = new RequestHandler(kernelConfig.kernelParams().toMap(), options);
@@ -209,6 +224,49 @@ public final class KernelCore implements Kernel
         {
             requestHandler.addRootPackage(rootPackage);
         }
+
+        initializeRootPackagesFromMetaInfScan();
+    }
+
+    private void initializeRootPackagesFromMetaInfScan()
+    {
+        loadResources(META_INF_SCAN, this.getClass().getClassLoader()).stream().flatMap(this::read).forEach(requestHandler::addRootPackage);
+    }
+
+    private Stream<String> read(InputStream in)
+    {
+        List<String> packages = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in));)
+        {
+            String line;
+            while ((line = reader.readLine()) != null)
+            {
+                packages.add(line);
+            }
+        }
+        catch (Exception e)
+        {
+            logger.warn("Error reading InputStream for META-INF/scan", e);
+        }
+        return packages.stream();
+    }
+
+    public List<InputStream> loadResources(final String name, final ClassLoader classLoader)
+    {
+        final List<InputStream> list = new ArrayList<>();
+        try
+        {
+            final Enumeration<java.net.URL> systemResources = (classLoader == null ? ClassLoader.getSystemClassLoader() : classLoader).getResources(name);
+            while (systemResources.hasMoreElements())
+            {
+                list.add(systemResources.nextElement().openStream());
+            }
+        }
+        catch (Exception e)
+        {
+            logger.warn("Error Reading " + name + " from classpath ", e);
+        }
+        return list;
     }
 
     private void addPackageRootsToRequestHandler(String pluginPackageRoots)
@@ -223,9 +281,11 @@ public final class KernelCore implements Kernel
         }
     }
 
-    private void validateMandatoryParams() {
+    private void validateMandatoryParams()
+    {
         MandatoryParamsAsserter mandatoryParamsAsserter = new MandatoryParamsAsserter();
-        for (Plugin plugin : pluginRegistry.getPlugins()) {
+        for (Plugin plugin : pluginRegistry.getPlugins())
+        {
             mandatoryParamsAsserter.assertMandatoryParams(plugin, kernelConfig.kernelParams());
         }
     }
@@ -339,7 +399,8 @@ public final class KernelCore implements Kernel
             stopPluginsInReverseOrder();
             extensionManager.stopped();
             state = State.STOPPED;
-        } else
+        }
+        else
         {
             throw new KernelException("Kernel is not started.");
         }

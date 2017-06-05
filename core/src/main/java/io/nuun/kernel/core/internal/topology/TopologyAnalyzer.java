@@ -92,8 +92,7 @@ class TopologyAnalyzer
         }
         catch (IOException e)
         {
-            logger.warn("Error when reading properties file %s", propertySource);
-            e.printStackTrace();
+            logger.warn("Error when reading properties file %s", propertySource, e);
         }
 
     }
@@ -105,7 +104,7 @@ class TopologyAnalyzer
         if (propertySource.startsWith(CLASSPATH))
         {
             String path = propertySource.substring(CLASSPATH.length());
-            is = this.getClass().getResourceAsStream(path);
+            is = this.getClass().getClassLoader().getResourceAsStream(path);
         }
         else
         {
