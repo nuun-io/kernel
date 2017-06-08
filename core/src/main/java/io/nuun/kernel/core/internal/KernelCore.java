@@ -16,24 +16,6 @@
  */
 package io.nuun.kernel.core.internal;
 
-import io.nuun.kernel.api.Kernel;
-import io.nuun.kernel.api.Plugin;
-import io.nuun.kernel.api.config.DependencyInjectionMode;
-import io.nuun.kernel.api.config.KernelOptions;
-import io.nuun.kernel.api.di.GlobalModule;
-import io.nuun.kernel.api.di.ObjectGraph;
-import io.nuun.kernel.api.di.UnitModule;
-import io.nuun.kernel.api.plugin.InitState;
-import io.nuun.kernel.api.plugin.RoundInternal;
-import io.nuun.kernel.api.plugin.context.Context;
-import io.nuun.kernel.api.plugin.context.InitContext;
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.core.internal.injection.KernelGuiceModuleInternal;
-import io.nuun.kernel.core.internal.injection.ModuleEmbedded;
-import io.nuun.kernel.core.internal.injection.ModuleHandler;
-import io.nuun.kernel.core.internal.injection.ObjectGraphEmbedded;
-import io.nuun.kernel.spi.DependencyInjectionProvider;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -59,6 +41,24 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Stage;
 import com.google.inject.util.Modules;
+
+import io.nuun.kernel.api.Kernel;
+import io.nuun.kernel.api.Plugin;
+import io.nuun.kernel.api.config.DependencyInjectionMode;
+import io.nuun.kernel.api.config.KernelOptions;
+import io.nuun.kernel.api.di.GlobalModule;
+import io.nuun.kernel.api.di.ObjectGraph;
+import io.nuun.kernel.api.di.UnitModule;
+import io.nuun.kernel.api.plugin.InitState;
+import io.nuun.kernel.api.plugin.RoundInternal;
+import io.nuun.kernel.api.plugin.context.Context;
+import io.nuun.kernel.api.plugin.context.InitContext;
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.core.internal.injection.KernelGuiceModuleInternal;
+import io.nuun.kernel.core.internal.injection.ModuleEmbedded;
+import io.nuun.kernel.core.internal.injection.ModuleHandler;
+import io.nuun.kernel.core.internal.injection.ObjectGraphEmbedded;
+import io.nuun.kernel.spi.DependencyInjectionProvider;
 
 /**
  * @author Epo Jemba
@@ -251,7 +251,7 @@ public final class KernelCore implements Kernel
         return packages.stream();
     }
 
-    public List<InputStream> loadResources(final String name, final ClassLoader classLoader)
+    protected List<InputStream> loadResources(final String name, final ClassLoader classLoader)
     {
         final List<InputStream> list = new ArrayList<>();
         try

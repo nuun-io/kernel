@@ -20,18 +20,6 @@ import static io.nuun.kernel.api.config.KernelOptions.CLASSPATH_SCAN_MODE;
 import static io.nuun.kernel.api.config.KernelOptions.PRINT_SCAN_WARN;
 import static io.nuun.kernel.core.internal.utils.NuunReflectionUtils.instantiateOrFail;
 import static java.util.Collections.unmodifiableMap;
-import io.nuun.kernel.api.Kernel;
-import io.nuun.kernel.api.Plugin;
-import io.nuun.kernel.api.annotations.KernelModule;
-import io.nuun.kernel.api.config.KernelOptions;
-import io.nuun.kernel.api.plugin.request.BindingRequest;
-import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
-import io.nuun.kernel.api.plugin.request.RequestType;
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.core.internal.injection.ModuleEmbedded;
-import io.nuun.kernel.core.internal.scanner.ClasspathScanner;
-import io.nuun.kernel.core.internal.scanner.ClasspathScannerFactory;
-import io.nuun.kernel.core.internal.scanner.disk.ClasspathStrategy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
@@ -53,6 +41,19 @@ import com.google.common.base.Strings;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
 
+import io.nuun.kernel.api.Kernel;
+import io.nuun.kernel.api.Plugin;
+import io.nuun.kernel.api.annotations.KernelModule;
+import io.nuun.kernel.api.config.KernelOptions;
+import io.nuun.kernel.api.plugin.request.BindingRequest;
+import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
+import io.nuun.kernel.api.plugin.request.RequestType;
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.core.internal.injection.ModuleEmbedded;
+import io.nuun.kernel.core.internal.scanner.ClasspathScanner;
+import io.nuun.kernel.core.internal.scanner.ClasspathScannerFactory;
+import io.nuun.kernel.core.internal.scanner.disk.ClasspathStrategy;
+
 /**
  * @author Pierre THIROUIN (pierre.thirouin@ext.inetpsa.com)
  */
@@ -62,9 +63,11 @@ public class RequestHandler extends ScanResults
                                                                                               + "   You're actually scanning the WHOLE classpath , this can be time consuming.\n"
                                                                                               + "   Please update your application configuration, to narrow the scan to your application.\n"
                                                                                               + "\n"
-                                                                                              + " 1) You can update /nuun.conf in the classpath with the following content\n"
+                                                                                              + " 1) You can update the file META-INF/scan in the classpath with the following content\n"
                                                                                               + "\n"
-                                                                                              + "          rootPackage = com.acme1, com.acme2\n"
+                                                                                              + "          com.acme1 \n"
+                                                                                              + "          com.acme2.deeppackage \n"
+                                                                                              + "          com.acme3.mypackage \n"
                                                                                               + "\n"
                                                                                               + "   where com.acme1 and com.acme2 are your root packages.\n"
                                                                                               + "\n"
