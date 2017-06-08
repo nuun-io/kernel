@@ -22,19 +22,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 /**
  * the EntryPoint annotation annotates the application start class.
  * 
  * @author epo.jemba@kametic.com (Epo Jemba)
- *
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE})
+@Target({
+    ElementType.TYPE
+})
 public @interface EntryPoint
 {
 
-    String packageScan();
+    String packageScan() default "";
 
 }

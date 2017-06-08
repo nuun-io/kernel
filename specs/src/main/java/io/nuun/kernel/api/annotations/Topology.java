@@ -16,6 +16,9 @@
  */
 package io.nuun.kernel.api.annotations;
 
+import io.nuun.kernel.spi.configuration.NuunProperty;
+
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -47,4 +50,6 @@ public @interface Topology
      * @return true if this topology will result in an overriding module configuration.
      */
     boolean overriding() default false;
+
+    Class<? extends Annotation> propertyAnnotation() default NuunProperty.class;
 }

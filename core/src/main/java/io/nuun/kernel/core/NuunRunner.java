@@ -17,11 +17,15 @@
 package io.nuun.kernel.core;
 
 import io.nuun.kernel.api.Kernel;
+import io.nuun.kernel.api.annotations.EntryPoint;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
 
 public class NuunRunner
 {
 
-    public static NuunRunnerDsl entrypoint(Class<?> entrypointClass)
+    public static NuunRunnerDsl entrypoint(Class<? extends Runnable> entrypointClass)
     {
         return new NuunRunnerDsl(entrypointClass);
     }
@@ -31,21 +35,67 @@ public class NuunRunner
 
         private Class<?> entrypointClass;
 
-        public NuunRunnerDsl(Class<?> entrypointClass)
+        public NuunRunnerDsl(Class<? extends Runnable> entrypointClass)
         {
             this.entrypointClass = entrypointClass;
         }
 
-        public void execute(String[] args)
+        public void execute(String... args)
         {
-            Kernel kernel = NuunCore.createKernel(NuunCore.newKernelConfiguration().containerContext(args));
-            
+            String rootFromEntryPoint = rootPackage();
+
+            final Kernel kernel = NuunCore.createKernel(NuunCore.newKernelConfiguration().rootPackages(rootFromEntryPoint).addPlugin(new AbstractPlugin()
+            {
+
+                @Override
+                public String name()
+                {
+                    return "entrypoint-plugin";
+                }
+
+                @Override
+                public Object nativeUnitModule()
+                {
+                    return new AbstractModule()
+                    {
+                        @Override
+                        protected void configure()
+                        {
+                            bind(entrypointClass);
+                        }
+                    };
+                }
+
+            }).containerContext(args));
+
             kernel.init();
-            
+
             kernel.start();
-            
-            kernel.stop();
-            
+
+            Runnable r = (Runnable) kernel.objectGraph().as(Injector.class).getInstance(entrypointClass);
+
+            Runtime.getRuntime().addShutdownHook(new Thread()
+            {
+                @Override
+                public void run()
+                {
+                    kernel.stop();
+                }
+            });
+
+            r.run();
+
+        }
+
+        private String rootPackage()
+        {
+            EntryPoint ep = entrypointClass.getAnnotation(EntryPoint.class);
+            String root = ep.packageScan();
+            if (root != null && root.length() > 0)
+            {
+                return root;
+            }
+            return entrypointClass.getPackage().getName();
         }
     }
 }

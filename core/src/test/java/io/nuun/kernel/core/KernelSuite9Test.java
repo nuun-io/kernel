@@ -19,26 +19,7 @@ package io.nuun.kernel.core;
 import static io.nuun.kernel.core.NuunCore.createKernel;
 import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import java.lang.reflect.Method;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.aopalliance.intercept.MethodInterceptor;
-import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.ConfigurationException;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.matcher.Matcher;
-import com.google.inject.name.Names;
-
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.core.internal.topology.TopologyModule.PredicateMatcherAdapter;
 import io.nuun.kernel.core.internal.topology.TopologyPlugin;
@@ -55,6 +36,25 @@ import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2;
 import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2Bis;
 import io.nuun.kernel.core.test_topo.sample.Server;
 import io.nuun.kernel.core.test_topo.sample.Serveur;
+import io.nuun.kernel.spi.configuration.NuunProperty;
+
+import java.lang.reflect.Method;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.aopalliance.intercept.MethodInterceptor;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.ConfigurationException;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.matcher.Matcher;
+import com.google.inject.name.Names;
 
 public class KernelSuite9Test
 {
@@ -87,6 +87,7 @@ public class KernelSuite9Test
         assertThat(h.key2).isEqualTo("value2");
         assertThat(h.key3).isEqualTo("value3");
         assertThat(h.key4).isEqualTo("value4");
+        assertThat(h.key1ViaAnno).isEqualTo("value1");
     }
 
     static class HolderProp
@@ -106,6 +107,9 @@ public class KernelSuite9Test
         @Inject
         @Named("key4")
         String key4;
+
+        @NuunProperty("key1")
+        String key1ViaAnno;
 
     }
 
@@ -203,34 +207,32 @@ public class KernelSuite9Test
         assertThat(myService2).isNotNull();
         assertThat(myService2).isInstanceOf(MyServiceImpl2.class);
     }
-    
+
     @Test
     public void topology_should_be_reach_via_meta_inf_scan()
     {
         {
-            String marker1 = injector.getInstance(Key.get(String.class,Names.named("topo1")));
+            String marker1 = injector.getInstance(Key.get(String.class, Names.named("topo1")));
             assertThat(marker1).isNotNull();
             assertThat(marker1).isEqualTo("topo1");
         }
-        
+
         {
-            String marker2 = injector.getInstance(Key.get(String.class,Names.named("topo2")));
+            String marker2 = injector.getInstance(Key.get(String.class, Names.named("topo2")));
             assertThat(marker2).isNotNull();
             assertThat(marker2).isEqualTo("topo2");
         }
-        
-        try 
+
+        try
         {
             injector.getInstance(Key.get(String.class, Names.named("topo3")));
-            Assertions.failBecauseExceptionWasNotThrown(ConfigurationException.class);
-        } catch (Exception e) {
+            failBecauseExceptionWasNotThrown(ConfigurationException.class);
+        }
+        catch (Exception e)
+        {
 
         }
-            
-            
-        
-        
-        
+
     }
 
     @After

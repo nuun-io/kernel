@@ -17,22 +17,42 @@
 package io.nuun.kernel.core;
 
 import io.nuun.kernel.api.annotations.EntryPoint;
+import io.nuun.kernel.core.test_topo.MyService3;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 public class KernelSuiteATest
 {
 
     @EntryPoint(packageScan = "io.nuun.kernel.core.test_topo")
-    static class App
+    static class App implements Runnable
     {
+        @Inject
+        @Named("key1")
+        String     key1;
+
+        @Inject
+        MyService3 ms3;
+
+        @Override
+        public void run()
+        {
+            System.out.println("-> " + key1);
+            Assertions.assertThat(ms3.one()).isEqualTo("one");
+            Assertions.assertThat(ms3.one_aop()).isEqualTo("(one)");
+
+        }
 
     }
 
     @Test
     public void testEntrypoint()
     {
-        // NuunRunner.entrypoint(App.class).execute(new String[]{"--option1" , "value1"});
+        NuunRunner.entrypoint(App.class).execute("--option1", "value1");
     }
 
 }
