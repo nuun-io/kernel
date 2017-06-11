@@ -237,6 +237,8 @@ class TopologyDefinitionCore implements TopologyDefinition
 
             Field f = (Field) candidate;
             Class<?> key = f.getType();
+            // TODO
+            // this.typeLiteral = MoreTypes.canonicalizeForKey((TypeLiteral<T>) TypeLiteral.get(type));
             Optional<Annotation> qualifier = qualifier(f);
 
             if (qualifier.isPresent())

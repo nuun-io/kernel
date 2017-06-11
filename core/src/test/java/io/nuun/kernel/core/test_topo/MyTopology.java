@@ -28,24 +28,31 @@ import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2;
 import io.nuun.kernel.core.test_topo.sample.Server;
 import io.nuun.kernel.core.test_topo.sample.Serveur;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.inject.name.Named;
 
 @Topology(propertySources = {
         "classpath:topology.properties", "./src/test/resources/topology2.properties"
+
 })
 public interface MyTopology
 {
+
+    List<String> generic   = new ArrayList<>();
+
     // Constants
     @Server
-    Long    port      = 8080l;
+    Long         port      = 8080l;
 
     @Serveur
-    String  url       = "http://localhost.local";
+    String       url       = "http://localhost.local";
 
     @Named("main")
-    String  context   = "cli";
+    String       context   = "cli";
 
-    Integer theAnswer = 42;
+    Integer      theAnswer = 42;
 
     // Simple injection
     MyServiceImpl injects(MyService key);

@@ -52,4 +52,5 @@ public @interface Topology
     boolean overriding() default false;
 
     Class<? extends Annotation> propertyAnnotation() default NuunProperty.class;
+
 }

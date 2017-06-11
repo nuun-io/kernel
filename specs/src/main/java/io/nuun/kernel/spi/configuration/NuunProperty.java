@@ -27,6 +27,7 @@ import java.lang.annotation.Target;
 })
 public @interface NuunProperty
 {
+
     String value();
 
     boolean mandatory() default true;
