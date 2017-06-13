@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Key;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
 
@@ -61,13 +62,14 @@ public class TopologyModule extends AbstractModule
         if (InstanceBinding.class.getSimpleName().equals(binding.name()))
         {
             InstanceBinding ib = (InstanceBinding) binding;
-            if (ib.qualifierClass != null)
+            // if (ib.qualifierClass != null)
+            // {
+            // this.binder().bind(ib.key).annotatedWith(ib.qualifierClass).toInstance(ib.injected);
+            // }
+            if (ib.qualifierAnno != null)
             {
-                this.binder().bind(ib.key).annotatedWith(ib.qualifierClass).toInstance(ib.injected);
-            }
-            else if (ib.qualifierAnno != null)
-            {
-                this.binder().bind(ib.key).annotatedWith(ib.qualifierAnno).toInstance(ib.injected);
+                this.binder().bind((Key) ib.key).annotatedWith(ib.qualifierAnno).toInstance(ib.injected);
+                this.binder().bin
             }
             else if (ib.qualifierClass == null)
             {

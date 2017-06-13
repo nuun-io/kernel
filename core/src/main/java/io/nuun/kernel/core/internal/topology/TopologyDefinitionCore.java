@@ -42,6 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.BindingAnnotation;
+import com.google.inject.TypeLiteral;
 
 class TopologyDefinitionCore implements TopologyDefinition
 {
@@ -238,6 +239,7 @@ class TopologyDefinitionCore implements TopologyDefinition
             Field f = (Field) candidate;
             Class<?> key = f.getType();
             // TODO
+            TypeLiteral<?> typeLiteral = TypeLiteral.get(key);
             // this.typeLiteral = MoreTypes.canonicalizeForKey((TypeLiteral<T>) TypeLiteral.get(type));
             Optional<Annotation> qualifier = qualifier(f);
 

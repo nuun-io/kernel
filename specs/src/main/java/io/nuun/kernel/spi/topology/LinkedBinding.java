@@ -21,17 +21,17 @@ import java.lang.annotation.Annotation;
 public class LinkedBinding extends InjectionBinding
 {
 
-    public LinkedBinding(Class key, Class qualifier, Object instance)
-    {
-        super(key, qualifier, instance);
-    }
+    // public LinkedBinding(Object key, Class qualifier, Object instance)
+    // {
+    // super(key, qualifier, instance);
+    // }
 
-    public LinkedBinding(Class key, Annotation qualifier, Object injected)
+    public LinkedBinding(Object key, Annotation qualifier, Object injected)
     {
         super(key, qualifier, injected);
     }
 
-    public LinkedBinding(Class key, Object instance)
+    public LinkedBinding(Object key, Object instance)
     {
         super(key, instance);
     }

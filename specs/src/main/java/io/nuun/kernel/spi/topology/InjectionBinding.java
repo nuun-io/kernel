@@ -18,32 +18,23 @@ package io.nuun.kernel.spi.topology;
 
 import java.lang.annotation.Annotation;
 
-@SuppressWarnings("rawtypes")
 public abstract class InjectionBinding extends Binding
 {
 
-    public final Class      key;
-    public final Class      qualifierClass;
+    public final Object     key;
+    // public final Class qualifierClass;
     public final Annotation qualifierAnno;
     public final Object     injected;
 
-    public InjectionBinding(Class key, Class qualifier, Object injected)
-    {
-        this.key = key;
-        this.qualifierClass = qualifier;
-        this.qualifierAnno = null;
-        this.injected = injected;
-    }
-
-    public InjectionBinding(Class key, Annotation qualifier, Object injected)
+    public InjectionBinding(Object key, Annotation qualifier, Object injected)
     {
         this.key = key;
         this.qualifierAnno = qualifier;
-        this.qualifierClass = null;
+        // this.qualifierClass = null;
         this.injected = injected;
     }
 
-    public InjectionBinding(Class key, Object injected)
+    public InjectionBinding(Object key, Object injected)
     {
         this(key, (Annotation) null, injected);
     }

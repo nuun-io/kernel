@@ -21,17 +21,17 @@ import java.lang.annotation.Annotation;
 public class InstanceBinding extends InjectionBinding
 {
 
-    public InstanceBinding(Class key, Class qualifier, Object instance)
-    {
-        super(key, qualifier, instance);
-    }
+    // public InstanceBinding(Object key, Class qualifier, Object instance)
+    // {
+    // super(key, qualifier, instance);
+    // }
 
-    public InstanceBinding(Class key, Annotation qualifier, Object injected)
+    public InstanceBinding(Object key, Annotation qualifier, Object injected)
     {
         super(key, qualifier, injected);
     }
 
-    public InstanceBinding(Class key, Object instance)
+    public InstanceBinding(Object key, Object instance)
     {
         super(key, instance);
     }

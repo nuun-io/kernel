@@ -21,17 +21,17 @@ import java.lang.annotation.Annotation;
 public class ProviderBinding extends InjectionBinding
 {
 
-    public ProviderBinding(Class key, Class qualifier, Object instance)
-    {
-        super(key, qualifier, instance);
-    }
+    // public ProviderBinding(Object key, Class qualifier, Object instance)
+    // {
+    // super(key, qualifier, instance);
+    // }
 
-    public ProviderBinding(Class key, Annotation qualifier, Object injected)
+    public ProviderBinding(Object key, Annotation qualifier, Object injected)
     {
         super(key, qualifier, injected);
     }
 
-    public ProviderBinding(Class key, Object instance)
+    public ProviderBinding(Object key, Object instance)
     {
         super(key, instance);
     }
