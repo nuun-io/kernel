@@ -139,7 +139,7 @@ public class KernelSuite9Test
         // http://www.programcreek.com/java-api-examples/index.php?api=java.lang.reflect.ParameterizedType
         Type genericType = f.getGenericType();
 
-        TypeLiteral typeLiteral = TypeLiteral.get(f.getType());
+        TypeLiteral typeLiteral = TypeLiteral.get(f.getGenericType());
 
         Injector createInjector = Guice.createInjector(new AbstractModule()
         {
@@ -147,7 +147,7 @@ public class KernelSuite9Test
             @Override
             protected void configure()
             {
-                bind(TypeLiteral.get(type)).to(ArrayList.class);
+                bind(typeLiteral).to(ArrayList.class);
 
             }
         });
