@@ -16,6 +16,11 @@
  */
 package io.nuun.kernel.core.test_topo;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.inject.name.Named;
+
 import io.nuun.kernel.api.annotations.Topology;
 import io.nuun.kernel.core.test_topo.sample.MyMethodInterceptor;
 import io.nuun.kernel.core.test_topo.sample.MyObject;
@@ -27,11 +32,6 @@ import io.nuun.kernel.core.test_topo.sample.MyServiceImpl;
 import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2;
 import io.nuun.kernel.core.test_topo.sample.Server;
 import io.nuun.kernel.core.test_topo.sample.Serveur;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.inject.name.Named;
 
 @Topology(propertySources = {
         "classpath:topology.properties", "./src/test/resources/topology2.properties"

@@ -34,6 +34,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 
 import io.nuun.kernel.api.annotations.Topology;
@@ -122,7 +123,7 @@ class TopologyAnalyzer
 
     void propertyToBinding(Object key, Object value)
     {
-        bindings.add(new LinkedBinding(String.class, Names.named((String) key), value));
+        bindings.add(new LinkedBinding( TypeLiteral.get(String.class) , Names.named((String) key), value));
     }
 
     void treatMember(Member m)

@@ -18,20 +18,22 @@ package io.nuun.kernel.spi.topology;
 
 import java.lang.annotation.Annotation;
 
+import com.google.inject.TypeLiteral;
+
 public class InstanceBinding extends InjectionBinding
 {
 
-    // public InstanceBinding(Object key, Class qualifier, Object instance)
+    // public InstanceBinding(TypeLiteral key, Class qualifier, TypeLiteral instance)
     // {
     // super(key, qualifier, instance);
     // }
 
-    public InstanceBinding(Object key, Annotation qualifier, Object injected)
+    public InstanceBinding(TypeLiteral key, Annotation qualifier, Object injected)
     {
         super(key, qualifier, injected);
     }
 
-    public InstanceBinding(Object key, Object instance)
+    public InstanceBinding(TypeLiteral key, Object instance)
     {
         super(key, instance);
     }

@@ -18,15 +18,17 @@ package io.nuun.kernel.spi.topology;
 
 import java.lang.annotation.Annotation;
 
+import com.google.inject.TypeLiteral;
+
 public abstract class InjectionBinding extends Binding
 {
 
-    public final Object     key;
+    public final TypeLiteral     key;
     // public final Class qualifierClass;
     public final Annotation qualifierAnno;
     public final Object     injected;
 
-    public InjectionBinding(Object key, Annotation qualifier, Object injected)
+    public InjectionBinding(TypeLiteral key, Annotation qualifier, Object injected)
     {
         this.key = key;
         this.qualifierAnno = qualifier;
@@ -34,7 +36,7 @@ public abstract class InjectionBinding extends Binding
         this.injected = injected;
     }
 
-    public InjectionBinding(Object key, Object injected)
+    public InjectionBinding(TypeLiteral key, Object injected)
     {
         this(key, (Annotation) null, injected);
     }

@@ -16,13 +16,6 @@
  */
 package io.nuun.kernel.core.internal.topology;
 
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.spi.topology.Binding;
-import io.nuun.kernel.spi.topology.InstanceBinding;
-import io.nuun.kernel.spi.topology.InterceptorBinding;
-import io.nuun.kernel.spi.topology.LinkedBinding;
-import io.nuun.kernel.spi.topology.ProviderBinding;
-
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Optional;
@@ -33,9 +26,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Key;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
+
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.spi.topology.Binding;
+import io.nuun.kernel.spi.topology.InstanceBinding;
+import io.nuun.kernel.spi.topology.InterceptorBinding;
+import io.nuun.kernel.spi.topology.LinkedBinding;
+import io.nuun.kernel.spi.topology.ProviderBinding;
 
 public class TopologyModule extends AbstractModule
 {
@@ -68,66 +67,66 @@ public class TopologyModule extends AbstractModule
             // }
             if (ib.qualifierAnno != null)
             {
-                this.binder().bind((Key) ib.key).annotatedWith(ib.qualifierAnno).toInstance(ib.injected);
-                this.binder().bin
+                this.binder().bind(ib.key).annotatedWith(ib.qualifierAnno).toInstance(ib.injected);
+
             }
-            else if (ib.qualifierClass == null)
-            {
-                this.binder().bind(ib.key).toInstance(ib.injected);
-            }
+//            else if (ib.qualifierClass == null)
+//            {
+//                this.binder().bind(ib.key).toInstance(ib.injected);
+//            }
 
         }
         else if (LinkedBinding.class.getSimpleName().equals(binding.name()))
         {
             LinkedBinding lb = LinkedBinding.class.cast(binding);
-            if (lb.qualifierClass != null && lb.injected.getClass().equals(Class.class))
-            {
-                this.binder().bind(lb.key).annotatedWith(lb.qualifierClass).to((Class<?>) lb.injected);
-                logger.trace("Bound {} to {} with {}", lb.key.getSimpleName(), lb.injected, lb.qualifierClass.getSimpleName());
-            }
-            else if (lb.qualifierClass != null && !lb.injected.getClass().equals(Class.class))
-            {
-                this.binder().bind(lb.key).annotatedWith(lb.qualifierClass).toInstance(lb.injected);
-                logger.trace("Bound {} to instance {} with {}", lb.key.getSimpleName(), lb.injected, lb.qualifierClass.getSimpleName());
-            }
-            else if (lb.qualifierAnno != null && lb.injected.getClass().equals(Class.class))
+//            if (lb.qualifierClass != null && lb.injected.getClass().equals(Class.class))
+//            {
+//                this.binder().bind(lb.key).annotatedWith(lb.qualifierClass).to((Class<?>) lb.injected);
+//                logger.trace("Bound {} to {} with {}", lb.key.getSimpleName(), lb.injected, lb.qualifierClass.getSimpleName());
+//            }
+//            else if (lb.qualifierClass != null && !lb.injected.getClass().equals(Class.class))
+//            {
+//                this.binder().bind(lb.key).annotatedWith(lb.qualifierClass).toInstance(lb.injected);
+//                logger.trace("Bound {} to instance {} with {}", lb.key.getSimpleName(), lb.injected, lb.qualifierClass.getSimpleName());
+//            }
+            if (lb.qualifierAnno != null && lb.injected.getClass().equals(Class.class))
             {
                 this.binder().bind(lb.key).annotatedWith(lb.qualifierAnno).to((Class<?>) lb.injected);
-                logger.trace("Bound {} to {} with {}", lb.key.getSimpleName(), lb.injected, lb.qualifierAnno);
+                logger.trace("Bound {} to {} with {}", lb.key.getRawType().getSimpleName(), lb.injected, lb.qualifierAnno);
             }
             else if (lb.qualifierAnno != null && !lb.injected.getClass().equals(Class.class))
             {
                 this.binder().bind(lb.key).annotatedWith(lb.qualifierAnno).toInstance(lb.injected);
-                logger.trace("Bound {} to instance {} with {}", lb.key.getSimpleName(), lb.injected, lb.qualifierAnno);
+                logger.trace("Bound {} to instance {} with {}", lb.key.getRawType().getSimpleName(), lb.injected, lb.qualifierAnno);
             }
-            else if (!lb.key.equals(lb.injected))
+            else if (!lb.key.getRawType() .equals(lb.injected))
             {
                 this.binder().bind(lb.key).to((Class<?>) lb.injected);
-                logger.trace("Bound {} to {}", lb.key.getSimpleName(), lb.injected);
+                logger.trace("Bound {} to {}", lb.key.getRawType().getSimpleName(), lb.injected);
             }
             else
             {
                 this.binder().bind(lb.key);
-                logger.trace("Bound {} to itself", lb.key.getSimpleName());
+                logger.trace("Bound {} to itself", lb.key.getRawType().getSimpleName());
             }
         }
         else if (ProviderBinding.class.getSimpleName().equals(binding.name()))
         {
             ProviderBinding pb = ProviderBinding.class.cast(binding);
-            if (pb.qualifierClass != null)
-            {
-                this.binder().bind(pb.key).annotatedWith(pb.qualifierClass).toProvider((Class<?>) pb.injected);
-                logger.trace("Bound {} to {} with {}", pb.key.getSimpleName(), pb.injected, pb.qualifierClass.getSimpleName());
-            }
-            else if (pb.qualifierAnno != null)
+//            if (pb.qualifierClass != null)
+//            {
+//                this.binder().bind(pb.key).annotatedWith(pb.qualifierClass).toProvider((Class<?>) pb.injected);
+//                logger.trace("Bound {} to {} with {}", pb.key.getSimpleName(), pb.injected, pb.qualifierClass.getSimpleName());
+//            }
+            if (pb.qualifierAnno != null)
             {
                 this.binder().bind(pb.key).annotatedWith(pb.qualifierAnno).toProvider((Class<?>) pb.injected);
-                logger.trace("Bound {} to {} with {}", pb.key.getSimpleName(), pb.injected, pb.qualifierAnno);
+                logger.trace("Bound {} to {} with {}", pb.key.getRawType().getSimpleName(), pb.injected, pb.qualifierAnno);
             }
             else
             {
                 this.binder().bind(pb.key).toProvider((Class<?>) pb.injected);
-                logger.trace("Bound {} to {}", pb.key.getSimpleName(), pb.injected);
+                logger.trace("Bound {} to {}", pb.key.getRawType().getSimpleName(), pb.injected);
             }
         }
         else if (InterceptorBinding.class.getSimpleName().equals(binding.name()))
