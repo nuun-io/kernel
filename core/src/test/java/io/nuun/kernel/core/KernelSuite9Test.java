@@ -20,9 +20,27 @@ import static io.nuun.kernel.core.NuunCore.createKernel;
 import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+import io.nuun.kernel.api.Kernel;
+import io.nuun.kernel.core.internal.topology.TopologyModule.PredicateMatcherAdapter;
+import io.nuun.kernel.core.internal.topology.TopologyPlugin;
+import io.nuun.kernel.core.test_topo.ClassePredicate;
+import io.nuun.kernel.core.test_topo.MethodPredicate;
+import io.nuun.kernel.core.test_topo.MyService3;
+import io.nuun.kernel.core.test_topo.MyService3Sample;
+import io.nuun.kernel.core.test_topo.sample.MyMethodInterceptor;
+import io.nuun.kernel.core.test_topo.sample.MyObject;
+import io.nuun.kernel.core.test_topo.sample.MyService;
+import io.nuun.kernel.core.test_topo.sample.MyService2;
+import io.nuun.kernel.core.test_topo.sample.MyServiceImpl;
+import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2;
+import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2Bis;
+import io.nuun.kernel.core.test_topo.sample.Server;
+import io.nuun.kernel.core.test_topo.sample.Serveur;
+import io.nuun.kernel.spi.configuration.NuunProperty;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,24 +63,6 @@ import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.name.Names;
-
-import io.nuun.kernel.api.Kernel;
-import io.nuun.kernel.core.internal.topology.TopologyModule.PredicateMatcherAdapter;
-import io.nuun.kernel.core.internal.topology.TopologyPlugin;
-import io.nuun.kernel.core.test_topo.ClassePredicate;
-import io.nuun.kernel.core.test_topo.MethodPredicate;
-import io.nuun.kernel.core.test_topo.MyService3;
-import io.nuun.kernel.core.test_topo.MyService3Sample;
-import io.nuun.kernel.core.test_topo.sample.MyMethodInterceptor;
-import io.nuun.kernel.core.test_topo.sample.MyObject;
-import io.nuun.kernel.core.test_topo.sample.MyService;
-import io.nuun.kernel.core.test_topo.sample.MyService2;
-import io.nuun.kernel.core.test_topo.sample.MyServiceImpl;
-import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2;
-import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2Bis;
-import io.nuun.kernel.core.test_topo.sample.Server;
-import io.nuun.kernel.core.test_topo.sample.Serveur;
-import io.nuun.kernel.spi.configuration.NuunProperty;
 
 public class KernelSuite9Test
 {
@@ -127,15 +127,14 @@ public class KernelSuite9Test
     static class HolderGeneric
     {
         @Inject
-        List<String> listOfString;        
-        
+        List<String> listOfString;
+
     }
-    
+
     static interface Definition
     {
         Map<String, Integer> mapOfString(Set<Long> input);
     }
-    
 
     @Test
     public void checkStuff() throws Exception
@@ -163,14 +162,20 @@ public class KernelSuite9Test
         createInjector.injectMembers(instance);
 
         assertThat(instance.listOfString).isNotNull();
-        
-        Method declaredMethod = Definition.class.getMethod("mapOfString" , Set.class);
-        
+
+        Method declaredMethod = Definition.class.getMethod("mapOfString", Set.class);
+
         assertThat(declaredMethod).isNotNull();
-        
+
         Type returnType = declaredMethod.getGenericReturnType();
-        
-        
+
+        assertThat(returnType).isNotNull();
+
+        for (Parameter parameter : declaredMethod.getParameters())
+        {
+            Type parameterizedType = parameter.getParameterizedType();
+            assertThat(parameterizedType).isNotNull();
+        }
 
     }
 
