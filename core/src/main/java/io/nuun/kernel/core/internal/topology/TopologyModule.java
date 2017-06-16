@@ -61,19 +61,16 @@ public class TopologyModule extends AbstractModule
         if (InstanceBinding.class.getSimpleName().equals(binding.name()))
         {
             InstanceBinding ib = (InstanceBinding) binding;
-            // if (ib.qualifierClass != null)
-            // {
-            // this.binder().bind(ib.key).annotatedWith(ib.qualifierClass).toInstance(ib.injected);
-            // }
             if (ib.qualifierAnno != null)
             {
                 this.binder().bind(ib.key).annotatedWith(ib.qualifierAnno).toInstance(ib.injected);
 
             }
-//            else if (ib.qualifierClass == null)
-//            {
-//                this.binder().bind(ib.key).toInstance(ib.injected);
-//            }
+            else
+            {
+                this.binder().bind(ib.key).toInstance(ib.injected);
+            }
+
 
         }
         else if (LinkedBinding.class.getSimpleName().equals(binding.name()))

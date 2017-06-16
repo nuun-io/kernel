@@ -23,6 +23,7 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -204,7 +205,7 @@ class TopologyDefinitionCore implements TopologyDefinition
             if (m.getParameterCount() == 1)
             {
 
-                TypeLiteral<?> key = typeLiteral( m.getParameterTypes()[0]);
+                TypeLiteral<?> key = typeLiteral( m.getParameters()[0].getParameterizedType() );
                 
                 Class<?> provided = m.getReturnType();
 
@@ -241,9 +242,7 @@ class TopologyDefinitionCore implements TopologyDefinition
 
             Field f = (Field) candidate;
             
-            TypeLiteral<?> key = typeLiteral(f.getType());
-            
-            // this.typeLiteral = MoreTypes.canonicalizeForKey((TypeLiteral<T>) TypeLiteral.get(type));
+            TypeLiteral<?> key = typeLiteral(f.getGenericType());
             
             Optional<Annotation> qualifier = qualifier(f);
 
@@ -260,7 +259,7 @@ class TopologyDefinitionCore implements TopologyDefinition
         return Optional.empty();
     }
     
-    private TypeLiteral<?> typeLiteral(Class<?> key)
+    private TypeLiteral<?> typeLiteral(Type key)
     {
         return TypeLiteral.get(key);
     }

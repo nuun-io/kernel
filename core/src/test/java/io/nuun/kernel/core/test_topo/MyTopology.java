@@ -17,7 +17,9 @@
 package io.nuun.kernel.core.test_topo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.inject.name.Named;
 
@@ -28,6 +30,8 @@ import io.nuun.kernel.core.test_topo.sample.MyService;
 import io.nuun.kernel.core.test_topo.sample.MyService2;
 import io.nuun.kernel.core.test_topo.sample.MyService2Provider;
 import io.nuun.kernel.core.test_topo.sample.MyService2ProviderBis;
+import io.nuun.kernel.core.test_topo.sample.MyService4;
+import io.nuun.kernel.core.test_topo.sample.MyService4Int;
 import io.nuun.kernel.core.test_topo.sample.MyServiceImpl;
 import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2;
 import io.nuun.kernel.core.test_topo.sample.Server;
@@ -41,6 +45,8 @@ public interface MyTopology
 {
 
     List<String> generic   = new ArrayList<>();
+    
+    Map<String, List<Integer>> mapComplicated = new HashMap<String, List<Integer>>(); 
 
     // Constants
     @Server
@@ -59,6 +65,9 @@ public interface MyTopology
 
     // Simple injection
     MyServiceImpl2 injectsTwo(@Named("two") MyService key);
+    
+    // Generic injection
+    MyService4Int injectsInt(MyService4<Integer> key);
 
     // auto injection
     MyObject injects(MyObject key);
