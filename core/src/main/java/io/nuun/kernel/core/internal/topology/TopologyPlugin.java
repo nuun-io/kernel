@@ -16,21 +16,22 @@
  */
 package io.nuun.kernel.core.internal.topology;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.nuun.kernel.core.AbstractPlugin;
 import io.nuun.kernel.spi.topology.Binding;
 import io.nuun.kernel.spi.topology.TopologyDefinition;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TopologyPlugin extends AbstractPlugin
 {
@@ -40,8 +41,10 @@ public class TopologyPlugin extends AbstractPlugin
     private TopologyDefinition topologyDefinition = new TopologyDefinitionCore();
 
     private List<Binding>      bindings;
+    private List<Binding>      overridingBindings;
 
     private TopologyModule     topologyModule;
+    private TopologyModule     overridingTopologyModule;
 
     @Override
     public String name()
@@ -54,17 +57,50 @@ public class TopologyPlugin extends AbstractPlugin
     {
 
         bindings = new ArrayList<>();
+        overridingBindings = new ArrayList<>();
 
         Map<Predicate<Class<?>>, Collection<Class<?>>> typesByPredicate = initContext.scannedTypesByPredicate();
 
         Collection<Class<?>> topologiesClasses = typesByPredicate.get(TopologyPredicate.INSTANCE);
-        
+
         TopologyAnalyzer analyzer = new TopologyAnalyzer(topologyDefinition, bindings);
-        
-        analyzer.analyze(topologiesClasses);
+        TopologyAnalyzer overridingAnalyzer = new TopologyAnalyzer(topologyDefinition, overridingBindings);
+
+        Collection<Class<?>> nominal = topologiesClasses.stream().filter(OverridingTopologyPredicate.INSTANCE.negate()).collect(Collectors.toList());
+        Collection<Class<?>> overrideList = topologiesClasses.stream().filter(OverridingTopologyPredicate.INSTANCE).collect(Collectors.toList());
+
+        analyzer.analyze(nominal);
+        overridingAnalyzer.analyze(overrideList);
 
         return InitState.INITIALIZED;
     }
+
+    //
+    // private Topology topology(Class<?> c)
+    // {
+    // Topology topo;
+    //
+    // boolean b = stream(c.getAnnotationsByType(Topology.class)).anyMatch(t -> t.overriding());
+    //
+    // Optional<Annotation> optionalAnno = stream(c.getAnnotations()).filter(a ->
+    // a.annotationType().equals(Topology.class)).findFirst();
+    //
+    // if (optionalAnno.isPresent())
+    // {
+    // return (Topology) optionalAnno.get();
+    // }
+    // else
+    // {
+    // // recursion
+    // stream(c.getAnnotations()).map(Annotation::annotationType)
+    // // removing annotations from jdk
+    // .filter(c1 -> !c1.getName().startsWith("java"))
+    // // do recursion
+    // .anyMatch(this::topology)
+    // }
+    //
+    //
+    // }
 
     @Override
     public Collection<ClasspathScanRequest> classpathScanRequests()
@@ -82,4 +118,15 @@ public class TopologyPlugin extends AbstractPlugin
         return topologyModule;
     }
 
+    @Override
+    public Object nativeOverridingUnitModule()
+    {
+        if (overridingTopologyModule == null)
+        {
+            overridingTopologyModule = new TopologyModule(overridingBindings);
+        }
+
+        return overridingTopologyModule;
+
+    }
 }

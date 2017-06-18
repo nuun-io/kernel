@@ -20,6 +20,25 @@ import static io.nuun.kernel.core.NuunCore.createKernel;
 import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+import io.nuun.kernel.api.Kernel;
+import io.nuun.kernel.core.internal.topology.TopologyModule.PredicateMatcherAdapter;
+import io.nuun.kernel.core.internal.topology.TopologyPlugin;
+import io.nuun.kernel.core.test_topo.ClassePredicate;
+import io.nuun.kernel.core.test_topo.MethodPredicate;
+import io.nuun.kernel.core.test_topo.MyService3;
+import io.nuun.kernel.core.test_topo.MyService3Sample;
+import io.nuun.kernel.core.test_topo.sample.MyMethodInterceptor;
+import io.nuun.kernel.core.test_topo.sample.MyObject;
+import io.nuun.kernel.core.test_topo.sample.MyService;
+import io.nuun.kernel.core.test_topo.sample.MyService2;
+import io.nuun.kernel.core.test_topo.sample.MyService2Impl;
+import io.nuun.kernel.core.test_topo.sample.MyService4;
+import io.nuun.kernel.core.test_topo.sample.MyService4Int;
+import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2Bis;
+import io.nuun.kernel.core.test_topo.sample.MyServiceImplOver;
+import io.nuun.kernel.core.test_topo.sample.Server;
+import io.nuun.kernel.core.test_topo.sample.Serveur;
+import io.nuun.kernel.spi.configuration.NuunProperty;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -48,26 +67,6 @@ import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.name.Names;
-
-import io.nuun.kernel.api.Kernel;
-import io.nuun.kernel.core.internal.topology.TopologyModule.PredicateMatcherAdapter;
-import io.nuun.kernel.core.internal.topology.TopologyPlugin;
-import io.nuun.kernel.core.test_topo.ClassePredicate;
-import io.nuun.kernel.core.test_topo.MethodPredicate;
-import io.nuun.kernel.core.test_topo.MyService3;
-import io.nuun.kernel.core.test_topo.MyService3Sample;
-import io.nuun.kernel.core.test_topo.sample.MyMethodInterceptor;
-import io.nuun.kernel.core.test_topo.sample.MyObject;
-import io.nuun.kernel.core.test_topo.sample.MyService;
-import io.nuun.kernel.core.test_topo.sample.MyService2;
-import io.nuun.kernel.core.test_topo.sample.MyService4;
-import io.nuun.kernel.core.test_topo.sample.MyService4Int;
-import io.nuun.kernel.core.test_topo.sample.MyServiceImpl;
-import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2;
-import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2Bis;
-import io.nuun.kernel.core.test_topo.sample.Server;
-import io.nuun.kernel.core.test_topo.sample.Serveur;
-import io.nuun.kernel.spi.configuration.NuunProperty;
 
 public class KernelSuite9Test
 {
@@ -135,14 +134,14 @@ public class KernelSuite9Test
         List<String> listOfString;
 
     }
-    
+
     static class HolderGeneric2
     {
         @Inject
         Map<String, Integer> mapOfString;
-        
+
         @Inject
-        Set<Long> setOfLong;
+        Set<Long>            setOfLong;
 
     }
 
@@ -154,7 +153,7 @@ public class KernelSuite9Test
     @Test
     public void checkStuff() throws Exception
     {
-        
+
         {
             Field f = HolderGeneric.class.getDeclaredField("listOfString");
             assertThat(f).isNotNull();
@@ -164,10 +163,12 @@ public class KernelSuite9Test
 
             TypeLiteral typeLiteral = TypeLiteral.get(f.getGenericType());
 
-            Injector createInjector = Guice.createInjector(new AbstractModule() {
+            Injector createInjector = Guice.createInjector(new AbstractModule()
+            {
 
                 @Override
-                protected void configure() {
+                protected void configure()
+                {
                     bind(typeLiteral).to(ArrayList.class);
 
                 }
@@ -188,51 +189,52 @@ public class KernelSuite9Test
 
             assertThat(returnType).isNotNull();
 
-            TypeLiteral pt= null;
-            
-            for (Parameter parameter : declaredMethod.getParameters()) {                
+            TypeLiteral pt = null;
+
+            for (Parameter parameter : declaredMethod.getParameters())
+            {
                 Type parameterizedType = parameter.getParameterizedType();
                 assertThat(parameterizedType).isNotNull();
                 pt = TypeLiteral.get(parameterizedType);
-                
-                /// 
-                
+
+                // /
+
                 break;
             }
-            
-            final TypeLiteral pt1= pt;
-            
-            
-            Injector createInjector = Guice.createInjector(new AbstractModule() {
+
+            final TypeLiteral pt1 = pt;
+
+            Injector createInjector = Guice.createInjector(new AbstractModule()
+            {
 
                 @Override
-                protected void configure() {
-                    
+                protected void configure()
+                {
+
                     Map<String, Integer> map = new HashMap<String, Integer>();
                     map.put("un", 1);
                     map.put("deux", 2);
-                    
+
                     Set<Long> set = new HashSet<>();
                     set.add(1l);
                     set.add(2l);
                     set.add(3l);
-                    
+
                     bind(rt).toInstance(map);
                     bind(pt1).toInstance(set);
-                    
 
                 }
             });
-            
+
             HolderGeneric2 instance = new HolderGeneric2();
             createInjector.injectMembers(instance);
 
             assertThat(instance.mapOfString).isNotNull();
             assertThat(instance.setOfLong).isNotNull();
-            
+
             assertThat(instance.mapOfString).containsKeys("un", "deux");
-            assertThat(instance.setOfLong).containsExactly(1l, 2l ,3l);
-            
+            assertThat(instance.setOfLong).containsExactly(1l, 2l, 3l);
+
         }
 
     }
@@ -280,7 +282,7 @@ public class KernelSuite9Test
 
         Object instance = injector.getInstance(Key.get(MyService2.class));
         assertThat(instance).isNotNull();
-        assertThat(instance).isInstanceOf(MyServiceImpl2.class);
+        assertThat(instance).isInstanceOf(MyService2Impl.class);
 
         instance = injector.getInstance(Key.get(MyService2.class, Server.class));
         assertThat(instance).isNotNull();
@@ -314,12 +316,16 @@ public class KernelSuite9Test
         //
         MyObject mo = injector.getInstance(Key.get(MyObject.class));
         assertThat(mo).isNotNull();
-        
+
         //
-        List<String> listOfstring = injector.getInstance(Key.get(new TypeLiteral<List<String>>(){}));
+        List<String> listOfstring = injector.getInstance(Key.get(new TypeLiteral<List<String>>()
+        {
+        }));
         assertThat(listOfstring).isNotNull();
-        
-        Map<String, List<Integer>> complicatedMap = injector.getInstance(Key.get(new TypeLiteral<Map<String, List<Integer>>>(){}));
+
+        Map<String, List<Integer>> complicatedMap = injector.getInstance(Key.get(new TypeLiteral<Map<String, List<Integer>>>()
+        {
+        }));
         assertThat(complicatedMap).isNotNull();
 
     }
@@ -331,17 +337,19 @@ public class KernelSuite9Test
         Object myService = injector.getInstance(Key.get(MyService.class));
 
         assertThat(myService).isNotNull();
-        assertThat(myService).isInstanceOf(MyServiceImpl.class);
+        assertThat(myService).isInstanceOf(MyServiceImplOver.class);
 
-        // MyServiceImpl2 injectsTwo(@Named("two") MyService key);
+        // MyService2Impl injectsTwo(@Named("two") MyService key);
         Object myService2 = injector.getInstance(Key.get(MyService.class, Names.named("two")));
         assertThat(myService2).isNotNull();
-        assertThat(myService2).isInstanceOf(MyServiceImpl2.class);
-        
-        MyService4Int myService4Int = (MyService4Int) injector.getInstance(Key.get(new TypeLiteral<MyService4<Integer>>(){}));
+        assertThat(myService2).isInstanceOf(MyService2Impl.class);
+
+        MyService4Int myService4Int = (MyService4Int) injector.getInstance(Key.get(new TypeLiteral<MyService4<Integer>>()
+        {
+        }));
         assertThat(myService4Int).isNotNull();
         assertThat(myService4Int).isInstanceOf(MyService4Int.class);
-        
+
     }
 
     @Test

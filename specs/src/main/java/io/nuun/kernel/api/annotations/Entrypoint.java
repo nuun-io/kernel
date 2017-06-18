@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * the EntryPoint annotation annotates the application start class.
+ * the Entrypoint annotation annotates the application start class.
  * 
  * @author epo.jemba@kametic.com (Epo Jemba)
  */
@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
 @Target({
     ElementType.TYPE
 })
-public @interface EntryPoint
+public @interface Entrypoint
 {
 
     String packageScan() default "";

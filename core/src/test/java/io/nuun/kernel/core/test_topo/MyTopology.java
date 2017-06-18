@@ -16,13 +16,6 @@
  */
 package io.nuun.kernel.core.test_topo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.google.inject.name.Named;
-
 import io.nuun.kernel.api.annotations.Topology;
 import io.nuun.kernel.core.test_topo.sample.MyMethodInterceptor;
 import io.nuun.kernel.core.test_topo.sample.MyObject;
@@ -33,9 +26,16 @@ import io.nuun.kernel.core.test_topo.sample.MyService2ProviderBis;
 import io.nuun.kernel.core.test_topo.sample.MyService4;
 import io.nuun.kernel.core.test_topo.sample.MyService4Int;
 import io.nuun.kernel.core.test_topo.sample.MyServiceImpl;
-import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2;
+import io.nuun.kernel.core.test_topo.sample.MyService2Impl;
 import io.nuun.kernel.core.test_topo.sample.Server;
 import io.nuun.kernel.core.test_topo.sample.Serveur;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.google.inject.name.Named;
 
 @Topology(propertySources = {
         "classpath:topology.properties", "./src/test/resources/topology2.properties"
@@ -44,28 +44,29 @@ import io.nuun.kernel.core.test_topo.sample.Serveur;
 public interface MyTopology
 {
 
-    List<String> generic   = new ArrayList<>();
-    
-    Map<String, List<Integer>> mapComplicated = new HashMap<String, List<Integer>>(); 
+    List<String>               generic        = new ArrayList<>();
+
+    Map<String, List<Integer>> mapComplicated = new HashMap<String, List<Integer>>();
 
     // Constants
     @Server
-    Long         port      = 8080l;
+    Long                       port           = 8080l;
 
     @Serveur
-    String       url       = "http://localhost.local";
+    String                     url            = "http://localhost.local";
 
     @Named("main")
-    String       context   = "cli";
+    String                     context        = "cli";
 
-    Integer      theAnswer = 42;
+    // will be overriden by MyTopologyOverride.theAnswer
+    Integer                    theAnswer      = 41;
 
     // Simple injection
     MyServiceImpl injects(MyService key);
 
     // Simple injection
-    MyServiceImpl2 injectsTwo(@Named("two") MyService key);
-    
+    MyService2Impl injectsTwo(@Named("two") MyService key);
+
     // Generic injection
     MyService4Int injectsInt(MyService4<Integer> key);
 

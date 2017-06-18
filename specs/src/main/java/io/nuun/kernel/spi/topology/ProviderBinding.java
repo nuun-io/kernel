@@ -23,11 +23,6 @@ import com.google.inject.TypeLiteral;
 public class ProviderBinding extends InjectionBinding
 {
 
-    // public ProviderBinding(TypeLiteral key, Class qualifier, TypeLiteral instance)
-    // {
-    // super(key, qualifier, instance);
-    // }
-
     public ProviderBinding(TypeLiteral key, Annotation qualifier, Object injected)
     {
         super(key, qualifier, injected);

@@ -17,13 +17,18 @@
 package io.nuun.kernel.core;
 
 import io.nuun.kernel.api.Kernel;
-import io.nuun.kernel.api.annotations.EntryPoint;
+import io.nuun.kernel.api.annotations.Entrypoint;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 
 public class NuunRunner
 {
+
+    public static final Logger logger = LoggerFactory.getLogger(NuunRunner.class);
 
     public static NuunRunnerDsl entrypoint(Class<? extends Runnable> entrypointClass)
     {
@@ -43,6 +48,8 @@ public class NuunRunner
         public void execute(String... args)
         {
             String rootFromEntryPoint = rootPackage();
+
+            logger.debug("Using {} as root package.", rootFromEntryPoint);
 
             final Kernel kernel = NuunCore.createKernel(NuunCore.newKernelConfiguration().rootPackages(rootFromEntryPoint).addPlugin(new AbstractPlugin()
             {
@@ -89,7 +96,11 @@ public class NuunRunner
 
         private String rootPackage()
         {
-            EntryPoint ep = entrypointClass.getAnnotation(EntryPoint.class);
+            Entrypoint ep = entrypointClass.getAnnotation(Entrypoint.class);
+            if (ep == null)
+            {
+                throw new KernelException("%s should be annotated with annotation %s", entrypointClass.getName(), Entrypoint.class.getName());
+            }
             String root = ep.packageScan();
             if (root != null && root.length() > 0)
             {

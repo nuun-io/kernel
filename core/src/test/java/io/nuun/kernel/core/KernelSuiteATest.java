@@ -16,19 +16,20 @@
  */
 package io.nuun.kernel.core;
 
-import io.nuun.kernel.api.annotations.EntryPoint;
+import static org.assertj.core.api.Assertions.assertThat;
+import io.nuun.kernel.api.annotations.Entrypoint;
+import io.nuun.kernel.core.entrypoint1.EntrypointPathLess;
 import io.nuun.kernel.core.test_topo.MyService3;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 public class KernelSuiteATest
 {
 
-    @EntryPoint(packageScan = "io.nuun.kernel.core.test_topo")
+    @Entrypoint(packageScan = "io.nuun.kernel.core.test_topo")
     static class App implements Runnable
     {
         @Inject
@@ -42,17 +43,22 @@ public class KernelSuiteATest
         public void run()
         {
             System.out.println("-> " + key1);
-            Assertions.assertThat(ms3.one()).isEqualTo("one");
-            Assertions.assertThat(ms3.one_aop()).isEqualTo("(one)");
-
+            assertThat(ms3.one()).isEqualTo("one");
+            assertThat(ms3.one_aop()).isEqualTo("(one)");
+            assertThat(App.class.getPackage().getName()).isEqualTo("io.nuun.kernel.core");
         }
-
     }
 
     @Test
     public void testEntrypoint()
     {
         NuunRunner.entrypoint(App.class).execute("--option1", "value1");
+    }
+
+    @Test
+    public void testPathLessEntrypoint()
+    {
+        NuunRunner.entrypoint(EntrypointPathLess.class).execute();
     }
 
 }

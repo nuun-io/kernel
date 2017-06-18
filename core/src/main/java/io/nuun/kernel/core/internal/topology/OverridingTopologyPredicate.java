@@ -22,24 +22,13 @@ import io.nuun.kernel.api.annotations.Topology;
 import java.lang.annotation.Annotation;
 import java.util.function.Predicate;
 
-public class TopologyPredicate implements Predicate<Class<?>>
+public class OverridingTopologyPredicate implements Predicate<Class<?>>
 {
 
-    public static final TopologyPredicate INSTANCE = new TopologyPredicate();
+    public static final OverridingTopologyPredicate INSTANCE = new OverridingTopologyPredicate();
 
     @Override
     public boolean test(Class<?> c)
-    {
-        return stream(c.getAnnotations()).anyMatch(a -> a.annotationType().equals(Topology.class)) ||
-        // recursion
-                stream(c.getAnnotations()).map(Annotation::annotationType)
-                // removing annotations from jdk
-                        .filter(c1 -> !c1.getName().startsWith("java"))
-                        // do recursion
-                        .anyMatch(this::test);
-    }
-
-    public boolean test2(Class<?> c)
     {
         return stream(c.getAnnotationsByType(Topology.class)).anyMatch(t -> t.overriding()) ||
         // recursion
@@ -47,7 +36,7 @@ public class TopologyPredicate implements Predicate<Class<?>>
                 // removing annotations from jdk
                         .filter(c1 -> !c1.getName().startsWith("java"))
                         // do recursion
-                        .anyMatch(this::test2)
+                        .anyMatch(this::test)
 
         ;
     }
