@@ -16,16 +16,17 @@
  */
 package io.nuun.kernel.core.internal.injection;
 
+import static org.reflections.ReflectionUtils.withAnnotation;
+
+import javax.annotation.Nullable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.Binder;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
 import com.google.inject.util.Providers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nullable;
-
-import static org.reflections.ReflectionUtils.withAnnotation;
 
 public class ClassInstaller extends Installer
 {
@@ -49,7 +50,7 @@ public class ClassInstaller extends Installer
         return classToBind;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     protected void install(Binder binder)
     {

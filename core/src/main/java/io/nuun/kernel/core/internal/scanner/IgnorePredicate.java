@@ -16,13 +16,12 @@
  */
 package io.nuun.kernel.core.internal.scanner;
 
-import com.google.common.base.Predicate;
-import io.nuun.kernel.api.annotations.Ignore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
+
+import com.google.common.base.Predicate;
+
+import io.nuun.kernel.api.annotations.Ignore;
 
 class IgnorePredicate implements Predicate<Class<?>> {
 

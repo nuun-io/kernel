@@ -16,18 +16,17 @@
  */
 package io.nuun.kernel.core.internal.scanner.inmemory;
 
-import io.nuun.kernel.api.inmemory.ClasspathAbstractElement;
-import io.nuun.kernel.api.inmemory.ClasspathClass;
-import io.nuun.kernel.api.inmemory.ClasspathResource;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.reflections.vfs.Vfs;
 import org.reflections.vfs.Vfs.Dir;
 import org.reflections.vfs.Vfs.File;
 import org.reflections.vfs.Vfs.UrlType;
+
+import io.nuun.kernel.api.inmemory.ClasspathAbstractElement;
+import io.nuun.kernel.api.inmemory.ClasspathClass;
+import io.nuun.kernel.api.inmemory.ClasspathResource;
 
 /**
  *

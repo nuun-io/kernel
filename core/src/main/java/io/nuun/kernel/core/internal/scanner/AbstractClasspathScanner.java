@@ -16,15 +16,17 @@
  */
 package io.nuun.kernel.core.internal.scanner;
 
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
-import io.nuun.kernel.core.internal.scanner.inmemory.InMemoryUrlType;
-import org.reflections.vfs.Vfs;
-
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+
+import javax.annotation.Nullable;
+
+import org.reflections.vfs.Vfs;
+
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
+
+import io.nuun.kernel.core.internal.scanner.inmemory.InMemoryUrlType;
 
 /**
  * @author epo.jemba{@literal @}kametic.com

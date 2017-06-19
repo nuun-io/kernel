@@ -16,7 +16,14 @@
  */
 package io.nuun.kernel.core.pluginsit.dummy4;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.function.Predicate;
+
 import com.google.inject.Scopes;
+
 import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.BindingRequest;
@@ -24,12 +31,6 @@ import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.nuun.kernel.api.predicates.ClassAnnotatedWith;
 import io.nuun.kernel.api.predicates.ClassImplements;
 import io.nuun.kernel.core.AbstractPlugin;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.function.Predicate;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class DummyPlugin4 extends AbstractPlugin
 {
@@ -47,7 +48,6 @@ public class DummyPlugin4 extends AbstractPlugin
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Collection<BindingRequest> bindingRequests()
     {
         Predicate<Class<?>> predicate = new ClassAnnotatedWith(MarkerSample5.class).and(new ClassImplements(Interface2.class));
@@ -58,7 +58,6 @@ public class DummyPlugin4 extends AbstractPlugin
         return bindingRequestsBuilder().predicate(predicate).withScope(Scopes.SINGLETON).build();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Collection<ClasspathScanRequest> classpathScanRequests()
     {
@@ -71,7 +70,6 @@ public class DummyPlugin4 extends AbstractPlugin
     }
 
 
-    @SuppressWarnings("rawtypes")
     @Override
     public InitState init(InitContext initContext)
     {

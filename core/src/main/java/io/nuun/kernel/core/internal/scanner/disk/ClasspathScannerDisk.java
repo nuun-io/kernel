@@ -16,20 +16,9 @@
  */
 package io.nuun.kernel.core.internal.scanner.disk;
 
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
-import io.nuun.kernel.core.internal.scanner.AbstractClasspathScanner;
-import io.nuun.kernel.core.internal.utils.AssertUtils;
-import org.reflections.Reflections;
-import org.reflections.Store;
-import org.reflections.scanners.ResourcesScanner;
-import org.reflections.scanners.Scanner;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.scanners.TypeAnnotationsScanner;
-import org.reflections.scanners.TypeElementsScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
-import org.reflections.util.FilterBuilder;
+import static io.nuun.kernel.core.internal.utils.NuunReflectionUtils.forNameSilent;
+import static io.nuun.kernel.core.internal.utils.NuunReflectionUtils.forNames;
+import static org.reflections.util.FilterBuilder.prefix;
 
 import java.lang.annotation.Annotation;
 import java.net.URL;
@@ -43,9 +32,22 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static io.nuun.kernel.core.internal.utils.NuunReflectionUtils.forNameSilent;
-import static io.nuun.kernel.core.internal.utils.NuunReflectionUtils.forNames;
-import static org.reflections.util.FilterBuilder.prefix;
+import org.reflections.Reflections;
+import org.reflections.Store;
+import org.reflections.scanners.ResourcesScanner;
+import org.reflections.scanners.Scanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
+import org.reflections.scanners.TypeElementsScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
+
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
+
+import io.nuun.kernel.core.internal.scanner.AbstractClasspathScanner;
+import io.nuun.kernel.core.internal.utils.AssertUtils;
 
 public class ClasspathScannerDisk extends AbstractClasspathScanner
 {
@@ -233,14 +235,14 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
         return postTreatment(typesAnnotatedWith);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public Collection<Class<?>> scanSubTypesOf(final Class<?> subType)
     {
         return postTreatment((Collection) reflections.getSubTypesOf(subType));
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public Collection<Class<?>> scanSubTypesOf(final String subTypeName)
     {
