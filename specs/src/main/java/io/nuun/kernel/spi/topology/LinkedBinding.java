@@ -23,11 +23,6 @@ import com.google.inject.TypeLiteral;
 public class LinkedBinding extends InjectionBinding
 {
 
-    // public LinkedBinding(TypeLiteral key, Class qualifier, TypeLiteral instance)
-    // {
-    // super(key, qualifier, instance);
-    // }
-
     public LinkedBinding(TypeLiteral key, Annotation qualifier, Object injected)
     {
         super(key, qualifier, injected);

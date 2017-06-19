@@ -14,19 +14,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Nuun IO Kernel Core.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.nuun.kernel.core.test_topo.sample;
+package io.nuun.kernel.core.entrypoint1;
 
-import javax.inject.Provider;
+import io.nuun.kernel.api.annotations.Entrypoint;
 
-public class MyService2Provider implements Provider<MyService2>
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.assertj.core.api.Assertions;
+
+@Entrypoint
+public class EntrypointPathLess implements Runnable
 {
 
+    @Inject
+    @Named("fromPathLessTopo")
+    String message;
+
     @Override
-    public MyService2 get()
+    public void run()
     {
-
-        return new MyService2Impl();
-
+        Assertions.assertThat(message).isEqualTo("!");
     }
 
 }

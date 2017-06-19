@@ -17,6 +17,14 @@
 package io.nuun.kernel.core.internal.topology;
 
 import static java.util.Arrays.asList;
+import io.nuun.kernel.api.annotations.Topology;
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.spi.topology.Binding;
+import io.nuun.kernel.spi.topology.InstanceBinding;
+import io.nuun.kernel.spi.topology.InterceptorBinding;
+import io.nuun.kernel.spi.topology.LinkedBinding;
+import io.nuun.kernel.spi.topology.ProviderBinding;
+import io.nuun.kernel.spi.topology.TopologyDefinition;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,15 +44,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
-
-import io.nuun.kernel.api.annotations.Topology;
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.spi.topology.Binding;
-import io.nuun.kernel.spi.topology.InstanceBinding;
-import io.nuun.kernel.spi.topology.InterceptorBinding;
-import io.nuun.kernel.spi.topology.LinkedBinding;
-import io.nuun.kernel.spi.topology.ProviderBinding;
-import io.nuun.kernel.spi.topology.TopologyDefinition;
 
 class TopologyAnalyzer
 {
@@ -83,7 +82,7 @@ class TopologyAnalyzer
         Arrays.stream(propertySources).filter(Objects::nonNull).filter(this::nonEmpty).forEach(this::treatPropertySource);
 
     }
-    
+
     private boolean nonEmpty(String candidate)
     {
         return candidate.length() > 0;
@@ -123,7 +122,7 @@ class TopologyAnalyzer
 
     void propertyToBinding(Object key, Object value)
     {
-        bindings.add(new LinkedBinding( TypeLiteral.get(String.class) , Names.named((String) key), value));
+        bindings.add(new LinkedBinding(TypeLiteral.get(String.class), Names.named((String) key), value));
     }
 
     void treatMember(Member m)

@@ -14,19 +14,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Nuun IO Kernel Core.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.nuun.kernel.core.test_topo.sample;
+package io.nuun.kernel.core.test_topo;
 
-import javax.inject.Provider;
+import io.nuun.kernel.api.annotations.Topology;
+import io.nuun.kernel.core.test_topo.sample.MyService;
+import io.nuun.kernel.core.test_topo.sample.MyServiceImplOver;
 
-public class MyService2Provider implements Provider<MyService2>
+@Topology(overriding = true)
+public interface MyTopologyOverride
 {
+    Integer theAnswer = 42;
 
-    @Override
-    public MyService2 get()
-    {
-
-        return new MyService2Impl();
-
-    }
-
+    MyServiceImplOver injects(MyService key);
 }

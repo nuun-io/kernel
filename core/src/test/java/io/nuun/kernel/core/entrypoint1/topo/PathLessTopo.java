@@ -14,9 +14,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Nuun IO Kernel Core.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.nuun.kernel.core.test_topo.sample;
+package io.nuun.kernel.core.entrypoint1.topo;
 
-public class MyServiceImpl2 implements MyService2
+import io.nuun.kernel.api.annotations.Topology;
+
+import javax.inject.Named;
+
+@Topology
+public interface PathLessTopo
 {
-
+    @Named("fromPathLessTopo")
+    String message = "!";
 }

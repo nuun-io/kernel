@@ -16,17 +16,7 @@
  */
 package io.nuun.kernel.core.test_topo.sample;
 
-import javax.inject.Provider;
-
-public class MyService2Provider implements Provider<MyService2>
+public class MyService2Impl implements MyService2
 {
-
-    @Override
-    public MyService2 get()
-    {
-
-        return new MyService2Impl();
-
-    }
 
 }
