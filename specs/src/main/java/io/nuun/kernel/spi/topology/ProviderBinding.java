@@ -18,17 +18,15 @@ package io.nuun.kernel.spi.topology;
 
 import java.lang.annotation.Annotation;
 
-import com.google.inject.TypeLiteral;
-
 public class ProviderBinding extends InjectionBinding
 {
 
-    public ProviderBinding(TypeLiteral key, Annotation qualifier, Object injected)
+    public ProviderBinding(Object key, Annotation qualifier, Object injected)
     {
         super(key, qualifier, injected);
     }
 
-    public ProviderBinding(TypeLiteral key, Object instance)
+    public ProviderBinding(Object key, Object instance)
     {
         super(key, instance);
     }
