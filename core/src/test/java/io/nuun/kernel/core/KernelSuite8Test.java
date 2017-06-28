@@ -16,6 +16,12 @@
  */
 package io.nuun.kernel.core;
 
+import static io.nuun.kernel.core.NuunCore.createKernel;
+import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
@@ -23,11 +29,6 @@ import io.nuun.kernel.core.pluginsit.dummy5.DescendantFromClass;
 import io.nuun.kernel.core.pluginsit.dummy5.DummyPlugin5;
 import io.nuun.kernel.core.pluginsit.dummy5.GrandParentClass;
 import io.nuun.kernel.core.pluginsit.dummy5.ParentClass;
-import org.junit.Before;
-import org.junit.Test;
-
-import static io.nuun.kernel.core.NuunCore.createKernel;
-import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 
 /**
  * @author epo.jemba{@literal @}kametic.com
@@ -38,7 +39,7 @@ public class KernelSuite8Test
     @Before
     public void init()
     {
-        ClasspathBuilder cpb = new ClasspathBuilder()
+        new ClasspathBuilder()
         {
             @Override
             public void configure()
@@ -48,9 +49,7 @@ public class KernelSuite8Test
                 addClass(DescendantFromClass.class);
                 addClass(ParentClass.class);
             }
-        };
-
-        cpb.configure();
+        }.configure();
     }
 
     @Test
