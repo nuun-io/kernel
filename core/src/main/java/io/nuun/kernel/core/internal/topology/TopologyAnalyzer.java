@@ -17,6 +17,7 @@
 package io.nuun.kernel.core.internal.topology;
 
 import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
 import io.nuun.kernel.api.annotations.Topology;
 import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.spi.topology.Binding;
@@ -32,7 +33,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Member;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -77,9 +77,9 @@ class TopologyAnalyzer
         }
 
         Topology topology = unit.getAnnotation(Topology.class);
-        String[] propertySources = topology.propertySources();
+        String[] propertySources = topology.configurationFiles();
 
-        Arrays.stream(propertySources).filter(Objects::nonNull).filter(this::nonEmpty).forEach(this::treatPropertySource);
+        stream(propertySources).filter(Objects::nonNull).filter(this::nonEmpty).forEach(this::treatPropertySource);
 
     }
 

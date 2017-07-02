@@ -17,6 +17,12 @@
 package io.nuun.kernel.core.internal.topology;
 
 import static java.util.Arrays.stream;
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.spi.topology.InstanceBinding;
+import io.nuun.kernel.spi.topology.InterceptorBinding;
+import io.nuun.kernel.spi.topology.LinkedBinding;
+import io.nuun.kernel.spi.topology.ProviderBinding;
+import io.nuun.kernel.spi.topology.TopologyDefinition;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
@@ -30,20 +36,14 @@ import java.util.function.Predicate;
 import javax.inject.Provider;
 import javax.inject.Qualifier;
 
+import net.jodah.typetools.TypeResolver;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.BindingAnnotation;
 import com.google.inject.TypeLiteral;
-
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.spi.topology.InstanceBinding;
-import io.nuun.kernel.spi.topology.InterceptorBinding;
-import io.nuun.kernel.spi.topology.LinkedBinding;
-import io.nuun.kernel.spi.topology.ProviderBinding;
-import io.nuun.kernel.spi.topology.TopologyDefinition;
-import net.jodah.typetools.TypeResolver;
 
 class TopologyDefinitionCore implements TopologyDefinition
 {
@@ -94,7 +94,7 @@ class TopologyDefinitionCore implements TopologyDefinition
             {
 
                 TypeLiteral<?> key = typeLiteral(m.getParameterTypes()[0]);
-                
+
                 Class<?> provided = m.getReturnType();
 
                 assertProviderOf(m.getParameterTypes()[0], provided);
@@ -205,8 +205,8 @@ class TopologyDefinitionCore implements TopologyDefinition
             if (m.getParameterCount() == 1)
             {
 
-                TypeLiteral<?> key = typeLiteral( m.getParameters()[0].getParameterizedType() );
-                
+                TypeLiteral<?> key = typeLiteral(m.getParameters()[0].getParameterizedType());
+
                 Class<?> provided = m.getReturnType();
 
                 Optional<Annotation> qualifier = qualifier(m.getParameterAnnotations()[0]);
@@ -235,15 +235,16 @@ class TopologyDefinitionCore implements TopologyDefinition
             Object instance = getValue((Field) candidate);
 
             if (instance == null)
+            // TODO do no throw error if Nullable is present
             {
                 throw new KernelException(
                         "Topology %s field %s is null, Please set a value.", candidate.getDeclaringClass().getSimpleName(), candidate.getName());
             }
 
             Field f = (Field) candidate;
-            
+
             TypeLiteral<?> key = typeLiteral(f.getGenericType());
-            
+
             Optional<Annotation> qualifier = qualifier(f);
 
             if (qualifier.isPresent())
@@ -258,7 +259,7 @@ class TopologyDefinitionCore implements TopologyDefinition
 
         return Optional.empty();
     }
-    
+
     private TypeLiteral<?> typeLiteral(Type key)
     {
         return TypeLiteral.get(key);

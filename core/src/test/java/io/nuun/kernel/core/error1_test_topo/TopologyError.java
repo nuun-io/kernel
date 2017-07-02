@@ -22,7 +22,7 @@ import io.nuun.kernel.core.test_topo.sample.MyMethodInterceptor;
 
 import java.util.function.Predicate;
 
-@Topology(propertySources = "topology.properties")
+@Topology(configurationFiles = "topology.properties")
 public interface TopologyError
 {
 

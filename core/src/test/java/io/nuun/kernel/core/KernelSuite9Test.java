@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -67,6 +68,7 @@ import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.name.Names;
+import com.google.inject.util.Providers;
 
 public class KernelSuite9Test
 {
@@ -133,6 +135,10 @@ public class KernelSuite9Test
         @Inject
         List<String> listOfString;
 
+        @Inject
+        @Nullable
+        IsNull       isNull;
+
     }
 
     static class HolderGeneric2
@@ -148,6 +154,10 @@ public class KernelSuite9Test
     static interface Definition
     {
         Map<String, Integer> mapOfString(Set<Long> input);
+    }
+
+    static interface IsNull
+    {
     }
 
     @Test
@@ -170,6 +180,7 @@ public class KernelSuite9Test
                 protected void configure()
                 {
                     bind(typeLiteral).to(ArrayList.class);
+                    bind(IsNull.class).toProvider(Providers.of(null));
 
                 }
             });
@@ -178,6 +189,7 @@ public class KernelSuite9Test
             createInjector.injectMembers(instance);
 
             assertThat(instance.listOfString).isNotNull();
+            assertThat(instance.isNull).isNull();
         }
         {
             Method declaredMethod = Definition.class.getMethod("mapOfString", Set.class);

@@ -45,7 +45,7 @@ public @interface Topology
     /**
      * @return an array properties source
      */
-    String[] propertySources() default "";
+    String[] configurationFiles() default "";
 
     /**
      * @return true if this topology will result in an overriding module configuration.

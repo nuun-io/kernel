@@ -21,12 +21,12 @@ import io.nuun.kernel.core.test_topo.sample.MyMethodInterceptor;
 import io.nuun.kernel.core.test_topo.sample.MyObject;
 import io.nuun.kernel.core.test_topo.sample.MyService;
 import io.nuun.kernel.core.test_topo.sample.MyService2;
+import io.nuun.kernel.core.test_topo.sample.MyService2Impl;
 import io.nuun.kernel.core.test_topo.sample.MyService2Provider;
 import io.nuun.kernel.core.test_topo.sample.MyService2ProviderBis;
 import io.nuun.kernel.core.test_topo.sample.MyService4;
 import io.nuun.kernel.core.test_topo.sample.MyService4Int;
 import io.nuun.kernel.core.test_topo.sample.MyServiceImpl;
-import io.nuun.kernel.core.test_topo.sample.MyService2Impl;
 import io.nuun.kernel.core.test_topo.sample.Server;
 import io.nuun.kernel.core.test_topo.sample.Serveur;
 
@@ -37,7 +37,7 @@ import java.util.Map;
 
 import com.google.inject.name.Named;
 
-@Topology(propertySources = {
+@Topology(configurationFiles = {
         "classpath:topology.properties", "./src/test/resources/topology2.properties"
 
 })
