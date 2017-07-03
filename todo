@@ -1,12 +1,20 @@
 - @Default qualifier
+  ==================
+  
+  Implements a strategy when 2 bindings of the same key. 
+  
+- Power Predicate
+  ===============
+  
+  Replacing the Predicate<Class> bye another idiom : more powerfull.
 
-  implements a strategy when 2 bindings of the same key
-
+  boolean test(Class<?> candidate) par PredicateResult 
+  
 - Nullable -> Inject+Nullable  || Optional of null
-
-  +--------------------------------------|----|-------------------------------------------------|
+  
+  +--------------------------------------+----+-------------------------------------------------+
   | Topology                             |    | Client Code                                     |
-  |--------------------------------------|----|-------------------------------------------------|
+  +--------------------------------------+----+-------------------------------------------------+
   |                                      |    |                                                 |
   | @Nullable                            |    | @Inject                                         |
   | MyService myService;                 | -> | MyService myService  ( = Error !)               |
@@ -14,7 +22,13 @@
   |                                      |    | @Inject @Nullable                               |
   |                                      | -> | MyService myService  ( = null )                 |
   |                                      |    |                                                 |
-  |--------------------------------------|----|-------------------------------------------------|
+  |                                      |    |      (en plus)                                  |
+  |                                      |    |                                                 |
+  |            optional = true           | -> | @Inject                                         |
+  |                                      |    | Optional<MyService> ( = Optional.empty())       |
+  |                                      |    |                                                 |
+  |                                      |    |                                                 |
+  +--------------------------------------+----+-------------------------------------------------+
   |                                      |    |                                                 |
   | @Nullable                            |    | @Inject                                         |
   | MyService myService                  | -> | MyService myService  ( = MyServiceImpl@7zetre ) |
@@ -22,23 +36,31 @@
   | MyServiceImpl injects(MyService key);|    | @Inject @Nullable                               |
   |                                      | -> | MyService myService  ( = MyServiceImpl@9raopd ) |
   |                                      |    |                                                 |
-  +---------------------------------------------------------------------------------------------|
-
+  |                                      |    |      (en plus)                                  |
+  |                                      |    |                                                 |
+  |            optional = true           | -> | @Inject                                         |
+  |                                      |    | Optional<MyService> (=Optional(MyServiceImpl))  |
+  |                                      |    |                                                 |
+  +--------------------------------------+----+-------------------------------------------------+
+  
 - Multi
-
+  
   @Multi
   Set<MyService> servicesSet;
-
+  
   @Multi
   List<MyService> servicesList;
-
+  
   @Multi
   Map<String, MyService> servicesMap;
   
-
+  
 - Scope
   
   @Singleton
   MyServiceImpl injects(MyService key);
-
+  
 - Concerns
+  
+  Private Concerns
+ 
