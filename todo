@@ -1,0 +1,44 @@
+- @Default qualifier
+
+  implements a strategy when 2 bindings of the same key
+
+- Nullable -> Inject+Nullable  || Optional of null
+
+  +--------------------------------------|----|-------------------------------------------------|
+  | Topology                             |    | Client Code                                     |
+  |--------------------------------------|----|-------------------------------------------------|
+  |                                      |    |                                                 |
+  | @Nullable                            |    | @Inject                                         |
+  | MyService myService;                 | -> | MyService myService  ( = Error !)               |
+  |                                      |    |                                                 |
+  |                                      |    | @Inject @Nullable                               |
+  |                                      | -> | MyService myService  ( = null )                 |
+  |                                      |    |                                                 |
+  |--------------------------------------|----|-------------------------------------------------|
+  |                                      |    |                                                 |
+  | @Nullable                            |    | @Inject                                         |
+  | MyService myService                  | -> | MyService myService  ( = MyServiceImpl@7zetre ) |
+  |          +                           |    |                                                 |
+  | MyServiceImpl injects(MyService key);|    | @Inject @Nullable                               |
+  |                                      | -> | MyService myService  ( = MyServiceImpl@9raopd ) |
+  |                                      |    |                                                 |
+  +---------------------------------------------------------------------------------------------|
+
+- Multi
+
+  @Multi
+  Set<MyService> servicesSet;
+
+  @Multi
+  List<MyService> servicesList;
+
+  @Multi
+  Map<String, MyService> servicesMap;
+  
+
+- Scope
+  
+  @Singleton
+  MyServiceImpl injects(MyService key);
+
+- Concerns
