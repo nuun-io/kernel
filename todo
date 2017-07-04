@@ -8,9 +8,12 @@
   
   Replacing the Predicate<Class> bye another idiom : more powerfull.
 
-  boolean test(Class<?> candidate) par PredicateResult 
+  boolean test(Class<?> candidate) by PredicateResult<R> test(Class<Candidate>) 
   
-- Nullable -> Inject+Nullable  || Optional of null
+- Nullable 
+  ========
+  -> Inject+Nullable  || Optional of null
+ 
   
   +--------------------------------------+----+-------------------------------------------------+
   | Topology                             |    | Client Code                                     |
@@ -44,7 +47,7 @@
   +--------------------------------------+----+-------------------------------------------------+
   
 - Multi
-  
+  ===== 
   @Multi
   Set<MyService> servicesSet;
   
@@ -56,11 +59,14 @@
   
   
 - Scope
+  =====
   
+  Ex: 
   @Singleton
   MyServiceImpl injects(MyService key);
   
 - Concerns
+  ========
   
   Private Concerns
  
