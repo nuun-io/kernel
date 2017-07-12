@@ -16,13 +16,6 @@
  */
 package io.nuun.kernel.core.internal.topology;
 
-import io.nuun.kernel.api.plugin.InitState;
-import io.nuun.kernel.api.plugin.context.InitContext;
-import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
-import io.nuun.kernel.core.AbstractPlugin;
-import io.nuun.kernel.spi.topology.Binding;
-import io.nuun.kernel.spi.topology.TopologyDefinition;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,6 +25,13 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.nuun.kernel.api.plugin.InitState;
+import io.nuun.kernel.api.plugin.context.InitContext;
+import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
+import io.nuun.kernel.core.AbstractPlugin;
+import io.nuun.kernel.spi.topology.Binding;
+import io.nuun.kernel.spi.topology.TopologyDefinition;
 
 public class TopologyPlugin extends AbstractPlugin
 {
@@ -74,33 +74,6 @@ public class TopologyPlugin extends AbstractPlugin
 
         return InitState.INITIALIZED;
     }
-
-    //
-    // private Topology topology(Class<?> c)
-    // {
-    // Topology topo;
-    //
-    // boolean b = stream(c.getAnnotationsByType(Topology.class)).anyMatch(t -> t.overriding());
-    //
-    // Optional<Annotation> optionalAnno = stream(c.getAnnotations()).filter(a ->
-    // a.annotationType().equals(Topology.class)).findFirst();
-    //
-    // if (optionalAnno.isPresent())
-    // {
-    // return (Topology) optionalAnno.get();
-    // }
-    // else
-    // {
-    // // recursion
-    // stream(c.getAnnotations()).map(Annotation::annotationType)
-    // // removing annotations from jdk
-    // .filter(c1 -> !c1.getName().startsWith("java"))
-    // // do recursion
-    // .anyMatch(this::topology)
-    // }
-    //
-    //
-    // }
 
     @Override
     public Collection<ClasspathScanRequest> classpathScanRequests()

@@ -22,7 +22,6 @@ public abstract class InjectionBinding extends Binding
 {
 
     public final Object     key;
-    // public final Class qualifierClass;
     public final Annotation qualifierAnno;
     public final Object     injected;
 
@@ -30,7 +29,6 @@ public abstract class InjectionBinding extends Binding
     {
         this.key = key;
         this.qualifierAnno = qualifier;
-        // this.qualifierClass = null;
         this.injected = injected;
     }
 
@@ -38,4 +36,5 @@ public abstract class InjectionBinding extends Binding
     {
         this(key, (Annotation) null, injected);
     }
+
 }
