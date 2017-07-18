@@ -54,9 +54,8 @@
   @Multi
   List<MyService> servicesList;
   
-  @Multi
+  @Multi(MyServiceKey.class) // Function<MyService,String> 
   Map<String, MyService> servicesMap;
-  
   
 - Scope
   =====
