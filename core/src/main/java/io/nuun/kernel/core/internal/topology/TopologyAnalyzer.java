@@ -62,9 +62,10 @@ class TopologyAnalyzer
 
     public void analyze(Collection<Class<?>> topologiesClasses)
     {
-
+        // Analyze Fields
         topologiesClasses.stream().peek(this::treatUnit).forEach(c -> asList(c.getDeclaredFields()).stream().forEach(this::treatMember));
 
+        // Analyze Methods
         topologiesClasses.stream().forEach(c -> asList(c.getDeclaredMethods()).stream().forEach(this::treatMember));
 
     }
@@ -154,6 +155,11 @@ class TopologyAnalyzer
         {
             bindings.add(interceptorBinding.get());
         }
+    }
+
+    boolean isNullable(Member member)
+    {
+        return false;
     }
 
 }
