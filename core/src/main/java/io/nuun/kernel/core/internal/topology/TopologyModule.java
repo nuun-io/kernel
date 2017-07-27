@@ -16,13 +16,7 @@
  */
 package io.nuun.kernel.core.internal.topology;
 
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.spi.topology.Binding;
-import io.nuun.kernel.spi.topology.InstanceBinding;
-import io.nuun.kernel.spi.topology.InterceptorBinding;
-import io.nuun.kernel.spi.topology.LinkedBinding;
-import io.nuun.kernel.spi.topology.ProviderBinding;
-
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Optional;
@@ -33,25 +27,62 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
+
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.spi.topology.Binding;
+import io.nuun.kernel.spi.topology.InjectionBinding;
+import io.nuun.kernel.spi.topology.InstanceBinding;
+import io.nuun.kernel.spi.topology.InterceptorBinding;
+import io.nuun.kernel.spi.topology.LinkedBinding;
+import io.nuun.kernel.spi.topology.ProviderBinding;
 
 public class TopologyModule extends AbstractModule
 {
     private Logger              logger = LoggerFactory.getLogger(TopologyModule.class);
 
     private Collection<Binding> bindings;
+    
+    private BindingInfos bindingInfos;
 
     public TopologyModule(Collection<Binding> bindings)
     {
         this.bindings = bindings;
+        this.bindingInfos = new BindingInfos();
     }
 
     @Override
     protected void configure()
     {
+        bindings.stream().forEach(this::collectBindingsMetadata);
         bindings.stream().forEach(this::configureBinding);
+    }
+    
+    private void collectBindingsMetadata(Binding binding)
+    {
+        if (binding instanceof InjectionBinding)
+        {
+            InjectionBinding injectionBinding = (InjectionBinding) binding;
+            if (injectionBinding.nullable)
+            {
+                bindingInfos.put(key(injectionBinding.key, injectionBinding.qualifierAnno), BindingInfo.NULLABLE);
+            }
+        }
+    }
+    
+    private Key<?> key(Object key, Annotation qualifierAnno)
+    {
+        if (qualifierAnno == null)
+        {
+            return Key.get(key.getClass()) ;
+        }
+        else 
+        {
+            return Key.get(key.getClass(), qualifierAnno) ;
+        }
     }
 
     @SuppressWarnings({

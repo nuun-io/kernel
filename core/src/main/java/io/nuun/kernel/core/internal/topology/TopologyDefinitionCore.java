@@ -17,12 +17,6 @@
 package io.nuun.kernel.core.internal.topology;
 
 import static java.util.Arrays.stream;
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.spi.topology.InstanceBinding;
-import io.nuun.kernel.spi.topology.InterceptorBinding;
-import io.nuun.kernel.spi.topology.LinkedBinding;
-import io.nuun.kernel.spi.topology.ProviderBinding;
-import io.nuun.kernel.spi.topology.TopologyDefinition;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
@@ -33,10 +27,9 @@ import java.lang.reflect.Type;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import javax.annotation.Nullable;
 import javax.inject.Provider;
 import javax.inject.Qualifier;
-
-import net.jodah.typetools.TypeResolver;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.slf4j.Logger;
@@ -44,6 +37,14 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.BindingAnnotation;
 import com.google.inject.TypeLiteral;
+
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.spi.topology.InstanceBinding;
+import io.nuun.kernel.spi.topology.InterceptorBinding;
+import io.nuun.kernel.spi.topology.LinkedBinding;
+import io.nuun.kernel.spi.topology.ProviderBinding;
+import io.nuun.kernel.spi.topology.TopologyDefinition;
+import net.jodah.typetools.TypeResolver;
 
 class TopologyDefinitionCore implements TopologyDefinition
 {
@@ -232,16 +233,17 @@ class TopologyDefinitionCore implements TopologyDefinition
         if (Field.class.equals(candidate.getClass()))
         {
 
+            Field f = Field.class.cast(candidate);
+            
+            Boolean isNullable = f.isAnnotationPresent(Nullable.class);
+            
             Object instance = getValue((Field) candidate);
 
-            if (instance == null)
-            // TODO do no throw error if Nullable is present
+            if (instance == null && ! isNullable)
             {
                 throw new KernelException(
                         "Topology %s field %s is null, Please set a value.", candidate.getDeclaringClass().getSimpleName(), candidate.getName());
             }
-
-            Field f = (Field) candidate;
 
             TypeLiteral<?> key = typeLiteral(f.getGenericType());
 
@@ -249,11 +251,11 @@ class TopologyDefinitionCore implements TopologyDefinition
 
             if (qualifier.isPresent())
             {
-                return Optional.of(new InstanceBinding(key, qualifier.get(), instance));
+                return Optional.of(new InstanceBinding(key, qualifier.get(), instance , isNullable));
             }
             else
             {
-                return Optional.of(new InstanceBinding(key, instance));
+                return Optional.of(new InstanceBinding(key, instance, isNullable));
             }
         }
 

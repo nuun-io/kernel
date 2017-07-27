@@ -30,5 +30,15 @@ public class InstanceBinding extends InjectionBinding
     {
         super(key, instance);
     }
+    
+    public InstanceBinding(Object key, Annotation qualifier, Object injected, boolean nullable)
+    {
+        super(key, qualifier, injected,nullable);
+    }
+    
+    public InstanceBinding(Object key, Object instance, boolean nullable)
+    {
+        super(key, instance,nullable);
+    }
 
 }
