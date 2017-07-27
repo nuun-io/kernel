@@ -1,6 +1,9 @@
 package io.nuun.kernel.core.internal.topology;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
@@ -16,6 +19,7 @@ public class BindingInfos
         multimap = MultimapBuilder
 
         .hashKeys().enumSetValues(BindingInfo.class).build();
+
     }
 
     public void put(Key<?> key, BindingInfo info)
@@ -30,7 +34,12 @@ public class BindingInfos
 
     public boolean contains(Key<?> key, BindingInfo info)
     {
-        return get(key).stream().anyMatch(i -> i.equals(info));
+        return multimap.containsEntry(key, info);
+        // return get(key).stream().anyMatch(i -> i.equals(info));
     }
 
+    public List<Key> keys(BindingInfo bindingInfo)
+    {
+        return multimap.entries().stream().filter(e -> e.getValue().equals(bindingInfo)).map(Map.Entry::getKey).collect(Collectors.toList());
+    }
 }

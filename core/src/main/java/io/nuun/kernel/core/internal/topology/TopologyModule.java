@@ -16,6 +16,14 @@
  */
 package io.nuun.kernel.core.internal.topology;
 
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.spi.topology.Binding;
+import io.nuun.kernel.spi.topology.InjectionBinding;
+import io.nuun.kernel.spi.topology.InstanceBinding;
+import io.nuun.kernel.spi.topology.InterceptorBinding;
+import io.nuun.kernel.spi.topology.LinkedBinding;
+import io.nuun.kernel.spi.topology.ProviderBinding;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -32,21 +40,13 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
 
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.spi.topology.Binding;
-import io.nuun.kernel.spi.topology.InjectionBinding;
-import io.nuun.kernel.spi.topology.InstanceBinding;
-import io.nuun.kernel.spi.topology.InterceptorBinding;
-import io.nuun.kernel.spi.topology.LinkedBinding;
-import io.nuun.kernel.spi.topology.ProviderBinding;
-
 public class TopologyModule extends AbstractModule
 {
     private Logger              logger = LoggerFactory.getLogger(TopologyModule.class);
 
     private Collection<Binding> bindings;
-    
-    private BindingInfos bindingInfos;
+
+    private BindingInfos        bindingInfos;
 
     public TopologyModule(Collection<Binding> bindings)
     {
@@ -58,31 +58,60 @@ public class TopologyModule extends AbstractModule
     protected void configure()
     {
         bindings.stream().forEach(this::collectBindingsMetadata);
-        bindings.stream().forEach(this::configureBinding);
+        bindings.stream().filter(this::isNotNullable).forEach(this::configureBinding);
+        configureNullableAndOptionals();
     }
-    
+
+    private void configureNullableAndOptionals()
+    {
+        TODO
+        bindingInfos.keys(BindingInfo.NULLABLE).stream();
+    }
+
+    private boolean isNotNullable(Binding binding)
+    {
+        return !isNullable(binding);
+    }
+
+    private boolean isNullable(Binding binding)
+    {
+        if (binding instanceof InjectionBinding && InjectionBinding.class.cast(binding).nullable)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     private void collectBindingsMetadata(Binding binding)
     {
-        if (binding instanceof InjectionBinding)
+        if (isNullable(binding))
         {
             InjectionBinding injectionBinding = (InjectionBinding) binding;
-            if (injectionBinding.nullable)
-            {
-                bindingInfos.put(key(injectionBinding.key, injectionBinding.qualifierAnno), BindingInfo.NULLABLE);
-            }
+            bindingInfos.put(key(injectionBinding.key, injectionBinding.qualifierAnno), BindingInfo.NULLABLE);
         }
     }
-    
+
     private Key<?> key(Object key, Annotation qualifierAnno)
     {
         if (qualifierAnno == null)
         {
-            return Key.get(key.getClass()) ;
+            return Key.get(key.getClass());
         }
-        else 
+        else
         {
-            return Key.get(key.getClass(), qualifierAnno) ;
+            return Key.get(key.getClass(), qualifierAnno);
         }
+    }
+
+    private void updateBindingInfo(TypeLiteral typeLiteral, Annotation qualifierAnno)
+    {
+        bindingInfos.put(Key.get(typeLiteral, qualifierAnno), BindingInfo.IS_BOUND);
+    }
+
+    private void updateBindingInfo(TypeLiteral typeLiteral)
+    {
+        bindingInfos.put(Key.get(typeLiteral), BindingInfo.IS_BOUND);
     }
 
     @SuppressWarnings({
@@ -95,11 +124,14 @@ public class TopologyModule extends AbstractModule
             InstanceBinding ib = (InstanceBinding) binding;
             if (ib.qualifierAnno != null)
             {
+                // key anno injected
                 this.binder().bind(typeLiteral(ib.key)).annotatedWith(ib.qualifierAnno).toInstance(ib.injected);
+                updateBindingInfo(typeLiteral(ib.key), ib.qualifierAnno);
             }
             else
             {
                 this.binder().bind(typeLiteral(ib.key)).toInstance(ib.injected);
+                updateBindingInfo(typeLiteral(ib.key));
             }
         }
         else if (LinkedBinding.class.getSimpleName().equals(binding.name()))
@@ -109,21 +141,25 @@ public class TopologyModule extends AbstractModule
             if (lb.qualifierAnno != null && lb.injected.getClass().equals(Class.class))
             {
                 this.binder().bind(typeLiteral(lb.key)).annotatedWith(lb.qualifierAnno).to((Class<?>) lb.injected);
+                updateBindingInfo(typeLiteral(lb.key), lb.qualifierAnno);
                 logger.trace("Bound {} to {} with {}", typeLiteral(lb.key).getRawType().getSimpleName(), lb.injected, lb.qualifierAnno);
             }
             else if (lb.qualifierAnno != null && !lb.injected.getClass().equals(Class.class))
             {
                 this.binder().bind(typeLiteral(lb.key)).annotatedWith(lb.qualifierAnno).toInstance(lb.injected);
+                updateBindingInfo(typeLiteral(lb.key), lb.qualifierAnno);
                 logger.trace("Bound {} to instance {} with {}", typeLiteral(lb.key).getRawType().getSimpleName(), lb.injected, lb.qualifierAnno);
             }
             else if (!typeLiteral(lb.key).getRawType().equals(lb.injected))
             {
                 this.binder().bind(typeLiteral(lb.key)).to((Class<?>) lb.injected);
+                updateBindingInfo(typeLiteral(lb.key));
                 logger.trace("Bound {} to {}", typeLiteral(lb.key).getRawType().getSimpleName(), lb.injected);
             }
             else
             {
                 this.binder().bind(typeLiteral(lb.key));
+                updateBindingInfo(typeLiteral(lb.key));
                 logger.trace("Bound {} to itself", typeLiteral(lb.key).getRawType().getSimpleName());
             }
         }
@@ -134,11 +170,13 @@ public class TopologyModule extends AbstractModule
             if (pb.qualifierAnno != null)
             {
                 this.binder().bind(typeLiteral(pb.key)).annotatedWith(pb.qualifierAnno).toProvider((Class<?>) pb.injected);
+                updateBindingInfo(typeLiteral(pb.key), pb.qualifierAnno);
                 logger.trace("Bound {} to {} with {}", typeLiteral(pb.key).getRawType().getSimpleName(), pb.injected, pb.qualifierAnno);
             }
             else
             {
                 this.binder().bind(typeLiteral(pb.key)).toProvider((Class<?>) pb.injected);
+                updateBindingInfo(typeLiteral(pb.key));
                 logger.trace("Bound {} to {}", typeLiteral(pb.key).getRawType().getSimpleName(), pb.injected);
             }
         }
