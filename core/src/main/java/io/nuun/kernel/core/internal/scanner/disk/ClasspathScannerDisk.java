@@ -40,6 +40,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -52,21 +53,23 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
     private final List<String> packageRoots;
     private final ClasspathStrategy classpathStrategy;
     private final Set<URL> additionalClasspath;
+    private final int coreCount;
     private Set<URL> urls;
     protected Reflections reflections;
 
-    public ClasspathScannerDisk(ClasspathStrategy classpathStrategy, Set<URL> additionalClasspath, String... packageRoots)
+    public ClasspathScannerDisk(ClasspathStrategy classpathStrategy, Set<URL> additionalClasspath, int coreCount, String... packageRoots)
     {
-        this(classpathStrategy, true, additionalClasspath, packageRoots);
+        this(classpathStrategy, true, additionalClasspath, coreCount, packageRoots);
     }
 
-    public ClasspathScannerDisk(ClasspathStrategy classpathStrategy, boolean reachAbstractClass, Set<URL> additionalClasspath, String... packageRoots)
+    public ClasspathScannerDisk(ClasspathStrategy classpathStrategy, boolean reachAbstractClass, Set<URL> additionalClasspath, int coreCount, String... packageRoots)
     {
         super(reachAbstractClass);
         this.packageRoots = new LinkedList<>();
         Collections.addAll(this.packageRoots, packageRoots);
         this.classpathStrategy = classpathStrategy;
         this.additionalClasspath = additionalClasspath;
+        this.coreCount = coreCount;
         initializeReflections();
     }
 
@@ -81,6 +84,12 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
     protected ConfigurationBuilder configurationBuilder()
     {
         ConfigurationBuilder cb = new ConfigurationBuilder();
+
+        if (coreCount > 1)
+        {
+            cb.setExecutorService(Executors.newFixedThreadPool(coreCount));
+        }
+
         FilterBuilder fb = new FilterBuilder();
 
         for (String packageRoot : packageRoots)

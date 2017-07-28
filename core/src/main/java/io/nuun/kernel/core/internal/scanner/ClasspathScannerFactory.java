@@ -21,7 +21,7 @@ import io.nuun.kernel.api.inmemory.Classpath;
 import io.nuun.kernel.core.internal.scanner.disk.ClasspathScannerDisk;
 import io.nuun.kernel.core.internal.scanner.disk.ClasspathStrategy;
 import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathScannerInMemory;
-import io.nuun.kernel.core.internal.scanner.inmemory.InMemoryMultiThreadClasspath;
+import io.nuun.kernel.core.internal.scanner.inmemory.InMemoryClasspath;
 
 import java.net.URL;
 import java.util.List;
@@ -30,11 +30,13 @@ import java.util.Set;
 
 public class ClasspathScannerFactory
 {
-    private ClasspathScanMode classpathScanMode;
+    private final ClasspathScanMode classpathScanMode;
+    private final int coreCount;
 
-    public ClasspathScannerFactory(ClasspathScanMode classpathScanMode)
+    public ClasspathScannerFactory(ClasspathScanMode classpathScanMode, int coreCount)
     {
         this.classpathScanMode = classpathScanMode;
+        this.coreCount = coreCount;
     }
 
     public ClasspathScanner create(ClasspathStrategy classpathStrategy, Set<URL> additionalClasspath, List<String> packageRoots) {
@@ -54,13 +56,13 @@ public class ClasspathScannerFactory
 
     private ClasspathScanner createNominal(ClasspathStrategy classpathStrategy, Set<URL> additionalClasspath, String... packageRoot)
     {
-        return new ClasspathScannerDisk(classpathStrategy, additionalClasspath, packageRoot);
+        return new ClasspathScannerDisk(classpathStrategy, additionalClasspath, coreCount, packageRoot);
     }
 
     private ClasspathScanner createInMemory(String... packageRoot)
     {
-        Classpath classpath = InMemoryMultiThreadClasspath.INSTANCE;
-        return new ClasspathScannerInMemory(classpath, packageRoot);
+        Classpath classpath = InMemoryClasspath.INSTANCE;
+        return new ClasspathScannerInMemory(classpath, coreCount, packageRoot);
     }
 
 }

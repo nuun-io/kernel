@@ -36,9 +36,9 @@ public class ClasspathScannerInMemory extends ClasspathScannerDisk
     private final Classpath classpath;
     private final Set<URL> urls = new HashSet<>();
 
-    public ClasspathScannerInMemory(Classpath classpath, String... packageRoot)
+    public ClasspathScannerInMemory(Classpath classpath, int coreCount, String... packageRoot)
     {
-        super(null, null, packageRoot);
+        super(null, null, coreCount, packageRoot);
         this.classpath = classpath;
         actualInitReflections();
     }

@@ -27,7 +27,7 @@ public class InMemoryClasspathBuilderTest
     @Test
     public void testConfigure()
     {
-        InMemoryMultiThreadClasspath.INSTANCE.reset();
+        InMemoryClasspath.INSTANCE.reset();
         ClasspathBuilder builder = new ClasspathBuilder()
         {
 
@@ -43,7 +43,7 @@ public class InMemoryClasspathBuilderTest
 
         builder.configure();
 
-        Assertions.assertThat(InMemoryMultiThreadClasspath.INSTANCE.entries()).hasSize(2);
+        Assertions.assertThat(InMemoryClasspath.INSTANCE.entries()).hasSize(2);
     }
 
 }
