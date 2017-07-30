@@ -64,7 +64,6 @@ public class TopologyModule extends AbstractModule
 
     private void configureNullableAndOptionals()
     {
-        TODO
         bindingInfos.keys(BindingInfo.NULLABLE).stream();
     }
 
