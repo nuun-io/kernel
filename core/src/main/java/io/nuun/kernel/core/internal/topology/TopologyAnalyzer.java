@@ -21,7 +21,6 @@ import static java.util.Arrays.stream;
 import io.nuun.kernel.api.annotations.Topology;
 import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.spi.topology.Binding;
-import io.nuun.kernel.spi.topology.InstanceBinding;
 import io.nuun.kernel.spi.topology.InterceptorBinding;
 import io.nuun.kernel.spi.topology.LinkedBinding;
 import io.nuun.kernel.spi.topology.ProviderBinding;
@@ -129,7 +128,7 @@ class TopologyAnalyzer
     void treatMember(Member m)
     {
         // Instance Binding
-        Optional<InstanceBinding> instanceBinding = topologyDefinition.instanceBinding(m);
+        Optional<Binding> instanceBinding = topologyDefinition.instanceBinding(m);
         if (instanceBinding.isPresent())
         {
             bindings.add(instanceBinding.get());

@@ -22,6 +22,7 @@ import io.nuun.kernel.spi.topology.InjectionBinding;
 import io.nuun.kernel.spi.topology.InstanceBinding;
 import io.nuun.kernel.spi.topology.InterceptorBinding;
 import io.nuun.kernel.spi.topology.LinkedBinding;
+import io.nuun.kernel.spi.topology.NullableBinding;
 import io.nuun.kernel.spi.topology.ProviderBinding;
 
 import java.lang.annotation.Annotation;
@@ -84,10 +85,10 @@ public class TopologyModule extends AbstractModule
 
     private void collectBindingsMetadata(Binding binding)
     {
-        if (isNullable(binding))
+        if (binding instanceof NullableBinding)
         {
-            InjectionBinding injectionBinding = (InjectionBinding) binding;
-            bindingInfos.put(key(injectionBinding.key, injectionBinding.qualifierAnno), BindingInfo.NULLABLE);
+            NullableBinding nullableBinding = (NullableBinding) binding;
+            bindingInfos.put(key(nullableBinding.key, nullableBinding.qualifierAnno), BindingInfo.NULLABLE);
         }
     }
 

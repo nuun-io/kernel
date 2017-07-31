@@ -21,7 +21,7 @@ import java.util.Optional;
 
 public interface TopologyDefinition
 {
-    Optional<InstanceBinding> instanceBinding(Member candidate);
+    Optional<Binding> instanceBinding(Member candidate);
 
     Optional<LinkedBinding> linkedBinding(Member candidate);
 

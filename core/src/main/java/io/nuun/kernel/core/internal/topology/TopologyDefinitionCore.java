@@ -17,6 +17,14 @@
 package io.nuun.kernel.core.internal.topology;
 
 import static java.util.Arrays.stream;
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.spi.topology.Binding;
+import io.nuun.kernel.spi.topology.InstanceBinding;
+import io.nuun.kernel.spi.topology.InterceptorBinding;
+import io.nuun.kernel.spi.topology.LinkedBinding;
+import io.nuun.kernel.spi.topology.NullableBinding;
+import io.nuun.kernel.spi.topology.ProviderBinding;
+import io.nuun.kernel.spi.topology.TopologyDefinition;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
@@ -31,20 +39,14 @@ import javax.annotation.Nullable;
 import javax.inject.Provider;
 import javax.inject.Qualifier;
 
+import net.jodah.typetools.TypeResolver;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.BindingAnnotation;
 import com.google.inject.TypeLiteral;
-
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.spi.topology.InstanceBinding;
-import io.nuun.kernel.spi.topology.InterceptorBinding;
-import io.nuun.kernel.spi.topology.LinkedBinding;
-import io.nuun.kernel.spi.topology.ProviderBinding;
-import io.nuun.kernel.spi.topology.TopologyDefinition;
-import net.jodah.typetools.TypeResolver;
 
 class TopologyDefinitionCore implements TopologyDefinition
 {
@@ -228,18 +230,18 @@ class TopologyDefinitionCore implements TopologyDefinition
     }
 
     @Override
-    public Optional<InstanceBinding> instanceBinding(Member candidate)
+    public Optional<Binding> instanceBinding(Member candidate)
     {
         if (Field.class.equals(candidate.getClass()))
         {
 
             Field f = Field.class.cast(candidate);
-            
+
             Boolean isNullable = f.isAnnotationPresent(Nullable.class);
-            
+
             Object instance = getValue((Field) candidate);
 
-            if (instance == null && ! isNullable)
+            if (instance == null && !isNullable)
             {
                 throw new KernelException(
                         "Topology %s field %s is null, Please set a value.", candidate.getDeclaringClass().getSimpleName(), candidate.getName());
@@ -249,14 +251,29 @@ class TopologyDefinitionCore implements TopologyDefinition
 
             Optional<Annotation> qualifier = qualifier(f);
 
-            if (qualifier.isPresent())
+            if (instance != null)
             {
-                return Optional.of(new InstanceBinding(key, qualifier.get(), instance , isNullable));
+                if (qualifier.isPresent())
+                {
+                    return Optional.of(new InstanceBinding(key, qualifier.get(), instance));
+                }
+                else
+                {
+                    return Optional.of(new InstanceBinding(key, instance));
+                }
             }
             else
             {
-                return Optional.of(new InstanceBinding(key, instance, isNullable));
+                if (qualifier.isPresent())
+                {
+                    return Optional.of(new NullableBinding(key, qualifier.get()));
+                }
+                else
+                {
+                    return Optional.of(new NullableBinding(key));
+                }
             }
+
         }
 
         return Optional.empty();
