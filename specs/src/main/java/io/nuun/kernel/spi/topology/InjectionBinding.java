@@ -24,29 +24,17 @@ public abstract class InjectionBinding extends Binding
     public final Object     key;
     public final Annotation qualifierAnno;
     public final Object     injected;
-    public final boolean nullable;
 
     public InjectionBinding(Object key, Annotation qualifier, Object injected)
-    {
-        this(key, qualifier, injected,false);
-    }
-    
-    public InjectionBinding(Object key, Annotation qualifier, Object injected , boolean nullable)
     {
         this.key = key;
         this.qualifierAnno = qualifier;
         this.injected = injected;
-        this.nullable = nullable;
     }
 
     public InjectionBinding(Object key, Object injected)
     {
         this(key, (Annotation) null, injected);
-    }
-    
-    public InjectionBinding(Object key, Object injected, boolean nullable)
-    {
-        this(key, (Annotation) null, injected , nullable );
     }
 
 }
