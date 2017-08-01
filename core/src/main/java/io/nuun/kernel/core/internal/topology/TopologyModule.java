@@ -18,7 +18,6 @@ package io.nuun.kernel.core.internal.topology;
 
 import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.spi.topology.Binding;
-import io.nuun.kernel.spi.topology.InjectionBinding;
 import io.nuun.kernel.spi.topology.InstanceBinding;
 import io.nuun.kernel.spi.topology.InterceptorBinding;
 import io.nuun.kernel.spi.topology.LinkedBinding;
@@ -28,8 +27,10 @@ import io.nuun.kernel.spi.topology.ProviderBinding;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.slf4j.Logger;
@@ -40,6 +41,8 @@ import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
+import com.google.inject.multibindings.OptionalBinder;
+import com.google.inject.util.Providers;
 
 public class TopologyModule extends AbstractModule
 {
@@ -65,7 +68,18 @@ public class TopologyModule extends AbstractModule
 
     private void configureNullableAndOptionals()
     {
-        bindingInfos.keys(BindingInfo.NULLABLE).stream();
+        List<Key> nullableKeys = bindingInfos.keys(BindingInfo.NULLABLE).stream().collect(Collectors.toList());
+        // TODO : implémenter la requête sur les autre modules des autres
+        // For each nullable key we bind it to
+        nullableKeys.stream().forEach(this::doBindNullableAndOptional);
+
+    }
+
+    private void doBindNullableAndOptional(Key k)
+    {
+        // bind to null
+        binder().bind(k).toProvider(Providers.of(null));
+        OptionalBinder.newOptionalBinder(binder(), k);
     }
 
     private boolean isNotNullable(Binding binding)
@@ -75,12 +89,7 @@ public class TopologyModule extends AbstractModule
 
     private boolean isNullable(Binding binding)
     {
-        if (binding instanceof InjectionBinding && InjectionBinding.class.cast(binding).nullable)
-        {
-            return true;
-        }
-
-        return false;
+        return (binding instanceof NullableBinding);
     }
 
     private void collectBindingsMetadata(Binding binding)
@@ -96,11 +105,11 @@ public class TopologyModule extends AbstractModule
     {
         if (qualifierAnno == null)
         {
-            return Key.get(key.getClass());
+            return Key.get((TypeLiteral<?>) key);
         }
         else
         {
-            return Key.get(key.getClass(), qualifierAnno);
+            return Key.get((TypeLiteral<?>) key, qualifierAnno);
         }
     }
 

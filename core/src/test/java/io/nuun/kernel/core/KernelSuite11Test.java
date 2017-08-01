@@ -19,47 +19,51 @@ package io.nuun.kernel.core;
 import static io.nuun.kernel.core.NuunCore.createKernel;
 import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import io.nuun.kernel.api.Kernel;
-import io.nuun.kernel.api.config.ClasspathScanMode;
 import io.nuun.kernel.core.entrypoint2.NullableService;
-import io.nuun.kernel.core.entrypoint2.TopologyNullable01;
-import io.nuun.kernel.core.internal.scanner.inmemory.ClasspathBuilder;
-import io.nuun.kernel.core.pluginsit.dummy5.DummyPlugin5;
+import io.nuun.kernel.core.internal.topology.TopologyPlugin;
 
+import java.util.Optional;
+
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
 
 public class KernelSuite11Test
 {
 
+    private Kernel   underTest;
+
+    private Injector injector;
+
     @Before
-    public void init()
+    public void initkernel()
     {
-        new ClasspathBuilder()
-        {
-            @Override
-            public void configure()
-            {
-                addJar("test.jar");
-                addClass(TopologyNullable01.class);
-                addClass(NullableService.class);
-                addDirectory("META-INF");
-                addResource(base, name);
-                addClass(candidate);
-            }
-        }.configure();
+        underTest = createKernel(
+
+        newKernelConfiguration().rootPackages("io.nuun.kernel.core.entrypoint2") //
+                .withoutSpiPluginsLoader().plugins(new TopologyPlugin()));
+
+        underTest.init();
+        underTest.start();
+        injector = underTest.objectGraph().as(Injector.class);
     }
 
     @Test
     public void dependee_plugins()
     {
 
-        Kernel underTest = createKernel(
+        NullableService nullService = injector.getInstance(NullableService.class);
+        Assertions.assertThat(nullService).isNull();
 
-        newKernelConfiguration().rootPackages("io.nuun.kernel").classpathScanMode(ClasspathScanMode.IN_MEMORY).withoutSpiPluginsLoader()
-                .plugins(new DummyPlugin5()));
+        Optional<NullableService> optinalNullService = injector.getInstance(Key.get(new TypeLiteral<Optional<NullableService>>()
+        {
+        }));
 
-        underTest.init();
-        underTest.start();
+        Assertions.assertThat(optinalNullService).isNotNull();
+        Assertions.assertThat(optinalNullService.isPresent()).isFalse();
     }
-
 }
