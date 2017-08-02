@@ -17,27 +17,6 @@
 package io.nuun.kernel.core.internal.topology;
 
 import static java.util.Arrays.stream;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.Optional;
-import java.util.function.Predicate;
-
-import javax.annotation.Nullable;
-import javax.inject.Provider;
-import javax.inject.Qualifier;
-
-import org.aopalliance.intercept.MethodInterceptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.inject.BindingAnnotation;
-import com.google.inject.TypeLiteral;
-
 import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.spi.topology.Multi;
 import io.nuun.kernel.spi.topology.TopologyDefinition;
@@ -45,9 +24,35 @@ import io.nuun.kernel.spi.topology.binding.Binding;
 import io.nuun.kernel.spi.topology.binding.InstanceBinding;
 import io.nuun.kernel.spi.topology.binding.InterceptorBinding;
 import io.nuun.kernel.spi.topology.binding.LinkedBinding;
+import io.nuun.kernel.spi.topology.binding.MultiBinding;
+import io.nuun.kernel.spi.topology.binding.MultiBinding.MultiKind;
 import io.nuun.kernel.spi.topology.binding.NullableBinding;
 import io.nuun.kernel.spi.topology.binding.ProviderBinding;
+
+import java.awt.List;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
+
+import javax.annotation.Nullable;
+import javax.inject.Provider;
+import javax.inject.Qualifier;
+
 import net.jodah.typetools.TypeResolver;
+
+import org.aopalliance.intercept.MethodInterceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.BindingAnnotation;
+import com.google.inject.TypeLiteral;
 
 class TopologyDefinitionCore implements TopologyDefinition
 {
@@ -239,17 +244,17 @@ class TopologyDefinitionCore implements TopologyDefinition
             Field f = Field.class.cast(candidate);
 
             Boolean isNullable = f.isAnnotationPresent(Nullable.class);
-            
+
             Boolean isMulti = f.isAnnotationPresent(Multi.class);
 
             Object instance = value((Field) candidate);
 
-            if (instance == null && ( !isNullable || !isMulti ))
+            if (instance == null && (!isNullable && !isMulti))
             {
                 throw new KernelException(
                         "Topology %s field %s is null, Please set a value.", candidate.getDeclaringClass().getSimpleName(), candidate.getName());
             }
-            
+
             if (isNullable && isMulti)
             {
                 throw new KernelException(
@@ -284,12 +289,50 @@ class TopologyDefinitionCore implements TopologyDefinition
             }
             else if (isMulti)
             {
-                return Optional.of( "erez");
+
+                MultiKind kind = kindFromField(f);
+
+                if (kind == MultiKind.LIST || kind == MultiKind.SET)
+                {
+                    return Optional.of(new MultiBinding(key, kind));
+                }
+
+                if (kind == MultiKind.MAP)
+                {
+                    Multi multi = f.getAnnotation(Multi.class);
+
+                    if (multi.value().equals(Multi.VoidFunction.class))
+                    {
+                        throw new KernelException(
+                                "Topology %s field %s : @Multi.value() must be set.", candidate.getDeclaringClass().getSimpleName(), candidate.getName());
+                    }
+
+                    return Optional.of(new MultiBinding(key, kind, multi.value()));
+                }
+
             }
 
         }
 
         return Optional.empty();
+    }
+
+    private MultiKind kindFromField(Field f)
+    {
+        if (f.getType().isAssignableFrom(List.class))
+        {
+            return MultiKind.LIST;
+        }
+        if (f.getType().isAssignableFrom(Set.class))
+        {
+            return MultiKind.SET;
+        }
+        if (f.getType().isAssignableFrom(Map.class))
+        {
+            return MultiKind.MAP;
+        }
+
+        return MultiKind.NONE;
     }
 
     private TypeLiteral<?> typeLiteral(Type key)

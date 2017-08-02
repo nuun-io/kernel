@@ -36,8 +36,10 @@ import java.util.function.Function;
 public @interface Multi
 {
 
-    Class<? extends Function<?, ?>> value () default VoidFunction.class;
-    
-    static abstract class VoidFunction implements Function<Void, Void> { }
+    Class<? extends Function<?, ?>> value() default VoidFunction.class;
+
+    static abstract class VoidFunction implements Function<Void, Void>
+    {
+    }
 
 }

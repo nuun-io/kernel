@@ -49,7 +49,6 @@ public class BindingInfosTest
 
         underTest.put(key, BindingInfo.NULLABLE);
         assertThat(underTest.get(key)).hasSize(1);
-
     }
 
     @Test

@@ -75,6 +75,7 @@ public class TopologyModule extends AbstractModule
 
     }
 
+    @SuppressWarnings("unchecked")
     private void doBindNullableAndOptional(Key k)
     {
         // bind to null
@@ -128,6 +129,7 @@ public class TopologyModule extends AbstractModule
     })
     private void configureBinding(Binding binding)
     {
+
         if (InstanceBinding.class.getSimpleName().equals(binding.name()))
         {
             InstanceBinding ib = (InstanceBinding) binding;
