@@ -14,27 +14,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Nuun IO Kernel Specs.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.nuun.kernel.spi.topology;
+package io.nuun.kernel.spi.topology.binding;
 
 import java.lang.annotation.Annotation;
 
-public abstract class InjectionBinding extends Binding
+public class ProviderBinding extends InjectionBinding
 {
 
-    public final Object     key;
-    public final Annotation qualifierAnno;
-    public final Object     injected;
-
-    public InjectionBinding(Object key, Annotation qualifier, Object injected)
+    public ProviderBinding(Object key, Annotation qualifier, Object injected)
     {
-        this.key = key;
-        this.qualifierAnno = qualifier;
-        this.injected = injected;
+        super(key, qualifier, injected);
     }
 
-    public InjectionBinding(Object key, Object injected)
+    public ProviderBinding(Object key, Object instance)
     {
-        this(key, (Annotation) null, injected);
+        super(key, instance);
     }
 
 }

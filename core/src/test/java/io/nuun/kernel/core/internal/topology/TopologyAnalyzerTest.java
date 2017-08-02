@@ -19,7 +19,7 @@ package io.nuun.kernel.core.internal.topology;
 import static org.assertj.core.api.Assertions.assertThat;
 import io.nuun.kernel.api.annotations.Topology;
 import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.spi.topology.Binding;
+import io.nuun.kernel.spi.topology.binding.Binding;
 
 import java.util.ArrayList;
 import java.util.Arrays;

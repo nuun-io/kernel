@@ -14,21 +14,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Nuun IO Kernel Specs.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.nuun.kernel.spi.topology;
+package io.nuun.kernel.spi.topology.binding;
 
-import java.lang.annotation.Annotation;
 
-public class NullableBinding extends MetaBinding
+public class InterceptorBinding extends Binding
 {
+    public final Class<?> classPredicate;
+    public final Class<?> methodPredicate;
+    public final Class<?> methodInterceptor;
 
-    public NullableBinding(Object key, Annotation qualifier)
+    public InterceptorBinding(Class<?> classPredicate2, Class<?> methodPredicate2, Class<?> methodInterceptor)
     {
-        super(key, qualifier);
-    }
+        this.classPredicate = classPredicate2;
+        this.methodPredicate = methodPredicate2;
+        this.methodInterceptor = methodInterceptor;
 
-    public NullableBinding(Object key)
-    {
-        super(key);
     }
-
 }

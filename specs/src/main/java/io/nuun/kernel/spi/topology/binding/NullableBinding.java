@@ -14,21 +14,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Nuun IO Kernel Specs.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.nuun.kernel.spi.topology;
+package io.nuun.kernel.spi.topology.binding;
 
 import java.lang.annotation.Annotation;
 
-public class LinkedBinding extends InjectionBinding
+public class NullableBinding extends MetaBinding
 {
 
-    public LinkedBinding(Object key, Annotation qualifier, Object injected)
+    public NullableBinding(Object key, Annotation qualifier)
     {
-        super(key, qualifier, injected);
+        super(key, qualifier);
     }
 
-    public LinkedBinding(Object key, Object instance)
+    public NullableBinding(Object key)
     {
-        super(key, instance);
+        super(key);
     }
 
 }

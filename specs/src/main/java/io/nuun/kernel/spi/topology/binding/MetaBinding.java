@@ -14,13 +14,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Nuun IO Kernel Specs.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.nuun.kernel.spi.topology;
+package io.nuun.kernel.spi.topology.binding;
 
-public abstract class Binding
+import java.lang.annotation.Annotation;
+
+public abstract class MetaBinding extends Binding
 {
+    public final Object     key;
+    public final Annotation qualifierAnno;
 
-    public String name() {
-        return this.getClass().getSimpleName();
+    public MetaBinding(Object key, Annotation qualifier)
+    {
+        this.key = key;
+        this.qualifierAnno = qualifier;
+    }
+
+    public MetaBinding(Object key)
+    {
+        this(key, (Annotation) null);
     }
 
 }

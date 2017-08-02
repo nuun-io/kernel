@@ -16,6 +16,14 @@
  */
 package io.nuun.kernel.core.test_topo;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.google.inject.name.Named;
+
 import io.nuun.kernel.api.annotations.Topology;
 import io.nuun.kernel.core.test_topo.sample.MyMethodInterceptor;
 import io.nuun.kernel.core.test_topo.sample.MyObject;
@@ -29,13 +37,7 @@ import io.nuun.kernel.core.test_topo.sample.MyService4Int;
 import io.nuun.kernel.core.test_topo.sample.MyServiceImpl;
 import io.nuun.kernel.core.test_topo.sample.Server;
 import io.nuun.kernel.core.test_topo.sample.Serveur;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.google.inject.name.Named;
+import io.nuun.kernel.spi.topology.Multi;
 
 @Topology(configurationFiles = {
         "classpath:topology.properties", "./src/test/resources/topology2.properties"
@@ -83,6 +85,15 @@ public interface MyTopology
     MyService3Sample injects(MyService3 key);
 
     MyMethodInterceptor intercepts(ClassePredicate pc, MethodPredicate pm);
+    
+    @Multi
+    List<MyCommand1> command1List = null;
+    
+    @Multi
+    Set<MyCommand2> command2Set = null;
+    
+    @Multi(MyCommand2Key.class)
+    Map<String, MyCommand2> command2Maps = null;
 
     //
     // MyLoggerFieldInjector manages(MyLogger annotation);

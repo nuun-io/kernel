@@ -30,8 +30,8 @@ import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.nuun.kernel.core.AbstractPlugin;
-import io.nuun.kernel.spi.topology.Binding;
 import io.nuun.kernel.spi.topology.TopologyDefinition;
+import io.nuun.kernel.spi.topology.binding.Binding;
 
 public class TopologyPlugin extends AbstractPlugin
 {

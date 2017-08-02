@@ -17,12 +17,12 @@
 package io.nuun.kernel.core.internal.topology;
 
 import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.spi.topology.Binding;
-import io.nuun.kernel.spi.topology.InstanceBinding;
-import io.nuun.kernel.spi.topology.InterceptorBinding;
-import io.nuun.kernel.spi.topology.LinkedBinding;
-import io.nuun.kernel.spi.topology.NullableBinding;
-import io.nuun.kernel.spi.topology.ProviderBinding;
+import io.nuun.kernel.spi.topology.binding.Binding;
+import io.nuun.kernel.spi.topology.binding.InstanceBinding;
+import io.nuun.kernel.spi.topology.binding.InterceptorBinding;
+import io.nuun.kernel.spi.topology.binding.LinkedBinding;
+import io.nuun.kernel.spi.topology.binding.NullableBinding;
+import io.nuun.kernel.spi.topology.binding.ProviderBinding;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

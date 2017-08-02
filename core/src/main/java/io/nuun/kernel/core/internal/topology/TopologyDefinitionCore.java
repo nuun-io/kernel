@@ -17,14 +17,6 @@
 package io.nuun.kernel.core.internal.topology;
 
 import static java.util.Arrays.stream;
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.spi.topology.Binding;
-import io.nuun.kernel.spi.topology.InstanceBinding;
-import io.nuun.kernel.spi.topology.InterceptorBinding;
-import io.nuun.kernel.spi.topology.LinkedBinding;
-import io.nuun.kernel.spi.topology.NullableBinding;
-import io.nuun.kernel.spi.topology.ProviderBinding;
-import io.nuun.kernel.spi.topology.TopologyDefinition;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
@@ -39,14 +31,23 @@ import javax.annotation.Nullable;
 import javax.inject.Provider;
 import javax.inject.Qualifier;
 
-import net.jodah.typetools.TypeResolver;
-
 import org.aopalliance.intercept.MethodInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.BindingAnnotation;
 import com.google.inject.TypeLiteral;
+
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.spi.topology.Multi;
+import io.nuun.kernel.spi.topology.TopologyDefinition;
+import io.nuun.kernel.spi.topology.binding.Binding;
+import io.nuun.kernel.spi.topology.binding.InstanceBinding;
+import io.nuun.kernel.spi.topology.binding.InterceptorBinding;
+import io.nuun.kernel.spi.topology.binding.LinkedBinding;
+import io.nuun.kernel.spi.topology.binding.NullableBinding;
+import io.nuun.kernel.spi.topology.binding.ProviderBinding;
+import net.jodah.typetools.TypeResolver;
 
 class TopologyDefinitionCore implements TopologyDefinition
 {
@@ -238,13 +239,21 @@ class TopologyDefinitionCore implements TopologyDefinition
             Field f = Field.class.cast(candidate);
 
             Boolean isNullable = f.isAnnotationPresent(Nullable.class);
+            
+            Boolean isMulti = f.isAnnotationPresent(Multi.class);
 
-            Object instance = getValue((Field) candidate);
+            Object instance = value((Field) candidate);
 
-            if (instance == null && !isNullable)
+            if (instance == null && ( !isNullable || !isMulti ))
             {
                 throw new KernelException(
                         "Topology %s field %s is null, Please set a value.", candidate.getDeclaringClass().getSimpleName(), candidate.getName());
+            }
+            
+            if (isNullable && isMulti)
+            {
+                throw new KernelException(
+                        "Topology %s field %s can not be @Nullable and @Multi.", candidate.getDeclaringClass().getSimpleName(), candidate.getName());
             }
 
             TypeLiteral<?> key = typeLiteral(f.getGenericType());
@@ -262,7 +271,7 @@ class TopologyDefinitionCore implements TopologyDefinition
                     return Optional.of(new InstanceBinding(key, instance));
                 }
             }
-            else
+            else if (isNullable)
             {
                 if (qualifier.isPresent())
                 {
@@ -272,6 +281,10 @@ class TopologyDefinitionCore implements TopologyDefinition
                 {
                     return Optional.of(new NullableBinding(key));
                 }
+            }
+            else if (isMulti)
+            {
+                return Optional.of( "erez");
             }
 
         }
@@ -296,7 +309,7 @@ class TopologyDefinitionCore implements TopologyDefinition
                 a -> a.annotationType().isAnnotationPresent(Qualifier.class) || a.annotationType().isAnnotationPresent(BindingAnnotation.class)).findFirst();
     }
 
-    private Object getValue(Field f)
+    private Object value(Field f)
     {
         try
         {

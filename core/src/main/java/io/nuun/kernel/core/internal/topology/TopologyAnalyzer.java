@@ -20,11 +20,11 @@ import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import io.nuun.kernel.api.annotations.Topology;
 import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.spi.topology.Binding;
-import io.nuun.kernel.spi.topology.InterceptorBinding;
-import io.nuun.kernel.spi.topology.LinkedBinding;
-import io.nuun.kernel.spi.topology.ProviderBinding;
 import io.nuun.kernel.spi.topology.TopologyDefinition;
+import io.nuun.kernel.spi.topology.binding.Binding;
+import io.nuun.kernel.spi.topology.binding.InterceptorBinding;
+import io.nuun.kernel.spi.topology.binding.LinkedBinding;
+import io.nuun.kernel.spi.topology.binding.ProviderBinding;
 
 import java.io.File;
 import java.io.FileInputStream;

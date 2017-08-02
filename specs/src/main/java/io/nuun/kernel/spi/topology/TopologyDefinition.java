@@ -19,6 +19,11 @@ package io.nuun.kernel.spi.topology;
 import java.lang.reflect.Member;
 import java.util.Optional;
 
+import io.nuun.kernel.spi.topology.binding.Binding;
+import io.nuun.kernel.spi.topology.binding.InterceptorBinding;
+import io.nuun.kernel.spi.topology.binding.LinkedBinding;
+import io.nuun.kernel.spi.topology.binding.ProviderBinding;
+
 public interface TopologyDefinition
 {
     Optional<Binding> instanceBinding(Member candidate);
