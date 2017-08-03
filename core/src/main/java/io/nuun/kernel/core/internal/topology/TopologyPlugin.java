@@ -16,6 +16,14 @@
  */
 package io.nuun.kernel.core.internal.topology;
 
+import io.nuun.kernel.api.plugin.InitState;
+import io.nuun.kernel.api.plugin.context.InitContext;
+import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
+import io.nuun.kernel.core.AbstractPlugin;
+import io.nuun.kernel.spi.topology.TopologyDefinition;
+import io.nuun.kernel.spi.topology.binding.Binding;
+import io.nuun.kernel.spi.topology.binding.NullableBinding;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,12 +34,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.nuun.kernel.api.plugin.InitState;
-import io.nuun.kernel.api.plugin.context.InitContext;
-import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
-import io.nuun.kernel.core.AbstractPlugin;
-import io.nuun.kernel.spi.topology.TopologyDefinition;
-import io.nuun.kernel.spi.topology.binding.Binding;
+import com.google.inject.Key;
 
 public class TopologyPlugin extends AbstractPlugin
 {
@@ -42,6 +45,8 @@ public class TopologyPlugin extends AbstractPlugin
 
     private List<Binding>      bindings;
     private List<Binding>      overridingBindings;
+
+    private BindingInfos       bindingInfos       = new BindingInfos();
 
     private TopologyModule     topologyModule;
     private TopologyModule     overridingTopologyModule;
@@ -72,7 +77,20 @@ public class TopologyPlugin extends AbstractPlugin
         analyzer.analyze(nominal);
         overridingAnalyzer.analyze(overrideList);
 
+        bindings.stream().forEach(this::collectBindingsMetadata);
+
+        List<Key> nullableKeys = bindingInfos.keys(BindingInfo.NULLABLE).stream().collect(Collectors.toList());
+
         return InitState.INITIALIZED;
+    }
+
+    private void collectBindingsMetadata(Binding binding)
+    {
+        if (binding instanceof NullableBinding)
+        {
+            NullableBinding nullableBinding = (NullableBinding) binding;
+            bindingInfos.put(key(nullableBinding.key, nullableBinding.qualifierAnno), BindingInfo.NULLABLE);
+        }
     }
 
     @Override

@@ -27,10 +27,8 @@ import io.nuun.kernel.spi.topology.binding.ProviderBinding;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.slf4j.Logger;
@@ -50,29 +48,27 @@ public class TopologyModule extends AbstractModule
 
     private Collection<Binding> bindings;
 
-    private BindingInfos        bindingInfos;
+    private Collection<Key>     nullableKeys;
 
-    public TopologyModule(Collection<Binding> bindings)
+    @SuppressWarnings("rawtypes")
+    public TopologyModule(Collection<Binding> bindings, Collection<Key> nullableKeys)
     {
         this.bindings = bindings;
-        this.bindingInfos = new BindingInfos();
+        this.nullableKeys = nullableKeys;
+
     }
 
     @Override
     protected void configure()
     {
-        bindings.stream().forEach(this::collectBindingsMetadata);
+
         bindings.stream().filter(this::isNotNullable).forEach(this::configureBinding);
         configureNullableAndOptionals();
     }
 
     private void configureNullableAndOptionals()
     {
-        List<Key> nullableKeys = bindingInfos.keys(BindingInfo.NULLABLE).stream().collect(Collectors.toList());
-        // TODO : implémenter la requête sur les autre modules des autres
-        // For each nullable key we bind it to
         nullableKeys.stream().forEach(this::doBindNullableAndOptional);
-
     }
 
     @SuppressWarnings("unchecked")
@@ -91,15 +87,6 @@ public class TopologyModule extends AbstractModule
     private boolean isNullable(Binding binding)
     {
         return (binding instanceof NullableBinding);
-    }
-
-    private void collectBindingsMetadata(Binding binding)
-    {
-        if (binding instanceof NullableBinding)
-        {
-            NullableBinding nullableBinding = (NullableBinding) binding;
-            bindingInfos.put(key(nullableBinding.key, nullableBinding.qualifierAnno), BindingInfo.NULLABLE);
-        }
     }
 
     private Key<?> key(Object key, Annotation qualifierAnno)
