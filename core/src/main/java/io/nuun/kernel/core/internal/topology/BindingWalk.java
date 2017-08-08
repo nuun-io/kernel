@@ -1,135 +1,53 @@
-/**
- * This file is part of Nuun IO Kernel Core.
- *
- * Nuun IO Kernel Core is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Nuun IO Kernel Core is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Nuun IO Kernel Core.  If not, see <http://www.gnu.org/licenses/>.
- */
 package io.nuun.kernel.core.internal.topology;
 
 import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.core.internal.topology.TopologyModule.PredicateMatcherAdapter;
 import io.nuun.kernel.spi.topology.binding.Binding;
 import io.nuun.kernel.spi.topology.binding.InstanceBinding;
 import io.nuun.kernel.spi.topology.binding.InterceptorBinding;
 import io.nuun.kernel.spi.topology.binding.LinkedBinding;
-import io.nuun.kernel.spi.topology.binding.NullableBinding;
 import io.nuun.kernel.spi.topology.binding.ProviderBinding;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Key;
+import com.google.common.base.Predicate;
 import com.google.inject.TypeLiteral;
-import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
-import com.google.inject.multibindings.OptionalBinder;
-import com.google.inject.util.Providers;
 
-public class TopologyModule extends AbstractModule
+public class BindingWalk
 {
-    private Logger              logger = LoggerFactory.getLogger(TopologyModule.class);
 
-    private Collection<Binding> bindings;
+    private Logger        logger = LoggerFactory.getLogger(BindingWalk.class);
 
-    private Collection<Key>     nullableKeys;
+    private BindingWalker walker;
 
-    @SuppressWarnings("rawtypes")
-    public TopologyModule(Collection<Binding> bindings, Collection<Key> nullableKeys)
+    public BindingWalk(BindingWalker walker)
     {
-        this.bindings = bindings;
-        this.nullableKeys = nullableKeys;
-
+        this.walker = walker;
     }
 
-    @Override
-    protected void configure()
+    public void walk(Binding binding)
     {
-
-        bindings.stream().filter(this::isNotNullable).forEach(this::configureBinding);
-        configureNullableAndOptionals();
-    }
-
-    private void configureNullableAndOptionals()
-    {
-        nullableKeys.stream().forEach(this::doBindNullableAndOptional);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void doBindNullableAndOptional(Key k)
-    {
-        // bind to null
-        binder().bind(k).toProvider(Providers.of(null));
-        OptionalBinder.newOptionalBinder(binder(), k);
-    }
-
-    private boolean isNotNullable(Binding binding)
-    {
-        return !isNullable(binding);
-    }
-
-    private boolean isNullable(Binding binding)
-    {
-        return (binding instanceof NullableBinding);
-    }
-
-    private Key<?> key(Object key, Annotation qualifierAnno)
-    {
-        if (qualifierAnno == null)
-        {
-            return Key.get((TypeLiteral<?>) key);
-        }
-        else
-        {
-            return Key.get((TypeLiteral<?>) key, qualifierAnno);
-        }
-    }
-
-    private void updateBindingInfo(TypeLiteral typeLiteral, Annotation qualifierAnno)
-    {
-        bindingInfos.put(Key.get(typeLiteral, qualifierAnno), BindingInfo.IS_BOUND);
-    }
-
-    private void updateBindingInfo(TypeLiteral typeLiteral)
-    {
-        bindingInfos.put(Key.get(typeLiteral), BindingInfo.IS_BOUND);
-    }
-
-    @SuppressWarnings({
-            "unchecked", "rawtypes"
-    })
-    private void configureBinding(Binding binding)
-    {
-
         if (InstanceBinding.class.getSimpleName().equals(binding.name()))
         {
             InstanceBinding ib = (InstanceBinding) binding;
             if (ib.qualifierAnno != null)
             {
                 // key anno injected
-                this.binder().bind(typeLiteral(ib.key)).annotatedWith(ib.qualifierAnno).toInstance(ib.injected);
-
+                walker.bindInstance(typeLiteral(ib.key), ib.qualifierAnno, ib.injected);
+                // this.binder().bind(typeLiteral(ib.key)).annotatedWith(ib.qualifierAnno).toInstance(ib.injected);
+                // updateBindingInfo(typeLiteral(ib.key), ib.qualifierAnno);
             }
             else
             {
-                this.binder().bind(typeLiteral(ib.key)).toInstance(ib.injected);
-
+                walker.bindInstance(typeLiteral(ib.key), ib.injected);
+                // this.binder().bind(typeLiteral(ib.key)).toInstance(ib.injected);
+                // updateBindingInfo(typeLiteral(ib.key));
             }
         }
         else if (LinkedBinding.class.getSimpleName().equals(binding.name()))
@@ -138,26 +56,31 @@ public class TopologyModule extends AbstractModule
 
             if (lb.qualifierAnno != null && lb.injected.getClass().equals(Class.class))
             {
-                this.binder().bind(typeLiteral(lb.key)).annotatedWith(lb.qualifierAnno).to((Class<?>) lb.injected);
-
+                walker.bindLink(typeLiteral(lb.key), lb.qualifierAnno, (Class<?>) lb.injected);
+                // this.binder().bind(typeLiteral(lb.key)).annotatedWith(lb.qualifierAnno).to((Class<?>)
+                // lb.injected);
+                // updateBindingInfo(typeLiteral(lb.key), lb.qualifierAnno);
                 logger.trace("Bound {} to {} with {}", typeLiteral(lb.key).getRawType().getSimpleName(), lb.injected, lb.qualifierAnno);
             }
             else if (lb.qualifierAnno != null && !lb.injected.getClass().equals(Class.class))
             {
-                this.binder().bind(typeLiteral(lb.key)).annotatedWith(lb.qualifierAnno).toInstance(lb.injected);
-
+                walker.bindLink(typeLiteral(lb.key), lb.qualifierAnno, lb.injected);
+                // this.binder().bind(typeLiteral(lb.key)).annotatedWith(lb.qualifierAnno).toInstance(lb.injected);
+                // updateBindingInfo(typeLiteral(lb.key), lb.qualifierAnno);
                 logger.trace("Bound {} to instance {} with {}", typeLiteral(lb.key).getRawType().getSimpleName(), lb.injected, lb.qualifierAnno);
             }
             else if (!typeLiteral(lb.key).getRawType().equals(lb.injected))
             {
-                this.binder().bind(typeLiteral(lb.key)).to((Class<?>) lb.injected);
-
+                walker.bindLink(typeLiteral(lb.key), (Class<?>) lb.injected);
+                // this.binder().bind(typeLiteral(lb.key)).to((Class<?>) lb.injected);
+                // updateBindingInfo(typeLiteral(lb.key));
                 logger.trace("Bound {} to {}", typeLiteral(lb.key).getRawType().getSimpleName(), lb.injected);
             }
             else
             {
-                this.binder().bind(typeLiteral(lb.key));
-
+                walker.bindLink(typeLiteral(lb.key));
+                // this.binder().bind(typeLiteral(lb.key));
+                // updateBindingInfo(typeLiteral(lb.key));
                 logger.trace("Bound {} to itself", typeLiteral(lb.key).getRawType().getSimpleName());
             }
         }
@@ -167,20 +90,25 @@ public class TopologyModule extends AbstractModule
 
             if (pb.qualifierAnno != null)
             {
-                this.binder().bind(typeLiteral(pb.key)).annotatedWith(pb.qualifierAnno).toProvider((Class<?>) pb.injected);
-
+                walker.bindProvider(typeLiteral(pb.key), pb.qualifierAnno, (Class<?>) pb.injected);
+                // this.binder().bind(typeLiteral(pb.key)).annotatedWith(pb.qualifierAnno).toProvider((Class<?>)
+                // pb.injected);
+                // updateBindingInfo(typeLiteral(pb.key), pb.qualifierAnno);
                 logger.trace("Bound {} to {} with {}", typeLiteral(pb.key).getRawType().getSimpleName(), pb.injected, pb.qualifierAnno);
             }
             else
             {
-                this.binder().bind(typeLiteral(pb.key)).toProvider((Class<?>) pb.injected);
-
+                walker.bindProvider(typeLiteral(pb.key), (Class<?>) pb.injected);
+                // this.binder().bind(typeLiteral(pb.key)).toProvider((Class<?>) pb.injected);
+                // updateBindingInfo(typeLiteral(pb.key));
                 logger.trace("Bound {} to {}", typeLiteral(pb.key).getRawType().getSimpleName(), pb.injected);
             }
         }
         else if (InterceptorBinding.class.getSimpleName().equals(binding.name()))
         {
             InterceptorBinding pb = InterceptorBinding.class.cast(binding);
+            walker.bindInterceptor(pb.classPredicate, pb.methodPredicate, pb.methodInterceptor);
+        /*
             // Class
             Optional<Predicate<Class>> optionalClassPredicate = (Optional<Predicate<Class>>) newInstance(pb.classPredicate);
             Predicate<Class> classPredicate = null;
@@ -221,6 +149,7 @@ public class TopologyModule extends AbstractModule
             this.binder().bindInterceptor(classMatcher, methodMatcher, new MethodInterceptor[] {
                 methodInterceptor
             });
+            */
             logger.trace("Bound {} to {} and {}", pb.methodInterceptor.getName(), pb.classPredicate.getName(), pb.methodPredicate.getName());
         }
     }
@@ -230,32 +159,4 @@ public class TopologyModule extends AbstractModule
         return TypeLiteral.class.cast(key);
     }
 
-    public static <T> Optional<T> newInstance(Class<T> candidate)
-    {
-        try
-        {
-            return Optional.of(candidate.newInstance());
-        }
-        catch (InstantiationException | IllegalAccessException e)
-        {
-            return Optional.empty();
-        }
-    }
-
-    public static class PredicateMatcherAdapter<T> extends AbstractMatcher<T>
-    {
-        private Predicate<T> predicate;
-
-        public PredicateMatcherAdapter(Predicate<T> predicate)
-        {
-            this.predicate = predicate;
-        }
-
-        @Override
-        public boolean matches(T candidate)
-        {
-            return this.predicate.test(candidate);
-        }
-
-    }
 }
