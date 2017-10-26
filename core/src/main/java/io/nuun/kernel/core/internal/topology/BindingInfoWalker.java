@@ -5,6 +5,7 @@ import java.lang.annotation.Annotation;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 
+@SuppressWarnings({"unchecked" , "rawtypes"})
 public class BindingInfoWalker implements BindingWalker
 {
 

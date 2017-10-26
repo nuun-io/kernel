@@ -16,14 +16,7 @@
  */
 package io.nuun.kernel.core.internal.topology;
 
-import io.nuun.kernel.api.plugin.InitState;
-import io.nuun.kernel.api.plugin.context.InitContext;
-import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
-import io.nuun.kernel.core.AbstractPlugin;
-import io.nuun.kernel.spi.topology.TopologyDefinition;
-import io.nuun.kernel.spi.topology.binding.Binding;
-import io.nuun.kernel.spi.topology.binding.NullableBinding;
-
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,6 +28,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
+
+import io.nuun.kernel.api.plugin.InitState;
+import io.nuun.kernel.api.plugin.context.InitContext;
+import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
+import io.nuun.kernel.core.AbstractPlugin;
+import io.nuun.kernel.spi.topology.TopologyDefinition;
+import io.nuun.kernel.spi.topology.binding.Binding;
+import io.nuun.kernel.spi.topology.binding.NullableBinding;
 
 public class TopologyPlugin extends AbstractPlugin
 {
@@ -47,6 +49,7 @@ public class TopologyPlugin extends AbstractPlugin
     private List<Binding>      overridingBindings;
 
     private BindingInfos       bindingInfos       = new BindingInfos();
+    private List<Key>          nullableKeys;
 
     private TopologyModule     topologyModule;
     private TopologyModule     overridingTopologyModule;
@@ -71,15 +74,15 @@ public class TopologyPlugin extends AbstractPlugin
         TopologyAnalyzer analyzer = new TopologyAnalyzer(topologyDefinition, bindings);
         TopologyAnalyzer overridingAnalyzer = new TopologyAnalyzer(topologyDefinition, overridingBindings);
 
-        Collection<Class<?>> nominal = topologiesClasses.stream().filter(OverridingTopologyPredicate.INSTANCE.negate()).collect(Collectors.toList());
+        Collection<Class<?>> nominalList = topologiesClasses.stream().filter(OverridingTopologyPredicate.INSTANCE.negate()).collect(Collectors.toList());
         Collection<Class<?>> overrideList = topologiesClasses.stream().filter(OverridingTopologyPredicate.INSTANCE).collect(Collectors.toList());
 
-        analyzer.analyze(nominal);
+        analyzer.analyze(nominalList);
         overridingAnalyzer.analyze(overrideList);
 
         bindings.stream().forEach(this::collectBindingsMetadata);
 
-        List<Key> nullableKeys = bindingInfos.keys(BindingInfo.NULLABLE).stream().collect(Collectors.toList());
+        nullableKeys = bindingInfos.keys(BindingInfo.NULLABLE).stream().collect(Collectors.toList());
 
         return InitState.INITIALIZED;
     }
@@ -90,6 +93,18 @@ public class TopologyPlugin extends AbstractPlugin
         {
             NullableBinding nullableBinding = (NullableBinding) binding;
             bindingInfos.put(key(nullableBinding.key, nullableBinding.qualifierAnno), BindingInfo.NULLABLE);
+        }
+    }
+
+    private Key<?> key(Object key, Annotation qualifierAnno)
+    {
+        if (qualifierAnno == null)
+        {
+            return Key.get((TypeLiteral<?>) key);
+        }
+        else
+        {
+            return Key.get((TypeLiteral<?>) key, qualifierAnno);
         }
     }
 
@@ -104,7 +119,7 @@ public class TopologyPlugin extends AbstractPlugin
     {
         if (topologyModule == null)
         {
-            topologyModule = new TopologyModule(bindings);
+            topologyModule = new TopologyModule(bindings,nullableKeys);
         }
         return topologyModule;
     }
@@ -114,7 +129,7 @@ public class TopologyPlugin extends AbstractPlugin
     {
         if (overridingTopologyModule == null)
         {
-            overridingTopologyModule = new TopologyModule(overridingBindings);
+            overridingTopologyModule = new TopologyModule(overridingBindings,nullableKeys);
         }
 
         return overridingTopologyModule;

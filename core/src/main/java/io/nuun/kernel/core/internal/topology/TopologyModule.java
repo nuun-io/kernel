@@ -55,13 +55,11 @@ public class TopologyModule extends AbstractModule
     {
         this.bindings = bindings;
         this.nullableKeys = nullableKeys;
-
     }
 
     @Override
     protected void configure()
     {
-
         bindings.stream().filter(this::isNotNullable).forEach(this::configureBinding);
         configureNullableAndOptionals();
     }
@@ -89,27 +87,15 @@ public class TopologyModule extends AbstractModule
         return (binding instanceof NullableBinding);
     }
 
-    private Key<?> key(Object key, Annotation qualifierAnno)
-    {
-        if (qualifierAnno == null)
-        {
-            return Key.get((TypeLiteral<?>) key);
-        }
-        else
-        {
-            return Key.get((TypeLiteral<?>) key, qualifierAnno);
-        }
-    }
-
-    private void updateBindingInfo(TypeLiteral typeLiteral, Annotation qualifierAnno)
-    {
-        bindingInfos.put(Key.get(typeLiteral, qualifierAnno), BindingInfo.IS_BOUND);
-    }
-
-    private void updateBindingInfo(TypeLiteral typeLiteral)
-    {
-        bindingInfos.put(Key.get(typeLiteral), BindingInfo.IS_BOUND);
-    }
+//    private void updateBindingInfo(TypeLiteral typeLiteral, Annotation qualifierAnno)
+//    {
+//        bindingInfos.put(Key.get(typeLiteral, qualifierAnno), BindingInfo.IS_BOUND);
+//    }
+//
+//    private void updateBindingInfo(TypeLiteral typeLiteral)
+//    {
+//        bindingInfos.put(Key.get(typeLiteral), BindingInfo.IS_BOUND);
+//    }
 
     @SuppressWarnings({
             "unchecked", "rawtypes"
