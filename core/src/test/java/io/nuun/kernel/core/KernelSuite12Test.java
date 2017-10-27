@@ -30,10 +30,11 @@ import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 
 import io.nuun.kernel.api.Kernel;
-import io.nuun.kernel.core.entrypoint2.NullableService;
+import io.nuun.kernel.core.entrypoint3.NonNullImplementation;
+import io.nuun.kernel.core.entrypoint3.NullableService;
 import io.nuun.kernel.core.internal.topology.TopologyPlugin;
 
-public class KernelSuite11Test
+public class KernelSuite12Test
 {
 
     private Kernel   underTest;
@@ -45,7 +46,7 @@ public class KernelSuite11Test
     {
         underTest = createKernel(
 
-        newKernelConfiguration().rootPackages("io.nuun.kernel.core.entrypoint2") //
+                newKernelConfiguration().rootPackages("io.nuun.kernel.core.entrypoint3") //
                 .withoutSpiPluginsLoader().plugins(new TopologyPlugin()));
 
         underTest.init();
@@ -58,13 +59,15 @@ public class KernelSuite11Test
     {
 
         NullableService nullService = injector.getInstance(NullableService.class);
-        assertThat(nullService).isNull();
+        assertThat(nullService).isNotNull();
+        assertThat(nullService).isInstanceOf(NonNullImplementation.class);
 
         Optional<NullableService> optinalNullService = injector.getInstance(Key.get(new TypeLiteral<Optional<NullableService>>()
         {
         }));
 
         assertThat(optinalNullService).isNotNull();
-        assertThat(optinalNullService.isPresent()).isFalse();
+        assertThat(optinalNullService.isPresent()).isTrue();
+        assertThat(optinalNullService.get()).isInstanceOf(NonNullImplementation.class);
     }
 }

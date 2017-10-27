@@ -66,7 +66,7 @@ public interface MyTopology
     // Simple injection
     MyServiceImpl injects(MyService key);
 
-    // Simple injection
+    // Simple injection with name qualifier
     MyService2Impl injectsTwo(@Named("two") MyService key);
 
     // Generic injection

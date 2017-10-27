@@ -21,14 +21,12 @@ import java.lang.annotation.Annotation;
 public abstract class InjectionBinding extends Binding
 {
 
-    public final Object     key;
-    public final Annotation qualifierAnno;
+    public final BindingKey key;
     public final Object     injected;
 
     public InjectionBinding(Object key, Annotation qualifier, Object injected)
     {
-        this.key = key;
-        this.qualifierAnno = qualifier;
+        this.key = new BindingKey(key, qualifier);
         this.injected = injected;
     }
 

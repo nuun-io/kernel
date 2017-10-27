@@ -28,14 +28,13 @@ import com.google.inject.Key;
 public class BindingInfos
 {
 
-    Multimap<Key<?>, BindingInfo> multimap;
+    private final Multimap<Key<?>, BindingInfo> multimap;
 
     public BindingInfos()
     {
         multimap = MultimapBuilder
 
         .hashKeys().enumSetValues(BindingInfo.class).build();
-
     }
 
     public void put(Key<?> key, BindingInfo info)
@@ -51,7 +50,6 @@ public class BindingInfos
     public boolean contains(Key<?> key, BindingInfo info)
     {
         return multimap.containsEntry(key, info);
-        // return get(key).stream().anyMatch(i -> i.equals(info));
     }
 
     public List<Key> keys(BindingInfo bindingInfo)

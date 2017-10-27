@@ -30,7 +30,6 @@
   |            optional = true           | -> | @Inject                                         |
   |                                      |    | Optional<MyService> ( = Optional.empty())       |
   |                                      |    |                                                 |
-  |                                      |    |                                                 |
   +--------------------------------------+----+-------------------------------------------------+
   |                                      |    |                                                 |
   | @Nullable                            |    | @Inject                                         |
@@ -42,7 +41,7 @@
   |                                      |    |      (en plus)                                  |
   |                                      |    |                                                 |
   |            optional = true           | -> | @Inject                                         |
-  |                                      |    | Optional<MyService> (=Optional(MyServiceImpl))  |
+  |                                      |    | Optional<MyService>(=Optional.of(MyServiceImpl))|
   |                                      |    |                                                 |
   +--------------------------------------+----+-------------------------------------------------+
   

@@ -14,15 +14,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Nuun IO Kernel Core.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.nuun.kernel.core.entrypoint2;
-
-import javax.annotation.Nullable;
+package io.nuun.kernel.core.entrypoint3;
 
 import io.nuun.kernel.api.annotations.Topology;
 
 @Topology
-public interface TopologyNullable01
+public interface TopologyNullable03
 {
-    @Nullable
-    NullableService nullableService = null;
+    NullableService nullableService = new NonNullImplementation();
 }

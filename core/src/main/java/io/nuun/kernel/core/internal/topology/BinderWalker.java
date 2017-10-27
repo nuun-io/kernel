@@ -33,7 +33,7 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matcher;
 
 @SuppressWarnings({"unchecked" , "rawtypes"})
-public class BinderWalker implements BindingWalker
+public class BinderWalker implements Walker
 {
     private Logger       logger = LoggerFactory.getLogger(BinderWalker.class);
 

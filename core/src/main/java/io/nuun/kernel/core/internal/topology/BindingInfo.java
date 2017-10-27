@@ -18,5 +18,5 @@ package io.nuun.kernel.core.internal.topology;
 
 public enum BindingInfo
 {
-    NULLABLE, IS_BOUND
+    NULLABLE, IS_BOUND, NOMINAL
 }

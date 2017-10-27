@@ -16,64 +16,63 @@
  */
 package io.nuun.kernel.core.internal.topology;
 
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.spi.topology.binding.Binding;
-import io.nuun.kernel.spi.topology.binding.InstanceBinding;
-import io.nuun.kernel.spi.topology.binding.InterceptorBinding;
-import io.nuun.kernel.spi.topology.binding.LinkedBinding;
-import io.nuun.kernel.spi.topology.binding.NullableBinding;
-import io.nuun.kernel.spi.topology.binding.ProviderBinding;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import org.aopalliance.intercept.MethodInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
-import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.AbstractMatcher;
-import com.google.inject.matcher.Matcher;
 import com.google.inject.multibindings.OptionalBinder;
 import com.google.inject.util.Providers;
 
+import io.nuun.kernel.spi.topology.binding.Binding;
+import io.nuun.kernel.spi.topology.binding.NullableBinding;
+
 public class TopologyModule extends AbstractModule
 {
-    private Logger              logger = LoggerFactory.getLogger(TopologyModule.class);
+    private final Logger              logger = LoggerFactory.getLogger(TopologyModule.class);
 
-    private Collection<Binding> bindings;
+    private final Collection<Binding> bindings;
 
-    private Collection<Key>     nullableKeys;
+    private final Collection<Key>     nullableKeys;
+
+    private final Collection<Key>     optionalKeys;
+
+    private Walk                      walk;
 
     @SuppressWarnings("rawtypes")
-    public TopologyModule(Collection<Binding> bindings, Collection<Key> nullableKeys)
+    public TopologyModule(Collection<Binding> bindings, Collection<Key> nullableKeys, Collection<Key> optionalKeys)
     {
         this.bindings = bindings;
         this.nullableKeys = nullableKeys;
+        this.optionalKeys = optionalKeys;
     }
 
     @Override
     protected void configure()
     {
-        bindings.stream().filter(this::isNotNullable).forEach(this::configureBinding);
+        this.walk = new Walk(new BinderWalker(this.binder()));
+        bindings.stream().filter(this::isNotNullable).forEach(walk::walk);
         configureNullableAndOptionals();
     }
 
     private void configureNullableAndOptionals()
     {
-        nullableKeys.stream().forEach(this::doBindNullableAndOptional);
+        nullableKeys.stream().forEach(this::doBindNullable);
+        optionalKeys.stream().forEach(this::doBindOptional);
     }
 
-    @SuppressWarnings("unchecked")
-    private void doBindNullableAndOptional(Key k)
+    private void doBindNullable(Key<?> k)
     {
-        // bind to null
         binder().bind(k).toProvider(Providers.of(null));
+    }
+
+    private void doBindOptional(Key<?> k)
+    {
         OptionalBinder.newOptionalBinder(binder(), k);
     }
 
@@ -85,135 +84,6 @@ public class TopologyModule extends AbstractModule
     private boolean isNullable(Binding binding)
     {
         return (binding instanceof NullableBinding);
-    }
-
-//    private void updateBindingInfo(TypeLiteral typeLiteral, Annotation qualifierAnno)
-//    {
-//        bindingInfos.put(Key.get(typeLiteral, qualifierAnno), BindingInfo.IS_BOUND);
-//    }
-//
-//    private void updateBindingInfo(TypeLiteral typeLiteral)
-//    {
-//        bindingInfos.put(Key.get(typeLiteral), BindingInfo.IS_BOUND);
-//    }
-
-    @SuppressWarnings({
-            "unchecked", "rawtypes"
-    })
-    private void configureBinding(Binding binding)
-    {
-
-        if (InstanceBinding.class.getSimpleName().equals(binding.name()))
-        {
-            InstanceBinding ib = (InstanceBinding) binding;
-            if (ib.qualifierAnno != null)
-            {
-                // key anno injected
-                this.binder().bind(typeLiteral(ib.key)).annotatedWith(ib.qualifierAnno).toInstance(ib.injected);
-
-            }
-            else
-            {
-                this.binder().bind(typeLiteral(ib.key)).toInstance(ib.injected);
-
-            }
-        }
-        else if (LinkedBinding.class.getSimpleName().equals(binding.name()))
-        {
-            LinkedBinding lb = LinkedBinding.class.cast(binding);
-
-            if (lb.qualifierAnno != null && lb.injected.getClass().equals(Class.class))
-            {
-                this.binder().bind(typeLiteral(lb.key)).annotatedWith(lb.qualifierAnno).to((Class<?>) lb.injected);
-
-                logger.trace("Bound {} to {} with {}", typeLiteral(lb.key).getRawType().getSimpleName(), lb.injected, lb.qualifierAnno);
-            }
-            else if (lb.qualifierAnno != null && !lb.injected.getClass().equals(Class.class))
-            {
-                this.binder().bind(typeLiteral(lb.key)).annotatedWith(lb.qualifierAnno).toInstance(lb.injected);
-
-                logger.trace("Bound {} to instance {} with {}", typeLiteral(lb.key).getRawType().getSimpleName(), lb.injected, lb.qualifierAnno);
-            }
-            else if (!typeLiteral(lb.key).getRawType().equals(lb.injected))
-            {
-                this.binder().bind(typeLiteral(lb.key)).to((Class<?>) lb.injected);
-
-                logger.trace("Bound {} to {}", typeLiteral(lb.key).getRawType().getSimpleName(), lb.injected);
-            }
-            else
-            {
-                this.binder().bind(typeLiteral(lb.key));
-
-                logger.trace("Bound {} to itself", typeLiteral(lb.key).getRawType().getSimpleName());
-            }
-        }
-        else if (ProviderBinding.class.getSimpleName().equals(binding.name()))
-        {
-            ProviderBinding pb = ProviderBinding.class.cast(binding);
-
-            if (pb.qualifierAnno != null)
-            {
-                this.binder().bind(typeLiteral(pb.key)).annotatedWith(pb.qualifierAnno).toProvider((Class<?>) pb.injected);
-
-                logger.trace("Bound {} to {} with {}", typeLiteral(pb.key).getRawType().getSimpleName(), pb.injected, pb.qualifierAnno);
-            }
-            else
-            {
-                this.binder().bind(typeLiteral(pb.key)).toProvider((Class<?>) pb.injected);
-
-                logger.trace("Bound {} to {}", typeLiteral(pb.key).getRawType().getSimpleName(), pb.injected);
-            }
-        }
-        else if (InterceptorBinding.class.getSimpleName().equals(binding.name()))
-        {
-            InterceptorBinding pb = InterceptorBinding.class.cast(binding);
-            // Class
-            Optional<Predicate<Class>> optionalClassPredicate = (Optional<Predicate<Class>>) newInstance(pb.classPredicate);
-            Predicate<Class> classPredicate = null;
-            if (optionalClassPredicate.isPresent())
-            {
-                classPredicate = optionalClassPredicate.get();
-            }
-            else
-            {
-                throw new KernelException("InterceptorBinding : classPredicate is null.");
-            }
-            Matcher<? super Class<?>> classMatcher = new PredicateMatcherAdapter<>(classPredicate);
-
-            // Method
-            Optional<Predicate<Method>> optionalMethodPredicate = (Optional<Predicate<Method>>) newInstance(pb.methodPredicate);
-            Predicate<Method> methodPredicate = null;
-            if (optionalMethodPredicate.isPresent())
-            {
-                methodPredicate = optionalMethodPredicate.get();
-            }
-            else
-            {
-                throw new KernelException("InterceptorBinding : methodPredicate is null.");
-            }
-            Matcher<Method> methodMatcher = new PredicateMatcherAdapter<>(methodPredicate);
-
-            Optional<MethodInterceptor> optionalInterceptor = newInstance((Class<MethodInterceptor>) pb.methodInterceptor);
-            MethodInterceptor methodInterceptor = null;
-            if (optionalInterceptor.isPresent())
-            {
-                methodInterceptor = optionalInterceptor.get();
-
-            }
-            else
-            {
-                throw new KernelException("InterceptorBinding : methodInterceptor is null.");
-            }
-            this.binder().bindInterceptor(classMatcher, methodMatcher, new MethodInterceptor[] {
-                methodInterceptor
-            });
-            logger.trace("Bound {} to {} and {}", pb.methodInterceptor.getName(), pb.classPredicate.getName(), pb.methodPredicate.getName());
-        }
-    }
-
-    private TypeLiteral typeLiteral(Object key)
-    {
-        return TypeLiteral.class.cast(key);
     }
 
     public static <T> Optional<T> newInstance(Class<T> candidate)

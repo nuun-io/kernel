@@ -21,7 +21,7 @@ import java.lang.annotation.Annotation;
 import com.google.inject.TypeLiteral;
 
 @SuppressWarnings({"unchecked" , "rawtypes"})
-public interface BindingWalker
+public interface Walker
 {
     void bindInstance(TypeLiteral typeLiteral, Annotation qualifierAnno, Object injected);
 

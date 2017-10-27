@@ -36,6 +36,7 @@ import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.nuun.kernel.core.AbstractPlugin;
 import io.nuun.kernel.spi.topology.TopologyDefinition;
 import io.nuun.kernel.spi.topology.binding.Binding;
+import io.nuun.kernel.spi.topology.binding.InjectionBinding;
 import io.nuun.kernel.spi.topology.binding.NullableBinding;
 
 public class TopologyPlugin extends AbstractPlugin
@@ -50,6 +51,8 @@ public class TopologyPlugin extends AbstractPlugin
 
     private BindingInfos       bindingInfos       = new BindingInfos();
     private List<Key>          nullableKeys;
+    private List<Key>          keys;
+    private List<Key>          optionalKeys;
 
     private TopologyModule     topologyModule;
     private TopologyModule     overridingTopologyModule;
@@ -66,6 +69,9 @@ public class TopologyPlugin extends AbstractPlugin
 
         bindings = new ArrayList<>();
         overridingBindings = new ArrayList<>();
+        nullableKeys = new ArrayList<>();
+        optionalKeys = new ArrayList<>();
+        keys = new ArrayList<>();
 
         Map<Predicate<Class<?>>, Collection<Class<?>>> typesByPredicate = initContext.scannedTypesByPredicate();
 
@@ -81,19 +87,30 @@ public class TopologyPlugin extends AbstractPlugin
         overridingAnalyzer.analyze(overrideList);
 
         bindings.stream().forEach(this::collectBindingsMetadata);
+        nullableKeys.stream().forEach(optionalKeys::add);
 
-        nullableKeys = bindingInfos.keys(BindingInfo.NULLABLE).stream().collect(Collectors.toList());
+        this.nullableKeys.removeAll(this.keys);
 
         return InitState.INITIALIZED;
     }
 
     private void collectBindingsMetadata(Binding binding)
     {
-        if (binding instanceof NullableBinding)
+        if (binding instanceof InjectionBinding)
+        {
+            InjectionBinding ib = (InjectionBinding) binding;
+            Key<?> key = key(ib.key.value, ib.key.qualifierAnno);
+            bindingInfos.put(key, BindingInfo.NOMINAL);
+            keys.add(key);
+        }
+        else if (binding instanceof NullableBinding)
         {
             NullableBinding nullableBinding = (NullableBinding) binding;
-            bindingInfos.put(key(nullableBinding.key, nullableBinding.qualifierAnno), BindingInfo.NULLABLE);
+            Key<?> key = key(nullableBinding.key, nullableBinding.qualifierAnno);
+            bindingInfos.put(key, BindingInfo.NULLABLE);
+            nullableKeys.add(key);
         }
+
     }
 
     private Key<?> key(Object key, Annotation qualifierAnno)
@@ -119,7 +136,7 @@ public class TopologyPlugin extends AbstractPlugin
     {
         if (topologyModule == null)
         {
-            topologyModule = new TopologyModule(bindings,nullableKeys);
+            topologyModule = new TopologyModule(bindings, nullableKeys, optionalKeys);
         }
         return topologyModule;
     }
@@ -129,7 +146,7 @@ public class TopologyPlugin extends AbstractPlugin
     {
         if (overridingTopologyModule == null)
         {
-            overridingTopologyModule = new TopologyModule(overridingBindings,nullableKeys);
+            overridingTopologyModule = new TopologyModule(overridingBindings, nullableKeys, optionalKeys);
         }
 
         return overridingTopologyModule;
