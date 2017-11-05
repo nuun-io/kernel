@@ -17,17 +17,6 @@
 package io.nuun.kernel.core.internal.topology;
 
 import static java.util.Arrays.stream;
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.spi.topology.Multi;
-import io.nuun.kernel.spi.topology.TopologyDefinition;
-import io.nuun.kernel.spi.topology.binding.Binding;
-import io.nuun.kernel.spi.topology.binding.InstanceBinding;
-import io.nuun.kernel.spi.topology.binding.InterceptorBinding;
-import io.nuun.kernel.spi.topology.binding.LinkedBinding;
-import io.nuun.kernel.spi.topology.binding.MultiBinding;
-import io.nuun.kernel.spi.topology.binding.MultiBinding.MultiKind;
-import io.nuun.kernel.spi.topology.binding.NullableBinding;
-import io.nuun.kernel.spi.topology.binding.ProviderBinding;
 
 import java.awt.List;
 import java.lang.annotation.Annotation;
@@ -45,14 +34,25 @@ import javax.annotation.Nullable;
 import javax.inject.Provider;
 import javax.inject.Qualifier;
 
-import net.jodah.typetools.TypeResolver;
-
 import org.aopalliance.intercept.MethodInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.BindingAnnotation;
 import com.google.inject.TypeLiteral;
+
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.spi.topology.Multi;
+import io.nuun.kernel.spi.topology.TopologyDefinition;
+import io.nuun.kernel.spi.topology.binding.Binding;
+import io.nuun.kernel.spi.topology.binding.InstanceBinding;
+import io.nuun.kernel.spi.topology.binding.InterceptorBinding;
+import io.nuun.kernel.spi.topology.binding.LinkedBinding;
+import io.nuun.kernel.spi.topology.binding.MultiBinding;
+import io.nuun.kernel.spi.topology.binding.MultiBinding.MultiKind;
+import io.nuun.kernel.spi.topology.binding.NullableBinding;
+import io.nuun.kernel.spi.topology.binding.ProviderBinding;
+import net.jodah.typetools.TypeResolver;
 
 class TopologyDefinitionCore implements TopologyDefinition
 {
@@ -83,8 +83,8 @@ class TopologyDefinitionCore implements TopologyDefinition
             }
             else
             {
-                throw new KernelException("Method %s of class %s should have only two parameters.", candidate.getName(), candidate.getDeclaringClass()
-                        .getName());
+                throw new KernelException(
+                        "Method %s of class %s should have only two parameters.", candidate.getName(), candidate.getDeclaringClass().getName());
             }
         }
 
@@ -121,7 +121,8 @@ class TopologyDefinitionCore implements TopologyDefinition
             }
             else
             {
-                throw new KernelException("Method %s of class %s should have only one parameter.", candidate.getName(), candidate.getDeclaringClass().getName());
+                throw new KernelException(
+                        "Method %s of class %s should have only one parameter.", candidate.getName(), candidate.getDeclaringClass().getName());
             }
         }
 
@@ -150,7 +151,8 @@ class TopologyDefinitionCore implements TopologyDefinition
         if (xPredicate.equals(Predicate.class))
         {
             throw new KernelException(
-                    "Topology (%s) : %s can not be passed as parameter to an intercepts definition. \nYou need to pass a child.", context, xPredicate.getName());
+                    "Topology (%s) : %s can not be passed as parameter to an intercepts definition. \nYou need to pass a child.", context,
+                    xPredicate.getName());
         }
 
         if (!isPredicateChild)
@@ -207,13 +209,14 @@ class TopologyDefinitionCore implements TopologyDefinition
     public Optional<LinkedBinding> linkedBinding(Member candidate)
     {
 
-        if (Method.class.equals(candidate.getClass()) && candidate.getName().startsWith("injects"))
+        if (Method.class.equals(candidate.getClass()))
         {
             Method m = (Method) candidate;
 
-            if (m.getParameterCount() == 1)
-            {
+            Boolean isMulti = m.isAnnotationPresent(Multi.class);
 
+            if (m.getParameterCount() == 1 && candidate.getName().startsWith("injects") && !isMulti)
+            {
                 TypeLiteral<?> key = typeLiteral(m.getParameters()[0].getParameterizedType());
 
                 Class<?> provided = m.getReturnType();
@@ -227,12 +230,24 @@ class TopologyDefinitionCore implements TopologyDefinition
                 {
                     return Optional.of(new LinkedBinding(key, qualifier.get(), provided));
                 }
-
             }
+        }
+        return Optional.empty();
+    }
 
+    @Override
+    public Optional<MultiBinding> multiBinding(Member candidate)
+    {
+
+        Boolean isMulti = ((AccessibleObject) candidate).isAnnotationPresent(Multi.class);
+
+        if (isMulti)
+        {
+            return extractMultiBinding(candidate);
         }
 
         return Optional.empty();
+
     }
 
     @Override
@@ -240,7 +255,6 @@ class TopologyDefinitionCore implements TopologyDefinition
     {
         if (Field.class.equals(candidate.getClass()))
         {
-
             Field f = Field.class.cast(candidate);
 
             Boolean isNullable = f.isAnnotationPresent(Nullable.class);
@@ -249,7 +263,7 @@ class TopologyDefinitionCore implements TopologyDefinition
 
             Object instance = value((Field) candidate);
 
-            if (instance == null && (!isNullable && !isMulti))
+            if (instance == null && !isNullable && !isMulti)
             {
                 throw new KernelException(
                         "Topology %s field %s is null, Please set a value.", candidate.getDeclaringClass().getSimpleName(), candidate.getName());
@@ -265,7 +279,7 @@ class TopologyDefinitionCore implements TopologyDefinition
 
             Optional<Annotation> qualifier = qualifier(f);
 
-            if (instance != null)
+            if (instance != null && !isMulti)
             {
                 if (qualifier.isPresent())
                 {
@@ -276,7 +290,7 @@ class TopologyDefinitionCore implements TopologyDefinition
                     return Optional.of(new InstanceBinding(key, instance));
                 }
             }
-            else if (isNullable)
+            else if (isNullable && !isMulti)
             {
                 if (qualifier.isPresent())
                 {
@@ -287,47 +301,74 @@ class TopologyDefinitionCore implements TopologyDefinition
                     return Optional.of(new NullableBinding(key));
                 }
             }
-            else if (isMulti)
+        }
+        return Optional.empty();
+    }
+
+    private Optional<MultiBinding> extractMultiBinding(Member candidate)
+    {
+
+        MultiKind kind = kindFromMember(candidate);
+        Multi multi = ((AccessibleObject) candidate).getAnnotation(Multi.class);
+        Type keyType = null;
+
+        if (candidate instanceof Method)
+        {
+            Method method = (Method) candidate;
+            keyType = method.getGenericReturnType();
+        }
+        else if (candidate instanceof Field)
+        {
+            Field f = (Field) candidate;
+            keyType = f.getGenericType();
+        }
+
+        if (kind == MultiKind.LIST || kind == MultiKind.SET)
+        {
+            return Optional.of(new MultiBinding(keyType, kind));
+        }
+        else if (kind == MultiKind.MAP)
+        {
+            if (multi.value().equals(Multi.VoidFunction.class))
             {
-
-                MultiKind kind = kindFromField(f);
-
-                if (kind == MultiKind.LIST || kind == MultiKind.SET)
-                {
-                    return Optional.of(new MultiBinding(key, kind));
-                }
-
-                if (kind == MultiKind.MAP)
-                {
-                    Multi multi = f.getAnnotation(Multi.class);
-
-                    if (multi.value().equals(Multi.VoidFunction.class))
-                    {
-                        throw new KernelException(
-                                "Topology %s field %s : @Multi.value() must be set.", candidate.getDeclaringClass().getSimpleName(), candidate.getName());
-                    }
-
-                    return Optional.of(new MultiBinding(key, kind, multi.value()));
-                }
-
+                throw new KernelException(
+                        "Topology %s field %s : @Multi.value() must be set.", candidate.getDeclaringClass().getSimpleName(), candidate.getName());
             }
 
+            return Optional.of(new MultiBinding(keyType, kind, multi.value()));
         }
 
         return Optional.empty();
     }
 
-    private MultiKind kindFromField(Field f)
+    private MultiKind kindFromMember(Member member)
     {
-        if (f.getType().isAssignableFrom(List.class))
+
+        Class<?> type = null;
+
+        if (member instanceof Field)
+        {
+            Field f = (Field) member;
+
+            type = f.getType();
+
+        }
+        else if (member instanceof Method)
+        {
+            Method m = (Method) member;
+
+            type = m.getReturnType();
+        }
+
+        if (type.isAssignableFrom(List.class))
         {
             return MultiKind.LIST;
         }
-        if (f.getType().isAssignableFrom(Set.class))
+        if (type.isAssignableFrom(Set.class))
         {
             return MultiKind.SET;
         }
-        if (f.getType().isAssignableFrom(Map.class))
+        if (type.isAssignableFrom(Map.class))
         {
             return MultiKind.MAP;
         }
@@ -348,8 +389,9 @@ class TopologyDefinitionCore implements TopologyDefinition
 
     private Optional<Annotation> qualifier(Annotation[] annotations)
     {
-        return stream(annotations).filter(
-                a -> a.annotationType().isAnnotationPresent(Qualifier.class) || a.annotationType().isAnnotationPresent(BindingAnnotation.class)).findFirst();
+        return stream(annotations)
+                .filter(a -> a.annotationType().isAnnotationPresent(Qualifier.class) || a.annotationType().isAnnotationPresent(BindingAnnotation.class))
+                .findFirst();
     }
 
     private Object value(Field f)

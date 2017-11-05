@@ -31,7 +31,7 @@ import java.util.function.Function;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({
-    ElementType.FIELD
+        ElementType.FIELD, ElementType.METHOD
 })
 public @interface Multi
 {

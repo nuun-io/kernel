@@ -85,15 +85,15 @@ public interface MyTopology
     MyService3Sample injects(MyService3 key);
 
     MyMethodInterceptor intercepts(ClassePredicate pc, MethodPredicate pm);
-    
+
     @Multi
-    List<MyCommand1> command1List = null;
-    
+    List<MyCommand1> command1List();
+
     @Multi
-    Set<MyCommand2> command2Set = null;
-    
+    Set<MyCommand2> command2Set();
+
     @Multi(MyCommand2Key.class)
-    Map<String, MyCommand2> command2Maps = null;
+    Map<String, MyCommand2> command2Maps();
 
     //
     // MyLoggerFieldInjector manages(MyLogger annotation);

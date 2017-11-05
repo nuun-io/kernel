@@ -22,6 +22,7 @@ import java.util.Optional;
 import io.nuun.kernel.spi.topology.binding.Binding;
 import io.nuun.kernel.spi.topology.binding.InterceptorBinding;
 import io.nuun.kernel.spi.topology.binding.LinkedBinding;
+import io.nuun.kernel.spi.topology.binding.MultiBinding;
 import io.nuun.kernel.spi.topology.binding.ProviderBinding;
 
 public interface TopologyDefinition
@@ -33,4 +34,6 @@ public interface TopologyDefinition
     Optional<ProviderBinding> providerBinding(Member candidate);
 
     Optional<InterceptorBinding> interceptorBinding(Member candidate);
+
+    Optional<MultiBinding> multiBinding(Member candidate);
 }
