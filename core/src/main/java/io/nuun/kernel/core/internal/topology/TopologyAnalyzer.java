@@ -45,6 +45,7 @@ import io.nuun.kernel.spi.topology.binding.InstanceBinding;
 import io.nuun.kernel.spi.topology.binding.InterceptorBinding;
 import io.nuun.kernel.spi.topology.binding.LinkedBinding;
 import io.nuun.kernel.spi.topology.binding.MultiBinding;
+import io.nuun.kernel.spi.topology.binding.NullableBinding;
 import io.nuun.kernel.spi.topology.binding.ProviderBinding;
 
 class TopologyAnalyzer
@@ -149,6 +150,13 @@ class TopologyAnalyzer
         if (multiBinding.isPresent())
         {
             bindings.add(multiBinding.get());
+        }
+
+        // Nullable Binding
+        Optional<NullableBinding> nullableBinding = topologyDefinition.nullableBinding(m);
+        if (nullableBinding.isPresent())
+        {
+            bindings.add(nullableBinding.get());
         }
 
         // Provider Binding
