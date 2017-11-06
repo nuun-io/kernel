@@ -18,13 +18,6 @@ package io.nuun.kernel.core.internal.topology;
 
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
-import io.nuun.kernel.api.annotations.Topology;
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.spi.topology.TopologyDefinition;
-import io.nuun.kernel.spi.topology.binding.Binding;
-import io.nuun.kernel.spi.topology.binding.InterceptorBinding;
-import io.nuun.kernel.spi.topology.binding.LinkedBinding;
-import io.nuun.kernel.spi.topology.binding.ProviderBinding;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,6 +36,16 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
+
+import io.nuun.kernel.api.annotations.Topology;
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.spi.topology.TopologyDefinition;
+import io.nuun.kernel.spi.topology.binding.Binding;
+import io.nuun.kernel.spi.topology.binding.InstanceBinding;
+import io.nuun.kernel.spi.topology.binding.InterceptorBinding;
+import io.nuun.kernel.spi.topology.binding.LinkedBinding;
+import io.nuun.kernel.spi.topology.binding.MultiBinding;
+import io.nuun.kernel.spi.topology.binding.ProviderBinding;
 
 class TopologyAnalyzer
 {
@@ -128,7 +131,7 @@ class TopologyAnalyzer
     void treatMember(Member m)
     {
         // Instance Binding
-        Optional<Binding> instanceBinding = topologyDefinition.instanceBinding(m);
+        Optional<InstanceBinding> instanceBinding = topologyDefinition.instanceBinding(m);
         if (instanceBinding.isPresent())
         {
             bindings.add(instanceBinding.get());
@@ -139,6 +142,13 @@ class TopologyAnalyzer
         if (linkedBinding.isPresent())
         {
             bindings.add(linkedBinding.get());
+        }
+
+        // Multi Binding
+        Optional<MultiBinding> multiBinding = topologyDefinition.multiBinding(m);
+        if (multiBinding.isPresent())
+        {
+            bindings.add(multiBinding.get());
         }
 
         // Provider Binding
