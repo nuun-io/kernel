@@ -44,7 +44,6 @@ import com.google.inject.TypeLiteral;
 import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.spi.topology.Multi;
 import io.nuun.kernel.spi.topology.TopologyDefinition;
-import io.nuun.kernel.spi.topology.binding.Binding;
 import io.nuun.kernel.spi.topology.binding.InstanceBinding;
 import io.nuun.kernel.spi.topology.binding.InterceptorBinding;
 import io.nuun.kernel.spi.topology.binding.LinkedBinding;
@@ -251,7 +250,7 @@ class TopologyDefinitionCore implements TopologyDefinition
     }
 
     @Override
-    public Optional<Binding> instanceBinding(Member candidate)
+    public Optional<InstanceBinding> instanceBinding(Member candidate)
     {
         if (Field.class.equals(candidate.getClass()))
         {
@@ -290,8 +289,27 @@ class TopologyDefinitionCore implements TopologyDefinition
                     return Optional.of(new InstanceBinding(key, instance));
                 }
             }
-            else if (isNullable && !isMulti)
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<NullableBinding> nullableBinding(Member candidate)
+    {
+
+        if (Field.class.equals(candidate.getClass()))
+        {
+            Field f = Field.class.cast(candidate);
+
+            Boolean isNullable = f.isAnnotationPresent(Nullable.class);
+
+            Boolean isMulti = f.isAnnotationPresent(Multi.class);
+
+            if (isNullable && !isMulti)
             {
+                TypeLiteral<?> key = typeLiteral(f.getGenericType());
+                Optional<Annotation> qualifier = qualifier(f);
+
                 if (qualifier.isPresent())
                 {
                     return Optional.of(new NullableBinding(key, qualifier.get()));
@@ -301,7 +319,9 @@ class TopologyDefinitionCore implements TopologyDefinition
                     return Optional.of(new NullableBinding(key));
                 }
             }
+
         }
+
         return Optional.empty();
     }
 
@@ -310,22 +330,28 @@ class TopologyDefinitionCore implements TopologyDefinition
 
         MultiKind kind = kindFromMember(candidate);
         Multi multi = ((AccessibleObject) candidate).getAnnotation(Multi.class);
-        Type keyType = null;
+        Class<?> keyType = null;
 
         if (candidate instanceof Method)
         {
             Method method = (Method) candidate;
-            keyType = method.getGenericReturnType();
+            keyType = method.getReturnType();
         }
         else if (candidate instanceof Field)
         {
             Field f = (Field) candidate;
-            keyType = f.getGenericType();
+            keyType = f.getType();
         }
 
-        if (kind == MultiKind.LIST || kind == MultiKind.SET)
+        if (kind == MultiKind.SET)
         {
-            return Optional.of(new MultiBinding(keyType, kind));
+            Class<?> setOf = genericClass(Set.class, keyType, 0);
+            return Optional.of(new MultiBinding(setOf, kind));
+        }
+        if (kind == MultiKind.LIST)
+        {
+            Class<?> listOf = genericClass(List.class, keyType, 0);
+            return Optional.of(new MultiBinding(listOf, kind));
         }
         else if (kind == MultiKind.MAP)
         {
@@ -334,8 +360,9 @@ class TopologyDefinitionCore implements TopologyDefinition
                 throw new KernelException(
                         "Topology %s field %s : @Multi.value() must be set.", candidate.getDeclaringClass().getSimpleName(), candidate.getName());
             }
+            Class<?> mapOf = genericClass(Map.class, keyType, 1);
 
-            return Optional.of(new MultiBinding(keyType, kind, multi.value()));
+            return Optional.of(new MultiBinding(mapOf, kind, multi.value()));
         }
 
         return Optional.empty();
