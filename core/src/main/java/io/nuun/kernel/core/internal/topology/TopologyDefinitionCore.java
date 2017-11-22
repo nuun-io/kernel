@@ -199,9 +199,24 @@ class TopologyDefinitionCore implements TopologyDefinition
         }
     }
 
-    public Class<?> genericClass(Class<?> parentClass, Class<?> childClass, int childIndex)
+    private Class<?> genericClass(Class<?> parentClass, Class<?> childClass, int childIndex)
     {
         return TypeResolver.resolveRawArguments(TypeResolver.resolveGenericType(parentClass, childClass), childClass)[childIndex];
+    }
+    
+    private Class<?> genericClass(Class<?> parentClass, Type childClass)
+    {
+        Class<?> out = null;
+    	if (parentClass.equals(Map.class))
+    	{
+    		
+    	}
+    	else 
+    	{
+    		
+    	}
+    	
+    	return out;
     }
 
     @Override
@@ -330,17 +345,17 @@ class TopologyDefinitionCore implements TopologyDefinition
 
         MultiKind kind = kindFromMember(candidate);
         Multi multi = ((AccessibleObject) candidate).getAnnotation(Multi.class);
-        Class<?> keyType = null;
+        Type keyType = null;
 
         if (candidate instanceof Method)
         {
             Method method = (Method) candidate;
-            keyType = method.getReturnType();
+            keyType = method.getGenericReturnType();
         }
         else if (candidate instanceof Field)
         {
             Field f = (Field) candidate;
-            keyType = f.getType();
+            keyType = f.getGenericType();
         }
 
         if (kind == MultiKind.SET)
