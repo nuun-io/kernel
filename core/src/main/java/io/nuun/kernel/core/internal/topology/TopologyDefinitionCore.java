@@ -203,20 +203,30 @@ class TopologyDefinitionCore implements TopologyDefinition
     {
         return TypeResolver.resolveRawArguments(TypeResolver.resolveGenericType(parentClass, childClass), childClass)[childIndex];
     }
-    
-    private Class<?> genericClass(Class<?> parentClass, Type childClass)
+
+    private Class<?> genericClass(MultiKind kind, Type childClass)
     {
         Class<?> out = null;
-    	if (parentClass.equals(Map.class))
-    	{
-    		
-    	}
-    	else 
-    	{
-    		
-    	}
-    	
-    	return out;
+        switch (kind)
+        {
+            case SET:
+            case LIST:
+
+                break;
+
+            default:
+                break;
+        }
+        if (kind.equals(Map.class))
+        {
+
+        }
+        else
+        {
+
+        }
+
+        return out;
     }
 
     @Override
@@ -360,12 +370,12 @@ class TopologyDefinitionCore implements TopologyDefinition
 
         if (kind == MultiKind.SET)
         {
-            Class<?> setOf = genericClass(Set.class, keyType, 0);
+            Class<?> setOf = genericClass(kind, keyType);
             return Optional.of(new MultiBinding(setOf, kind));
         }
         if (kind == MultiKind.LIST)
         {
-            Class<?> listOf = genericClass(List.class, keyType, 0);
+            Class<?> listOf = genericClass(kind, keyType);
             return Optional.of(new MultiBinding(listOf, kind));
         }
         else if (kind == MultiKind.MAP)
@@ -375,7 +385,7 @@ class TopologyDefinitionCore implements TopologyDefinition
                 throw new KernelException(
                         "Topology %s field %s : @Multi.value() must be set.", candidate.getDeclaringClass().getSimpleName(), candidate.getName());
             }
-            Class<?> mapOf = genericClass(Map.class, keyType, 1);
+            Class<?> mapOf = genericClass(kind, keyType);
 
             return Optional.of(new MultiBinding(mapOf, kind, multi.value()));
         }
