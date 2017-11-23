@@ -94,19 +94,20 @@ public class Walk
             InterceptorBinding pb = InterceptorBinding.class.cast(binding);
 
             walker.bindInterceptor(pb.classPredicate, pb.methodPredicate, pb.methodInterceptor);
-        }        
-        else if (MultiBinding.class.getSimpleName().equals(binding.name())) 
-        {
-        	MultiBinding mb = MultiBinding.class.cast(binding);
-        	walker.bindMulti(mb.key , mb.value , mb.kind , mb.keyResolver  );
         }
-        
+        else if (MultiBinding.class.getSimpleName().equals(binding.name()))
+        {
+            MultiBinding mb = MultiBinding.class.cast(binding);
+            walker.bindMulti(typeLiteral(mb.key), typeLiteral(mb.value), mb.kind, mb.keyResolver);
+        }
+
     }
 
     private TypeLiteral typeLiteral(Object key)
     {
         if (key instanceof BindingKey)
             throw new IllegalStateException("error in refactoring");
+
         return TypeLiteral.class.cast(key);
     }
 

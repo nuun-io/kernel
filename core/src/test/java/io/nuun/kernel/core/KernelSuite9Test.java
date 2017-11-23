@@ -20,25 +20,6 @@ import static io.nuun.kernel.core.NuunCore.createKernel;
 import static io.nuun.kernel.core.NuunCore.newKernelConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
-import io.nuun.kernel.api.Kernel;
-import io.nuun.kernel.core.internal.topology.TopologyModule.PredicateMatcherAdapter;
-import io.nuun.kernel.core.internal.topology.TopologyPlugin;
-import io.nuun.kernel.core.test_topo.ClassePredicate;
-import io.nuun.kernel.core.test_topo.MethodPredicate;
-import io.nuun.kernel.core.test_topo.MyService3;
-import io.nuun.kernel.core.test_topo.MyService3Sample;
-import io.nuun.kernel.core.test_topo.sample.MyMethodInterceptor;
-import io.nuun.kernel.core.test_topo.sample.MyObject;
-import io.nuun.kernel.core.test_topo.sample.MyService;
-import io.nuun.kernel.core.test_topo.sample.MyService2;
-import io.nuun.kernel.core.test_topo.sample.MyService2Impl;
-import io.nuun.kernel.core.test_topo.sample.MyService4;
-import io.nuun.kernel.core.test_topo.sample.MyService4Int;
-import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2Bis;
-import io.nuun.kernel.core.test_topo.sample.MyServiceImplOver;
-import io.nuun.kernel.core.test_topo.sample.Server;
-import io.nuun.kernel.core.test_topo.sample.Serveur;
-import io.nuun.kernel.spi.configuration.NuunProperty;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -65,10 +46,34 @@ import com.google.inject.ConfigurationException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matcher;
+import com.google.inject.multibindings.MapBinder;
+import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
+import com.google.inject.util.Modules;
 import com.google.inject.util.Providers;
+
+import io.nuun.kernel.api.Kernel;
+import io.nuun.kernel.core.internal.topology.TopologyModule.PredicateMatcherAdapter;
+import io.nuun.kernel.core.internal.topology.TopologyPlugin;
+import io.nuun.kernel.core.test_topo.ClassePredicate;
+import io.nuun.kernel.core.test_topo.MethodPredicate;
+import io.nuun.kernel.core.test_topo.MyService3;
+import io.nuun.kernel.core.test_topo.MyService3Sample;
+import io.nuun.kernel.core.test_topo.sample.MyMethodInterceptor;
+import io.nuun.kernel.core.test_topo.sample.MyObject;
+import io.nuun.kernel.core.test_topo.sample.MyService;
+import io.nuun.kernel.core.test_topo.sample.MyService2;
+import io.nuun.kernel.core.test_topo.sample.MyService2Impl;
+import io.nuun.kernel.core.test_topo.sample.MyService4;
+import io.nuun.kernel.core.test_topo.sample.MyService4Int;
+import io.nuun.kernel.core.test_topo.sample.MyServiceImpl2Bis;
+import io.nuun.kernel.core.test_topo.sample.MyServiceImplOver;
+import io.nuun.kernel.core.test_topo.sample.Server;
+import io.nuun.kernel.core.test_topo.sample.Serveur;
+import io.nuun.kernel.spi.configuration.NuunProperty;
 
 public class KernelSuite9Test
 {
@@ -82,8 +87,8 @@ public class KernelSuite9Test
     {
         underTest = createKernel(
 
-        newKernelConfiguration().rootPackages("io.nuun.kernel.core.test_topo") //
-                .withoutSpiPluginsLoader().plugins(new TopologyPlugin()));
+                newKernelConfiguration().rootPackages("io.nuun.kernel.core.test_topo") //
+                        .withoutSpiPluginsLoader().plugins(new TopologyPlugin()));
 
         underTest.init();
         underTest.start();
@@ -275,7 +280,7 @@ public class KernelSuite9Test
                 Matcher<Method> methodMatcher = new PredicateMatcherAdapter<Method>(new MethodPredicate());
 
                 bindInterceptor(classMatcher, methodMatcher, new MethodInterceptor[] {
-                    new MyMethodInterceptor()
+                        new MyMethodInterceptor()
                 });
 
             }
@@ -388,6 +393,50 @@ public class KernelSuite9Test
         {
 
         }
+
+    }
+
+    @Test
+    public void basic()
+    {
+        Module module1 = new AbstractModule()
+        {
+            @Override
+            protected void configure()
+            {
+                MapBinder<String, String> mapBinder = MapBinder.newMapBinder(binder(), String.class, String.class);
+                mapBinder.addBinding("foo").toInstance("foo1");
+
+                Multibinder<String> setBinder = Multibinder.newSetBinder(binder(), String.class);
+                setBinder.addBinding().toInstance("zob1");
+            }
+        };
+
+        Module module2 = new AbstractModule()
+        {
+            @Override
+            protected void configure()
+            {
+                MapBinder<String, String> mapBinder = MapBinder.newMapBinder(binder(), String.class, String.class);
+                mapBinder.addBinding("foo2").toInstance("foo2");
+
+                Multibinder<String> setBinder = Multibinder.newSetBinder(binder(), String.class);
+                setBinder.addBinding().toInstance("zob2");
+            }
+        };
+
+        Injector injector = Guice.createInjector(Modules.override(module1).with(module2));
+        Map<String, String> m = injector.getInstance(Key.get(new TypeLiteral<Map<String, String>>()
+        {
+        }));
+
+        assertThat(m).hasSize(2).containsOnlyKeys("foo", "foo2");
+
+        Set<String> set = injector.getInstance(Key.get(new TypeLiteral<Set<String>>()
+        {
+        }));
+
+        assertThat(set).hasSize(2).containsExactly("zob2", "zob1");
 
     }
 

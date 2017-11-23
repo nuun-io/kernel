@@ -208,7 +208,7 @@ class TopologyDefinitionCore implements TopologyDefinition
     private Type[] genericClass(Type childClass)
     {
         ParameterizedType type = (ParameterizedType) childClass;
-        
+
         return type.getActualTypeArguments();
 
     }
@@ -355,7 +355,7 @@ class TopologyDefinitionCore implements TopologyDefinition
         if (kind == MultiKind.SET || kind == MultiKind.LIST)
         {
             Type[] collectionOf = genericClass(keyType);
-            return Optional.of(new MultiBinding(collectionOf[0], kind));
+            return Optional.of(new MultiBinding(typeLiteral(collectionOf[0]), kind));
         }
         else if (kind == MultiKind.MAP)
         {
@@ -364,9 +364,10 @@ class TopologyDefinitionCore implements TopologyDefinition
                 throw new KernelException(
                         "Topology %s field %s : @Multi.value() must be set.", candidate.getDeclaringClass().getSimpleName(), candidate.getName());
             }
+
             Type[] mapOf = genericClass(keyType);
 
-            return Optional.of(new MultiBinding(mapOf[0], mapOf[1], kind, multi.value()));
+            return Optional.of(new MultiBinding(typeLiteral(mapOf[0]), typeLiteral(mapOf[1]), kind, multi.value()));
         }
 
         return Optional.empty();

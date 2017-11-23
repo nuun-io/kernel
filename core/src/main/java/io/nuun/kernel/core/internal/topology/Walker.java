@@ -17,10 +17,15 @@
 package io.nuun.kernel.core.internal.topology;
 
 import java.lang.annotation.Annotation;
+import java.util.function.Function;
 
 import com.google.inject.TypeLiteral;
 
-@SuppressWarnings({"rawtypes"})
+import io.nuun.kernel.spi.topology.binding.MultiBinding.MultiKind;
+
+@SuppressWarnings({
+        "rawtypes"
+})
 public interface Walker
 {
     void bindInstance(TypeLiteral typeLiteral, Annotation qualifierAnno, Object injected);
@@ -40,5 +45,7 @@ public interface Walker
     void bindProvider(TypeLiteral typeLiteral, Class<?> injected);
 
     void bindInterceptor(Class<?> classPredicate, Class<?> methodPredicate, Class<?> methodInterceptor);
+
+    void bindMulti(TypeLiteral keyTypeLiteral, TypeLiteral valueTypeLiteral, MultiKind kind, Class<? extends Function<?, ?>> keyResolver);
 
 }

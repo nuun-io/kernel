@@ -17,11 +17,16 @@
 package io.nuun.kernel.core.internal.topology;
 
 import java.lang.annotation.Annotation;
+import java.util.function.Function;
 
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 
-@SuppressWarnings({"unchecked" , "rawtypes"})
+import io.nuun.kernel.spi.topology.binding.MultiBinding.MultiKind;
+
+@SuppressWarnings({
+        "unchecked", "rawtypes"
+})
 public class BindingInfoWalker implements Walker
 {
 
@@ -94,6 +99,13 @@ public class BindingInfoWalker implements Walker
     private void updateBindingInfo(TypeLiteral typeLiteral)
     {
         bindingInfos.put(Key.get(typeLiteral), BindingInfo.IS_BOUND);
+    }
+
+    @Override
+    public void bindMulti(TypeLiteral keyTypeLiteral, TypeLiteral valueTypeLiteral, MultiKind kind, Class<? extends Function<?, ?>> keyResolver)
+    {
+        // TODO Auto-generated method stub
+
     }
 
 }

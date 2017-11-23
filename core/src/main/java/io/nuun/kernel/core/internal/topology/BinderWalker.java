@@ -16,12 +16,10 @@
  */
 package io.nuun.kernel.core.internal.topology;
 
-import io.nuun.kernel.core.KernelException;
-import io.nuun.kernel.core.internal.topology.TopologyModule.PredicateMatcherAdapter;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.aopalliance.intercept.MethodInterceptor;
@@ -32,7 +30,13 @@ import com.google.inject.Binder;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matcher;
 
-@SuppressWarnings({"unchecked" , "rawtypes"})
+import io.nuun.kernel.core.KernelException;
+import io.nuun.kernel.core.internal.topology.TopologyModule.PredicateMatcherAdapter;
+import io.nuun.kernel.spi.topology.binding.MultiBinding.MultiKind;
+
+@SuppressWarnings({
+        "unchecked", "rawtypes"
+})
 public class BinderWalker implements Walker
 {
     private Logger       logger = LoggerFactory.getLogger(BinderWalker.class);
@@ -49,7 +53,7 @@ public class BinderWalker implements Walker
         return this.binder;
     }
 
-	@Override
+    @Override
     public void bindInstance(TypeLiteral typeLiteral, Annotation qualifierAnno, Object injected)
     {
         this.binder().bind(typeLiteral).annotatedWith(qualifierAnno).toInstance(injected);
@@ -109,7 +113,7 @@ public class BinderWalker implements Walker
         logger.trace("Bound {} to {}", typeLiteral.getRawType().getSimpleName(), injected);
     }
 
-	@Override
+    @Override
     public void bindInterceptor(Class<?> bindingClassPredicate, Class<?> bindingMethodPredicate, Class<?> bindingMethodInterceptor)
     {
         // Class
@@ -150,12 +154,12 @@ public class BinderWalker implements Walker
             throw new KernelException("InterceptorBinding : methodInterceptor is null.");
         }
         this.binder().bindInterceptor(classMatcher, methodMatcher, new MethodInterceptor[] {
-            methodInterceptor
+                methodInterceptor
         });
         logger.trace("Bound {} to {} and {}", bindingMethodInterceptor.getName(), bindingClassPredicate.getName(), bindingMethodPredicate.getName());
     }
-    
-    public static <T> Optional<T> newInstance(Class<T> candidate)
+
+    private <T> Optional<T> newInstance(Class<T> candidate)
     {
         try
         {
@@ -165,6 +169,12 @@ public class BinderWalker implements Walker
         {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public void bindMulti(TypeLiteral keyTypeLiteral, TypeLiteral valueTypeLiteral, MultiKind kind, Class<? extends Function<?, ?>> keyResolver)
+    {
+
     }
 
 }

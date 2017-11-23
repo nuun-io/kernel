@@ -37,6 +37,7 @@ import io.nuun.kernel.core.AbstractPlugin;
 import io.nuun.kernel.spi.topology.TopologyDefinition;
 import io.nuun.kernel.spi.topology.binding.Binding;
 import io.nuun.kernel.spi.topology.binding.InjectionBinding;
+import io.nuun.kernel.spi.topology.binding.MultiBinding;
 import io.nuun.kernel.spi.topology.binding.NullableBinding;
 
 public class TopologyPlugin extends AbstractPlugin
@@ -48,6 +49,7 @@ public class TopologyPlugin extends AbstractPlugin
 
     private List<Binding>      bindings;
     private List<Binding>      overridingBindings;
+    private List<MultiBinding> multiBindings;
 
     private BindingInfos       bindingInfos       = new BindingInfos();
     private List<Key>          nullableKeys;
@@ -69,6 +71,7 @@ public class TopologyPlugin extends AbstractPlugin
 
         bindings = new ArrayList<>();
         overridingBindings = new ArrayList<>();
+        multiBindings = new ArrayList<>();
         nullableKeys = new ArrayList<>();
         optionalKeys = new ArrayList<>();
         keys = new ArrayList<>();
@@ -91,7 +94,27 @@ public class TopologyPlugin extends AbstractPlugin
 
         this.nullableKeys.removeAll(this.keys);
 
-        return InitState.INITIALIZED;
+        multiBindings.addAll(
+                bindings.stream() //
+                        .filter(b -> b instanceof MultiBinding) //
+                        .map(b -> MultiBinding.class.cast(b)) //
+                        .collect(Collectors.toList()));
+
+        multiBindings.addAll(
+                overridingBindings.stream() //
+                        .filter(b -> b instanceof MultiBinding) //
+                        .map(b -> MultiBinding.class.cast(b)) //
+                        .collect(Collectors.toList()));
+
+        if (multiBindings.size() == 0)
+        {
+            return InitState.INITIALIZED;
+        }
+        else
+        {
+            return InitState.NON_INITIALIZED;
+        }
+
     }
 
     private void collectBindingsMetadata(Binding binding)
@@ -128,7 +151,19 @@ public class TopologyPlugin extends AbstractPlugin
     @Override
     public Collection<ClasspathScanRequest> classpathScanRequests()
     {
-        return classpathScanRequestBuilder().predicate(TopologyPredicate.INSTANCE).build();
+        if (this.round.isFirst())
+        {
+            return classpathScanRequestBuilder().predicate(TopologyPredicate.INSTANCE).build();
+        }
+        else
+        {
+            for (MultiBinding mb : multiBindings)
+            {
+                // construct classpath scan builder with a preditac
+                oijoio
+            }
+            return classpathScanRequestBuilder().predicate(TopologyPredicate.INSTANCE).build();
+        }
     }
 
     @Override
