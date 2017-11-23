@@ -24,6 +24,7 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Optional;
@@ -204,29 +205,12 @@ class TopologyDefinitionCore implements TopologyDefinition
         return TypeResolver.resolveRawArguments(TypeResolver.resolveGenericType(parentClass, childClass), childClass)[childIndex];
     }
 
-    private Class<?> genericClass(MultiKind kind, Type childClass)
+    private Type[] genericClass(Type childClass)
     {
-        Class<?> out = null;
-        switch (kind)
-        {
-            case SET:
-            case LIST:
+        ParameterizedType type = (ParameterizedType) childClass;
+        
+        return type.getActualTypeArguments();
 
-                break;
-
-            default:
-                break;
-        }
-        if (kind.equals(Map.class))
-        {
-
-        }
-        else
-        {
-
-        }
-
-        return out;
     }
 
     @Override
@@ -368,15 +352,10 @@ class TopologyDefinitionCore implements TopologyDefinition
             keyType = f.getGenericType();
         }
 
-        if (kind == MultiKind.SET)
+        if (kind == MultiKind.SET || kind == MultiKind.LIST)
         {
-            Class<?> setOf = genericClass(kind, keyType);
-            return Optional.of(new MultiBinding(setOf, kind));
-        }
-        if (kind == MultiKind.LIST)
-        {
-            Class<?> listOf = genericClass(kind, keyType);
-            return Optional.of(new MultiBinding(listOf, kind));
+            Type[] collectionOf = genericClass(keyType);
+            return Optional.of(new MultiBinding(collectionOf[0], kind));
         }
         else if (kind == MultiKind.MAP)
         {
@@ -385,9 +364,9 @@ class TopologyDefinitionCore implements TopologyDefinition
                 throw new KernelException(
                         "Topology %s field %s : @Multi.value() must be set.", candidate.getDeclaringClass().getSimpleName(), candidate.getName());
             }
-            Class<?> mapOf = genericClass(kind, keyType);
+            Type[] mapOf = genericClass(keyType);
 
-            return Optional.of(new MultiBinding(mapOf, kind, multi.value()));
+            return Optional.of(new MultiBinding(mapOf[0], mapOf[1], kind, multi.value()));
         }
 
         return Optional.empty();

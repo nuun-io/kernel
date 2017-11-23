@@ -26,6 +26,7 @@ import io.nuun.kernel.spi.topology.binding.BindingKey;
 import io.nuun.kernel.spi.topology.binding.InstanceBinding;
 import io.nuun.kernel.spi.topology.binding.InterceptorBinding;
 import io.nuun.kernel.spi.topology.binding.LinkedBinding;
+import io.nuun.kernel.spi.topology.binding.MultiBinding;
 import io.nuun.kernel.spi.topology.binding.ProviderBinding;
 
 public class Walk
@@ -93,7 +94,13 @@ public class Walk
             InterceptorBinding pb = InterceptorBinding.class.cast(binding);
 
             walker.bindInterceptor(pb.classPredicate, pb.methodPredicate, pb.methodInterceptor);
+        }        
+        else if (MultiBinding.class.getSimpleName().equals(binding.name())) 
+        {
+        	MultiBinding mb = MultiBinding.class.cast(binding);
+        	walker.bindMulti(mb.key , mb.value , mb.kind , mb.keyResolver  );
         }
+        
     }
 
     private TypeLiteral typeLiteral(Object key)

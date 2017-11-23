@@ -23,21 +23,25 @@ public class MultiBinding extends MetaBinding
 
     public final MultiKind                       kind;
     public final Class<? extends Function<?, ?>> keyResolver;
+	public final Object value;
 
     public MultiBinding(Object key, MultiKind kind)
     {
         super(key);
         this.kind = kind;
+        this.value = null;
         this.keyResolver = null;
     }
 
-    public MultiBinding(Object key, MultiKind kind, Class<? extends Function<?, ?>> keyResolver)
+    public MultiBinding(Object keyKey, Object keyValue , MultiKind kind, Class<? extends Function<?, ?>> keyResolver)
     {
-        super(key);
+        super(keyKey);
+		this.value = keyValue;
         this.kind = kind;
         this.keyResolver = keyResolver;
-    }
+    }    
 
+    
     public static enum MultiKind
     {
         LIST, SET, MAP, NONE

@@ -20,7 +20,7 @@ import java.lang.annotation.Annotation;
 
 import com.google.inject.TypeLiteral;
 
-@SuppressWarnings({"unchecked" , "rawtypes"})
+@SuppressWarnings({"rawtypes"})
 public interface Walker
 {
     void bindInstance(TypeLiteral typeLiteral, Annotation qualifierAnno, Object injected);
