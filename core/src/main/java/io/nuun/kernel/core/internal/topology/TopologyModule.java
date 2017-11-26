@@ -18,6 +18,8 @@ package io.nuun.kernel.core.internal.topology;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.slf4j.Logger;
@@ -25,11 +27,17 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.AbstractMatcher;
+import com.google.inject.multibindings.MapBinder;
+import com.google.inject.multibindings.Multibinder;
 import com.google.inject.multibindings.OptionalBinder;
 import com.google.inject.util.Providers;
 
+import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.spi.topology.binding.Binding;
+import io.nuun.kernel.spi.topology.binding.MultiBinding;
+import io.nuun.kernel.spi.topology.binding.MultiBinding.MultiKind;
 import io.nuun.kernel.spi.topology.binding.NullableBinding;
 
 public class TopologyModule extends AbstractModule
@@ -38,26 +46,63 @@ public class TopologyModule extends AbstractModule
 
     private final Collection<Binding> bindings;
 
-    private final Collection<Key>     nullableKeys;
+    private final Collection<Key<?>>  nullableKeys;
 
-    private final Collection<Key>     optionalKeys;
+    private final Collection<Key<?>>  optionalKeys;
 
     private Walk                      walk;
 
-    @SuppressWarnings("rawtypes")
-    public TopologyModule(Collection<Binding> bindings, Collection<Key> nullableKeys, Collection<Key> optionalKeys)
+    private Set<MultiBinding>         multiBindings;
+
+    public TopologyModule(Collection<Binding> bindings, Collection<Key<?>> nullableKeys, Collection<Key<?>> optionalKeys, Set<MultiBinding> multiBindings)
     {
         this.bindings = bindings;
         this.nullableKeys = nullableKeys;
         this.optionalKeys = optionalKeys;
+        this.multiBindings = multiBindings;
+        this.walk = new Walk(new BinderWalker(this.binder()));
     }
 
     @Override
     protected void configure()
     {
-        this.walk = new Walk(new BinderWalker(this.binder()));
         bindings.stream().filter(this::isNotNullable).forEach(walk::walk);
         configureNullableAndOptionals();
+        configureMultiBindings();
+    }
+
+    private void configureMultiBindings()
+    {
+        multiBindings.stream().forEach(this::configureMultiBinding);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void configureMultiBinding(MultiBinding mb)
+    {
+        if (mb.kind == MultiKind.SET)
+        {
+            Multibinder<Object> multiBinder = Multibinder.newSetBinder(binder(), (TypeLiteral<Object>) mb.key);
+
+            mb.classes.stream().forEach(multiBinder.addBinding()::to);
+
+        }
+        else if (mb.kind == MultiKind.MAP)
+        {
+            MapBinder<Object, Object> mapBinder = MapBinder.newMapBinder(binder(), (TypeLiteral<Object>) mb.key, (TypeLiteral<Object>) mb.keyKey);
+
+            Function function;
+            try
+            {
+                function = mb.keyResolver.newInstance();
+
+                mb.classes.stream().forEach(cc -> mapBinder.addBinding(function.apply(cc)).to(cc));
+            }
+            catch (InstantiationException | IllegalAccessException e)
+            {
+                throw new KernelException("Error When instanciating %s .", e, mb.keyResolver.getName());
+            }
+
+        }
     }
 
     private void configureNullableAndOptionals()

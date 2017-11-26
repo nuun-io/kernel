@@ -16,6 +16,7 @@
  */
 package io.nuun.kernel.spi.topology.binding;
 
+import java.util.Collection;
 import java.util.function.Function;
 
 public class MultiBinding extends MetaBinding
@@ -23,27 +24,61 @@ public class MultiBinding extends MetaBinding
 
     public final MultiKind                       kind;
     public final Class<? extends Function<?, ?>> keyResolver;
-	public final Object value;
+    public final Object                          keyKey;
+    //
+    public Collection<Class<?>>                  classes;
 
     public MultiBinding(Object key, MultiKind kind)
     {
         super(key);
         this.kind = kind;
-        this.value = null;
+        this.keyKey = null;
         this.keyResolver = null;
     }
 
-    public MultiBinding(Object keyKey, Object keyValue , MultiKind kind, Class<? extends Function<?, ?>> keyResolver)
+    public MultiBinding(Object key, Object keyKey, MultiKind kind, Class<? extends Function<?, ?>> keyResolver)
     {
-        super(keyKey);
-		this.value = keyValue;
+        super(key);
+        this.keyKey = keyKey;
         this.kind = kind;
         this.keyResolver = keyResolver;
-    }    
+    }
 
-    
     public static enum MultiKind
     {
-        LIST, SET, MAP, NONE
+        SET, MAP, NONE
     }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((kind == null) ? 0 : kind.hashCode());
+        result = prime * result + ((keyKey == null) ? 0 : keyKey.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        MultiBinding other = (MultiBinding) obj;
+        if (kind != other.kind)
+            return false;
+        if (keyKey == null)
+        {
+            if (other.keyKey != null)
+                return false;
+        }
+        else if (!keyKey.equals(other.keyKey))
+            return false;
+        return true;
+    }
+
 }

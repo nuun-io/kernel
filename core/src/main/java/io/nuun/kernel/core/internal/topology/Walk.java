@@ -98,7 +98,7 @@ public class Walk
         else if (MultiBinding.class.getSimpleName().equals(binding.name()))
         {
             MultiBinding mb = MultiBinding.class.cast(binding);
-            walker.bindMulti(typeLiteral(mb.key), typeLiteral(mb.value), mb.kind, mb.keyResolver);
+            walker.bindMulti(typeLiteral(mb.key), typeLiteral(mb.keyKey), mb.kind, mb.keyResolver);
         }
 
     }

@@ -18,7 +18,6 @@ package io.nuun.kernel.core.internal.topology;
 
 import static java.util.Arrays.stream;
 
-import java.awt.List;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
@@ -352,7 +351,7 @@ class TopologyDefinitionCore implements TopologyDefinition
             keyType = f.getGenericType();
         }
 
-        if (kind == MultiKind.SET || kind == MultiKind.LIST)
+        if (kind == MultiKind.SET)
         {
             Type[] collectionOf = genericClass(keyType);
             return Optional.of(new MultiBinding(typeLiteral(collectionOf[0]), kind));
@@ -367,7 +366,7 @@ class TopologyDefinitionCore implements TopologyDefinition
 
             Type[] mapOf = genericClass(keyType);
 
-            return Optional.of(new MultiBinding(typeLiteral(mapOf[0]), typeLiteral(mapOf[1]), kind, multi.value()));
+            return Optional.of(new MultiBinding(typeLiteral(mapOf[1]), typeLiteral(mapOf[0]), kind, multi.value()));
         }
 
         return Optional.empty();
@@ -392,15 +391,11 @@ class TopologyDefinitionCore implements TopologyDefinition
             type = m.getReturnType();
         }
 
-        if (type.isAssignableFrom(List.class))
-        {
-            return MultiKind.LIST;
-        }
-        if (type.isAssignableFrom(Set.class))
+        if (Set.class.isAssignableFrom(type))
         {
             return MultiKind.SET;
         }
-        if (type.isAssignableFrom(Map.class))
+        if (Map.class.isAssignableFrom(type))
         {
             return MultiKind.MAP;
         }
