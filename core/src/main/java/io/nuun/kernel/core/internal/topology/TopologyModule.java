@@ -91,14 +91,21 @@ public class TopologyModule extends AbstractModule
         }
         else if (mb.kind == MultiKind.MAP)
         {
-            MapBinder<Object, Object> mapBinder = MapBinder.newMapBinder(binder(), (TypeLiteral<Object>) mb.key, (TypeLiteral<Object>) mb.keyKey);
+            MapBinder<Object, Object> mapBinder = MapBinder.newMapBinder(binder(), (TypeLiteral<Object>) mb.keyKey, (TypeLiteral<Object>) mb.key);
 
             Function<Class<?>, ?> function;
             try
             {
                 function = (Function<Class<?>, ?>) mb.keyResolver.newInstance();
-
-                mb.classes.stream().forEach(cc -> mapBinder.addBinding(function.apply(cc)).to(cc));
+                logger.info("mb.classes = " + mb.classes);
+                mb.classes.stream().forEach(cc -> 
+                {
+                	Object applied = function.apply(cc);
+                	logger.info("applied = " + applied);
+                	logger.info("cc      = " + cc);
+                	
+                	mapBinder.addBinding(applied).to(cc); 
+                });
             }
             catch (InstantiationException | IllegalAccessException e)
             {

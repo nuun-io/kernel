@@ -400,11 +400,13 @@ public class KernelSuite9Test
     @Test
     public void multiBinding()
     {
-        Map<MyCommand2, String> command2Maps = (Map<MyCommand2, String>) injector.getInstance(Key.get(new TypeLiteral<Map<MyCommand2, String>>()
+        Map<String,MyCommand2> command2Maps = (Map<String,MyCommand2>) injector.getInstance(Key.get(new TypeLiteral<Map<String,MyCommand2>>()
         {
         }));
 
         assertThat(command2Maps).isNotNull();
+        
+        System.out.println("=> " + command2Maps);
 
     }
 
