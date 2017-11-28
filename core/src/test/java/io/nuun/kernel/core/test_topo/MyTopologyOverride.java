@@ -26,4 +26,7 @@ public interface MyTopologyOverride
     Integer theAnswer = 42;
 
     MyServiceImplOver injects(MyService key);
+
+    // @Multi
+    // Set<MyCommand2> command2Set();
 }

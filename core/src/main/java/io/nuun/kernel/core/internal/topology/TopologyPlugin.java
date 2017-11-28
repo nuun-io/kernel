@@ -78,10 +78,12 @@ public class TopologyPlugin extends AbstractPlugin
     {
         if (this.round.isFirst())
         {
+            logger.debug("First Round.");
             return classpathScanRequestBuilder().predicate(TopologyPredicate.INSTANCE).build();
         }
         else // second round if any
         {
+            logger.debug("Second Round.");
             ClasspathScanRequestBuilder builder = classpathScanRequestBuilder();
             for (MultiBinding mb : multiBindings)
             {

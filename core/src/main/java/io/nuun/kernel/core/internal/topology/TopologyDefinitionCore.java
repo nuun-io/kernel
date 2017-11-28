@@ -61,7 +61,7 @@ class TopologyDefinitionCore implements TopologyDefinition
     @Override
     public Optional<InterceptorBinding> interceptorBinding(Member candidate)
     {
-
+        logger.debug("Starting interceptorBinding.");
         if (Method.class.equals(candidate.getClass()) && candidate.getName().startsWith("intercepts"))
         {
             Method m = (Method) candidate;
@@ -93,7 +93,7 @@ class TopologyDefinitionCore implements TopologyDefinition
     @Override
     public Optional<ProviderBinding> providerBinding(Member candidate)
     {
-
+        logger.debug("Starting providerBinding.");
         if (Method.class.equals(candidate.getClass()) && candidate.getName().startsWith("provides"))
         {
             Method m = (Method) candidate;
@@ -216,6 +216,8 @@ class TopologyDefinitionCore implements TopologyDefinition
     public Optional<LinkedBinding> linkedBinding(Member candidate)
     {
 
+        logger.debug("Starting linkedBinding.");
+
         if (Method.class.equals(candidate.getClass()))
         {
             Method m = (Method) candidate;
@@ -245,6 +247,7 @@ class TopologyDefinitionCore implements TopologyDefinition
     @Override
     public Optional<MultiBinding> multiBinding(Member candidate)
     {
+        logger.debug("Starting multinBinding.");
 
         Boolean isMulti = ((AccessibleObject) candidate).isAnnotationPresent(Multi.class);
 
@@ -260,6 +263,7 @@ class TopologyDefinitionCore implements TopologyDefinition
     @Override
     public Optional<InstanceBinding> instanceBinding(Member candidate)
     {
+        logger.debug("Starting instanceBinding.");
         if (Field.class.equals(candidate.getClass()))
         {
             Field f = Field.class.cast(candidate);
@@ -304,7 +308,7 @@ class TopologyDefinitionCore implements TopologyDefinition
     @Override
     public Optional<NullableBinding> nullableBinding(Member candidate)
     {
-
+        logger.debug("Starting nullableBinding.");
         if (Field.class.equals(candidate.getClass()))
         {
             Field f = Field.class.cast(candidate);

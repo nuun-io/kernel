@@ -34,7 +34,7 @@ public class BindingInfos
     {
         multimap = MultimapBuilder
 
-        .hashKeys().enumSetValues(BindingInfo.class).build();
+                .hashKeys().enumSetValues(BindingInfo.class).build();
     }
 
     public void put(Key<?> key, BindingInfo info)
@@ -52,7 +52,7 @@ public class BindingInfos
         return multimap.containsEntry(key, info);
     }
 
-    public List<Key> keys(BindingInfo bindingInfo)
+    public List<Key<?>> keys(BindingInfo bindingInfo)
     {
         return multimap.entries().stream().filter(e -> e.getValue().equals(bindingInfo)).map(Map.Entry::getKey).collect(Collectors.toList());
     }

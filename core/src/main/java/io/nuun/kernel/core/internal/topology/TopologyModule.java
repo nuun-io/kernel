@@ -60,14 +60,17 @@ public class TopologyModule extends AbstractModule
         this.nullableKeys = nullableKeys;
         this.optionalKeys = optionalKeys;
         this.multiBindings = multiBindings;
-        this.walk = new Walk(new BinderWalker(this.binder()));
     }
 
     @Override
     protected void configure()
     {
+        this.walk = new Walk(new BinderWalker(this.binder()));
+        logger.debug("Launching walk.");
         bindings.stream().filter(this::isNotNullable).forEach(walk::walk);
+        logger.debug("Configuring Nullable and Optional.");
         configureNullableAndOptionals();
+        logger.debug("Configuring Multibinding.");
         configureMultiBindings();
     }
 
@@ -90,10 +93,10 @@ public class TopologyModule extends AbstractModule
         {
             MapBinder<Object, Object> mapBinder = MapBinder.newMapBinder(binder(), (TypeLiteral<Object>) mb.key, (TypeLiteral<Object>) mb.keyKey);
 
-            Function function;
+            Function<Class<?>, ?> function;
             try
             {
-                function = mb.keyResolver.newInstance();
+                function = (Function<Class<?>, ?>) mb.keyResolver.newInstance();
 
                 mb.classes.stream().forEach(cc -> mapBinder.addBinding(function.apply(cc)).to(cc));
             }
@@ -101,7 +104,6 @@ public class TopologyModule extends AbstractModule
             {
                 throw new KernelException("Error When instanciating %s .", e, mb.keyResolver.getName());
             }
-
         }
     }
 

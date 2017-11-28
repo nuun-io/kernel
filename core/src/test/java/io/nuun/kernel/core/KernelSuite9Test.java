@@ -60,6 +60,7 @@ import io.nuun.kernel.core.internal.topology.TopologyModule.PredicateMatcherAdap
 import io.nuun.kernel.core.internal.topology.TopologyPlugin;
 import io.nuun.kernel.core.test_topo.ClassePredicate;
 import io.nuun.kernel.core.test_topo.MethodPredicate;
+import io.nuun.kernel.core.test_topo.MyCommand2;
 import io.nuun.kernel.core.test_topo.MyService3;
 import io.nuun.kernel.core.test_topo.MyService3Sample;
 import io.nuun.kernel.core.test_topo.sample.MyMethodInterceptor;
@@ -393,6 +394,17 @@ public class KernelSuite9Test
         {
 
         }
+
+    }
+
+    @Test
+    public void multiBinding()
+    {
+        Map<MyCommand2, String> command2Maps = (Map<MyCommand2, String>) injector.getInstance(Key.get(new TypeLiteral<Map<MyCommand2, String>>()
+        {
+        }));
+
+        assertThat(command2Maps).isNotNull();
 
     }
 

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.inject.name.Named;
 
@@ -86,11 +85,8 @@ public interface MyTopology
 
     MyMethodInterceptor intercepts(ClassePredicate pc, MethodPredicate pm);
 
-    @Multi
-    List<MyCommand1> command1List();
-
-    @Multi
-    Set<MyCommand2> command2Set();
+    // @Multi
+    // Set<MyCommand1> command1List();
 
     @Multi(MyCommand2Key.class)
     Map<String, MyCommand2> command2Maps();
