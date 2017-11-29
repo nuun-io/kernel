@@ -16,9 +16,13 @@
  */
 package io.nuun.kernel.core.test_topo;
 
+import java.util.Map;
+import java.util.Set;
+
 import io.nuun.kernel.api.annotations.Topology;
 import io.nuun.kernel.core.test_topo.sample.MyService;
 import io.nuun.kernel.core.test_topo.sample.MyServiceImplOver;
+import io.nuun.kernel.spi.topology.Multi;
 
 @Topology(overriding = true)
 public interface MyTopologyOverride
@@ -27,6 +31,10 @@ public interface MyTopologyOverride
 
     MyServiceImplOver injects(MyService key);
 
-    // @Multi
-    // Set<MyCommand2> command2Set();
+    @Multi
+    Set<MyCommand2> command2Set();
+
+    @Multi(MyCommand4Key.class)
+    Map<Long, MyCommand4> command4Maps();
+
 }

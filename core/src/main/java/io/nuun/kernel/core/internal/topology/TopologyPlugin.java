@@ -258,21 +258,21 @@ public class TopologyPlugin extends AbstractPlugin
             return this.key.getRawType().isAssignableFrom(t) && !this.key.getRawType().equals(t);
         }
 
-        @Override
-        public boolean equals(Object obj)
-        {
-            if (obj instanceof PredicateFromTypeLiteral)
-            {
-                return this.mb.equals(((PredicateFromTypeLiteral) obj).mb);
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode()
-        {
-            return this.mb.hashCode();
-        }
+        // @Override
+        // public boolean equals(Object obj)
+        // {
+        // if (obj instanceof PredicateFromTypeLiteral)
+        // {
+        // return this.mb.equals(((PredicateFromTypeLiteral) obj).mb);
+        // }
+        // return false;
+        // }
+        //
+        // @Override
+        // public int hashCode()
+        // {
+        // return this.mb.hashCode();
+        // }
     }
 
     @Override

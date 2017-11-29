@@ -60,7 +60,9 @@ import io.nuun.kernel.core.internal.topology.TopologyModule.PredicateMatcherAdap
 import io.nuun.kernel.core.internal.topology.TopologyPlugin;
 import io.nuun.kernel.core.test_topo.ClassePredicate;
 import io.nuun.kernel.core.test_topo.MethodPredicate;
+import io.nuun.kernel.core.test_topo.MyCommand1;
 import io.nuun.kernel.core.test_topo.MyCommand2;
+import io.nuun.kernel.core.test_topo.MyCommand4;
 import io.nuun.kernel.core.test_topo.MyService3;
 import io.nuun.kernel.core.test_topo.MyService3Sample;
 import io.nuun.kernel.core.test_topo.sample.MyMethodInterceptor;
@@ -400,13 +402,38 @@ public class KernelSuite9Test
     @Test
     public void multiBinding()
     {
-        Map<String,MyCommand2> command2Maps = (Map<String,MyCommand2>) injector.getInstance(Key.get(new TypeLiteral<Map<String,MyCommand2>>()
+        // Nominal Map
+        Map<String, MyCommand2> command2Maps = (Map<String, MyCommand2>) injector.getInstance(Key.get(new TypeLiteral<Map<String, MyCommand2>>()
         {
         }));
 
         assertThat(command2Maps).isNotNull();
-        
-        System.out.println("=> " + command2Maps);
+        assertThat(command2Maps).hasSize(2);
+
+        // Nominal set
+
+        Set<MyCommand2> command2s = (Set<MyCommand2>) injector.getInstance(Key.get(new TypeLiteral<Set<MyCommand2>>()
+        {
+        }));
+
+        assertThat(command2s).isNotNull();
+        assertThat(command2s).hasSize(2);
+
+        // Overriding Set
+        Set<MyCommand1> command1s = (Set<MyCommand1>) injector.getInstance(Key.get(new TypeLiteral<Set<MyCommand1>>()
+        {
+        }));
+
+        assertThat(command1s).isNotNull();
+        assertThat(command1s).hasSize(3);
+
+        // Nominal Map
+        Map<Long, MyCommand4> command4Maps = (Map<Long, MyCommand4>) injector.getInstance(Key.get(new TypeLiteral<Map<Long, MyCommand4>>()
+        {
+        }));
+
+        assertThat(command4Maps).isNotNull();
+        assertThat(command4Maps).hasSize(2);
 
     }
 
@@ -423,6 +450,9 @@ public class KernelSuite9Test
 
                 Multibinder<String> setBinder = Multibinder.newSetBinder(binder(), String.class);
                 setBinder.addBinding().toInstance("zob1");
+
+                Multibinder<Integer> setBinder2 = Multibinder.newSetBinder(binder(), Integer.class);
+                setBinder2.addBinding().toInstance(2);
             }
         };
 
@@ -436,6 +466,9 @@ public class KernelSuite9Test
 
                 Multibinder<String> setBinder = Multibinder.newSetBinder(binder(), String.class);
                 setBinder.addBinding().toInstance("zob2");
+
+                Multibinder<Integer> setBinder2 = Multibinder.newSetBinder(binder(), Integer.class);
+                setBinder2.addBinding().toInstance(1);
             }
         };
 
@@ -451,6 +484,12 @@ public class KernelSuite9Test
         }));
 
         assertThat(set).hasSize(2).containsExactly("zob2", "zob1");
+
+        Set<Integer> set2 = injector.getInstance(Key.get(new TypeLiteral<Set<Integer>>()
+        {
+        }));
+
+        assertThat(set2).hasSize(1).containsExactly(1);
 
     }
 

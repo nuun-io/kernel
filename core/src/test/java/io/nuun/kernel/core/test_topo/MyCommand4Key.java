@@ -18,12 +18,12 @@ package io.nuun.kernel.core.test_topo;
 
 import java.util.function.Function;
 
-public class MyCommand2Key implements Function<Class<MyCommand2>, String>
+public class MyCommand4Key implements Function<Class<MyCommand4>, Long>
 {
     @Override
-    public String apply(Class<MyCommand2> t)
+    public Long apply(Class<MyCommand4> t)
     {
-        String ret = t.getSimpleName().toLowerCase();
+        long ret = t.hashCode();
         return ret;
     }
 }

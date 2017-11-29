@@ -16,14 +16,11 @@
  */
 package io.nuun.kernel.core.test_topo;
 
-import java.util.function.Function;
-
-public class MyCommand2Key implements Function<Class<MyCommand2>, String>
+public interface MyCommand4
 {
-    @Override
-    public String apply(Class<MyCommand2> t)
-    {
-        String ret = t.getSimpleName().toLowerCase();
-        return ret;
-    }
+
+    String name();
+
+    void execute(String... args);
+
 }

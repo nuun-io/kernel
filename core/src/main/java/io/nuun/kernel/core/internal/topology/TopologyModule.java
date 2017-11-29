@@ -84,9 +84,13 @@ public class TopologyModule extends AbstractModule
     {
         if (mb.kind == MultiKind.SET)
         {
-            Multibinder<Object> multiBinder = Multibinder.newSetBinder(binder(), (TypeLiteral<Object>) mb.key);
+            Multibinder multiBinder = Multibinder.newSetBinder(binder(), ((TypeLiteral) mb.key).getRawType());
 
-            mb.classes.stream().forEach(multiBinder.addBinding()::to);
+            mb.classes.stream().forEach(cc -> {
+
+                multiBinder.addBinding().to(cc);
+
+            });
 
         }
         else if (mb.kind == MultiKind.MAP)
@@ -98,13 +102,12 @@ public class TopologyModule extends AbstractModule
             {
                 function = (Function<Class<?>, ?>) mb.keyResolver.newInstance();
                 logger.info("mb.classes = " + mb.classes);
-                mb.classes.stream().forEach(cc -> 
-                {
-                	Object applied = function.apply(cc);
-                	logger.info("applied = " + applied);
-                	logger.info("cc      = " + cc);
-                	
-                	mapBinder.addBinding(applied).to(cc); 
+                mb.classes.stream().forEach(cc -> {
+                    Object applied = function.apply(cc);
+                    logger.info("applied = " + applied);
+                    logger.info("cc      = " + cc);
+
+                    mapBinder.addBinding(applied).to(cc);
                 });
             }
             catch (InstantiationException | IllegalAccessException e)

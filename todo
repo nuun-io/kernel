@@ -45,18 +45,18 @@
   |                                      |    |                                                 |
   +--------------------------------------+----+-------------------------------------------------+
   
-- Multi
+- Multi OK
   ===== 
   @Multi
   Set<MyService> servicesSet;
   
   @Multi
-  List<MyService> servicesList;
+  List<MyService> servicesList; // nope 
   
   @Multi(MyServiceKey.class) // Function<MyService,String> 
   Map<String, MyService> servicesMap;
   
-- Scope
+- Scope OK
   =====
   
   Ex: 
