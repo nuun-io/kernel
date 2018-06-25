@@ -312,9 +312,7 @@ class TopologyDefinitionCore implements TopologyDefinition
         if (Field.class.equals(candidate.getClass()))
         {
             Field f = Field.class.cast(candidate);
-
             Boolean isNullable = f.isAnnotationPresent(Nullable.class);
-
             Boolean isMulti = f.isAnnotationPresent(Multi.class);
 
             if (isNullable && !isMulti)
@@ -331,9 +329,7 @@ class TopologyDefinitionCore implements TopologyDefinition
                     return Optional.of(new NullableBinding(key));
                 }
             }
-
         }
-
         return Optional.empty();
     }
 
@@ -386,12 +382,10 @@ class TopologyDefinitionCore implements TopologyDefinition
             Field f = (Field) member;
 
             type = f.getType();
-
         }
         else if (member instanceof Method)
         {
             Method m = (Method) member;
-
             type = m.getReturnType();
         }
 
@@ -399,6 +393,7 @@ class TopologyDefinitionCore implements TopologyDefinition
         {
             return MultiKind.SET;
         }
+
         if (Map.class.isAssignableFrom(type))
         {
             return MultiKind.MAP;
@@ -414,7 +409,6 @@ class TopologyDefinitionCore implements TopologyDefinition
 
     private Optional<Annotation> qualifier(AccessibleObject m)
     {
-
         return qualifier(m.getAnnotations());
     }
 

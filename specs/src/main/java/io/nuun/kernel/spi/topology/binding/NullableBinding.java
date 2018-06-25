@@ -31,4 +31,41 @@ public class NullableBinding extends MetaBinding
         super(key);
     }
 
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((key == null) ? 0 : key.hashCode());
+        result = prime * result + ((qualifierAnno == null) ? 0 : qualifierAnno.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        NullableBinding other = (NullableBinding) obj;
+        if (key == null)
+        {
+            if (other.key != null)
+                return false;
+        }
+        else if (!key.equals(other.key))
+            return false;
+        if (qualifierAnno == null)
+        {
+            if (other.qualifierAnno != null)
+                return false;
+        }
+        else if (!qualifierAnno.equals(other.qualifierAnno))
+            return false;
+        return true;
+    }
+
 }

@@ -56,12 +56,15 @@
   @Multi(MyServiceKey.class) // Function<MyService,String> 
   Map<String, MyService> servicesMap;
   
-- Scope OK
+- Scope 
   =====
   
   Ex: 
   @Singleton
   MyServiceImpl injects(MyService key);
+  
+  @NameScoped
+  String name ();
   
 - Concerns
   ========

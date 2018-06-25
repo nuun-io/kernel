@@ -489,7 +489,7 @@ public class KernelSuite9Test
         {
         }));
 
-        assertThat(set2).hasSize(1).containsExactly(1);
+        assertThat(set2).hasSize(2).containsExactly(1, 2);
 
     }
 
