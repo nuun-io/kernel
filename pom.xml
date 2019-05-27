@@ -66,7 +66,7 @@
         <license-check.skip>false</license-check.skip>
         <license-check.fail>true</license-check.fail>
         <license-header-check.skip>false</license-header-check.skip>
-        <mycila.license-maven-plugin.version>2.10</mycila.license-maven-plugin.version>
+        <mycila.license-maven-plugin.version>3.0</mycila.license-maven-plugin.version>
 
         <!-- Bintray properties -->
         <bintray.org>kametic</bintray.org>
