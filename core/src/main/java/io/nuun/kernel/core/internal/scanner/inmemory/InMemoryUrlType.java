@@ -24,7 +24,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.reflections.vfs.Vfs;
 import org.reflections.vfs.Vfs.Dir;
 import org.reflections.vfs.Vfs.File;
 import org.reflections.vfs.Vfs.UrlType;
@@ -59,7 +58,7 @@ public class InMemoryUrlType implements UrlType
 	
 	class InMemoryVfsDir implements Dir
 	{
-		InMemoryMultiThreadClasspath classpath = InMemoryMultiThreadClasspath.INSTANCE;
+		InMemoryClasspath classpath = InMemoryClasspath.INSTANCE;
 		private String path;
 
 		public InMemoryVfsDir(String path)
@@ -81,7 +80,7 @@ public class InMemoryUrlType implements UrlType
 			// TODO ne renvoyer que l'entry de l'url donné en paramêtre
 			
 			List<File> files = new ArrayList<>();
-		    
+
 			for ( ClasspathAbstractElement<?> entry : classpath.entry(path).entries() )
 			{
 				if (entry instanceof ClasspathClass)

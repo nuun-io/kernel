@@ -49,6 +49,7 @@ import java.util.function.Predicate;
 
 import static io.nuun.kernel.api.config.KernelOptions.CLASSPATH_SCAN_MODE;
 import static io.nuun.kernel.api.config.KernelOptions.PRINT_SCAN_WARN;
+import static io.nuun.kernel.api.config.KernelOptions.THREAD_COUNT;
 import static io.nuun.kernel.core.internal.utils.NuunReflectionUtils.instantiateOrFail;
 import static java.util.Collections.unmodifiableMap;
 
@@ -236,7 +237,7 @@ public class RequestHandler extends ScanResults
     private void initScanner()
     {
         printWarnWhenScanningAllClasspath();
-        ClasspathScannerFactory classpathScannerFactory = new ClasspathScannerFactory(options.get(CLASSPATH_SCAN_MODE));
+        ClasspathScannerFactory classpathScannerFactory = new ClasspathScannerFactory(options.get(CLASSPATH_SCAN_MODE), options.get(THREAD_COUNT));
         classpathScanner = classpathScannerFactory.create(classpathStrategy, additionalClasspathScan, packageRoots);
         addUrls(classpathScanner.getUrls());
     }

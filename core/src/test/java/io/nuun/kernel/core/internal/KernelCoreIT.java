@@ -32,8 +32,15 @@
  */
 package io.nuun.kernel.core.internal;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+
 import com.google.common.collect.Lists;
-import com.google.inject.*;
+import com.google.inject.AbstractModule;
+import com.google.inject.ConfigurationException;
+import com.google.inject.CreationException;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 import com.google.inject.matcher.Matchers;
 import io.nuun.kernel.api.Kernel;
 import io.nuun.kernel.api.Plugin;
@@ -41,14 +48,27 @@ import io.nuun.kernel.api.config.KernelConfiguration;
 import io.nuun.kernel.core.AbstractPlugin;
 import io.nuun.kernel.core.KernelException;
 import io.nuun.kernel.core.NuunCore;
-import io.nuun.kernel.core.internal.scanner.sample.*;
+import io.nuun.kernel.core.internal.scanner.sample.DummyMethod;
+import io.nuun.kernel.core.internal.scanner.sample.HolderForBeanWithParentType;
+import io.nuun.kernel.core.internal.scanner.sample.HolderForContext;
+import io.nuun.kernel.core.internal.scanner.sample.HolderForInterface;
+import io.nuun.kernel.core.internal.scanner.sample.HolderForPlugin;
+import io.nuun.kernel.core.internal.scanner.sample.HolderForPrefixWithName;
+import io.nuun.kernel.core.internal.scanner.sample.ModuleInError;
+import io.nuun.kernel.core.internal.scanner.sample.ModuleInterface;
 import io.nuun.kernel.core.pluginsit.dummy1.DummyPlugin;
 import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin2;
 import io.nuun.kernel.core.pluginsit.dummy23.DummyPlugin3;
 import io.nuun.kernel.core.pluginsit.dummy4.DummyPlugin4;
 import io.nuun.kernel.core.pluginsit.dummy4.Pojo1;
 import io.nuun.kernel.core.pluginsit.dummy4.Pojo2;
-import io.nuun.kernel.core.pluginsit.dummy5.*;
+import io.nuun.kernel.core.pluginsit.dummy5.DescendantFromClass;
+import io.nuun.kernel.core.pluginsit.dummy5.DummyPlugin5;
+import io.nuun.kernel.core.pluginsit.dummy5.ParentClass;
+import io.nuun.kernel.core.pluginsit.dummy5.ToFind;
+import io.nuun.kernel.core.pluginsit.dummy5.ToFind2;
+import java.util.ArrayList;
+import java.util.Collection;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.AfterClass;
@@ -58,12 +78,6 @@ import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collection;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
 
 /**
  * @author Epo Jemba

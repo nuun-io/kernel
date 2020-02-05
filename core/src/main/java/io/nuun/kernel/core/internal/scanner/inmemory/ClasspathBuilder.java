@@ -31,7 +31,7 @@ import java.util.Map;
 public abstract class ClasspathBuilder
 {
 
-    private InMemoryMultiThreadClasspath globalClasspath = InMemoryMultiThreadClasspath.INSTANCE;
+    private InMemoryClasspath globalClasspath = InMemoryClasspath.INSTANCE;
     private final Map<String, ClasspathAbstractContainer<?>> entries;
     protected ClasspathAbstractContainer<?>                  currentContainer = null;
 

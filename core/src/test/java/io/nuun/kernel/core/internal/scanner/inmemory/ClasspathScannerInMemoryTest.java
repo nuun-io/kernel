@@ -31,7 +31,7 @@ import static io.nuun.kernel.api.inmemory.ClasspathResource.res;
 public class ClasspathScannerInMemoryTest extends ClasspathScannerTestBase
 {
 
-    private InMemoryMultiThreadClasspath classpath = InMemoryMultiThreadClasspath.INSTANCE;
+    private InMemoryClasspath classpath = InMemoryClasspath.INSTANCE;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -54,6 +54,6 @@ public class ClasspathScannerInMemoryTest extends ClasspathScannerTestBase
                         .add(new ClasspathClass(MyModule4.class))
                 );
 
-        return new ClasspathScannerInMemory(classpath);
+        return new ClasspathScannerInMemory(classpath, 1);
     }
 }

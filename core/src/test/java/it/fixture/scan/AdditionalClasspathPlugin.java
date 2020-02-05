@@ -29,7 +29,7 @@ public class AdditionalClasspathPlugin extends AbstractPlugin {
 
     static {
         try {
-            URL = new URL("file:///additional/url.jar");
+            URL = new URL(AdditionalClasspathPlugin.class.getClassLoader().getResource("additional-url.jar").toExternalForm());
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }

@@ -24,6 +24,7 @@ import java.util.Map;
 public class KernelOptions
 {
     public static final KernelOption<List<String>> ROOT_PACKAGES = new KernelOption<>("root.packages");
+    public static final KernelOption<Integer> THREAD_COUNT = new KernelOption<>("thread.count");
     public static final KernelOption<Boolean> PRINT_SCAN_WARN = new KernelOption<>("scan.warn.disable");
     public static final KernelOption<Boolean> ENABLE_REFLECTION_LOGGER = new KernelOption<>("reflection.logger.disable");
     public static final KernelOption<Boolean> SCAN_PLUGIN = new KernelOption<>("plugin.scan.disable");
@@ -35,6 +36,7 @@ public class KernelOptions
     public KernelOptions()
     {
         set(ROOT_PACKAGES, new ArrayList<>());
+        set(THREAD_COUNT, defaultThreadCount());
         set(PRINT_SCAN_WARN, true);
         set(ENABLE_REFLECTION_LOGGER, false);
         set(SCAN_PLUGIN, true);
@@ -68,5 +70,15 @@ public class KernelOptions
             stringBuilder.append("\n");
         }
         return stringBuilder.toString();
+    }
+
+    private int defaultThreadCount()
+    {
+        int availableProcessors = Runtime.getRuntime().availableProcessors();
+        if (availableProcessors <= 2) {
+            return availableProcessors;
+        } else {
+            return Math.min(4, availableProcessors / 2);
+        }
     }
 }
