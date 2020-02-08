@@ -36,6 +36,7 @@ import io.nuun.kernel.api.plugin.InitState;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequestBuilder;
+import io.nuun.kernel.api.plugin.request.InterPluginRequest;
 import io.nuun.kernel.core.AbstractPlugin;
 import io.nuun.kernel.spi.topology.TopologyDefinition;
 import io.nuun.kernel.spi.topology.binding.Binding;
@@ -121,7 +122,7 @@ public class TopologyPlugin extends AbstractPlugin
             optionalKeys = new ArrayList<>();
             keys = new ArrayList<>();
 
-            // Get classes from kernel
+            // Get topology classes from kernel
             Collection<Class<?>> topologiesClasses = typesByPredicate.get(TopologyPredicate.INSTANCE);
 
             // Topologie analyzer
@@ -274,6 +275,17 @@ public class TopologyPlugin extends AbstractPlugin
         // return this.mb.hashCode();
         // }
     }
+    
+    
+    @Override
+    public Collection<InterPluginRequest> interPluginRequests()
+    {
+        
+        //if ()
+        return interPluginRequestBuilder().predicate( m -> m != null   ).build();
+    }
+    
+    
 
     @Override
     public Object nativeUnitModule()

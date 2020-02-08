@@ -101,11 +101,11 @@ public class TopologyModule extends AbstractModule
             try
             {
                 function = (Function<Class<?>, ?>) mb.keyResolver.newInstance();
-                logger.info("mb.classes = " + mb.classes);
+                logger.debug("mb.classes = " + mb.classes);
                 mb.classes.stream().forEach(cc -> {
                     Object applied = function.apply(cc);
-                    logger.info("applied = " + applied);
-                    logger.info("cc      = " + cc);
+                    logger.debug("applied = " + applied);
+                    logger.debug("cc      = " + cc);
 
                     mapBinder.addBinding(applied).to(cc);
                 });

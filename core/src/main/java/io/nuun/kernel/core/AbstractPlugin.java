@@ -26,6 +26,8 @@ import io.nuun.kernel.api.plugin.request.BindingRequest;
 import io.nuun.kernel.api.plugin.request.BindingRequestBuilder;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequestBuilder;
+import io.nuun.kernel.api.plugin.request.InterPluginRequest;
+import io.nuun.kernel.api.plugin.request.InterPluginRequestBuilder;
 import io.nuun.kernel.api.plugin.request.KernelParamsRequest;
 import io.nuun.kernel.api.plugin.request.KernelParamsRequestBuilder;
 import io.nuun.kernel.api.plugin.request.builders.BindingRequestBuilderMain;
@@ -83,6 +85,11 @@ public abstract class AbstractPlugin implements Plugin
     {
         return new BindingRequestBuilder();
     }
+    
+    protected InterPluginRequestBuilder interPluginRequestBuilder()
+    {
+        return new InterPluginRequestBuilder();
+    }
 
     // * ============================= PLUGIN info and requests * ============================= //
 
@@ -109,6 +116,12 @@ public abstract class AbstractPlugin implements Plugin
 
     @Override
     public Collection<BindingRequest> bindingRequests()
+    {
+        return Collections.emptySet();
+    }
+    
+    @Override
+    public Collection<InterPluginRequest> interPluginRequests()
     {
         return Collections.emptySet();
     }

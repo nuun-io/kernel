@@ -23,6 +23,7 @@ import io.nuun.kernel.api.plugin.context.Context;
 import io.nuun.kernel.api.plugin.context.InitContext;
 import io.nuun.kernel.api.plugin.request.BindingRequest;
 import io.nuun.kernel.api.plugin.request.ClasspathScanRequest;
+import io.nuun.kernel.api.plugin.request.InterPluginRequest;
 import io.nuun.kernel.api.plugin.request.KernelParamsRequest;
 import io.nuun.kernel.spi.DependencyInjectionProvider;
 
@@ -89,6 +90,14 @@ public interface Plugin
      */
     Collection<BindingRequest> bindingRequests();
 
+    /**
+     * List of inter plugin requests.
+     * 
+     * @return inter plugin requests. 
+     */
+    Collection<InterPluginRequest> interPluginRequests();
+
+    
     /**
      * List of plugins dependencies required by this plugin.
      * The plugin's init phase will be executed after these dependencies.

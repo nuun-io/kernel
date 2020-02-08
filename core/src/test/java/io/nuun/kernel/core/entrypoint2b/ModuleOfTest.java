@@ -14,21 +14,35 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Nuun IO Kernel Core.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.nuun.kernel.core.test_topo;
+package io.nuun.kernel.core.entrypoint2b;
 
-public class MyCommand3Impl1 implements MyCommand3
+import com.google.inject.AbstractModule;
+
+import io.nuun.kernel.api.annotations.KernelModule;
+import io.nuun.kernel.core.entrypoint2.NullableService;
+
+
+@KernelModule
+public class ModuleOfTest extends AbstractModule
 {
 
     @Override
-    public String name()
+    protected void configure()
     {
-        return this.getClass().getName();
+        // TODO Auto-generated method stub
+        bind(NullableService.class).to(MyImpl.class);
+
     }
+    
+    public static class MyImpl implements NullableService {
 
-    @Override
-    public void execute(String... args)
-    {
-
+        @Override
+        public void nothing()
+        {
+            // TODO Auto-generated method stub
+            
+        }
+        
     }
 
 }
