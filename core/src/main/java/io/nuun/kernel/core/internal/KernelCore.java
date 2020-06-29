@@ -305,6 +305,10 @@ public final class KernelCore implements Kernel
         for (Plugin plugin : orderedPlugins)
         {
             mainInjector.injectMembers(plugin);
+        }
+        extensionManager.injected();
+        for (Plugin plugin : orderedPlugins)
+        {
             plugin.start(context);
         }
     }

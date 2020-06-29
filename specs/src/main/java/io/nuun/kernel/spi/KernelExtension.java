@@ -66,6 +66,13 @@ public interface KernelExtension<T>
     public void starting(Collection<T> extendedPlugins);
 
     /**
+     * Notifies the given extension that the plugins are injected.
+     *
+     * @param extendedPlugins the plugin to notify
+     */
+    public void injected(Collection<T> extendedPlugins);
+
+    /**
      * Notifies the given extension that the kernel is started.
      *
      * @param extendedPlugins the plugin to notify

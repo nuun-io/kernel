@@ -48,20 +48,25 @@ public class MyKernelExtension implements KernelExtension<MyExtensionInterface>
     }
 
     @Override
-    public void started(Collection<MyExtensionInterface> extensions)
-    {
+    public void injected(Collection<MyExtensionInterface> extendedPlugins) {
         count += 1000;
     }
 
     @Override
-    public void stopping(Collection<MyExtensionInterface> extensions)
+    public void started(Collection<MyExtensionInterface> extensions)
     {
         count += 10000;
     }
 
     @Override
-    public void stopped(Collection<MyExtensionInterface> extensions)
+    public void stopping(Collection<MyExtensionInterface> extensions)
     {
         count += 100000;
+    }
+
+    @Override
+    public void stopped(Collection<MyExtensionInterface> extensions)
+    {
+        count += 1000000;
     }
 }

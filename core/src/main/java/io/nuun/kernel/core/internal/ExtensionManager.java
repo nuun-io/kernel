@@ -111,6 +111,17 @@ public class ExtensionManager
     }
 
     /**
+     * Notifies the extensions that the plugins are injected
+     */
+    public void injected()
+    {
+        for (KernelExtension kernelExtension : kernelExtensions.keySet())
+        {
+            kernelExtension.injected(kernelExtensions.get(kernelExtension));
+        }
+    }
+
+    /**
      * Notifies the extensions that the kernel is started
      */
     public void started()
