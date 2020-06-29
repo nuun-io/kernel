@@ -57,10 +57,11 @@ public class ExtensionManagerIT
         underTest.initializing();
         underTest.initialized();
         underTest.starting();
+        underTest.injected();
         underTest.started();
         underTest.stopping();
         underTest.stopped();
 
-        Assertions.assertThat(myKernelExtension.count).isEqualTo(111111);
+        Assertions.assertThat(myKernelExtension.count).isEqualTo(1111111);
     }
 }
