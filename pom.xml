@@ -16,7 +16,8 @@
     along with Nuun IO Kernel.  If not, see <http://www.gnu.org/licenses />.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.nuun.kernel</groupId>
@@ -36,14 +37,14 @@
     <description>
         Nuun Kernel is a software kernel for framework creation. It brings a powerful plugin design plus
         a JSR 330 compliant injection mechanism backed by Guice.
-        Plugin benefits from kernel capabilities by sendings request to it :
+        Plugin benefits from kernel capabilities by sending requests to it :
         - kernel params request :
         - Classpath scans request :on class by name, annotation, meta annotation or more generally Predicate
         - Binding Request :
         Nuun Kernel provides an SPI in order to bring IOC from other vendors.
         Nuun Kernel come with 2 plugins:
         - Configuration Plugin : a plugin that inject the good property based on @Property annotation.
-        - Log plugin : a Log handler that inject the good Log implementation 
+        - Log plugin : a Log handler that inject the good Log implementation
 
     </description>
 
@@ -72,7 +73,7 @@
         <bintray.org>kametic</bintray.org>
         <bintray.repo>nuun-io</bintray.repo>
         <bintray.package>kernel</bintray.package>
-        
+
         <buildnumber-maven-plugin.version>1.4</buildnumber-maven-plugin.version>
         <maven-jar-plugin.version>2.6</maven-jar-plugin.version>
 
@@ -152,58 +153,58 @@
             </resource>
         </resources>
         <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.jfrog.buildinfo</groupId>
-              <artifactId>artifactory-maven-plugin</artifactId>
-              <version>2.4.0</version>
-              <executions>
-                <execution>
-                  <id>build-info</id>
-                  <goals>
-                    <goal>publish</goal>
-                  </goals>
-                  <configuration>
-                    <publisher>
-                      <contextUrl>https://oss.jfrog.org</contextUrl>
-                      <username>{{BINTRAY_USER}}</username>
-                      <password>{{BINTRAY_KEY}}</password>
-                      <repoKey>oss-release-local</repoKey>
-                      <snapshotRepoKey>oss-snapshot-local</snapshotRepoKey>
-                    </publisher>
-                    <deployProperties>
-                      <bintray.repo>${bintray.org}/${bintray.repo}</bintray.repo>
-                      <bintray.package>${bintray.package}</bintray.package>
-                      <bintray.version>${project.version}</bintray.version>
-                    </deployProperties>
-                  </configuration>
-                </execution>
-              </executions>
-            </plugin>
-          </plugins>
+            <plugins>
+                <plugin>
+                    <groupId>org.jfrog.buildinfo</groupId>
+                    <artifactId>artifactory-maven-plugin</artifactId>
+                    <version>2.4.0</version>
+                    <executions>
+                        <execution>
+                            <id>build-info</id>
+                            <goals>
+                                <goal>publish</goal>
+                            </goals>
+                            <configuration>
+                                <publisher>
+                                    <contextUrl>https://oss.jfrog.org</contextUrl>
+                                    <username>{{BINTRAY_USER}}</username>
+                                    <password>{{BINTRAY_KEY}}</password>
+                                    <repoKey>oss-release-local</repoKey>
+                                    <snapshotRepoKey>oss-snapshot-local</snapshotRepoKey>
+                                </publisher>
+                                <deployProperties>
+                                    <bintray.repo>${bintray.org}/${bintray.repo}</bintray.repo>
+                                    <bintray.package>${bintray.package}</bintray.package>
+                                    <bintray.version>${project.version}</bintray.version>
+                                </deployProperties>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
         </pluginManagement>
         <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-release-plugin</artifactId>
-          </plugin>
-          <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.8.2</version>
-            <executions>
-              <execution>
-                <id>prepare-agent</id>
-                <goals>
-                  <goal>prepare-agent</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.eluder.coveralls</groupId>
-            <artifactId>coveralls-maven-plugin</artifactId>
-            <version>3.1.0</version>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.2</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>3.1.0</version>
             </plugin>
             <plugin>
                 <groupId>com.mycila</groupId>
@@ -259,6 +260,13 @@
         <developer>
             <name>Pierre Thirouin</name>
             <email>pierre.thirouin@ext.mpsa.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Adrien Lauer</name>
+            <email>adrien.lauer@gmail.com</email>
             <roles>
                 <role>Developer</role>
             </roles>
@@ -376,17 +384,16 @@
                 </repository>
             </repositories>
         </profile>
-
     </profiles>
 
 
     <distributionManagement>
-      <snapshotRepository>
-        <id>snapshots</id>
-        <name>oss-jfrog-artifactory-snapshots</name>
-        <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
-      </snapshotRepository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>oss-jfrog-artifactory-snapshots</name>
+            <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+        </snapshotRepository>
     </distributionManagement>
-    
 
- </project>
+
+</project>
