@@ -1,3 +1,7 @@
+# Version 1.0.M11 (2020-08-05)
+
+* [fix] Catch and log exceptions occuring during predicate evaluation instead of failing.
+
 # Version 1.0.M10 (2020-06-30)
 
 * [new] New `KernelExtension.injected()` method that is invoked after plugin injection but before plugin startup.   
