@@ -22,24 +22,17 @@ import io.nuun.kernel.core.internal.scanner.AbstractClasspathScanner;
 import io.nuun.kernel.core.internal.utils.AssertUtils;
 import org.reflections.Reflections;
 import org.reflections.Store;
-import org.reflections.scanners.ResourcesScanner;
 import org.reflections.scanners.Scanner;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.scanners.TypeAnnotationsScanner;
-import org.reflections.scanners.TypeElementsScanner;
+import org.reflections.scanners.*;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -50,6 +43,7 @@ import static org.reflections.util.FilterBuilder.prefix;
 
 public class ClasspathScannerDisk extends AbstractClasspathScanner
 {
+    private final Logger logger = LoggerFactory.getLogger(ClasspathScannerDisk.class);
     private final List<String> packageRoots;
     private final ClasspathStrategy classpathStrategy;
     private final Set<URL> additionalClasspath;
@@ -153,7 +147,16 @@ public class ClasspathScannerDisk extends AbstractClasspathScanner
         Collection<Class<?>> filteredTypes = new HashSet<>();
         for (Class<?> candidate : forNames(types))
         {
-            if (predicate.test(candidate))
+            boolean test;
+            try
+            {
+                test = predicate.test(candidate);
+            } catch(Throwable t)
+            {
+                logger.debug("Unable to test predicate {} for candidate {}, ignoring it", predicate, candidate, t);
+                test = false;
+            }
+            if (test)
             {
                 filteredTypes.add(candidate);
             }
