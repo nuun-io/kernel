@@ -84,7 +84,7 @@
         <powermock.version>1.5</powermock.version>
         <slf4j.version>1.7.30</slf4j.version>
         <guice.version>4.2.3</guice.version>
-        <reflections.version>0.9.11</reflections.version>
+        <reflections.version>0.9.12</reflections.version>
     </properties>
 
     <dependencies>
